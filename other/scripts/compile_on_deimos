@@ -1,0 +1,10 @@
+#!/bin/bash
+
+module load openmpi
+cd lib/ParMetis-3.1
+make
+cd ../..
+./configure --prefix=`pwd` --with-mpi=/licsoft/libraries/openmpi/1.2.6/64bit --enable-parmetis
+make install
+
+

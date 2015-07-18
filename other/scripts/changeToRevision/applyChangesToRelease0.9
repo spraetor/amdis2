@@ -1,0 +1,23 @@
+#!/bin/bash
+#
+# secures current directory in src_beforeChanges
+# replaces according ChangeLog in every 
+# file in src directory.
+# 
+# 
+# on your own responsibility
+#  Rainer
+#
+if [ -f ./updateGET_PARAMETER.gawk ]
+  then
+    echo "updateGET_PARAMETER.gawk found"
+    cp -r src src_beforeChangesToRelaease0.9
+#
+    find src/* -type f | while read file
+    do
+	./updateGET_PARAMETER.gawk < $file > $file.$$
+	mv -v	$file.$$ $file	
+    done
+else
+ echo "you need updateGET_PARAMETER.gawk "
+fi

@@ -1,0 +1,124 @@
+#!/bin/bash
+
+# Define the program to be executed
+EXEC_CMD="./vecheat init/vecheat.dat.2d"
+
+# Define the number of required processors
+NUMBER_PROC=1
+
+# Define if the program makes use of OpenMP.
+USE_OPENMP=0
+
+# Define if the program makes use of an MPI library.
+USE_MPI=0
+
+# Define the server on which the program is running (mars or deimos)
+SERVER=mars
+
+# Expected runtime of one execution, the format is hh::mm
+WTIME=1:00
+
+# Memory usage of the program in MByte
+MEM=4000
+
+# Define the output file to which all output (standard and error) will be written.
+OUTFILE=out
+
+
+##############################################################################
+#                                                                            #
+# Do not edit the script after this line!                                    #
+#                                                                            #
+##############################################################################
+
+SCRIPT_NAME=$0
+SCHEDULE_ERROR_CODE=23
+
+
+if [ $NUMBER_PROC -gt 1 ] ; then
+  if [ $USE_OPENMP -eq 1 ] ; then
+    export OMP_NUM_THREADS=$NUMBER_PROC
+  fi
+
+  if [ $USE_MPI -eq 1 ] ; then
+    if [ $SERVER -eq mars ] ; then
+      EXEC_CMD="mpirun -np ${NUMBER_PROC} {$EXEC_CMD}"
+    fi
+
+    if [ $SERVER -eq deimos] ; then
+      EXEC_CMD="openmpi mpirun.lsf {$EXEC_CMD}"
+    fi
+  fi
+fi
+
+
+
+case "$1" in
+  -rs )
+    # The program is started after is has been terminated before
+    date >> $OUTFILE 2>&1
+    printf "Schedule-Skript: Computation restarted\n" >> $OUTFILE 2>&1
+    (${EXEC_CMD} -rs __serialized_problem.ser) >> $OUTFILE 2>&1
+    ERROR_CODE=$?
+    date >> $OUTFILE 2>&1
+    printf "Schedule-Skript: Computation terminated\n" >> $OUTFILE 2>&1
+    ;;
+  -s )
+    # The program is started for the first time    
+    date >> $OUTFILE 2>&1
+    printf "Schedule-Skript: Computation started\n" >> $OUTFILE 2>&1
+    ${EXEC_CMD} >> $OUTFILE 2>&1
+    ERROR_CODE=$?
+    date >> $OUTFILE 2>&1
+    printf "Schedule-Skript: Computation terminated with code %d\n" $ERROR_CODE >> $OUTFILE 2>&1
+    ;;
+  -c )
+    date > $OUTFILE 2>&1
+    printf "Schedule-Skript: Submitted programm to the batch system\n" >> $OUTFILE 2>&1
+    bsub -n $NUMBER_PROC -W $WTIME -R "rusage[mem=$MEM]" $SCRIPT_NAME -rs >> $OUTFILE 2>&1
+    if [ $? -eq 0 ] ; then
+      printf "Submitted program to the batch system!\n"
+      printf "Submitted program to the batch system!\n" >> $OUTFILE 2>&1
+      exit 0
+    else
+      printf "Error: Could not submit program to the batch system!\n"
+      printf "Error: Could not submit program to the batch system!\n" >> $OUTFILE 2>&1
+      exit 1
+    fi
+    ;;
+  * )
+    # First scheduling of the program
+    date > $OUTFILE 2>&1
+    printf "Schedule-Skript: Submitted programm to the batch system\n" >> $OUTFILE 2>&1
+    bsub -n $NUMBER_PROC -W $WTIME -R "rusage[mem=$MEM]" $SCRIPT_NAME -s >> $OUTFILE 2>&1
+    if [ $? -eq 0 ] ; then
+      printf "Submitted program to the batch system!\n"
+      printf "Submitted program to the batch system!\n" >> $OUTFILE 2>&1
+      exit 0
+    else
+      printf "Error: Could not submit program to the batch system!\n"
+      printf "Error: Could not submit program to the batch system!\n" >> $OUTFILE 2>&1
+      exit 1
+    fi
+    ;;
+esac
+
+
+
+if [ $ERROR_CODE -eq $SCHEDULE_ERROR_CODE ] ; then
+  # Error code indicates that the program has been terminated in order to be rescheduled.
+  date >> $OUTFILE 2>&1
+  printf "Schedule-Skript: Submitted programm to the batch system\n" >> $OUTFILE 2>&1
+  bsub -n $NUMBER_PROC -W $WTIME -R "rusage[mem=$MEM]" $SCRIPT_NAME -rs >> $OUTFILE 2>&1
+  exit 0
+elif [ $ERROR_CODE -eq 0 ] ; then
+  # The program terminated successfully.
+  date >> $OUTFILE 2>&1
+  printf "Schedule-Skript: Program stopped successfully\n" >> $OUTFILE 2>&1
+  exit 0
+else
+  # Other error occurred. Forward the error code.
+  date >> $OUTFILE 2>&1
+  printf "Schedule-Skript: ERROR CODE: %d\n" $ERROR_CODE >> $OUTFILE 2>&1
+  exit $ERROR_CODE
+fi

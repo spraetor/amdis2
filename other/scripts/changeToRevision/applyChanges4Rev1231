@@ -1,0 +1,21 @@
+#!/bin/bash
+#
+# secures src directory src_beforeRev1231
+# replaces according ChangeLog in every 
+# file in src directory.
+# 
+# unfortunately newlines are not removed. 
+# Thus, sometimes code looks strange, but works 
+# 
+# on your own responsibility
+#  Rainer
+#
+cp -r src src_beforeRev1231
+#
+find src/* -type f | while read file
+do
+  gawk '{gsub(/Operator::MATRIX_OPERATOR *[ ,|]/,"",$0);\
+         gsub(/Operator::VECTOR_OPERATOR *[ ,|]/,"",$0);\
+	 print $0}' < $file > $file.$$
+	mv -v $file.$$ $file
+done

@@ -1,0 +1,20 @@
+Scripts to automatically change your AMDiS code
+to new revisions according AMDiS/ChangeLog.
+
+Start the script in your directory. 
+All files in directory src will be changed according AMDiS/ChangeLog.
+First directory src is copied.
+Script may ruin your code...
+No warranty!! NO WARRANTY !!!
+
+---------------------------------------------------------------------
+1. applyChanges4Rev1210 (all changes according ChangeLog)
+
+2. applyChangesToRelease0.9  and updateGET_PARAMETER.gawk 
+   changes:
+     Laplace_SOT -> Simple_SOT
+     ProblemVec->ProblemStat
+     ProblemInstatVec->ProblemInstat
+     GET_PARAMETER(...)->Parameters::get(...)
+   details see in  updateGET_PARAMETER.gawk
+

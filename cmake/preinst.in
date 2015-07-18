@@ -1,0 +1,10 @@
+#!/bin/sh
+NEWDIRS_SEMI="@deb_add_dirs@"
+NEWDIRS=`echo ${NEWDIRS_SEMI} | sed 's/;/ /g'`
+BASEDIR=@CPACK_INSTALL_PREFIX@
+#echo "will create the following directories:"
+for d in ${NEWDIRS}; do
+#  echo "${BASEDIR}${d}"
+  mkdir --parents ${BASEDIR}${d}
+done
+

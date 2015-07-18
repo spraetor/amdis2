@@ -1,0 +1,15 @@
+#!/bin/bash
+
+grep "for ${2}->space->feSpace" ${1} &> tmp_dof
+awk 'BEGIN {A = 0} {if (A == 0) { print $1; A = 1;} else A = 0}' tmp_dof &> tmp_dof0
+awk 'BEGIN {A = 1} {if (A == 0) { print $1; A = 1;} else A = 0}' tmp_dof &> tmp_dof1
+grep "timestep = " ${1} | awk '{sub(/,/, "", $3); print $3}' &> tmp_time
+grep "buildAfterCoarsen needed" ${1} | awk '{print $3}'&> tmp_asm_time
+grep "solution of discrete system needed" ${1} | awk '{print $6}'&> tmp_sol_time
+grep "estimation of the error needed" ${1} | awk 'BEGIN {A = 0} {if (A == 0) A = 1; else print $6}'&> tmp_est_time
+
+printf "# time     dofs in fe0     dofs in fe1     time asm     time sol     time est\n"
+
+paste tmp_time tmp_dof0 tmp_dof1 tmp_asm_time tmp_sol_time tmp_est_time
+
+rm -f tmp_time tmp_dof0 tmp_dof1 tmp_asm_time tmp_sol_time tmp_est_time

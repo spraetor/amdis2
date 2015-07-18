@@ -1,0 +1,18 @@
+#!/bin/bash
+#
+# secures src directory src_beforeRev1210
+# replaces according ChangeLog in every 
+# file in src directory.
+# 
+# on your own responsibility
+#  Rainer
+#
+cp -r src src_beforeRev1210
+#
+find src/* -type f | while read file
+do
+  gawk '{gsub(/FESpace/,"FeSpace",$0);\
+	 gsub(/getRhs/,"getRhs",$0);\
+	 print $0}' < $file > $file.$$
+	mv -v $file.$$ $file
+done

@@ -1,0 +1,14 @@
+#!/bin/sh
+if test "$1" = "upgrade" ; then 
+  exit 0
+fi
+NEWDIRS_SEMI="@deb_add_dirs@"
+NEWDIRS=`echo ${NEWDIRS_SEMI} | sed 's/;/ /g'`
+BASEDIR=@CPACK_INSTALL_PREFIX@
+#echo "will create the remove directories:"
+for d in ${NEWDIRS}; do
+#  echo "${BASEDIR}${d}"
+   rm -r ${BASEDIR}${d} > /dev/null 2> /dev/null
+done
+exit 0
+

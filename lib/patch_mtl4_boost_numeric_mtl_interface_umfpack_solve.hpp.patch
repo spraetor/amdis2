@@ -1,0 +1,8 @@
+53a54
+> #if defined(UF_long)
+54a56,60
+> #elif defined(SuiteSparse_long)
+> 	template<> struct index_aux<true>         { typedef SuiteSparse_long type; };
+> #else
+> 	template<> struct index_aux<true>         { typedef long type; };
+> #endif

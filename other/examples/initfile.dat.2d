@@ -1,0 +1,32 @@
+dimension of world: 2   % dow = 1, 2, or 3
+
+% include other init-files (remove % at the beginning of the line)
+% #include <filename>
+% #include "filename"
+
+parameter1: value1
+
+% using variable:
+parameter2: $parameter1
+parameter3: ${parameter1}
+parameter4_${parameter1}: value2   % => parameter4_value1 = value2
+
+% overwriting values
+parameter1: value3
+
+% value format
+parameter1: 1.0              % double
+parameter2: 1                % int
+parameter3: Hello World!     % std::string
+parameter4: [1,2,3]          % std::vector<int>
+parameter5: [1,2,3; 4,5,6; 7,8,9]  % std::vector<std::vector<int> >
+parameter6: 1/2              % arithmetic expression => 0.5
+parameter7: 2*${parameter6}+sin(0.5)  % complex arithm. expression
+parameter8: m_pi + m_e       % some predefined constants: pi, e
+parameter9: [2*m_pi, sin((${parameter7})*m_e)/2]
+
+% substitution and evaluation
+parameter1: 1/2 + 1/2
+parameter2: Hello ${parameter1} World!     % => "Hello 1/2 + 1/2 World!"
+parameter3: Hello $(${parameter1}) World!  % => "Hello 1 World!"
+parameter4: Hello $(1/2 + 1/2) World!      % => "Hello 1 World!"
