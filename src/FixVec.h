@@ -1,36 +1,15 @@
-/******************************************************************************
- *
- * AMDiS - Adaptive multidimensional simulations
- *
- * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
- * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
- *
- * Authors: 
- * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
- *
- * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
- * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
- *
- *
- * This file is part of AMDiS
- *
- * See also license.opensource.txt in the distribution.
- * 
- ******************************************************************************/
-
-
-
 /** \file FixVec.h */
 
-#ifndef AMDIS_FIXVEC_H
-#define AMDIS_FIXVEC_H
+#pragma once
 
 #include <iostream>
+
 #include "Global.h"
 #include "MatrixVector.h"
 #include "AMDiS_fwd.h"
 
-namespace AMDiS {
+namespace AMDiS 
+{
 
   /// determines how to initialize a FixVec when constructed.
   enum InitType {
@@ -618,7 +597,8 @@ namespace AMDiS {
   template<typename T,GeoIndex d>
   inline void resize(FixVec<T,d>& vec, size_t newSize)
   { }
-}
+  
+} // end namespace AMDiS
 
 
 #include <boost/numeric/mtl/concept/collection.hpp>
@@ -655,9 +635,9 @@ namespace mtl
     template <typename T>
     struct is_row_major<AMDiS::WorldVector<AMDiS::WorldVector<T> > >
       : boost::mpl::true_ {};
+      
   } // end namespace traits
+  
 } // end namespace mtl
 
 #include "FixVec.hh"
-
-#endif // AMDIS_FIXVEC_H

@@ -1,35 +1,12 @@
-/******************************************************************************
- *
- * AMDiS - Adaptive multidimensional simulations
- *
- * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
- * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
- *
- * Authors: 
- * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
- *
- * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
- * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
- *
- *
- * This file is part of AMDiS
- *
- * See also license.opensource.txt in the distribution.
- * 
- ******************************************************************************/
-
-
-
 /** \file SubElInfo.h */
 
-#ifndef AMDIS_SUBELINFO_H
-#define AMDIS_SUBELINFO_H
+#pragma once
 
 #include "AMDiS_fwd.h"
 #include "FixVec.h"
 
-namespace AMDiS {
-  
+namespace AMDiS 
+{
   /** \brief
    * The class \ref SubElInfo holds all information on a subelement (element to
    * which it belongs, its vertices in barycentric coordinates with respect to 
@@ -94,5 +71,4 @@ namespace AMDiS {
     double det;
   };
 
-}
-#endif  // AMDIS_SUBELINFO_H
+} // end namespace AMDiS

@@ -1,29 +1,6 @@
-/******************************************************************************
- *
- * AMDiS - Adaptive multidimensional simulations
- *
- * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
- * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
- *
- * Authors: 
- * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
- *
- * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
- * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
- *
- *
- * This file is part of AMDiS
- *
- * See also license.opensource.txt in the distribution.
- * 
- ******************************************************************************/
-
-
-
 /** \file ElInfo.h */
 
-#ifndef AMDIS_ELINFO_H
-#define AMDIS_ELINFO_H
+#pragma once
 
 #include <boost/numeric/mtl/matrix/dense2D.hpp>
 
@@ -34,7 +11,8 @@
 #include "Element.h"
 #include "AMDiS_fwd.h" 
 
-namespace AMDiS {
+namespace AMDiS 
+{
 
   /** \ingroup Traverse
    * \brief 
@@ -550,18 +528,8 @@ namespace AMDiS {
 	grd_lam(i,j) = grd_lam[i][j];
   }
 
-}
+} // end namespace AMDiS
 
 #include "ElInfo1d.h"
 #include "ElInfo2d.h"
 #include "ElInfo3d.h"
-
-#endif  // AMDIS_ELINFO_H
-
-
-
-
-
-
-
-

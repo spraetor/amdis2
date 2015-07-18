@@ -1,31 +1,9 @@
-/******************************************************************************
- *
- * AMDiS - Adaptive multidimensional simulations
- *
- * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
- * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
- *
- * Authors: 
- * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
- *
- * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
- * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
- *
- *
- * This file is part of AMDiS
- *
- * See also license.opensource.txt in the distribution.
- * 
- ******************************************************************************/
-
-
-
 /** \file Traits.h */
 
-#ifndef AMDIS_TRAITS_H
-#define AMDIS_TRAITS_H
+#pragma once
 
 #include <iostream>
+
 #include "FixVec.h"
 #include "MatrixVector.h"
 #include "AMDiS_fwd.h"
@@ -37,8 +15,8 @@
 #include "traits/num_cols.hpp"
 #include "traits/size.hpp"
 
-#include "boost/numeric/ublas/detail/returntype_deduction.hpp"
-#include "boost/numeric/mtl/concept/std_concept.hpp" // for return_type deduction
+#include <boost/numeric/ublas/detail/returntype_deduction.hpp>
+#include <boost/numeric/mtl/concept/std_concept.hpp> // for return_type deduction
 
 // TODO: move to traits directory
 
@@ -233,5 +211,3 @@ namespace AMDiS
   } // end namespace traits
 
 } // end namespace AMDiS
-
-#endif

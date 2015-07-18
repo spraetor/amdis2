@@ -1,24 +1,3 @@
-/******************************************************************************
- *
- * AMDiS - Adaptive multidimensional simulations
- *
- * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
- * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
- *
- * Authors: 
- * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
- *
- * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
- * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
- *
- *
- * This file is part of AMDiS
- *
- * See also license.opensource.txt in the distribution.
- * 
- ******************************************************************************/
-
-
 #include <list>
 #include <algorithm>
 #include <math.h>
@@ -50,8 +29,8 @@
 #endif
 
 // Defining the interface for MTL4
-namespace mtl {
-
+namespace mtl 
+{
   // Let MTL4 know that DOFVector it is a column vector
   namespace traits 
   {
@@ -88,13 +67,12 @@ namespace mtl {
     typedef T&              reference;
   };
 
-
 } // namespace mtl
 
 
 
-namespace AMDiS {
-
+namespace AMDiS 
+{
   template <class T>
   DOFVectorBase<T>::DOFVectorBase(const FiniteElemSpace *f, std::string n)
     : feSpace(f),

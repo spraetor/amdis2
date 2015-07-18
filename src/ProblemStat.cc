@@ -1,26 +1,5 @@
-/******************************************************************************
- *
- * AMDiS - Adaptive multidimensional simulations
- *
- * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
- * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
- *
- * Authors: 
- * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
- *
- * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
- * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
- *
- *
- * This file is part of AMDiS
- *
- * See also license.opensource.txt in the distribution.
- * 
- ******************************************************************************/
-
-
 #include <sstream>
-#include <boost/lexical_cast.hpp>
+#include <string>
 
 #include "ProblemStat.h"
 #include "Serializer.h"
@@ -48,10 +27,9 @@
 #include "ProblemStatDbg.h"
 #include "Debug.h"
 
-namespace AMDiS {
-
+namespace AMDiS 
+{
   using namespace std;
-  using boost::lexical_cast;
 
   ProblemStatSeq::ProblemStatSeq(string nameStr,
 				 ProblemIterationInterface *problemIteration)
@@ -102,13 +80,13 @@ namespace AMDiS {
 
     componentNames.resize(nComponents, "");
     for (int i = 0; i < nComponents; i++)
-      componentNames[i] = "solution[" + lexical_cast<string>(i) + "]";
+      componentNames[i] = "solution[" + std::to_string(i) + "]";
 
     Parameters::get(name + "->name", componentNames);
     componentNames.resize(nComponents);
 
     for (int i = 0; i < nComponents; i++)
-      Parameters::get(name + "->name[" + lexical_cast<string>(i) + "]",
+      Parameters::get(name + "->name[" + std::to_string(i) + "]",
 		      componentNames[i]);
 
     Parameters::get("debug->write asm info", writeAsmInfo);
@@ -406,7 +384,7 @@ namespace AMDiS {
 
     for (int i = 0; i < nComponents + nAddComponents; i++) {
       int refSet = -1;
-      Parameters::get(name + "->refinement set[" + lexical_cast<string>(i) + "]", 
+      Parameters::get(name + "->refinement set[" + std::to_string(i) + "]", 
 		      refSet);
       if (refSet < 0)
 	refSet = 0;
@@ -467,7 +445,7 @@ namespace AMDiS {
 	WARNING("feSpace already created\n");
 	continue;
       }
-      string componentString = "[" + boost::lexical_cast<string>(i) + "]";
+      string componentString = "[" + std::to_string(i) + "]";
       
       string feSpaceName = "";
       string initFileStr = name + "->feSpace" + componentString;
@@ -487,7 +465,7 @@ namespace AMDiS {
 	TEST_EXIT(degree > 0)
 	  ("Poynomial degree in component %d must be larger than zero!\n", i);
 	  
-	feSpaceName = "Lagrange" + boost::lexical_cast<string>(degree);
+	feSpaceName = "Lagrange" + std::to_string(degree);
       }
 
       if (feSpaceMap[pair<Mesh*, string>(componentMeshes[i], feSpaceName)] == NULL) {      
@@ -542,7 +520,7 @@ namespace AMDiS {
 
       //set parallel synchronization later in ParalleProblemStat
       rhs->setDOFVector(i, new DOFVector<double>(componentSpaces[i], 
-						 "rhs[" + lexical_cast<string>(i) + "]", false));
+						 "rhs[" + std::to_string(i) + "]", false));
 
       //set parallel synchronization later in ParalleProblemStat
       solution->setDOFVector(i, new DOFVector<double>(componentSpaces[i],
@@ -601,7 +579,7 @@ namespace AMDiS {
     for (int i = 0; i < nComponents; i++) {
       TEST_EXIT(estimator[i] == NULL)("estimator already created\n");
       string estName = 
-	name + "->estimator[" + boost::lexical_cast<string>(i) + "]";
+	name + "->estimator[" + std::to_string(i) + "]";
 
       // === create estimator ===
       string estimatorType("0");
@@ -631,7 +609,7 @@ namespace AMDiS {
 
     for (int i = 0; i < nComponents; i++) {
       marker[i] = Marker::createMarker
-	(name + "->marker[" + boost::lexical_cast<string>(i) + "]", i);
+	(name + "->marker[" + std::to_string(i) + "]", i);
 
       if (marker[i]) {
 	nMarkersCreated++;
@@ -671,7 +649,7 @@ namespace AMDiS {
 
     // Create own filewriters for each component of the problem
     for (int i = 0; i < nComponents; i++) {
-      numberedName = name + "->output[" + boost::lexical_cast<string>(i) + "]";
+      numberedName = name + "->output[" + std::to_string(i) + "]";
       filename = "";
       Parameters::get(numberedName + "->filename", filename);
 
@@ -686,7 +664,7 @@ namespace AMDiS {
     Parameters::get(name + "->output->num vectors", nVectors);
     if (nVectors > 0) {
       for (int j = 0; j < nVectors; j++) {
-	numberedName = name + "->output->vector[" + boost::lexical_cast<string>(j) + "]";
+	numberedName = name + "->output->vector[" + std::to_string(j) + "]";
 	
 	filename = "";
 	Parameters::get(numberedName + "->filename", filename);
@@ -1372,157 +1350,6 @@ namespace AMDiS {
   }
 
 
-  // TODO: replace by generic expressions
-  void ProblemStatSeq::addDirichletBC(BoundaryType type, int row, int col,
-				      AbstractFunction<double, WorldVector<double> >* b)
-  {
-    FUNCNAME("ProblemStat::addDirichletBC()");
-
-    TEST_EXIT(row >= 0 && row < nComponents)("Wrong row number: %d\n", row);
-    TEST_EXIT(col >= 0 && col < nComponents)("Wrong col number: %d\n", col);
-
-    boundaryConditionSet = true;
-
-    DirichletBC<_value_by_abstractfunction> *dirichletApply = 
-      new DirichletBC<_value_by_abstractfunction>(type, b, componentSpaces[row], componentSpaces[col], true);
-    DirichletBC<_value_by_abstractfunction> *dirichletNotApply = 
-      new DirichletBC<_value_by_abstractfunction>(type, b, componentSpaces[row], componentSpaces[col], false);
-
-    for (int i = 0; i < nComponents; i++)
-      if (systemMatrix && (*systemMatrix)[row][i]) {
-	if (i == col)
-	  (*systemMatrix)[row][i]->getBoundaryManager()->addBoundaryCondition(dirichletApply);
-	else
-	  (*systemMatrix)[row][i]->getBoundaryManager()->addBoundaryCondition(dirichletNotApply);
-      }	
-
-    if (rhs)
-      rhs->getDOFVector(row)->getBoundaryManager()->addBoundaryCondition(dirichletApply);
-    if (solution)
-      solution->getDOFVector(col)->getBoundaryManager()->addBoundaryCondition(dirichletApply);
-  }
-
-	
-#if __cplusplus > 199711L
-  void ProblemStatSeq::addDirichletBC(BoundaryType type, int row, int col,
-				      std::function<double(WorldVector<double>)> b)
-  {
-    FUNCNAME("ProblemStat::addDirichletBC()");
-
-    TEST_EXIT(row >= 0 && row < nComponents)("Wrong row number: %d\n", row);
-    TEST_EXIT(col >= 0 && col < nComponents)("Wrong col number: %d\n", col);
-
-    boundaryConditionSet = true;
-
-    DirichletBC<_value_by_function> *dirichletApply = 
-      new DirichletBC<_value_by_function>(type, b, componentSpaces[row], componentSpaces[col], true);
-    DirichletBC<_value_by_function> *dirichletNotApply = 
-      new DirichletBC<_value_by_function>(type, b, componentSpaces[row], componentSpaces[col], false);
-
-    for (int i = 0; i < nComponents; i++)
-      if (systemMatrix && (*systemMatrix)[row][i]) {
-	if (i == col)
-	  (*systemMatrix)[row][i]->getBoundaryManager()->addBoundaryCondition(dirichletApply);
-	else
-	  (*systemMatrix)[row][i]->getBoundaryManager()->addBoundaryCondition(dirichletNotApply);
-      }	
-
-    if (rhs)
-      rhs->getDOFVector(row)->getBoundaryManager()->addBoundaryCondition(dirichletApply);
-    if (solution)
-      solution->getDOFVector(col)->getBoundaryManager()->addBoundaryCondition(dirichletApply);
-  }
-#endif
-
-
-  void ProblemStatSeq::addDirichletBC(BoundaryType type, int row, int col,
-				      DOFVector<double> *vec)
-  {
-    FUNCNAME("ProblemStat::addDirichletBC()");
-
-    TEST_EXIT(row >= 0 && row < nComponents)("Wrong row number: %d\n", row);
-    TEST_EXIT(col >= 0 && col < nComponents)("Wrong col number: %d\n", col);
-
-    boundaryConditionSet = true;
-
-    DirichletBC<_value_by_dofvector> *dirichletApply = new DirichletBC<_value_by_dofvector>(type, vec, true);
-    DirichletBC<_value_by_dofvector> *dirichletNotApply = new DirichletBC<_value_by_dofvector>(type, vec, false);
-
-    for (int i = 0; i < nComponents; i++)
-      if (systemMatrix && (*systemMatrix)[row][i]) {
-	if (i == col)
-	  (*systemMatrix)[row][i]->getBoundaryManager()->addBoundaryCondition(dirichletApply);
-	else
-	  (*systemMatrix)[row][i]->getBoundaryManager()->addBoundaryCondition(dirichletNotApply);
-      }
-
-    if (rhs)
-      rhs->getDOFVector(row)->getBoundaryManager()->addBoundaryCondition(dirichletApply);
-    if (solution)
-      solution->getDOFVector(col)->getBoundaryManager()->addBoundaryCondition(dirichletApply);
-  }
-
-
-  // TODO: replace by generic expressions
-  void ProblemStatSeq::addNeumannBC(BoundaryType type, int row, int col, 
-				    AbstractFunction<double, WorldVector<double> > *n)
-  {
-    boundaryConditionSet = true;
-
-    NeumannBC *neumann = 
-      new NeumannBC(type, n, componentSpaces[row], componentSpaces[col]);
-
-    if (rhs)
-      rhs->getDOFVector(row)->getBoundaryManager()->addBoundaryCondition(neumann);
-  }
-
-
-  void ProblemStatSeq::addNeumannBC(BoundaryType type, int row, int col, 
-				    DOFVector<double> *n)
-  {
-    boundaryConditionSet = true;
-
-    NeumannBC *neumann = 
-      new NeumannBC(type, n, componentSpaces[row], componentSpaces[col]);
-
-    if (rhs)
-      rhs->getDOFVector(row)->getBoundaryManager()->addBoundaryCondition(neumann);
-  }
-
-
-  // TODO: replace by generic expressions
-  void ProblemStatSeq::addRobinBC(BoundaryType type, int row, int col, 
-				  AbstractFunction<double, WorldVector<double> > *n,
-				  AbstractFunction<double, WorldVector<double> > *r)
-  {
-    boundaryConditionSet = true;
-
-    RobinBC *robin = 
-      new RobinBC(type, n, r, componentSpaces[row], componentSpaces[col]);
-
-    if (systemMatrix && (*systemMatrix)[row][col])
-      (*systemMatrix)[row][col]->getBoundaryManager()->addBoundaryCondition(robin);
-    if (rhs)
-      rhs->getDOFVector(row)->getBoundaryManager()->addBoundaryCondition(robin);
-  }
-
-
-  void ProblemStatSeq::addRobinBC(BoundaryType type, int row, int col, 
-				  DOFVector<double> *n,
-				  DOFVector<double> *r)
-  {
-    boundaryConditionSet = true;
-
-    RobinBC *robin = 
-      new RobinBC(type, n, r, componentSpaces[row], componentSpaces[col]);
-
-    if (systemMatrix && (*systemMatrix)[row][col])
-      (*systemMatrix)[row][col]->getBoundaryManager()->addBoundaryCondition(robin);
-    if (rhs)
-      rhs->getDOFVector(row)->getBoundaryManager()->addBoundaryCondition(robin);
-  }
-
-
   void ProblemStatSeq::addRobinBC(BoundaryType type, int row, int col, 
 				  Operator *n,
 				  Operator *r)
@@ -1683,28 +1510,6 @@ namespace AMDiS {
   }
 
 
-  void ProblemStatSeq::serialize(ostream &out) 
-  {
-    for (unsigned int i = 0; i < meshes.size(); i++)
-      meshes[i]->serialize(out);
-
-    solution->serialize(out);
-  }
-
-
-  void ProblemStatSeq::deserialize(istream &in) 
-  {
-    FUNCNAME("ProblemStat::deserialize()");
-    if (in.fail())
-      ERROR_EXIT("File not found for deserialization!\n");
-
-    for (unsigned int i = 0; i < meshes.size(); i++)
-      meshes[i]->deserialize(in);
-
-    solution->deserialize(in);
-  }
-
-
   void ProblemStatSeq::computeError(AdaptInfo *adaptInfo) 
   {
     FUNCNAME("ProblemStat::computeError()");
@@ -1760,5 +1565,4 @@ namespace AMDiS {
     }						           
   }
   
-}
- 
+} // end namespace AMDiS

@@ -143,7 +143,7 @@ namespace AMDiS { namespace io {
 	if (nProc == 1)
 	  arhFilename += ".arh";
 	else
-	  arhFilename += "-p" + boost::lexical_cast<string>(*it) + "-.arh";
+	  arhFilename += "-p" + std::to_string(*it) + "-.arh";
 
 	MSG("ARH file read from: %s\n", arhFilename.c_str());
 	detail::read(arhFilename, mesh, vecs);

@@ -1,36 +1,13 @@
-/******************************************************************************
- *
- * AMDiS - Adaptive multidimensional simulations
- *
- * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
- * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
- *
- * Authors: 
- * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
- *
- * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
- * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
- *
- *
- * This file is part of AMDiS
- *
- * See also license.opensource.txt in the distribution.
- * 
- ******************************************************************************/
-
-
-
 /** \file ElementDofIterator.h */
 
-#ifndef AMDIS_ELEMENTDOFITERATOR_H
-#define AMDIS_ELEMENTDOFITERATOR_H
+#pragma once
 
 #include "AMDiS_fwd.h"
 #include "Global.h"
 #include "Mesh.h"
 
-namespace AMDiS {
-
+namespace AMDiS 
+{
   /** \brief
    * This class implements an iterator to iterate over all DOFs of one element
    * independet of dimension and the degree of basis functions.
@@ -184,6 +161,5 @@ namespace AMDiS {
     else
       return dofs[node0 + elementPos][n0 + dofPos];
   }
-}
-
-#endif // AMDIS_ELEMENTDOFITERATOR_H
+  
+} // end namespace AMDiS

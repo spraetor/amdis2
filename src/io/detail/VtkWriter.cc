@@ -211,10 +211,9 @@ namespace AMDiS  { namespace io {
 			      bool createSubDir
 			      )
         {
-	  using boost::lexical_cast;
           vector< string > fileNames(nRanks);
 	  for (int i = 0; i < nRanks; i++)
-	    fileNames[i] = fnPrefix + "-p" + lexical_cast<string>(i) + "-" + fnPostfix;
+	    fileNames[i] = fnPrefix + "-p" + std::to_string(i) + "-" + fnPostfix;
 	  
           writeParallelFile(name, nRanks, fileNames, componentNames, format, highPrecision, writeAsVector, createSubDir);
         }
@@ -228,9 +227,7 @@ namespace AMDiS  { namespace io {
 			      bool createSubDir
 			      )
 	{
-	  FUNCNAME("writeParallelFile()");
-	  using boost::lexical_cast;
-	  
+	  FUNCNAME("writeParallelFile()");	  
 #ifndef HAVE_COMPRESSION
 	  if(format == APPENDED_COMPRESSED) 
 	    format = APPENDED;

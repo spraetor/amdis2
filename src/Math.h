@@ -1,39 +1,18 @@
-/******************************************************************************
- *
- * AMDiS - Adaptive multidimensional simulations
- *
- * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
- * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
- *
- * Authors: 
- * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
- *
- * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
- * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
- *
- *
- * This file is part of AMDiS
- *
- * See also license.opensource.txt in the distribution.
- * 
- ******************************************************************************/
-
-
 /** \file Math.h */
-
 
 /** \defgroup Common Common
  */
 
-#ifndef AMDIS_MATH_H
-#define AMDIS_MATH_H
+#pragma once
 
 #include <vector>
-#include "AMDiS_fwd.h"
 #include <boost/numeric/mtl/mtl_fwd.hpp>
 #include <boost/math/special_functions/fpclassify.hpp>
 
-namespace AMDiS {
+#include "AMDiS_fwd.h"
+
+namespace AMDiS 
+{
   
   // ===== some simple template functions ====================================== 
 #if 0
@@ -106,6 +85,5 @@ namespace AMDiS {
   // ===== tolerance for floating point comparison ==============================
 #define DBL_TOL DBL_EPSILON
 #define FLT_TOL FLT_EPSILON
-
 
 } // end namespace AMDiS

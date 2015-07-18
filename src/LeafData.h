@@ -1,38 +1,16 @@
-/******************************************************************************
- *
- * AMDiS - Adaptive multidimensional simulations
- *
- * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
- * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
- *
- * Authors: 
- * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
- *
- * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
- * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
- *
- *
- * This file is part of AMDiS
- *
- * See also license.opensource.txt in the distribution.
- * 
- ******************************************************************************/
-
-
-
 /** \file LeafData.h */
 
-#ifndef AMDIS_LEAFDATA_H
-#define AMDIS_LEAFDATA_H
+#pragma once
 
 #include <list>
 #include <map>
-#include "Serializable.h"
+
 #include "FixVec.h"
 #include "ElementData.h"
 #include "Boundary.h"
 
-namespace AMDiS {
+namespace AMDiS 
+{
 
   class LeafDataEstimatableInterface
   {
@@ -42,6 +20,7 @@ namespace AMDiS {
     virtual double getErrorEstimate(int) = 0;
   };
 
+  
   class LeafDataEstimatable : public ElementData,
 			      public LeafDataEstimatableInterface
   {
@@ -82,13 +61,13 @@ namespace AMDiS {
 			    int elTypeParent);
 
     /// Sets \ref errorEstimate
-    inline void setErrorEstimate(int, double est) 
+    void setErrorEstimate(int, double est) 
     { 
       errorEstimate = est; 
     }
 
     /// Returns \ref errorEstimate
-    inline double getErrorEstimate(int) 
+    double getErrorEstimate(int) 
     { 
       return errorEstimate; 
     }
@@ -109,24 +88,21 @@ namespace AMDiS {
     }
 
     /// Returns the name of element data type.
-    inline std::string getTypeName() const 
+    std::string getTypeName() const 
     { 
       return "LeafDataEstimatable"; 
     }
 
-    inline int getTypeID() const 
+    int getTypeID() const 
     { 
       return ESTIMATABLE; 
     }
-
-    void serialize(std::ostream& out);
-
-    void deserialize(std::istream& in); 
 
   private:
     double errorEstimate;
   };
 
+  
   class LeafDataEstimatableVec : public ElementData,
 				 public LeafDataEstimatableInterface
   {
@@ -140,7 +116,7 @@ namespace AMDiS {
       }
     };
 
-    inline bool isOfType(int type) const 
+    bool isOfType(int type) const 
     {
       if (type == ESTIMATABLE) 
 	return true;
@@ -164,13 +140,13 @@ namespace AMDiS {
 			    int elTypeParent);
 
     /// Sets \ref errorEstimate
-    inline void setErrorEstimate(int index, double est) 
+    void setErrorEstimate(int index, double est) 
     { 
       errorEstimate[index] = est; 
     }
 
     /// Returns \ref errorEstimate
-    inline double getErrorEstimate(int index) 
+    double getErrorEstimate(int index) 
     { 
       return errorEstimate[index];
     }
@@ -191,16 +167,12 @@ namespace AMDiS {
       return newObj;
     }
 
-    void serialize(std::ostream& out);
-
-    void deserialize(std::istream& in);
-
     std::string getTypeName() const 
     {
       return "LeafDataEstimatableVec";
     }
   
-    inline int getTypeID() const 
+    int getTypeID() const 
     { 
       return ESTIMATABLE; 
     }
@@ -209,6 +181,7 @@ namespace AMDiS {
     std::map<int, double> errorEstimate;
   };
 
+  
   class LeafDataCoarsenableInterface
   {
   public:
@@ -220,6 +193,7 @@ namespace AMDiS {
     /// Returns \ref coarseningError
     virtual double getCoarseningErrorEstimate(int index) = 0;
   };
+  
 
   class LeafDataCoarsenable : public ElementData,
 			      public LeafDataCoarsenableInterface
@@ -234,7 +208,7 @@ namespace AMDiS {
       }
     };
 
-    inline bool isOfType(int type) const 
+    bool isOfType(int type) const 
     {
       if(type == COARSENABLE) 
 	return true;
@@ -263,7 +237,7 @@ namespace AMDiS {
 			    int elTypeParent);
 
     /// Implements ElementData::clone().
-    inline ElementData *clone() const 
+    ElementData *clone() const 
     {
       // create new estimatable leaf data
       LeafDataCoarsenable *newObj = new LeafDataCoarsenable(NULL);
@@ -287,16 +261,12 @@ namespace AMDiS {
       return coarseningError; 
     }
 
-    void serialize(std::ostream& out);
-
-    void deserialize(std::istream& in);
-
     std::string getTypeName() const 
     {
       return "LeafDataCoarsenable";
     }
   
-    inline int getTypeID() const 
+    int getTypeID() const 
     { 
       return COARSENABLE; 
     }
@@ -304,7 +274,6 @@ namespace AMDiS {
   private:
     double coarseningError;
   };
-
 
 
   class LeafDataCoarsenableVec : public ElementData,
@@ -320,7 +289,7 @@ namespace AMDiS {
       }
     };
 
-    inline bool isOfType(int type) const 
+    bool isOfType(int type) const 
     {
       if (type == COARSENABLE) 
 	return true;
@@ -372,16 +341,12 @@ namespace AMDiS {
       return coarseningError[index]; 
     }
 
-    void serialize(std::ostream& out);
-
-    void deserialize(std::istream& in);
-
     std::string getTypeName() const 
     {
       return "LeafDataCoarsenableVec";
     }
   
-    inline int getTypeID() const 
+    int getTypeID() const 
     { 
       return COARSENABLE; 
     }
@@ -390,8 +355,7 @@ namespace AMDiS {
     std::map<int, double> coarseningError;
   };
 
-
-
+  
   class LeafDataPeriodic : public ElementData
   {
   public:
@@ -404,7 +368,7 @@ namespace AMDiS {
       }
     };
 
-    inline bool isOfType(int type) const 
+    bool isOfType(int type) const 
     {
       if (type == PERIODIC) 
 	return true;
@@ -433,10 +397,6 @@ namespace AMDiS {
 
       PeriodicInfo(const PeriodicInfo &rhs);
 
-      void serialize(std::ostream &out);
-
-      void deserialize(std::istream &in);
-
       int periodicMode;
 
       BoundaryType type;
@@ -456,14 +416,14 @@ namespace AMDiS {
     ~LeafDataPeriodic() {}
 
     /// Implements LeafData::clone().
-    inline ElementData *clone() const 
+    ElementData *clone() const 
     {
       LeafDataPeriodic *newObj = new LeafDataPeriodic;
       newObj->decorated = ElementData::clone();
       return newObj;
     }
 
-    inline void addPeriodicInfo(int mode,
+    void addPeriodicInfo(int mode,
 				BoundaryType type,
 				int side,
 				const DimVec<WorldVector<double> > *coords)
@@ -472,21 +432,17 @@ namespace AMDiS {
       periodicInfoList.push_back(periodicInfo);
     }
 
-    inline std::list<PeriodicInfo>& getInfoList() 
+    std::list<PeriodicInfo>& getInfoList() 
     {
       return periodicInfoList;
     }
-
-    void serialize(std::ostream& out);
-
-    void deserialize(std::istream& in);
 
     std::string getTypeName() const
     {
       return "LeafDataPeriodic";
     }
   
-    inline int getTypeID() const 
+    int getTypeID() const 
     { 
       return PERIODIC; 
     }
@@ -501,7 +457,4 @@ namespace AMDiS {
     friend class LeafDataPeriodicCoarsenable;
   };
 
-}
-
-#endif  // AMDIS_LEAFDATA_H
-
+} // end namespace AMDiS

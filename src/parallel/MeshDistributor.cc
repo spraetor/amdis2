@@ -24,7 +24,6 @@
 #include <fstream>
 #include <limits>
 #include <stdint.h>
-#include <boost/lexical_cast.hpp>
 #include <boost/filesystem.hpp>
 
 #include "parallel/MeshDistributor.h"
@@ -65,9 +64,11 @@
 #include "Timer.h"
 #include "io/MacroReader.h"
 
-namespace AMDiS { namespace Parallel {
+namespace AMDiS 
+{ 
+  namespace Parallel 
+  {
 
-  using boost::lexical_cast;
   using namespace boost::filesystem;
   using namespace std;
 
@@ -654,7 +655,7 @@ namespace AMDiS { namespace Parallel {
       string filename = "";
       Parameters::get(probStat->getName() + "->input->serialization filename", 
 		      filename);
-      filename += ".p" + lexical_cast<string>(mpiRank);
+      filename += ".p" + std::to_string(mpiRank);
       MSG("Start deserialization with %s\n", filename.c_str());
       ifstream in(filename.c_str());
 
@@ -676,7 +677,7 @@ namespace AMDiS { namespace Parallel {
       TEST_EXIT(filename != "")
 	("No filename defined for parallel deserialization file!\n");
       
-      string rankFilename = filename + ".p" + lexical_cast<string>(mpiRank);
+      string rankFilename = filename + ".p" + std::to_string(mpiRank);
       in.open(rankFilename.c_str());
       
       TEST_EXIT(!in.fail())("Could not open parallel deserialization file: %s\n",
@@ -2415,7 +2416,7 @@ namespace AMDiS { namespace Parallel {
     ParallelDebug::testDofContainerCommunication(*this, mesh);
 
 //     debug::writeElementIndexMesh(mesh, debugOutputDir + "elementIndex-" + 
-// 				 lexical_cast<string>(mpiRank) + ".vtu");
+// 				 std::to_string(mpiRank) + ".vtu");
 
     debug::testSortedDofs(mesh, elMap);
 

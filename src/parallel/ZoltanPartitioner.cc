@@ -20,7 +20,6 @@
 
 #ifdef HAVE_ZOLTAN
 
-#include <boost/lexical_cast.hpp>
 #include "parallel/ZoltanPartitioner.h"
 #include "Traverse.h"
 #include "ElInfo.h"
@@ -77,8 +76,6 @@ namespace AMDiS { namespace Parallel {
 
     if (mode != INITIAL)
       elWeights = &weights;
-
-    using boost::lexical_cast;
 
     int changes;
     int nGid, nLid;

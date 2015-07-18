@@ -1,39 +1,15 @@
-/******************************************************************************
- *
- * AMDiS - Adaptive multidimensional simulations
- *
- * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
- * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
- *
- * Authors: 
- * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
- *
- * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
- * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
- *
- *
- * This file is part of AMDiS
- *
- * See also license.opensource.txt in the distribution.
- * 
- ******************************************************************************/
-
-
-
 /** \file MatrixVector.h */
 
-#ifndef AMDIS_MATRIXVECTOR_H
-#define AMDIS_MATRIXVECTOR_H
+#pragma once
 
 #include "Global.h"
-#include "Serializable.h"
 #include "traits/basic.hpp" // not dependenciess on other AMDiS types
 
 namespace AMDiS {
 
   /// Class for efficient vector operations of fixed size numerical vectors.
-  template<typename T>
-  class Vector : public Serializable
+  template <class T>
+  class Vector
   {
   public:
     
@@ -64,13 +40,13 @@ namespace AMDiS {
       }
     }
 
-    inline bool used() const 
+    bool used() const 
     {
       return (valArray != NULL);
     }
 
     /// Change the size of the vector to newSize.
-    inline void resize(int s) 
+    void resize(int s) 
     {
       if (size != s && s > 0) {
 	if (valArray) 
@@ -98,7 +74,7 @@ namespace AMDiS {
     }
 
     /// Assignement operator
-    inline self& operator=(const T* vec) 
+    self& operator=(const T* vec) 
     {
       setValues(vec);
       return *this;
@@ -114,42 +90,42 @@ namespace AMDiS {
 
     /// Sets all entries.
     template <typename S>
-    inline void setValues(const S* values) 
+    void setValues(const S* values) 
     {
       std::copy(values, values + size, begin());
     }
 
     /// Access to the i-th vector element.
-    inline T& operator[](int i) 
+    T& operator[](int i) 
     {
       TEST_EXIT_DBG((unsigned)i < (unsigned)size)("Invalid index %d!\n", i);
       return valArray[i];
     }
 
     /// Access to the i-th vector element for const vectors.
-    inline const T& operator[] (int i) const 
+    const T& operator[] (int i) const 
     {
       TEST_EXIT_DBG((unsigned)i < (unsigned)size)("Invalid index %d!\n", i);
       return valArray[i];
     }
 
     /// Returns pointer to the first vector element.
-    inline T* begin() { return valArray; }
-    inline T const* begin() const { return valArray; }
+    T* begin() { return valArray; }
+    T const* begin() const { return valArray; }
 
     /// Returns pointer after the last vector element.
-    inline T* end() { return valArray + size; }
-    inline T const* end() const { return valArray + size; }
+    T* end() { return valArray + size; }
+    T const* end() const { return valArray + size; }
 
     /// Returns \ref size.
-    inline int getSize() const 
+    int getSize() const 
     { 
       return size; 
     }
 
     /// Returns \ref valArray as T-array
-    inline T* getValArray() { return valArray; }    
-    inline T const* getValArray() const { return valArray; }
+    T* getValArray() { return valArray; }    
+    T const* getValArray() const { return valArray; }
 
     void print() const 
     {
@@ -157,18 +133,6 @@ namespace AMDiS {
       for (int i = 0; i < size; i++) 
 	std::cout << this->valArray[i] << " ";
       std::cout << std::endl;
-    }
-
-    void serialize(std::ostream &out) 
-    {
-      out.write(reinterpret_cast<const char*>(&size), sizeof(int));
-      out.write(reinterpret_cast<const char*>(valArray), size * sizeof(T));
-    }
-
-    void deserialize(std::istream &in) 
-    {
-      in.read(reinterpret_cast<char*>(&size), sizeof(int));
-      in.read(reinterpret_cast<char*>(valArray), size * sizeof(T));
     }
 
     std::string getTypeName() const 
@@ -186,7 +150,7 @@ namespace AMDiS {
 
 
   /// Class for efficient matrix operations of fixed size numerical matrices.
-  template<typename T>
+  template <class T>
   class Matrix : public Vector<T>
   {
   public:
@@ -213,7 +177,7 @@ namespace AMDiS {
     { }
 
     /// Changes the size of the matrix to newRows x newCols.
-    inline void resize(int newRows, int newCols) 
+    void resize(int newRows, int newCols) 
     {
       if ((newRows != rows) || (newCols != cols)) {
 	super::resize(newRows * newCols);
@@ -239,37 +203,37 @@ namespace AMDiS {
     }
 
     /// Access to i-th matrix row.
-    inline T *operator[](int i) 
+    T *operator[](int i) 
     {
       return this->valArray + cols * i;
     }
 
     /// Access to i-th matrix row for constant matrices.
-    inline const T *operator[](int i) const 
+    const T *operator[](int i) const 
     {
       return this->valArray + cols * i;
     }
 
     /// Access to i-th matrix row.
-    inline T& operator()(int i, int j) 
+    T& operator()(int i, int j) 
     {
       return this->operator[](i)[j];
     }
 
     /// Access to i-th matrix row for constant matrices.
-    inline const T& operator()(int i, int j) const 
+    const T& operator()(int i, int j) const 
     {
       return this->operator[](i)[j];
     }
 
     /// Returns \ref rows.
-    inline int getNumRows() const 
+    int getNumRows() const 
     { 
       return rows; 
     }
 
     /// Return \ref cols.
-    inline int getNumCols() const 
+    int getNumCols() const 
     { 
       return cols; 
     }
@@ -304,6 +268,4 @@ namespace AMDiS {
     vec.resize(newSize);
   }
   
-}
-
-#endif // AMDIS_MATRIXVECTOR_H
+} // end namespace AMDiS

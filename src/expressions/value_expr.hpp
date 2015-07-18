@@ -1,29 +1,6 @@
-/******************************************************************************
- *
- * AMDiS - Adaptive multidimensional simulations
- *
- * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
- * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
- *
- * Authors: 
- * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
- *
- * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
- * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
- *
- *
- * This file is part of AMDiS
- *
- * See also license.opensource.txt in the distribution.
- * 
- ******************************************************************************/
-
-
-
 /** \file value_expr.hpp */
 
-#ifndef AMDIS_VALUE_EXPR_HPP
-#define AMDIS_VALUE_EXPR_HPP
+#pragma once
 
 #include "LazyOperatorTerm.h"
 
@@ -41,7 +18,7 @@ namespace AMDiS
 
       inline value_type operator()(const int& iq) const { return value; }
       
-      std::string str() const { return boost::lexical_cast<std::string>(value); }
+      std::string str() const { return std::to_string(value); }
     };
   
   
@@ -52,7 +29,7 @@ namespace AMDiS
       typedef int value_type;
       inline value_type operator()(const int& iq) const { return V; }
       
-      std::string str() const { return std::string("[") + boost::lexical_cast<std::string>(V) + "]"; }
+      std::string str() const { return std::string("[") + std::to_string(V) + "]"; }
     };
     
     
@@ -70,7 +47,7 @@ namespace AMDiS
 		    
       inline value_type operator()(const int& iq) const { return V; }
       
-      std::string str() const { return std::string("[V(") + boost::lexical_cast<std::string>(Size) + ")]"; }
+      std::string str() const { return std::string("[V(") + std::to_string(Size) + ")]"; }
     };
     
     
@@ -89,7 +66,7 @@ namespace AMDiS
 		    
       inline value_type operator()(const int& iq) const { return V; }
       
-      std::string str() const { return std::string("[V(") + boost::lexical_cast<std::string>(size(V)) + ")]"; }
+      std::string str() const { return std::string("[V(") + std::to_string(size(V)) + ")]"; }
     };
     
     template<int I = -1> 
@@ -105,7 +82,7 @@ namespace AMDiS
 		    
       inline value_type operator()(const int& iq) const { return V; }
       
-      std::string str() const { return std::string("[V(") + boost::lexical_cast<std::string>(size(V)) + ")]"; }
+      std::string str() const { return std::string("[V(") + std::to_string(size(V)) + ")]"; }
     };
     
     template<> struct E<0> : WVector<1> {};
@@ -129,7 +106,7 @@ namespace AMDiS
 		    
       inline value_type operator()(const int& iq) const { return M; }
       
-      std::string str() const { return std::string("[M(") + boost::lexical_cast<std::string>(Rows) + ","+ boost::lexical_cast<std::string>(Cols) + ")]"; }
+      std::string str() const { return std::string("[M(") + std::to_string(Rows) + ","+ std::to_string(Cols) + ")]"; }
     };
     
     
@@ -156,7 +133,7 @@ namespace AMDiS
 		    
       inline value_type operator()(const int& iq) const { return M; }
       
-      std::string str() const { return std::string("[M(") + boost::lexical_cast<std::string>(Global::getGeo(WORLD)) + ","+ boost::lexical_cast<std::string>(Global::getGeo(WORLD)) + ")]"; }
+      std::string str() const { return std::string("[M(") + std::to_string(Global::getGeo(WORLD)) + ","+ std::to_string(Global::getGeo(WORLD)) + ")]"; }
     };
     
     
@@ -175,7 +152,7 @@ namespace AMDiS
 		    
       inline value_type operator()(const int& iq) const { return M; }
       
-      std::string str() const { return std::string("[M(") + boost::lexical_cast<std::string>(n) + ","+ boost::lexical_cast<std::string>(n) + ")]"; }
+      std::string str() const { return std::string("[M(") + std::to_string(n) + ","+ std::to_string(n) + ")]"; }
     };
     
     template<> 
@@ -192,7 +169,7 @@ namespace AMDiS
 		    
       inline value_type operator()(const int& iq) const { return M; }
       
-      std::string str() const { return std::string("[M(") + boost::lexical_cast<std::string>(Global::getGeo(WORLD)) + ","+ boost::lexical_cast<std::string>(Global::getGeo(WORLD)) + ")]"; }
+      std::string str() const { return std::string("[M(") + std::to_string(Global::getGeo(WORLD)) + ","+ std::to_string(Global::getGeo(WORLD)) + ")]"; }
     };
     
     template<> struct Eye<1> : CMatrix<1,1, 1> {};
@@ -271,7 +248,7 @@ namespace AMDiS
 
       inline value_type operator()(const int& iq) const { return traits::pure_value<T>::eval(value); }
       
-      std::string str() const { return std::string("&(") + boost::lexical_cast<std::string>(traits::pure_value<T>::eval(value)) + ")"; }
+      std::string str() const { return std::string("&(") + std::to_string(traits::pure_value<T>::eval(value)) + ")"; }
     };
     
   } // end namespace expressions
@@ -314,5 +291,3 @@ namespace AMDiS
   
   
 } // end namespace AMDiS
-
-#endif // AMDIS_VALUE_EXPR_HPP

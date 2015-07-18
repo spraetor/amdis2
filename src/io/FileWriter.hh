@@ -23,7 +23,6 @@
 #ifndef AMDIS_FILEWRITER_HH
 #define AMDIS_FILEWRITER_HH
 
-#include "boost/lexical_cast.hpp"
 #include "FileWriter.h"
 #include "Initfile.h"
 #include "ValueWriter.h"

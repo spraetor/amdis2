@@ -40,15 +40,15 @@ namespace AMDiS
 
       Coords() {}
 
-      template<typename List>
+      template <class List>
       void insertFeSpaces(List& feSpaces) const {}
       
       int getDegree() const { return 1; }
 
-      template<typename OT>
+      template <class OT>
       void initElement(OT* ot, const ElInfo* elInfo,
-		    SubAssembler* subAssembler, Quadrature *quad, 
-		    const BasisFunction *basisFct = NULL)
+		       SubAssembler* subAssembler, Quadrature *quad, 
+		       const BasisFunction *basisFct = NULL)
       {
 	if (subAssembler) {
 	  subAssembler->getCoordsAtQPs(elInfo, quad, x); 
@@ -69,39 +69,14 @@ namespace AMDiS
 	}
       }
 
-
-      template<typename OT>
-      void initElement(OT* ot, const ElInfo* smallElInfo, const ElInfo* largeElInfo,
-	      SubAssembler* subAssembler, Quadrature *quad, 
-		    const BasisFunction *basisFct = NULL)
-      {
-	if (subAssembler) {
-	  subAssembler->getCoordsAtQPs(smallElInfo, quad, x); 
-	}
-	else if (quad) {
-	  const int nPoints = quad->getNumPoints();
-	
-	  x.change_dim(nPoints);
-	  for (int i = 0; i < nPoints; i++)
-	    smallElInfo->coordToWorld(quad->getLambda(i), x[i]);
-	} 
-	else if (basisFct) {
-	  const int nBasisFct = basisFct->getNumber();
-	
-	  x.change_dim(nBasisFct);
-	  for (int i = 0; i < nBasisFct; i++)
-	    smallElInfo->coordToWorld(*basisFct->getCoords(i), x[i]);
-	}
-      }
-
-      inline value_type operator()(const int& iq) const { return x[iq]; }
+      value_type operator()(const int& iq) const { return x[iq]; }
       
       std::string str() { return "X"; }
     };
     
     
     /// Expression that represents the Ith component of the coordinate vector
-    template<int I_>
+    template <int I_>
     struct Coord : public LazyOperatorTermBase
     {
       typedef double value_type;
@@ -110,15 +85,15 @@ namespace AMDiS
 
       Coord(int i = -1) : I(i >= 0 ? i : I_) { }
 
-      template<typename List>
+      template <class List>
       void insertFeSpaces(List& feSpaces) const {}
       
       int getDegree() const { return 1; }
 
-      template<typename OT>
+      template <class OT>
       void initElement(OT* ot, const ElInfo* elInfo,
-	      SubAssembler* subAssembler, Quadrature *quad, 
-		    const BasisFunction *basisFct = NULL)
+		       SubAssembler* subAssembler, Quadrature *quad, 
+		       const BasisFunction *basisFct = NULL)
       {
 	if (subAssembler) {
 	  subAssembler->getCoordsAtQPs(elInfo, quad, x); 
@@ -139,33 +114,9 @@ namespace AMDiS
 	}
       }
 
-      template<typename OT>
-      void initElement(OT* ot, const ElInfo* smallElInfo, const ElInfo* largeElInfo,
-	      SubAssembler* subAssembler, Quadrature *quad, 
-		    const BasisFunction *basisFct = NULL)
-      {
-	if (subAssembler) {
-	  subAssembler->getCoordsAtQPs(smallElInfo, quad, x); 
-	}
-	else if (quad) {
-	  const int nPoints = quad->getNumPoints();
-	
-	  x.change_dim(nPoints);
-	  for (int i = 0; i < nPoints; i++)
-	    smallElInfo->coordToWorld(quad->getLambda(i), x[i]);
-	} 
-	else if (basisFct) {
-	  const int nBasisFct = basisFct->getNumber();
-	
-	  x.change_dim(nBasisFct);
-	  for (int i = 0; i < nBasisFct; i++)
-	    smallElInfo->coordToWorld(*basisFct->getCoords(i), x[i]);
-	}
-      }
-
-      inline double operator()(const int& iq) const { return x[iq][I]; }
+      double operator()(const int& iq) const { return x[iq][I]; }
       
-      std::string str() { return std::string("X<") + boost::lexical_cast<std::string>(I) + ">"; }
+      std::string str() { return std::string("X<") + std::to_string(I) + ">"; }
     };
     
     
@@ -180,12 +131,12 @@ namespace AMDiS
 
       Normals(int boundary_) : boundary(boundary_) {}
 
-      template<typename List>
+      template <class List>
       void insertFeSpaces(List& feSpaces) const {}
       
       int getDegree() const { return 1; }
 
-      template<typename OT>
+      template <class OT>
       void initElement(OT* ot, const ElInfo* elInfo,
 		       SubAssembler* subAssembler, Quadrature *quad, 
 		       const BasisFunction *basisFct = NULL)
@@ -199,16 +150,7 @@ namespace AMDiS
 	}
       }
 
-
-      template<typename OT>
-      void initElement(OT* ot, const ElInfo* smallElInfo, const ElInfo* largeElInfo,
-		       SubAssembler* subAssembler, Quadrature *quad, 
-		       const BasisFunction *basisFct = NULL)
-      {
-	initElement(ot, smallElInfo, subAssembler, quad, basisFct);
-      }
-
-      inline value_type operator()(const int& iq) const { return normal; }
+      value_type operator()(const int& iq) const { return normal; }
       
       std::string str() { return "N"; }
     };
@@ -226,15 +168,15 @@ namespace AMDiS
 
       Normal(BoundaryType boundary_, int I_) : boundary(boundary_), I(I_) {}
 
-      template<typename List>
+      template <class List>
       void insertFeSpaces(List& feSpaces) const {}
       
       int getDegree() const { return 1; }
 
-      template<typename OT>
+      template <class OT>
       void initElement(OT* ot, const ElInfo* elInfo,
-	      SubAssembler* subAssembler, Quadrature *quad, 
-		    const BasisFunction *basisFct = NULL)
+		       SubAssembler* subAssembler, Quadrature *quad, 
+		       const BasisFunction *basisFct = NULL)
       {
 	int dim = elInfo->getMesh()->getDim();
 	for (int side = 0; side < dim+1; ++side) {
@@ -245,18 +187,9 @@ namespace AMDiS
 	}
       }
 
-
-      template<typename OT>
-      void initElement(OT* ot, const ElInfo* smallElInfo, const ElInfo* largeElInfo,
-	      SubAssembler* subAssembler, Quadrature *quad, 
-		    const BasisFunction *basisFct = NULL)
-      {
-	initElement(ot, smallElInfo, subAssembler, quad, basisFct);
-      }
-
-      inline value_type operator()(const int& iq) const { return normal[I]; }
+      value_type operator()(const int& iq) const { return normal[I]; }
       
-      std::string str() { return std::string("N<") + boost::lexical_cast<std::string>(I) + ">"; }
+      std::string str() { return std::string("N<") + std::to_string(I) + ">"; }
     };  
     
     
@@ -268,29 +201,20 @@ namespace AMDiS
 
       ElementNormals() {}
 
-      template<typename List>
+      template <class List>
       void insertFeSpaces(List& feSpaces) const {}
       
       int getDegree() const { return 1; }
 
-      template<typename OT>
+      template <class OT>
       void initElement(OT* ot, const ElInfo* elInfo,
-	      SubAssembler* subAssembler, Quadrature *quad, 
-		    const BasisFunction *basisFct = NULL)
+		       SubAssembler* subAssembler, Quadrature *quad, 
+		       const BasisFunction *basisFct = NULL)
       {
 	elInfo->getElementNormal(elementNormal);
       }
 
-
-      template<typename OT>
-      void initElement(OT* ot, const ElInfo* smallElInfo, const ElInfo* largeElInfo,
-	      SubAssembler* subAssembler, Quadrature *quad, 
-		    const BasisFunction *basisFct = NULL)
-      {
-	smallElInfo->getElementNormal(elementNormal);
-      }
-
-      inline value_type operator()(const int& iq) const { return elementNormal; }
+      value_type operator()(const int& iq) const { return elementNormal; }
       
       std::string str() { return "M"; }
     };
@@ -305,31 +229,22 @@ namespace AMDiS
 
       ElementNormal(int I_) : I(I_) {}
 
-      template<typename List>
+      template <class List>
       void insertFeSpaces(List& feSpaces) const {}
       
       int getDegree() const { return 1; }
 
-      template<typename OT>
+      template <class OT>
       void initElement(OT* ot, const ElInfo* elInfo,
-	      SubAssembler* subAssembler, Quadrature *quad, 
-		    const BasisFunction *basisFct = NULL)
+		       SubAssembler* subAssembler, Quadrature *quad, 
+		       const BasisFunction *basisFct = NULL)
       {
 	elInfo->getElementNormal(elementNormal);
       }
 
-
-      template<typename OT>
-      void initElement(OT* ot, const ElInfo* smallElInfo, const ElInfo* largeElInfo,
-	      SubAssembler* subAssembler, Quadrature *quad, 
-		    const BasisFunction *basisFct = NULL)
-      {
-	smallElInfo->getElementNormal(elementNormal);
-      }
-
-      inline value_type operator()(const int& iq) const { return elementNormal[I]; }
+      value_type operator()(const int& iq) const { return elementNormal[I]; }
       
-      std::string str() { return std::string("M<") + boost::lexical_cast<std::string>(I) + ">"; }
+      std::string str() { return std::string("M<") + std::to_string(I) + ">"; }
     };
 
   } // end namespace expressions
@@ -338,7 +253,7 @@ namespace AMDiS
   inline expressions::Coords X() 
   { return expressions::Coords(); }
   
-  template<int I>
+  template <int I>
   inline expressions::Coord<I> X() 
   { return expressions::Coord<I>(); }
   

@@ -31,7 +31,6 @@
 
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/convenience.hpp>
-#include <boost/lexical_cast.hpp>
 
 #include "VtkWriter.h"
 #include "DataCollector.h"
@@ -107,7 +106,7 @@ namespace AMDiS
 	WorldVector<DOFVector<double>*> valuesWV;
 	for (int i =0 ; i < valuesWV.getSize(); i++)
 	  valuesWV[i] = new DOFVector<double>(values->getFeSpace(), 
-					      "values["+boost::lexical_cast<std::string>(i)+"]");
+					      "values["+to_string(i)+"]");
 	transform(values, &valuesWV);
 	writeFile(valuesWV, filename, format, highPrecision, writeParallel);
 	for (int i = 0; i < valuesWV.getSize(); i++)
@@ -146,8 +145,6 @@ namespace AMDiS
 	
 #ifdef HAVE_PARALLEL_DOMAIN_AMDIS
 	if (writeParallel) {
-	  using boost::lexical_cast;
-	  
 	  int sPos = filename.find(".vtu");
 	  TEST_EXIT(sPos >= 0)("Failed to find file postfix!\n");
 	  string name = filename.substr(0, sPos);
@@ -158,7 +155,7 @@ namespace AMDiS
 				      name, ".vtu", componentNames, format, highPrecision);
 	  }
 	  
-	  filename = name + "-p" + lexical_cast<string>(MPI::COMM_WORLD.Get_rank()) + "-.vtu";
+	  filename = name + "-p" + std::to_string(MPI::COMM_WORLD.Get_rank()) + "-.vtu";
 	}
 #endif
 	writer.writeFile(filename);

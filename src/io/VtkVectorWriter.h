@@ -66,8 +66,6 @@ namespace AMDiS { namespace io {
 
     #ifdef HAVE_PARALLEL_DOMAIN_AMDIS
 	if (writeParallel) {
-	  using boost::lexical_cast;
-
 	  int sPos = filename.find(".vtu");
 	  TEST_EXIT(sPos >= 0)("Failed to find file postfix!\n");
 	  std::string name = filename.substr(0, sPos);
@@ -76,7 +74,7 @@ namespace AMDiS { namespace io {
 	    writer.writeParallelFile(name + ".pvtu", MPI::COMM_WORLD.Get_size(), 
 				     name, ".vtu");
 
-	  filename = name + "-p" + lexical_cast<std::string>(MPI::COMM_WORLD.Get_rank()) + "-.vtu";
+	  filename = name + "-p" + std::to_string(MPI::COMM_WORLD.Get_rank()) + "-.vtu";
 	}
     #endif
 	writer.writeFile(filename);

@@ -1,29 +1,6 @@
-/******************************************************************************
- *
- * AMDiS - Adaptive multidimensional simulations
- *
- * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
- * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
- *
- * Authors: 
- * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
- *
- * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
- * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
- *
- *
- * This file is part of AMDiS
- *
- * See also license.opensource.txt in the distribution.
- * 
- ******************************************************************************/
-
-
-
 /** \file Element.h */
 
-#ifndef AMDIS_ELEMENT_H
-#define AMDIS_ELEMENT_H
+#pragma once
 
 #include "AMDiS_fwd.h"
 #include "Global.h"
@@ -32,8 +9,9 @@
 #include "ElementData.h"
 #include "LeafData.h"
 
-namespace AMDiS {
-
+namespace AMDiS 
+{
+  // TODO: move forward declaration
   template<typename T, GeoIndex d> class FixVec;
 
 #define AMDIS_UNDEFINED  5
@@ -602,9 +580,5 @@ namespace AMDiS {
   /// Writes the element hierarchie to a Graphviz dot-file. Using the dot-tool from
   /// Graphvis, this dot-file can be converted to a ps-file. Useful for debugging!
   void writeDotFile(Element *el, std::string filename, int maxLevels = -1);
-}
-
-#include "Element.hh"
-
-#endif  // AMDIS_ELEMENT_H
-
+  
+} // end namespace AMDiS

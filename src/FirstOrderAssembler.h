@@ -1,35 +1,14 @@
-/******************************************************************************
- *
- * AMDiS - Adaptive multidimensional simulations
- *
- * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
- * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
- *
- * Authors: 
- * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
- *
- * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
- * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
- *
- *
- * This file is part of AMDiS
- *
- * See also license.opensource.txt in the distribution.
- * 
- ******************************************************************************/
-
-
-
 /** \file FirstOrderAssembler.h */
 
-#ifndef AMDIS_FIRST_ORDER_ASSEMBLER_H
-#define AMDIS_FIRST_ORDER_ASSEMBLER_H
+#pragma once
 
 #include <vector>
+
 #include "AMDiS_fwd.h"
 #include "SubAssembler.h"
 
-namespace AMDiS {
+namespace AMDiS 
+{
 
   /**
    * \ingroup Assembler
@@ -235,7 +214,4 @@ namespace AMDiS {
     friend class FirstOrderAssembler;
   };
 
-
-}
-
-#endif // AMDIS_FIRST_ORDER_ASSEMBLER_H
+} // end namespace AMDiS

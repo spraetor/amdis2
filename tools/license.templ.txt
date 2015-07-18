@@ -1,0 +1,10 @@
+// Software License for AMDiS2
+// 
+// Copyright (c) 2015 Simon Praetorius
+// All rights reserved.
+// Authors: Simon Praetorius
+// 
+// This file is part of the AMDiS2 Library
+// see also the LICENSE file in the distribution.
+
+

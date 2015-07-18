@@ -1,33 +1,13 @@
-/******************************************************************************
- *
- * AMDiS - Adaptive multidimensional simulations
- *
- * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
- * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
- *
- * Authors: 
- * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
- *
- * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
- * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
- *
- *
- * This file is part of AMDiS
- *
- * See also license.opensource.txt in the distribution.
- * 
- ******************************************************************************/
-
-
 #include <boost/numeric/mtl/mtl.hpp>
+
 #include "DOFVector.h"
 #include "Traverse.h"
 #include "DualTraverse.h"
 #include "FixVec.h"
 #include "ElementFunction.h"
 
-namespace AMDiS {
-
+namespace AMDiS 
+{
   template<>
   void DOFVector<double>::coarseRestrict(RCNeighbourList& list, int n)
   {
@@ -791,5 +771,5 @@ namespace AMDiS {
 
     delete [] bound;
   }
-}
-
+  
+} // end namespace AMDiS

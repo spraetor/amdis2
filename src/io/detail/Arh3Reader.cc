@@ -545,14 +545,13 @@ namespace AMDiS { namespace io {
 	  return;
 	}
 	if (writeParallel) {
-	  using boost::lexical_cast;
 	  int sPos = filename.find(".arh");
 	  TEST_EXIT(sPos >= 0)("Failed to find file postfix!\n");
 	  string name = filename.substr(0, sPos);
 
 	  if (nProcs == -1) {
 #ifdef HAVE_PARALLEL_DOMAIN_AMDIS
-	    string procFilename = name + "-p" + lexical_cast<string>(MPI::COMM_WORLD.Get_rank()) + "-.arh";
+	    string procFilename = name + "-p" + std::to_string(MPI::COMM_WORLD.Get_rank()) + "-.arh";
 	    read(procFilename, mesh, vecs, byName);
 	    MSG("ARH file read from: %s\n", procFilename.c_str());
 #else
@@ -568,7 +567,7 @@ namespace AMDiS { namespace io {
 	      readParallelFile(parhfn, filenameType, partition, nProcs_, nMacros_);
 	    else {
 	      for (; nProcs_ < nProcs + 1; nProcs_++) {
-		string fn = name + "-p" + boost::lexical_cast<string>(nProcs_) + "-.arh";
+		string fn = name + "-p" + std::to_string(nProcs_) + "-.arh";
 		if(!boost::filesystem::exists(fn)) break;
 	      }
 	    }
@@ -596,7 +595,7 @@ namespace AMDiS { namespace io {
 
 	    if (!parh) {
 	      for (int i = 0; i < nProcs; i++) {
-		string procFilename = name + "-p" + lexical_cast<string>(i) + "-.arh";
+		string procFilename = name + "-p" + std::to_string(i) + "-.arh";
 		read(procFilename, mesh, vecs, byName);
 	      }
 	    } else {
@@ -607,7 +606,7 @@ namespace AMDiS { namespace io {
 	      
 	      std::set<int>::iterator it2 = needFiles.begin();
 	      for (;it2 != needFiles.end(); it2++) {
-		string procFilename = name + "-p" + lexical_cast<string>(*it2) + "-.arh";
+		string procFilename = name + "-p" + std::to_string(*it2) + "-.arh";
 		read(procFilename, mesh, vecs, byName);
 	      }
 	    }
@@ -774,14 +773,12 @@ namespace AMDiS { namespace io {
       int readNumOfMacrosFromSgArh(std::string filename, int nProc)
       {
 	FUNCNAME("Arh3Reader::readHeaderSize");
-	using boost::lexical_cast;
-	
 	int sPos = filename.find(".arh");
 	TEST_EXIT(sPos >= 0)("Failed to find file postfix!\n");
 	
 	if (nProc >= 0) {
 	  string name = filename.substr(0, sPos);
-	  filename = name + "-p" + lexical_cast<string>(nProc) + "-.arh";
+	  filename = name + "-p" + std::to_string(nProc) + "-.arh";
 	}
 	
 	ifstream file;

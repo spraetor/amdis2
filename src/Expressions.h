@@ -1,29 +1,6 @@
-/******************************************************************************
- *
- * AMDiS - Adaptive multidimensional simulations
- *
- * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
- * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
- *
- * Authors: 
- * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
- *
- * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
- * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
- *
- *
- * This file is part of AMDiS
- *
- * See also license.opensource.txt in the distribution.
- * 
- ******************************************************************************/
-
-
-
 /** \file Expressions.h */
 
-#ifndef AMDIS_EXPRESSIONS_BASE_H
-#define AMDIS_EXPRESSIONS_BASE_H
+#pragma once
 
 #include "AMDiS_fwd.h"
 #include "OperatorTerm.h"
@@ -44,27 +21,7 @@
  * Since no virtual functions, like in the AbstractFunction classes, are used
  * the overhead of a vtable is removed.
  * 
- * Usage:
- * addZOT(Operator, Term) 
- *  ... add a zeroOrderTerm to Operator, i.e. (Term(x) * u, v)
- * 
- * addFOT(Operator, Term, FirstOrderType) 
- *  ... add a firstOrderTerm to Operator, (if Term::value_type = double) 
- *      i.e. (Term(x) * 1 * grad(u), v), rsp. (Term(x) * 1 * u, grad(v))
- * addFOT(Operator, Term, FirstOrderType)
- *  ... add a firstOrderTerm to Operator, (if Term::value_type = WorldVector)
- *      i.e. (Term(x) * b * grad(u), v), rsp. (Term(x) * u, grad(v))
- * addFOT<I>(Operator, Term, FirstOrderType)
- *  ... add a firstOrderTerm to Operator, 
- *      i.e. (Term(x) * e_I * grad(u), v), rsp. (Term(x) * e_I * u, grad(v))
- * 
- * addSOT(Operator, Term)
- *  ... add a secondOrderTerm to Operator, i.e. (Term(x) * grad(u), grad(v))
- * addSOT<I,J>(Operator, Term)
- *  ... add a secondOrderTerm to Operator, i.e. (E_IJ * Term(x) * grad(u), grad(v))
- * 
- * where Operator is eather a pointer or reference, FirstOrderType in {GRD_PHI, GRD_PSI}
- * and Term a componation of elementary terms by + - * /
+ * A Term is a componation of elementary terms by + - * /
  *  - constant(value) / value  ... a constant value
  *  - valueOf(DOFVector)       ... values of a DOFVector at QP
  *  - gradientOf(DOFVector)    ... gradient of a DOFVector at QP
@@ -94,7 +51,8 @@
  * */
 
 
-namespace AMDiS {
+namespace AMDiS 
+{
 
   /// Integrate an expression over a domain.
   /** If the expression does not contain any DOFVector, a mesh must be given as second argument */
@@ -178,9 +136,8 @@ namespace AMDiS {
   /// Assign an expression to a DOFVector
   template <class T, class Expr>
   inline typename boost::enable_if<
-    typename and_<traits::is_expr<Expr>, 
-		  traits::is_convertible<typename Expr::value_type, T>
-		  >::type
+    and_<traits::is_expr<Expr>, 
+	 traits::is_convertible<typename Expr::value_type, T> >
     >::type
   transformDOF(Expr expr, DOFVector<T>* result);
 
@@ -189,9 +146,8 @@ namespace AMDiS {
   /// (using multi-mesh if \ref expr and \ref result vector are on different meshes)
   template <class T, class Expr>
   inline typename boost::enable_if<
-    typename and_<traits::is_expr<Expr>, 
-		  traits::is_convertible<typename Expr::value_type, T>
-		  >::type
+    and_<traits::is_expr<Expr>, 
+	 traits::is_convertible<typename Expr::value_type, T> >
     >::type
   transformDOF_mm(Expr expr, DOFVector<T>* result);
 
@@ -199,9 +155,8 @@ namespace AMDiS {
   /// Assign an expression to a DOFVector
   template <class T, class Expr>
   typename boost::enable_if<
-    typename and_<traits::is_expr<Expr>, 
-		  traits::is_convertible<typename Expr::value_type, T>
-		  >::type,
+    and_<traits::is_expr<Expr>, 
+	 traits::is_convertible<typename Expr::value_type, T> >,
     DOFVector<T>& >::type
   operator<<(DOFVector<T>& result, const Expr& expr)
   {
@@ -215,7 +170,7 @@ namespace AMDiS {
   
   /// Print an expression to an output stream
   template <class Expr>
-  typename boost::enable_if<typename traits::is_expr<Expr>::type, 
+  typename boost::enable_if<traits::is_expr<Expr>, 
 			    std::ostream& >::type
   operator<<(std::ostream& result, const Expr& expr)
   {
@@ -226,5 +181,3 @@ namespace AMDiS {
 } // end namespace AMDiS
 
 #include "Expressions.hh"
-
-#endif // AMDIS_EXPRESSIONS_BASE_H

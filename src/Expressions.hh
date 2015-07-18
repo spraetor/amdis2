@@ -1,29 +1,7 @@
-/******************************************************************************
- *
- * AMDiS - Adaptive multidimensional simulations
- *
- * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
- * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
- *
- * Authors: 
- * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
- *
- * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
- * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
- *
- *
- * This file is part of AMDiS
- *
- * See also license.opensource.txt in the distribution.
- * 
- ******************************************************************************/
-
-
-
 /** \file Expressions.hh */
 
-namespace AMDiS {
-
+namespace AMDiS 
+{
   template <class Expr>
   inline typename boost::enable_if<traits::is_expr<Expr>, typename Expr::value_type>::type
   integrate(Expr expr, Mesh* mesh_)
@@ -109,9 +87,8 @@ namespace AMDiS {
   // works only for nodal basis functions!
   template <class T, class Expr>
   inline typename boost::enable_if<
-    typename and_<traits::is_expr<Expr>, 
-		  traits::is_convertible<typename Expr::value_type, T>
-		  >::type
+    nd_<traits::is_expr<Expr>, 
+	traits::is_convertible<typename Expr::value_type, T> >
     >::type
   transformDOF(Expr expr, DOFVector<T>* result)
   {
@@ -175,9 +152,8 @@ namespace AMDiS {
   // works only for nodal basis functions!
   template <class T, class Expr>
   inline typename boost::enable_if<
-    typename and_<traits::is_expr<Expr>, 
-		  traits::is_convertible<typename Expr::value_type, T>
-		  >::type
+    and_<traits::is_expr<Expr>, 
+	 traits::is_convertible<typename Expr::value_type, T> >
     >::type
   transformDOF_mm(Expr expr, DOFVector<T>* result)
   {

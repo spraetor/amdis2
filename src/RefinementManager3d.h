@@ -1,32 +1,9 @@
-/******************************************************************************
- *
- * AMDiS - Adaptive multidimensional simulations
- *
- * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
- * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
- *
- * Authors: 
- * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
- *
- * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
- * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
- *
- *
- * This file is part of AMDiS
- *
- * See also license.opensource.txt in the distribution.
- * 
- ******************************************************************************/
-
-
-
 /** \file RefinementManager3d.h */
 
-#ifndef AMDIS_REFINEMENT_MANAGER_3D_H
-#define AMDIS_REFINEMENT_MANAGER_3D_H
+#pragma once
 
-namespace AMDiS {
-
+namespace AMDiS 
+{
   /** \ingroup Adaption 
    * \brief
    * Implements a RefinementManager for 3-dimensional meshes.
@@ -78,6 +55,7 @@ namespace AMDiS {
     /// Used by \ref bisectTetrahedron
     void fillPatchConnectivity(RCNeighbourList &refineList, int index);
   };
+  
 
   class FixRefinementPatch 
   {
@@ -93,6 +71,4 @@ namespace AMDiS {
 			   std::vector<EdgeInEl> &refineEdges);
   };
 
-}
-
-#endif // AMDIS_REFINEMENT_MANAGER_3D_H
+} // end namespace AMDiS

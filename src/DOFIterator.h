@@ -1,36 +1,13 @@
-/******************************************************************************
- *
- * AMDiS - Adaptive multidimensional simulations
- *
- * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
- * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
- *
- * Authors: 
- * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
- *
- * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
- * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
- *
- *
- * This file is part of AMDiS
- *
- * See also license.opensource.txt in the distribution.
- * 
- ******************************************************************************/
-
-
-
 /** \file DOFIterator.h */
 
-#ifndef AMDIS_DOFITERATOR_H
-#define AMDIS_DOFITERATOR_H
+#pragma once
 
 #include "DOFAdmin.h"
 #include "FiniteElemSpace.h"
 #include "AMDiS_fwd.h"
 
-namespace AMDiS {
-
+namespace AMDiS 
+{
   /// Possible types of DOFIterator
   typedef enum {
     USED_DOFS = 0, /**< iterate only used DOFs */
@@ -327,7 +304,7 @@ namespace AMDiS {
     * \brief
     * Implements a DOFIterator for a const DOFIndexed<T> object
     */
-  template<typename T>
+  template <class T>
   class DOFConstIterator : public DOFIteratorBase
   {
   public:
@@ -412,7 +389,7 @@ namespace AMDiS {
     * \brief
     * Implements a DOFIterator for a vector of DOFVector<T> objects
     */
-  template<typename T>
+  template <class T>
   class DOFVectorIterator : public DOFIteratorBase
   {
   public:
@@ -513,6 +490,4 @@ namespace AMDiS {
     std::vector<typename std::vector<T>::iterator*> it;
   };
   
-}
-
-#endif // AMDIS_DOFITERATOR_H
+} // end namespace AMDiS

@@ -1,6 +1,5 @@
-
-namespace AMDiS {
-
+namespace AMDiS 
+{
   template <class JExpr, class AlphaExpr>
   void init(JExpr const& j, AlphaExpr const& alpha)
   {

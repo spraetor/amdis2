@@ -19,7 +19,6 @@
  ******************************************************************************/
 
 
-#include <boost/lexical_cast.hpp>
 #include "parallel/MeshLevelData.h"
 #include "Global.h"
 
@@ -108,20 +107,18 @@ namespace AMDiS { namespace Parallel {
   {
     FUNCNAME("MeshLevelData::print()");
 
-    using boost::lexical_cast;
-
     MSG("Print mesh level structure with %d levels: \n", nLevel);
 
     for (int i = 0; i < nLevel; i++) {
-      string ranks = "ranks in level " + lexical_cast<string>(i) + ":";
+      string ranks = "ranks in level " + std::to_string(i) + ":";
       for (std::set<int>::iterator it = levelRanks[i].begin(); 
 	   it != levelRanks[i].end(); ++it)
-	ranks += " " + lexical_cast<string>(*it);
+	ranks += " " + std::to_string(*it);
 
-      string neighbours = "neighbours in level " + lexical_cast<string>(i) + ": ";
+      string neighbours = "neighbours in level " + std::to_string(i) + ": ";
       for (std::set<int>::iterator it = levelNeighbours[i].begin(); 
 	   it != levelNeighbours[i].end(); ++it)
-	neighbours += " " + lexical_cast<string>(*it);
+	neighbours += " " + std::to_string(*it);
 
       if (ranks.length() < 250)
 	MSG("  %s\n", ranks.c_str());

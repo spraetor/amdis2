@@ -25,7 +25,7 @@
 #include "SystemVector.h"
 #include "AdaptInfo.h"
 
-// TODO: remove this file.
+// TODO: move to deprecate
 namespace AMDiS {
 
   using namespace std;

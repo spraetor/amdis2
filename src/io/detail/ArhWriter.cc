@@ -39,12 +39,10 @@ namespace AMDiS { namespace io {
 
     #ifdef HAVE_PARALLEL_DOMAIN_AMDIS
 	if (writeParallel) {
-	  using boost::lexical_cast;
-	  
 	  int sPos = filename.find(".arh");
 	  TEST_EXIT(sPos >= 0)("Failed to find file postfix!\n");
 	  string name = filename.substr(0, sPos);      
-	  filename = name + "-p" + lexical_cast<string>(MPI::COMM_WORLD.Get_rank()) + "-.arh";
+	  filename = name + "-p" + std::to_string(MPI::COMM_WORLD.Get_rank()) + "-.arh";
 	}
     #endif
 

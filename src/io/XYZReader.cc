@@ -24,6 +24,8 @@
 #include <fstream>
 #include <vector>
 
+#include <boost/lexical_cast.hpp>
+
 #include "ValueReader.h"
 #include "MacroInfo.h"
 #include "detail/VtkReader.h"

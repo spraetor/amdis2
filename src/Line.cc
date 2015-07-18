@@ -1,32 +1,11 @@
-/******************************************************************************
- *
- * AMDiS - Adaptive multidimensional simulations
- *
- * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
- * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
- *
- * Authors: 
- * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
- *
- * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
- * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
- *
- *
- * This file is part of AMDiS
- *
- * See also license.opensource.txt in the distribution.
- * 
- ******************************************************************************/
-
-
 #include "Line.h"
 #include "DOFAdmin.h"
 #include "Mesh.h"
 #include "CoarseningManager.h"
 #include "FixVec.h"
 
-namespace AMDiS {
-
+namespace AMDiS 
+{
   const int Line::vertexOfEdge[1][2] = {{0, 1}};
 
   const int Line::sideOfChild[2][2] = {{ 0,-1},
@@ -59,4 +38,4 @@ namespace AMDiS {
     vec[0] = face;
   }
 
-}
+} // end namespace AMDiS

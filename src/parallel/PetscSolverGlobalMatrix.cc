@@ -73,9 +73,9 @@ namespace AMDiS { namespace Parallel {
 	PetscOptionsInsertString(("-" + kspPrefix + "pc_type " + precon).c_str());
       }
       
-      PetscOptionsInsertString(("-" + kspPrefix + "ksp_max_it " + boost::lexical_cast<std::string>(getMaxIterations())).c_str());
-      PetscOptionsInsertString(("-" + kspPrefix + "ksp_rtol " + boost::lexical_cast<std::string>(getRelative())).c_str());    
-      PetscOptionsInsertString(("-" + kspPrefix + "ksp_atol " + boost::lexical_cast<std::string>(getTolerance())).c_str());   
+      PetscOptionsInsertString(("-" + kspPrefix + "ksp_max_it " + std::to_string(getMaxIterations())).c_str());
+      PetscOptionsInsertString(("-" + kspPrefix + "ksp_rtol " + std::to_string(getRelative())).c_str());    
+      PetscOptionsInsertString(("-" + kspPrefix + "ksp_atol " + std::to_string(getTolerance())).c_str());   
       
       if (getInfo() >= 20)
 	PetscOptionsInsertString(("-" + kspPrefix + "ksp_monitor_true_residual").c_str());
@@ -561,7 +561,7 @@ namespace AMDiS { namespace Parallel {
       MSG("Create for block %s\n", isNames[i].c_str());
 
       vector<int> blockComponents;
-      Parameters::get("parallel->solver->is block " + boost::lexical_cast<string>(i),
+      Parameters::get("parallel->solver->is block " + std::to_string(i),
 		      blockComponents);
       int nComponents = static_cast<int>(blockComponents.size());
 

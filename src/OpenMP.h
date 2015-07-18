@@ -1,40 +1,17 @@
-/******************************************************************************
- *
- * AMDiS - Adaptive multidimensional simulations
- *
- * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
- * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
- *
- * Authors: 
- * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
- *
- * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
- * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
- *
- *
- * This file is part of AMDiS
- *
- * See also license.opensource.txt in the distribution.
- * 
- ******************************************************************************/
-
-
-
 /** \file OpenMP.h */
 
-#ifndef AMDIS_OPENMP_H
-#define AMDIS_OPENMP_H
+#pragma once
 
 #ifdef _OPENMP
 #include <omp.h>
 #include <vector>
 #endif
 
-namespace AMDiS {
+namespace AMDiS 
+{
   
 #ifdef _OPENMP
-
-  template<typename T>
+  template <class T>
   class ThreadPrivate {
   public:
     ThreadPrivate()
@@ -45,7 +22,7 @@ namespace AMDiS {
       : data(omp_get_max_threads(), val)
     {}
 
-    inline T& get()
+    T& get()
     {
 #if (DEBUG != 0)
       if (omp_get_thread_num() >= data.size()) {
@@ -56,7 +33,7 @@ namespace AMDiS {
       return data[omp_get_thread_num()];
     }
 
-    inline void set(T& val)
+    void set(T& val)
     {
 #if (DEBUG != 0)
       if (omp_get_thread_num() >= data.size()) {
@@ -70,11 +47,12 @@ namespace AMDiS {
   private:
     std::vector<T> data;
   };
-
+  
 #else
 
-  template<typename T>
-  class ThreadPrivate {
+  template <class T>
+  class ThreadPrivate 
+  {
   public:
     ThreadPrivate() {}
 
@@ -95,9 +73,6 @@ namespace AMDiS {
   private:
     T data;
   };
-
 #endif
 
-}
-
-#endif
+} // end namespace AMDiS

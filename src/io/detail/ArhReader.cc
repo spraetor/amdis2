@@ -239,21 +239,20 @@ namespace AMDiS { namespace io {
 	}
 	
 	if (writeParallel) {
-	  using boost::lexical_cast;
 	  int sPos = filename.find(".arh");
 	  TEST_EXIT(sPos >= 0)("Failed to find file postfix!\n");
 	  string name = filename.substr(0, sPos);
 
 	  if (nProcs == -1) {
 #ifdef HAVE_PARALLEL_DOMAIN_AMDIS
-	    string procFilename = name + "-p" + lexical_cast<string>(MPI::COMM_WORLD.Get_rank()) + "-.arh";
+	    string procFilename = name + "-p" + std::to_string(MPI::COMM_WORLD.Get_rank()) + "-.arh";
 	    read(procFilename, mesh, vecs);
 #else
 	    ERROR_EXIT("Reading parallel ARH files in sequential computations requires to specify the number of nodes on which the ARH file was created!\n");
 #endif
 	  } else {
 	    for (int i = 0; i < nProcs; i++) {
-	      string procFilename = name + "-p" + lexical_cast<string>(i) + "-.arh";
+	      string procFilename = name + "-p" + std::to_string(i) + "-.arh";
 	      read(procFilename, mesh, vecs);
 	    }
 	  }

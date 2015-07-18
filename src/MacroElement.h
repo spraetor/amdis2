@@ -1,40 +1,18 @@
-/******************************************************************************
- *
- * AMDiS - Adaptive multidimensional simulations
- *
- * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
- * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
- *
- * Authors: 
- * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
- *
- * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
- * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
- *
- *
- * This file is part of AMDiS
- *
- * See also license.opensource.txt in the distribution.
- * 
- ******************************************************************************/
-
-
-
 /** \file MacroElement.h */
 
-#ifndef AMDIS_MACROELEMENT_H
-#define AMDIS_MACROELEMENT_H
+#pragma once
 
 #include <deque>
 #include <stdio.h>
+
 #include "AMDiS_fwd.h"
 #include "Boundary.h"
 #include "Global.h"
 #include "Projection.h"
 #include "FixVec.h"
-#include "Serializable.h"
 
-namespace AMDiS {
+namespace AMDiS 
+{
 
   /** \ingroup Triangulation
    * \brief
@@ -42,7 +20,7 @@ namespace AMDiS {
    * geometrical information are stored, which are used in mesh traversal,
    * to calculate the desired information and fill it in an ElInfo object. 
    */ 
-  class MacroElement : public Serializable
+  class MacroElement
   {
   public:
     /// Creates a new MacroElement. The mesh is needed only to get the dimension
@@ -59,25 +37,25 @@ namespace AMDiS {
      */
 
     /// Returns \ref index.
-    inline int getIndex() const 
+    int getIndex() const 
     {
       return index; 
     }
 
     /// Returns ref projection[i]. 
-    inline Projection *getProjection(int i) const 
+    Projection *getProjection(int i) const 
     {
       return projection[i];
     }
 
     /// Returns \ref el
-    inline Element* getElement() const 
+    Element* getElement() const 
     {
       return element; 
     }
 
     /// Returns the i-th neighbour of this MacroElement \ref neighbour[i]
-    inline MacroElement* getNeighbour(int i) const 
+    MacroElement* getNeighbour(int i) const 
     {
       return neighbour[i];
     }
@@ -86,37 +64,37 @@ namespace AMDiS {
     /// Uses the inverse neighbour relation in graph-structured meshes where
     /// elements can have more than one neighbour
     /// If [b] is neighbour of [a], then is [a] neighbour_inv of [b]
-    inline MacroElement* getNeighbourInv(int i) const 
+    MacroElement* getNeighbourInv(int i) const 
     {
       return neighbour_inv[i];
     }
 
     /// Returns the i-th opp-vertex of this MacroElement \ref oppVertex[i]
-    inline int getOppVertex(int i) const 
+    int getOppVertex(int i) const 
     {
       return oppVertex[i];
     }
 
     /// Returns \ref coord[i]
-    inline WorldVector<double>& getCoord(int i) 
+    WorldVector<double>& getCoord(int i) 
     {
       return coord[i];    
     }
 
     /// Returns \ref coord
-    inline FixVec<WorldVector<double>, VERTEX>& getCoord() 
+    FixVec<WorldVector<double>, VERTEX>& getCoord() 
     {
       return coord;    
     }
 
     /// Returns \ref boundary[i]
-    inline BoundaryType getBoundary(int i) const 
+    BoundaryType getBoundary(int i) const 
     {
       return boundary[i]; 
     }
 
     /// Returns \ref elType
-    inline int getElType() const 
+    int getElType() const 
     {
       return elType; 
     }
@@ -128,13 +106,13 @@ namespace AMDiS {
      */
 
     /// Sets \ref index
-    inline void setIndex(int n) 
+    void setIndex(int n) 
     {
       index = n ; 
     }
 
     /// Sets \ref element if not yet set.
-    inline void setElement(Element* el) 
+    void setElement(Element* el) 
     {
       if (!element) {
 	element = el; 
@@ -145,52 +123,45 @@ namespace AMDiS {
     }
 
     /// Sets \ref elType
-    inline void setElType(int typ) 
+    void setElType(int typ) 
     {
       elType = typ; 
     }
 
     /// Sets \ref projection[i] = p.
-    inline void setProjection(int i, Projection *p) 
+    void setProjection(int i, Projection *p) 
     {
       projection[i] = p;
     }
 
     /// Sets the i-th Neighbour to n
-    inline void setNeighbour(int i, MacroElement *n) 
+    void setNeighbour(int i, MacroElement *n) 
     {
       neighbour[i] = n;
     }
 
     /// Sets the i-th opp vertex to c
-    inline void setOppVertex(int i, int c)
+    void setOppVertex(int i, int c)
     {
       oppVertex[i] = c;
     }
 
     /// Sets \ref boundary[i] to b
-    inline void setBoundary(int i, BoundaryType b) 
+    void setBoundary(int i, BoundaryType b) 
     {
       boundary[i] = b; 
     }
 
     ///
-    inline void setCoord(int i, const WorldVector<double> c) 
+    void setCoord(int i, const WorldVector<double> c) 
     {
       coord[i] = c;
     }
 
     /** \} */
 
-
-    /// Writes the macro element to a file.
-    void serialize(std::ostream &out);
-
-    /// Reads a macro element from a file.
-    void deserialize(std::istream &in);
-
     ///
-    inline void writeNeighboursTo(std::vector<int> *indices) 
+    void writeNeighboursTo(std::vector<int> *indices) 
     {
       deserializedNeighbourIndices = indices;
     }
@@ -235,7 +206,4 @@ namespace AMDiS {
     friend class ElInfo3d;
   };
 
-}
-
-
-#endif  // AMDIS_MACROELEMENT_H 
+} // end namespace AMDiS

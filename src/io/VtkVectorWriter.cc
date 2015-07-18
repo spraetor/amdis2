@@ -26,7 +26,6 @@
 #include <cmath>
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/convenience.hpp>
-#include <boost/lexical_cast.hpp>
 
 #ifdef HAVE_PARALLEL_DOMAIN_AMDIS
 #include <mpi.h>

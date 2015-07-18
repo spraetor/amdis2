@@ -1,29 +1,6 @@
-/******************************************************************************
- *
- * AMDiS - Adaptive multidimensional simulations
- *
- * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
- * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
- *
- * Authors: 
- * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
- *
- * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
- * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
- *
- *
- * This file is part of AMDiS
- *
- * See also license.opensource.txt in the distribution.
- * 
- ******************************************************************************/
-
-
-
 /** \file Marker.h */
 
-#ifndef AMDIS_MARKER_H
-#define AMDIS_MARKER_H
+#pragma once
 
 #include "Element.h"
 #include "ElInfo.h"
@@ -33,7 +10,8 @@
 #include "Traverse.h"
 #include "MatrixVector.h"
 
-namespace AMDiS {
+namespace AMDiS 
+{
 
   /**
    * \ingroup Adaption
@@ -69,8 +47,9 @@ namespace AMDiS {
     /// Marks element with newMark. If \ref maximumMarking is set, the element
     /// is marked only if the new mark is bigger than the old one. The return
     /// value specifies whether the element has been marked, or not.
-    inline void setMark(Element *el, char newMark) 
+    void setMark(Element *el, char newMark) 
     {
+      // TODO: move implementation ouside of class
       char oldMark = el->getMark();
 
       if (!maximumMarking || (newMark > oldMark)) {
@@ -105,23 +84,23 @@ namespace AMDiS {
     virtual Flag markMesh(AdaptInfo *adaptInfo, Mesh *mesh);
 
     /// Sets \ref maximumMarking.
-    inline void setMaximumMarking(bool maxMark) 
+    void setMaximumMarking(bool maxMark) 
     {
       maximumMarking = maxMark;
     }
 
-    inline int getElMarkRefine() 
+    int getElMarkRefine() 
     { 
       return elMarkRefine; 
     }
 
-    inline int getElMarkCoarsen() 
+    int getElMarkCoarsen() 
     { 
       return elMarkCoarsen; 
     }
 
     /// Returns \ref name of the Marker
-    inline std::string getName() const 
+    std::string getName() const 
     { 
       return name; 
     }
@@ -310,6 +289,4 @@ namespace AMDiS {
     double GERSThetaC;
   };
 
-}
-
-#endif
+} // end namespace AMDiS

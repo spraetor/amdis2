@@ -1,25 +1,6 @@
-/******************************************************************************
- *
- * AMDiS - Adaptive multidimensional simulations
- *
- * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
- * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
- *
- * Authors: 
- * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
- *
- * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
- * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
- *
- *
- * This file is part of AMDiS
- *
- * See also license.opensource.txt in the distribution.
- * 
- ******************************************************************************/
+/** \file Initfile.h */
 
-#ifndef INITFILE_H
-#define INITFILE_H
+#pragma once
 
 #include <fstream>
 #include <sstream>
@@ -43,9 +24,10 @@
 // a parser for arithmetic expressions
 #include "muParser.h"
 
-namespace AMDiS {
-
-  namespace detail {
+namespace AMDiS 
+{
+  namespace detail 
+  {
   
     // Exceptions
     //_________________________________________________________________________________________
@@ -146,23 +128,14 @@ namespace AMDiS {
 	     >::type
     convert(const std::string valStr, T& value)
     {
-      using boost::lexical_cast;
       using boost::numeric_cast;
 
       mu::Parser parser;
       parser.DefineConst(_T("M_PI"), m_pi);
       parser.DefineConst(_T("M_E"), m_e);
 
-      //      try {
-        parser.SetExpr(valStr);
-        value = numeric_cast< T >(parser.Eval());
-/*       } catch (boost::bad_lexical_cast e) { */
-/*         throw WrongValueFormat< T >(valStr); */
-/*       } catch (boost::bad_numeric_cast e) { */
-/*         throw WrongValueFormat< T >(valStr); */
-/*       } catch (mu::Parser::exception_type &e) { */
-/*         throw BadArithmeticExpression<T>(e.GetMsg(), valStr); */
-/*       } */
+      parser.SetExpr(valStr);
+      value = numeric_cast< T >(parser.Eval());
     }
 
 
@@ -448,15 +421,6 @@ namespace AMDiS {
 	std::string parser_error = "Could not parse: " + tag;
 	throw std::runtime_error(parser_error);
       }
-      /*
-else if(error_code == TAG_NOT_FOUND_BREAK)
-	throw TagNotFoundBreak("required tag '" + tag + "' not found");
-      else if (error_code == TAG_NOT_FOUND) {
-	if (debugInfo == 2)
-	  std::cout << "there is no tag '" + tag + "'" << std::endl;
-      } else
-	throw std::runtime_error("unknown error_code (" + boost::lexical_cast<std::string>(error_code) + ") returned for tag '" + tag + "'");
-      */
 
       if (debugInfo == 2) {
 	std::cout << "Parameter '" << tag << "'"
@@ -681,4 +645,3 @@ protected:
   typedef Initfile Parameters;
 
 } // end namespace AMDiS
-#endif

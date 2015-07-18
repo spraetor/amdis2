@@ -1,36 +1,13 @@
-/******************************************************************************
- *
- * AMDiS - Adaptive multidimensional simulations
- *
- * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
- * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
- *
- * Authors: 
- * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
- *
- * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
- * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
- *
- *
- * This file is part of AMDiS
- *
- * See also license.opensource.txt in the distribution.
- * 
- ******************************************************************************/
-
-
-
 /** \file EmptyElementData.h */
 
-#ifndef AMDIS_EMPTYELEMENTDATA_H
-#define AMDIS_EMPTYELEMENTDATA_H
+#pragma once
 
 #include "Element.h"
 #include "ElementData.h"
 #include "FixVec.h"
 
-namespace AMDiS {
-
+namespace AMDiS 
+{
   const int EMPTY_ED = 6;
 
   class EmptyElementData : public ElementData
@@ -90,6 +67,4 @@ namespace AMDiS {
     }
   };
 
-}
-
-#endif
+} // end namespace AMDiS

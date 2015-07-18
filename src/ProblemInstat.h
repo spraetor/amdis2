@@ -1,36 +1,13 @@
-/******************************************************************************
- *
- * AMDiS - Adaptive multidimensional simulations
- *
- * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
- * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
- *
- * Authors: 
- * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
- *
- * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
- * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
- *
- *
- * This file is part of AMDiS
- *
- * See also license.opensource.txt in the distribution.
- * 
- ******************************************************************************/
-
-
-
 /** \file ProblemInstat.h */
 
-#ifndef AMDIS_PROBLEM_INSTAT_H
-#define AMDIS_PROBLEM_INSTAT_H
+#pragma once
 
 #include "ProblemStat.h"
 #include "ProblemTimeInterface.h"
 #include "AdaptInstationary.h"
 
-namespace AMDiS {
-
+namespace AMDiS 
+{
   /**
    * \ingroup Problem
    *
@@ -38,7 +15,7 @@ namespace AMDiS {
    * Base class for \ref ProblemInstat.
    */
   class ProblemInstatBase : public ProblemTimeInterface,
-			    public ProblemStatBase
+			    public ProblemStatBase // NOTE: Why is this derived from ProblemStatBase
   {
   public:
     /// Constructor.
@@ -124,10 +101,6 @@ namespace AMDiS {
       return &invTau;
     }
 
-    virtual void serialize(std::ostream &out) {}
-
-    virtual void deserialize(std::istream &in) {}
-
   protected:
     /// Name of the problem.
     std::string name;
@@ -182,18 +155,18 @@ namespace AMDiS {
     virtual void closeTimestep(AdaptInfo *adaptInfo);
   
     /// Returns \ref problemStat.
-    inline ProblemStatSeq* getStatProblem() 
+    ProblemStatSeq* getStatProblem() 
     {
       return problemStat; 
     }
 
     /// Returns \ref oldSolution.
-    inline SystemVector *getOldSolution() 
+    SystemVector *getOldSolution() 
     { 
       return oldSolution; 
     }
 
-    inline DOFVector<double> *getOldSolution(int i)
+    DOFVector<double> *getOldSolution(int i)
     {
       return oldSolution->getDOFVector(i);
     }
@@ -215,6 +188,4 @@ namespace AMDiS {
 #endif
   };
 
-}
-
-#endif
+} // end namespace AMDiS

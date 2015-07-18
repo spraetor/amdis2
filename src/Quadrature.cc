@@ -1,34 +1,14 @@
-/******************************************************************************
- *
- * AMDiS - Adaptive multidimensional simulations
- *
- * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
- * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
- *
- * Authors: 
- * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
- *
- * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
- * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
- *
- *
- * This file is part of AMDiS
- *
- * See also license.opensource.txt in the distribution.
- * 
- ******************************************************************************/
-
+#include <algorithm>
 
 #include "Quadrature.h"
 #include "FixVec.h"
-#include <algorithm>
 
 // TODO: extend quadrature formulas in 3d, extend precision of formulas
 
 using namespace std;
 
-namespace AMDiS {
-
+namespace AMDiS 
+{
   const int Quadrature::maxNQuadPoints[4] = {0, 10, 61, 64};
 
   list<FastQuadrature*> FastQuadrature::fastQuadList;
@@ -1640,4 +1620,5 @@ namespace AMDiS {
   {
     return D2Phi ? (&((*D2Phi)[q])) : NULL;
   }
-}
+  
+} // end namespace AMDiS

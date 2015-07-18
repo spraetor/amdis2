@@ -1,38 +1,16 @@
-/******************************************************************************
- *
- * AMDiS - Adaptive multidimensional simulations
- *
- * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
- * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
- *
- * Authors: 
- * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
- *
- * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
- * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
- *
- *
- * This file is part of AMDiS
- *
- * See also license.opensource.txt in the distribution.
- * 
- ******************************************************************************/
-
-
-
 /** \file DOFIndexed.h */
 
-#ifndef AMDIS_DOFINDEXED_H
-#define AMDIS_DOFINDEXED_H
+#pragma once
 
 #include <cassert>
 #include <vector>
+
 #include "Global.h"
 #include "DOFIterator.h"
 #include "AMDiS_fwd.h"
 
-namespace AMDiS {
-
+namespace AMDiS 
+{
   /// Specifies which operation should be done after coarsening
   typedef enum{
     NO_OPERATION = 0,   
@@ -200,5 +178,3 @@ namespace AMDiS {
   };
   
 } // end namespace AMDiS
-
-#endif // AMDIS_DOFINDEXED_H

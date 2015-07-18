@@ -1,33 +1,11 @@
-/******************************************************************************
- *
- * AMDiS - Adaptive multidimensional simulations
- *
- * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
- * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
- *
- * Authors: 
- * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
- *
- * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
- * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
- *
- *
- * This file is part of AMDiS
- *
- * See also license.opensource.txt in the distribution.
- * 
- ******************************************************************************/
-
-
-
 /** \file CouplingProblemStat.h */
 
-#ifndef AMDIS_COUPLING_PROBLEM_STAT_H
-#define AMDIS_COUPLING_PROBLEM_STAT_H
+#pragma once
 
 #include <vector>
 #include <set>
 #include <list>
+
 #include "AMDiS_fwd.h"
 #include "ProblemStat.h"
 #include "Initfile.h"
@@ -371,5 +349,3 @@ namespace AMDiS {
   typedef detail::CouplingProblemStat<ProblemStat> CouplingProblemStat;
   
 } // end namespace AMDiS
-
-#endif

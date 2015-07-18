@@ -1,36 +1,13 @@
-/******************************************************************************
- *
- * AMDiS - Adaptive multidimensional simulations
- *
- * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
- * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
- *
- * Authors: 
- * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
- *
- * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
- * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
- *
- *
- * This file is part of AMDiS
- *
- * See also license.opensource.txt in the distribution.
- * 
- ******************************************************************************/
-
-
-
 /** \file RefinementManager.h */
 
-#ifndef AMDIS_REFINEMENTMANAGER_H
-#define AMDIS_REFINEMENTMANAGER_H
+#pragma once
 
 #include "Global.h"
 #include "Flag.h"
 #include "AMDiS_fwd.h"
 
-namespace AMDiS {
-
+namespace AMDiS 
+{
   /** \ingroup Adaption 
    * \brief
    * Base class of RefinementManager1d, RefinementManager2d, RefinementManager3d.
@@ -75,12 +52,12 @@ namespace AMDiS {
     Flag globalRefine(Mesh *aMesh, int mark);
 
     /// Set \ref newCoords
-    inline void newCoord(bool nc) 
+    void newCoord(bool nc) 
     { 
       newCoords = nc; 
     }
 
-    inline bool newCoord() 
+    bool newCoord() 
     { 
       return newCoords; 
     }
@@ -96,17 +73,17 @@ namespace AMDiS {
       return NULL;
     }
 
-    inline void setMesh(Mesh *m) 
+    void setMesh(Mesh *m) 
     {
       mesh = m;
     }
 
-    inline void setStack(TraverseStack *s) 
+    void setStack(TraverseStack *s) 
     {
       stack = s; 
     }
 
-    inline TraverseStack *getStack() 
+    TraverseStack *getStack() 
     { 
       return stack; 
     }
@@ -128,10 +105,8 @@ namespace AMDiS {
     TraverseStack* stack;
   };
 
-}
+} // end namespace AMDiS
 
 #include "RefinementManager1d.h"
 #include "RefinementManager2d.h"
 #include "RefinementManager3d.h"
-
-#endif // AMDIS_REFINEMENTMANAGER_H

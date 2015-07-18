@@ -1,36 +1,14 @@
-/******************************************************************************
- *
- * AMDiS - Adaptive multidimensional simulations
- *
- * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
- * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
- *
- * Authors: 
- * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
- *
- * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
- * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
- *
- *
- * This file is part of AMDiS
- *
- * See also license.opensource.txt in the distribution.
- * 
- ******************************************************************************/
-
-
-
 /** \file AdaptBase.h */
 
-#ifndef AMDIS_ADAPTBASE_H
-#define AMDIS_ADAPTBASE_H
+#pragma once
 
 #include <string>
+
 #include "AMDiS_fwd.h"
 #include "Global.h"
 
-namespace AMDiS {
-
+namespace AMDiS 
+{
   /// Interface for adaption loops.
   class AdaptBase
   {
@@ -122,6 +100,4 @@ namespace AMDiS {
     static int info;
   };
 
-}
-
-#endif
+} // end namespace AMDiS

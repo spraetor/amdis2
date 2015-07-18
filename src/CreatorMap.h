@@ -1,31 +1,9 @@
-/******************************************************************************
- *
- * AMDiS - Adaptive multidimensional simulations
- *
- * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
- * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
- *
- * Authors: 
- * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
- *
- * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
- * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
- *
- *
- * This file is part of AMDiS
- *
- * See also license.opensource.txt in the distribution.
- * 
- ******************************************************************************/
-
-
-
 /** \file CreatorMap.h */
 
-#ifndef AMDIS_CREATORMAP_H
-#define AMDIS_CREATORMAP_H
+#pragma once
 
 #include <map>
+
 #include "Global.h"
 #include "CreatorInterface.h"
 
@@ -105,8 +83,6 @@ namespace AMDiS {
   template <class BaseClass>
   bool CreatorMap<BaseClass>::initialized = false;
 
-}
+} // end namespace AMDiS
 
 #include "CreatorMap.hh"
-
-#endif

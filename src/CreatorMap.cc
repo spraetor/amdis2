@@ -1,24 +1,3 @@
-/******************************************************************************
- *
- * AMDiS - Adaptive multidimensional simulations
- *
- * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
- * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
- *
- * Authors: 
- * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
- *
- * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
- * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
- *
- *
- * This file is part of AMDiS
- *
- * See also license.opensource.txt in the distribution.
- * 
- ******************************************************************************/
-
-
 #include "BasisFunction.h"
 #include "Bubble.h"
 #include "CreatorMap.h"
@@ -258,9 +237,9 @@ namespace AMDiS {
     // Lagrange-functions up to order 4
     for (int i = 1; i <= MAX_DEGREE; i++) {
       creator = new Lagrange::Creator(i);
-      addCreator("P" + boost::lexical_cast<std::string>(i), creator);
-      addCreator("Lagrange" + boost::lexical_cast<std::string>(i), creator);
-      addCreator("CG" + boost::lexical_cast<std::string>(i), creator);
+      addCreator("P" + std::to_string(i), creator);
+      addCreator("Lagrange" + std::to_string(i), creator);
+      addCreator("CG" + std::to_string(i), creator);
     }
 
     // linear Lagrange functions plus element bubble function
@@ -319,4 +298,5 @@ namespace AMDiS {
     addCreator("newton", new Newton::Creator);
     addCreator("newtonArmijo", new NewtonArmijo::Creator);
   }
-}
+  
+} // end namespace AMDiS

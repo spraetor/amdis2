@@ -19,7 +19,6 @@
  ******************************************************************************/
 
 
-#include <boost/lexical_cast.hpp>
 #include <boost/filesystem.hpp>
 
 #include "FileWriter.h"

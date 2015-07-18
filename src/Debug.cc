@@ -1,27 +1,7 @@
-/******************************************************************************
- *
- * AMDiS - Adaptive multidimensional simulations
- *
- * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
- * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
- *
- * Authors: 
- * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
- *
- * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
- * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
- *
- *
- * This file is part of AMDiS
- *
- * See also license.opensource.txt in the distribution.
- * 
- ******************************************************************************/
-
-
 #include <iostream>
 #include <fstream>
-#include <boost/lexical_cast.hpp>
+#include <string>
+
 #include "Debug.h"
 #include "DOFVector.h"
 #include "MacroElement.h"
@@ -36,13 +16,11 @@ namespace AMDiS {
 #ifdef HAVE_PARALLEL_DOMAIN_AMDIS
     void writeLocalElementDofs(int rank, int elIdx, 
 			       const FiniteElemSpace *feSpace)
-    {
-      using boost::lexical_cast;
-      
+    {      
       if (MPI::COMM_WORLD.Get_rank() == rank) {
 	DOFVector<double> tmp(feSpace, "tmp");
 	colorDofVectorByLocalElementDofs(tmp, feSpace->getMesh(), elIdx);
-	io::VtkWriter::writeFile(tmp, "tmp" + lexical_cast<std::string>(elIdx) + ".vtu");
+	io::VtkWriter::writeFile(tmp, "tmp" + std::to_string(elIdx) + ".vtu");
       }
     }
 
@@ -50,25 +28,21 @@ namespace AMDiS {
     void writeDofMesh(int rank, DegreeOfFreedom dof, 
 		      const FiniteElemSpace *feSpace)
     {
-      using boost::lexical_cast;
-
       if (MPI::COMM_WORLD.Get_rank() == rank) {
 	DOFVector<double> tmp(feSpace, "tmp");
 	tmp.set(0.0);
 	tmp[dof] = 1.0;
-	io::VtkWriter::writeFile(tmp, "dofmesh" + lexical_cast<std::string>(rank) + ".vtu");
+	io::VtkWriter::writeFile(tmp, "dofmesh" + std::to_string(rank) + ".vtu");
       }    
     }
 
     
     void writeMesh(const FiniteElemSpace *feSpace, int rank, std::string filename)
     {
-      using boost::lexical_cast;
-      
       int myRank = MPI::COMM_WORLD.Get_rank();
       if (rank == -1 || myRank == rank) {
 	DOFVector<double> tmp(feSpace, "tmp");
-	io::VtkWriter::writeFile(tmp, filename + lexical_cast<std::string>(myRank) + ".vtu", 
+	io::VtkWriter::writeFile(tmp, filename + std::to_string(myRank) + ".vtu", 
 				 io::VtkWriter::ASCII,
 				 false,
 				 false);

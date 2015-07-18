@@ -23,7 +23,6 @@
 #include <boost/iostreams/device/file_descriptor.hpp>
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/convenience.hpp>
-#include <boost/lexical_cast.hpp>
 
 #include "io/VtkWriter.h"
 #include "ElementFileWriter.h"
@@ -300,7 +299,7 @@ namespace AMDiS { namespace io {
 #if HAVE_PARALLEL_DOMAIN_AMDIS
     string filename = 
       fname  + 
-      "-p" + boost::lexical_cast<std::string>(MPI::COMM_WORLD.Get_rank()) + "-" +
+      "-p" + std::to_string(MPI::COMM_WORLD.Get_rank()) + "-" +
       postfix;
 #else
     string filename = fname + postfix;

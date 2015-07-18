@@ -1,32 +1,11 @@
-/******************************************************************************
- *
- * AMDiS - Adaptive multidimensional simulations
- *
- * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
- * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
- *
- * Authors: 
- * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
- *
- * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
- * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
- *
- *
- * This file is part of AMDiS
- *
- * See also license.opensource.txt in the distribution.
- * 
- ******************************************************************************/
-
-
-namespace AMDiS {
-
+namespace AMDiS 
+{
   /****************************************************************************/
   /*  standard routines for getting values of a finite element function and   */
   /*  its first (and second) derivatives at the quadrature points             */
   /****************************************************************************/
 
-  template<typename T> 
+  template <class T> 
   const T *uhAtQp(const FastQuadrature *quadFast,
 		  const T *uhLoc, T *vec)
   {
@@ -66,7 +45,8 @@ namespace AMDiS {
     return(const_cast<const T*>(val));
   }
 
-  template<typename T, typename GrdT> 
+  
+  template <class T, class GrdT> 
   const GrdT *grdUhAtQp(const FastQuadrature *quadFast,
 			const DimVec<WorldVector<double> >& grdLambda,
 			const T *uhLoc, GrdT *vec)
@@ -123,7 +103,8 @@ namespace AMDiS {
     return(const_cast<const GrdT*>(val));
   }
 
-  template<typename T, typename D2T> 
+  
+  template <class T, class D2T> 
   const D2T* D2UhAtQp(const FastQuadrature *quadFast,
 		      const DimVec<WorldVector<double> >& grdLambda,
 		      const T *uhLoc, D2T *vec)
@@ -186,4 +167,4 @@ namespace AMDiS {
     return(const_cast<const D2T*>(val));
   }
 
-}
+} // end namespace AMDiS

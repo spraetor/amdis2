@@ -1,29 +1,6 @@
-/******************************************************************************
- *
- * AMDiS - Adaptive multidimensional simulations
- *
- * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
- * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
- *
- * Authors: 
- * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
- *
- * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
- * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
- *
- *
- * This file is part of AMDiS
- *
- * See also license.opensource.txt in the distribution.
- * 
- ******************************************************************************/
-
-
-
 /** \file MeshStructure.h */
 
-#ifndef AMDIS_MESH_STRUCTURE_H
-#define AMDIS_MESH_STRUCTURE_H
+#pragma once
 
 #include <vector>
 #include <stdint.h>
@@ -38,8 +15,8 @@
 #define WITH_ELINDEX false
 #endif
 
-namespace AMDiS {
-
+namespace AMDiS 
+{
   class MeshStructure
   {
   public:
@@ -80,12 +57,12 @@ namespace AMDiS {
     void reset();
 
     /// Returns whether the code is empty or not.
-    inline bool empty()
+    bool empty()
     {
       return (nElements == 0);
     }
 
-    inline void commit() 
+    void commit() 
     {
       if (pos > 0)
 	code.push_back(currentCode);
@@ -100,7 +77,7 @@ namespace AMDiS {
 
     int lookAhead(unsigned int n = 1);
 
-    inline bool isLeafElement() 
+    bool isLeafElement() 
     {
       return (currentCode & 1) == 0;
     }
@@ -138,17 +115,17 @@ namespace AMDiS {
     void print(bool resetCode = true); 
 
     /// Returns the mesh structure code.
-    inline const std::vector<uint64_t>& getCode() 
+    const std::vector<uint64_t>& getCode() 
     {
       return code;
     }
 
-    inline int getNumElements() 
+    int getNumElements() 
     { 
       return nElements; 
     }
 
-    inline int getCurrentElement() 
+    int getCurrentElement() 
     {
       return currentElement;
     }
@@ -230,6 +207,4 @@ namespace AMDiS {
 
   };
 
-}
-
-#endif
+} // endnmespace AMDiS

@@ -1,34 +1,11 @@
-/******************************************************************************
- *
- * AMDiS - Adaptive multidimensional simulations
- *
- * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
- * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
- *
- * Authors: 
- * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
- *
- * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
- * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
- *
- *
- * This file is part of AMDiS
- *
- * See also license.opensource.txt in the distribution.
- * 
- ******************************************************************************/
-
-
-
 /** \file Triangle.h */
 
-#ifndef AMDIS_TRIANGLE_H
-#define AMDIS_TRIANGLE_H
+#pragma once
 
 #include "Element.h"
 
-namespace AMDiS {
-
+namespace AMDiS 
+{
   /** \ingroup Triangulation 
    * \brief
    * A Triangle is a 2-dimensional Element.
@@ -220,6 +197,4 @@ namespace AMDiS {
     static const int vertexOfParent[2][3];
   };
 
-}
-
-#endif // AMDIS_TRIANGLE_H
+} // end namespace AMDiS

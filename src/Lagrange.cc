@@ -1,28 +1,7 @@
-/******************************************************************************
- *
- * AMDiS - Adaptive multidimensional simulations
- *
- * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
- * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
- *
- * Authors: 
- * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
- *
- * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
- * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
- *
- *
- * This file is part of AMDiS
- *
- * See also license.opensource.txt in the distribution.
- * 
- ******************************************************************************/
-
-
 #include <stdio.h>
 #include <algorithm>
 #include <list>
-#include "boost/lexical_cast.hpp"
+
 #include "Mesh.h"
 #include "Element.h"
 #include "Lagrange.h"
@@ -40,8 +19,6 @@ using namespace std;
 
 namespace AMDiS {
 
-  using boost::lexical_cast;
-
   std::vector<DimVec<double>* > Lagrange::baryDimDegree[MAX_DIM + 1][MAX_DEGREE + 1];
   DimVec<int>* Lagrange::ndofDimDegree[MAX_DIM + 1][MAX_DEGREE + 1];
   int Lagrange::nBasFctsDimDegree[MAX_DIM + 1][MAX_DEGREE + 1];
@@ -55,7 +32,7 @@ namespace AMDiS {
     : BasisFunction(std::string("Lagrange"), dim, degree)
   {
     // set name
-    name += lexical_cast<std::string>(dim) + " " + lexical_cast<std::string>(degree);
+    name += std::to_string(dim) + " " + std::to_string(degree);
 
     // set nDOF
     setNDOF();

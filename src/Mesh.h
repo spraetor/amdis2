@@ -1,25 +1,3 @@
-/******************************************************************************
- *
- * AMDiS - Adaptive multidimensional simulations
- *
- * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
- * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
- *
- * Authors: 
- * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
- *
- * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
- * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
- *
- *
- * This file is part of AMDiS
- *
- * See also license.opensource.txt in the distribution.
- * 
- ******************************************************************************/
-
-
-
 /** \file Mesh.h */
 
 /** \defgroup Triangulation Triangulation module
@@ -33,12 +11,12 @@
  * Contains all triangulation classes.
  */
 
-#ifndef AMDIS_MESH_H
-#define AMDIS_MESH_H
+#pragma once
 
 #include <deque>
 #include <set>
 #include <stdio.h>
+
 #include "AMDiS_fwd.h"
 #include "DOFAdmin.h"
 #include "Line.h"
@@ -47,17 +25,15 @@
 #include "Element.h"
 #include "ElInfo.h"
 #include "FixVec.h"
-#include "Serializable.h"
 #include "BoundaryCondition.h"
 
-namespace AMDiS {
-
-
+namespace AMDiS 
+{
   /** \ingroup Triangulation 
    * \brief
    * A Mesh holds all information about a triangulation. 
    */
-  class Mesh : public Serializable
+  class Mesh
   {
   public:
     /// Creates a mesh with the given name of dimension dim
@@ -78,104 +54,104 @@ namespace AMDiS {
 
     /// Returns geometric information about this mesh. With GeoIndex p it is 
     /// specified which information is requested.
-    inline int getGeo(GeoIndex p) const 
+    int getGeo(GeoIndex p) const 
     { 
       return Global::getGeo(p, dim); 
     }
 
     /// Returns \ref name of the mesh
-    inline std::string getName() const 
+    std::string getName() const 
     { 
       return name; 
     }
 
     /// Returns \ref dim of the mesh
-    inline int getDim() const
+    int getDim() const
     { 
       return dim; 
     }
 
     /// Returns \ref nDofEl of the mesh
-    inline int getNumberOfAllDofs() const 
+    int getNumberOfAllDofs() const 
     { 
       return nDofEl; 
     }
 
     /// Returns \ref nNodeEl of the mesh
-    inline int getNumberOfNodes() const 
+    int getNumberOfNodes() const 
     { 
       return nNodeEl; 
     }
 
     /// Returns \ref nVertices of the mesh
-    inline int getNumberOfVertices() const 
+    int getNumberOfVertices() const 
     { 
       return nVertices; 
     }
 
     /// Returns \ref nEdges of the mesh 
-    inline int getNumberOfEdges() const 
+    int getNumberOfEdges() const 
     { 
       return nEdges; 
     }
 
     /// Returns \ref nFaces of the mesh 
-    inline int getNumberOfFaces() const 
+    int getNumberOfFaces() const 
     { 
       return nFaces; 
     }
 
     /// Returns \ref nLeaves of the mesh 
-    inline int getNumberOfLeaves() const 
+    int getNumberOfLeaves() const 
     { 
       return nLeaves; 
     }
 
     /// Returns \ref nElements of the mesh
-    inline int getNumberOfElements() const 
+    int getNumberOfElements() const 
     { 
       return nElements; 
     }
 
     /// Returns \ref maxEdgeNeigh of the mesh
-    inline int getMaxEdgeNeigh() const 
+    int getMaxEdgeNeigh() const 
     { 
       return maxEdgeNeigh; 
     }
 
     /// Returns \ref parametric of the mesh
-    inline Parametric *getParametric() const 
+    Parametric *getParametric() const 
     { 
       return parametric; 
     }
 
     /// Returns \ref diam of the mesh
-    inline const WorldVector<double>& getDiameter() const 
+    const WorldVector<double>& getDiameter() const 
     { 
       return diam; 
     }
 
     /// Returns nDof[i] of the mesh
-    inline int getNumberOfDofs(int i) const 
+    int getNumberOfDofs(int i) const 
     { 
       TEST_EXIT_DBG(i <= dim)("Wrong index: %d %d\n", i, dim);
       return nDof[i]; 
     }
 
     /// Returns \ref elementPrototype of the mesh
-    inline Element* getElementPrototype() 
+    Element* getElementPrototype() 
     { 
       return elementPrototype; 
     }
 
     /// Returns \ref leafDataPrototype of the mesh
-    inline ElementData* getElementDataPrototype() 
+    ElementData* getElementDataPrototype() 
     { 
       return elementDataPrototype; 
     }
 
     /// Returns node[i] of the mesh 
-    inline int getNode(int i) const 
+    int getNode(int i) const 
     { 
       return node[i]; 
     }
@@ -187,7 +163,7 @@ namespace AMDiS {
     DegreeOfFreedom *getDof(GeoIndex position);
 
     /// Returns *(\ref admin[i]) of the mesh
-    inline const DOFAdmin& getDofAdmin(int i) const 
+    const DOFAdmin& getDofAdmin(int i) const 
     {
       return *(admin[i]);
     }
@@ -219,25 +195,25 @@ namespace AMDiS {
     DegreeOfFreedom **createDofPtrs();
 
     /// Returns \ref preserveCoarseDOFs of the mesh
-    inline bool queryCoarseDOFs() const 
+    bool queryCoarseDOFs() const 
     { 
       return preserveCoarseDOFs;
     }
 
     /// Returns an iterator to the begin of \ref macroElements
-    inline std::deque<MacroElement*>::iterator firstMacroElement() 
+    std::deque<MacroElement*>::iterator firstMacroElement() 
     {
       return macroElements.begin();
     }
 
     /// Returns macroElements[i].
-    inline MacroElement *getMacroElement(int i) 
+    MacroElement *getMacroElement(int i) 
     { 
       return macroElements[i]; 
     }
 
     /// Returns an iterator to the end of \ref macroElements
-    inline std::deque<MacroElement*>::iterator endOfMacroElements() 
+    std::deque<MacroElement*>::iterator endOfMacroElements() 
     {
       return macroElements.end();
     }
@@ -255,67 +231,67 @@ namespace AMDiS {
      */
 
     /// Sets \ref name of the mesh
-    inline void setName(std::string aName) 
+    void setName(std::string aName) 
     { 
       name = aName;
     }
 
     /// Sets \ref nVertices of the mesh
-    inline void setNumberOfVertices(int n) 
+    void setNumberOfVertices(int n) 
     { 
       nVertices = n; 
     }
 
     /// Sets \ref nFaces of the mesh
-    inline void setNumberOfFaces(int n) 
+    void setNumberOfFaces(int n) 
     { 
       nFaces = n; 
     }
 
     /// Increments \ref nVertices by inc
-    inline void incrementNumberOfVertices(int inc) 
+    void incrementNumberOfVertices(int inc) 
     { 
       nVertices += inc; 
     }
  
     /// Sets \ref nEdges of the mesh
-    inline void setNumberOfEdges(int n) 
+    void setNumberOfEdges(int n) 
     { 
       nEdges = n; 
     }
 
     /// Increments \ref nEdges by inc
-    inline void incrementNumberOfEdges(int inc) 
+    void incrementNumberOfEdges(int inc) 
     { 
       nEdges += inc; 
     }
 
     /// Increments \ref nFaces by inc
-    inline void incrementNumberOfFaces(int inc) 
+    void incrementNumberOfFaces(int inc) 
     { 
       nFaces += inc; 
     }
 
     /// Sets \ref nLeaves of the mesh
-    inline void setNumberOfLeaves(int n) 
+    void setNumberOfLeaves(int n) 
     { 
       nLeaves = n; 
     }
 
     /// Increments \ref nLeaves by inc
-    inline void incrementNumberOfLeaves(int inc) 
+    void incrementNumberOfLeaves(int inc) 
     { 
       nLeaves += inc; 
     }
 
     /// Sets \ref nElements of the mesh
-    inline void setNumberOfElements(int n) 
+    void setNumberOfElements(int n) 
     { 
       nElements = n; 
     }
 
     /// Increments \ref nElements by inc
-    inline void incrementNumberOfElements(int inc) 
+    void incrementNumberOfElements(int inc) 
     { 
       nElements += inc; 
     }
@@ -327,43 +303,43 @@ namespace AMDiS {
     void setDiameter(int i, double d);
 
     /// Sets \ref preserveCoarseDOFs = true
-    inline void retainCoarseDOFs() 
+    void retainCoarseDOFs() 
     {
       preserveCoarseDOFs = true;
     }
 
     /// Sets \ref preserveCoarseDOFs = b
-    inline void setPreserveCoarseDOFs(bool b) 
+    void setPreserveCoarseDOFs(bool b) 
     {
       preserveCoarseDOFs = b;
     }
 
     /// Sets \ref preserveCoarseDOFs = false
-    inline void noCoarseDOFs() 
+    void noCoarseDOFs() 
     {
       preserveCoarseDOFs = false;
     }
 
     /// Sets \ref elementPrototype of the mesh
-    inline void setElementPrototype(Element* prototype) 
+    void setElementPrototype(Element* prototype) 
     {
       elementPrototype = prototype;
     }
     
     /// Sets \ref elementDataPrototype of the mesh
-    inline void setElementDataPrototype(ElementData* prototype) 
+    void setElementDataPrototype(ElementData* prototype) 
     {
       elementDataPrototype = prototype;
     }
 
     ///
-    inline void setParametric(Parametric *param) 
+    void setParametric(Parametric *param) 
     {
       parametric = param;
     }
 
     ///
-    inline void setMaxEdgeNeigh(int m) 
+    void setMaxEdgeNeigh(int m) 
     { 
       maxEdgeNeigh = m; 
     }
@@ -392,7 +368,7 @@ namespace AMDiS {
     void updateNumberOfLeaves();
 
     /// Clears \ref macroElements
-    inline void clearMacroElements() 
+    void clearMacroElements() 
     { 
       macroElements.clear();
     }
@@ -508,7 +484,7 @@ namespace AMDiS {
 		    std::set<const DegreeOfFreedom*>& allDofs);
 
     /// Returns FILL_ANY_?D
-    inline static const Flag& getFillAnyFlag(int dim) 
+    static const Flag& getFillAnyFlag(int dim) 
     {
       switch (dim) {
       case 1:
@@ -533,25 +509,25 @@ namespace AMDiS {
     void deserialize(std::istream &in);
 
     /// Returns \ref elementIndex and increments it by 1.
-    inline int getNextElementIndex() 
+    int getNextElementIndex() 
     { 
       return elementIndex++; 
     }
 
     /// Returns \ref initialized.
-    inline bool isInitialized() 
+    bool isInitialized() 
     {
       return initialized; 
     }
   
     ///
-    inline std::map<BoundaryType, VertexVector*>& getPeriodicAssociations() 
+    std::map<BoundaryType, VertexVector*>& getPeriodicAssociations() 
     {
       return periodicAssociations;
     }
 
     /// Returns the periodic association for a specific boundary type.
-    inline VertexVector& getPeriodicAssociations(BoundaryType b)
+    VertexVector& getPeriodicAssociations(BoundaryType b)
     {
       FUNCNAME_DBG("Mesh::getPeriodicAssociations()");
 
@@ -561,7 +537,7 @@ namespace AMDiS {
       return (*(periodicAssociations[b]));
     }
     
-    inline void setPeriodicAssociations(BoundaryType b, VertexVector* vec)
+    void setPeriodicAssociations(BoundaryType b, VertexVector* vec)
     {
       periodicAssociations[b] = vec;
     }
@@ -569,7 +545,7 @@ namespace AMDiS {
     
     /// Returns whether the given boundary type is periodic, i.e., if there is
     /// a periodic association for this boundary type.
-    inline bool isPeriodicAssociation(BoundaryType b)
+    bool isPeriodicAssociation(BoundaryType b)
     {
       return (periodicAssociations.count(b) == 1 ? true : false);
     }
@@ -581,19 +557,19 @@ namespace AMDiS {
     bool indirectlyAssociated(DegreeOfFreedom dof1, DegreeOfFreedom dof2);
 
     /// Returns \macroFileInfo
-    inline MacroInfo* getMacroFileInfo() 
+    MacroInfo* getMacroFileInfo() 
     { 
       return macroFileInfo;
     }
 
     /// Increment the value of mesh change index, see \ref changeIndex.
-    inline void incChangeIndex()
+    void incChangeIndex()
     {
       changeIndex++;
     }
 
     /// Returns the mesh change index, see \ref changeIndex.
-    inline long getChangeIndex()
+    long getChangeIndex()
     {
       return changeIndex;
     }
@@ -610,13 +586,13 @@ namespace AMDiS {
 #ifdef HAVE_PARALLEL_DOMAIN_AMDIS
     /// In parallel computations the level of all macro elements is equal to the 
     /// number of global pre refinements, \ref nParallelPreRefinements.
-    inline int getMacroElementLevel()
+    int getMacroElementLevel()
     {
       return nParallelPreRefinements;
     }
 #else
     /// In sequentiel computations the level of all macro elements is always 0.
-    inline int getMacroElementLevel()
+    int getMacroElementLevel()
     {
       return 0;
     }
@@ -888,8 +864,4 @@ namespace AMDiS {
     friend class Element;
   };
 
-}
-
-#endif  // AMDIS_MESH_H
-
-
+} // end namespace AMDiS

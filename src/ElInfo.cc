@@ -1,24 +1,3 @@
-/******************************************************************************
- *
- * AMDiS - Adaptive multidimensional simulations
- *
- * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
- * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
- *
- * Authors: 
- * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
- *
- * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
- * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
- *
- *
- * This file is part of AMDiS
- *
- * See also license.opensource.txt in the distribution.
- * 
- ******************************************************************************/
-
-
 #include "ElInfo.h"
 #include "BasisFunction.h"
 #include "Element.h"
@@ -33,7 +12,8 @@
 #include "FixVec.h"
 #include "DOFVector.h"
 
-namespace AMDiS {
+namespace AMDiS 
+{
 
   std::vector<std::map<std::pair<int, unsigned long>, mtl::dense2D<double> > > ElInfo::subElemMatrices(5);
 
@@ -229,4 +209,4 @@ namespace AMDiS {
     return boundary[offset + i];
   }
 
-}
+} // end namespace AMDiS

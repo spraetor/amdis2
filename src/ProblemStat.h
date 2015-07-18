@@ -1,35 +1,13 @@
-/******************************************************************************
- *
- * AMDiS - Adaptive multidimensional simulations
- *
- * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
- * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
- *
- * Authors: 
- * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
- *
- * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
- * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
- *
- *
- * This file is part of AMDiS
- *
- * See also license.opensource.txt in the distribution.
- * 
- ******************************************************************************/
-
-
-
 /** \file ProblemStat.h */
 
-#ifndef AMDIS_PROBLEM_STAT_H
-#define AMDIS_PROBLEM_STAT_H
+#pragma once
 
 #include <vector>
 #include <list>
 #if __cplusplus > 199711L
 #include <functional>
 #endif
+
 #include "AMDiS_fwd.h"
 #include "ProblemStatBase.h"
 #include "Initfile.h"
@@ -41,8 +19,8 @@
 #include "solver/SolverMatrix.h"
 #include "SystemVector.h"
 
-namespace AMDiS {
-
+namespace AMDiS 
+{
   struct OperatorPos 
   {
     int row, col;
@@ -109,38 +87,38 @@ namespace AMDiS {
 
     /// Implementation of ProblemStatBase::solve(). Deligates the solving
     /// of problems system to \ref solver.
-    void solve(AdaptInfo *adaptInfo,
-	       bool createMatrixData = true,
-	       bool storeMatrixData = false) override;
+    virtual void solve(AdaptInfo *adaptInfo,
+		       bool createMatrixData = true,
+		       bool storeMatrixData = false) override;
 
     /// Implementation of ProblemStatBase::estimate(). Deligates the estimation
     /// to \ref estimator.
-    void estimate(AdaptInfo *adaptInfo) override;
+    virtual void estimate(AdaptInfo *adaptInfo) override;
 
     /// Implementation of ProblemStatBase::markElements().
     /// Deligated to \ref adapt.
-    Flag markElements(AdaptInfo *adaptInfo) override;
+    virtual Flag markElements(AdaptInfo *adaptInfo) override;
 
     /// Implementation of ProblemStatBase::refineMesh(). Deligated to the
     /// RefinementManager of \ref adapt.
-    Flag refineMesh(AdaptInfo *adaptInfo) override;
+    virtual Flag refineMesh(AdaptInfo *adaptInfo) override;
 
     /// Implementation of ProblemStatBase::coarsenMesh(). Deligated to the
     /// CoarseningManager of \ref adapt.
-    Flag coarsenMesh(AdaptInfo *adaptInfo) override;
+    virtual Flag coarsenMesh(AdaptInfo *adaptInfo) override;
 
     /// Implementation of ProblemStatBase::buildBeforeRefine().
     /// Does nothing here.
-    void buildBeforeRefine(AdaptInfo *adaptInfo, Flag) override {}
+    virtual void buildBeforeRefine(AdaptInfo *adaptInfo, Flag) override {}
 
     /// Implementation of ProblemStatBase::buildBeforeCoarsen().
     /// Does nothing here.
-    void buildBeforeCoarsen(AdaptInfo *adaptInfo, Flag) override {}
+    virtual void buildBeforeCoarsen(AdaptInfo *adaptInfo, Flag) override {}
 
     /// Implementation of ProblemStatBase::buildAfterCoarsen().
     /// Assembles \ref A and \ref rhs. With the last two parameters, assembling
     /// can be restricted to matrices or vectors only.
-    void buildAfterCoarsen(AdaptInfo *adaptInfo, Flag flag,
+    virtual void buildAfterCoarsen(AdaptInfo *adaptInfo, Flag flag,
 				   bool assembleMatrix = true,
 				   bool assembleVector = true) override;
 
@@ -188,48 +166,18 @@ namespace AMDiS {
 
     /// Adds a Dirichlet boundary condition, where the rhs is given by an 
     /// abstract function.
-    // TODO: replace by generic expression
-    virtual void addDirichletBC(BoundaryType type, int row, int col,
-				AbstractFunction<double, WorldVector<double> > *b);
-				
-				
-#if __cplusplus > 199711L
-    // TODO: replace by generic expression
-    /// Adds a Dirichlet boundary condition, where the rhs is given by an 
-    /// lambda function or a std::function object
-    virtual void addDirichletBC(BoundaryType type, int row, int col,
-				std::function<double(WorldVector<double>)> b);
-#endif
-
-    // TODO: replace by generic expressions
-    /// Adds a Dirichlet boundary condition, where the rhs is given by a DOF
-    /// vector.
-    virtual void addDirichletBC(BoundaryType type, int row, int col,
-				DOFVector<double> *vec);
-
+    template <class Expr>
+    void addDirichletBC(BoundaryType type, int row, int col, Expr const& expr);
+    
     /// Adds a Neumann boundary condition, where the rhs is given by an
     /// abstract function.
-    // TODO: replace by generic expression
-    virtual void addNeumannBC(BoundaryType type, int row, int col, 
-			      AbstractFunction<double, WorldVector<double> > *n);
-
-    /// Adds a Neumann boundary condition, where the rhs is given by an DOF
-    /// vector.
-    // TODO: replace by generic expression
-    virtual void addNeumannBC(BoundaryType type, int row, int col, 
-			      DOFVector<double> *n);
+    template <class Expr>
+    void addNeumannBC(BoundaryType type, int row, int col, Expr const& expr);
 
     /// Adds Robin boundary condition.
-    // TODO: replace by generic expression
-    virtual void addRobinBC(BoundaryType type, int row, int col, 
-			    AbstractFunction<double, WorldVector<double> > *n,
-			    AbstractFunction<double, WorldVector<double> > *r);
-
-    /// Adds Robin boundary condition.
-    // TODO: replace by generic expression
-    virtual void addRobinBC(BoundaryType type, int row, int col, 
-			    DOFVector<double> *n,
-			    DOFVector<double> *r);
+    template <class ExprRhs, class ExprLhs>
+    void addRobinBC(BoundaryType type, int row, int col, 
+		    ExprRhs const &exprRhs, ExprLhs const& exprLhs);
 
     /// Adds Robin boundary condition.
     // TODO: replace by generic expression
@@ -279,41 +227,41 @@ namespace AMDiS {
      */
 
     /// Returns \ref solution.
-    inline SystemVector* getSolution() 
+    SystemVector* getSolution() 
     { 
       return solution; 
     }
 
-    inline DOFVector<double>* getSolution(int i)
+    DOFVector<double>* getSolution(int i)
     {
       return solution->getDOFVector(i);
     }
 
     /// Returns \ref rhs.
-    inline SystemVector* getRhs() 
+    SystemVector* getRhs() 
     { 
       return rhs; 
     }
 
-    inline DOFVector<double>* getRhsVector(int i = 0)
+    DOFVector<double>* getRhsVector(int i = 0)
     {
       return rhs->getDOFVector(i);
     }
 
     /// Returns \ref systemMatrix.
-    inline Matrix<DOFMatrix*> *getSystemMatrix() 
+    Matrix<DOFMatrix*> *getSystemMatrix() 
     { 
       return systemMatrix; 
     }
 
     /// Returns a pointer to the corresponding DOFMatrix.
-    inline DOFMatrix* getSystemMatrix(int row, int col) 
+    DOFMatrix* getSystemMatrix(int row, int col) 
     {
       return (*systemMatrix)[row][col];
     }
 
     /// Returns mesh of given component
-    inline Mesh* getMesh(int comp = 0) 
+    Mesh* getMesh(int comp = 0) 
     {
       FUNCNAME("ProblemStatSeq::getMesh()");
       TEST_EXIT(comp < static_cast<int>(componentMeshes.size()) && comp >= 0)
@@ -322,13 +270,13 @@ namespace AMDiS {
     }
 
     /// Returns \ref meshes
-    inline std::vector<Mesh*> getMeshes() 
+    std::vector<Mesh*>& getMeshes() 
     {
       return meshes; 
     }
 
     /// Returns \ref feSpace_.
-    inline const FiniteElemSpace* getFeSpace(int comp = 0) 
+    const FiniteElemSpace* getFeSpace(int comp = 0) const
     { 
       FUNCNAME("ProblemStatSeq::getFeSpace()");
       TEST_EXIT(comp < static_cast<int>(componentSpaces.size()) && comp >= 0)
@@ -337,67 +285,67 @@ namespace AMDiS {
     }
 
     /// Returns \ref feSpaces.
-    inline std::vector<const FiniteElemSpace*>& getFeSpaces() 
+    std::vector<const FiniteElemSpace*>& getFeSpaces() 
     { 
       return feSpaces; 
     }
 
     /// Returns \ref componentSpaces;
-    inline std::vector<const FiniteElemSpace*>& getComponentSpaces() 
+    std::vector<const FiniteElemSpace*>& getComponentSpaces() 
     {
       return componentSpaces;
     }
 
     /// Returns \ref estimator.
-    inline std::vector<Estimator*> getEstimators() 
+    std::vector<Estimator*>& getEstimators() 
     { 
       return estimator; 
     }
 
     /// Returns \ref estimator.
-    inline Estimator* getEstimator(int comp = 0) 
+    Estimator* getEstimator(int comp = 0) 
     { 
       return estimator[comp]; 
     }
 
     /// Returns \ref refinementManager.
-    inline RefinementManager* getRefinementManager(int comp = 0) 
+    RefinementManager* getRefinementManager(int comp = 0) 
     { 
       return refinementManager; 
     }
 
     /// Returns \ref refinementManager.
-    inline CoarseningManager* getCoarseningManager(int comp = 0) 
+    CoarseningManager* getCoarseningManager(int comp = 0) 
     { 
       return coarseningManager; 
     }
 
     /// Returns \ref solver.
-    inline LinearSolverInterface* getSolver() 
+    LinearSolverInterface* getSolver() 
     { 
       return solver; 
     }
 
     /// Returns \ref marker.
-    inline Marker *getMarker(int comp = 0) 
+    Marker *getMarker(int comp = 0) 
     { 
       return marker[comp]; 
     }
 
     /// Returns \ref marker.
-    inline std::vector<Marker*> getMarkers() 
+    std::vector<Marker*>& getMarkers() 
     { 
       return marker; 
     }
 
     /// Returns the name of the problem
-    inline std::string getName() override
+    std::string getName() override
     { 
       return name; 
     }
 
     /// Returns the name of the problem
-    inline std::string getComponentName(int comp = 0)
+    std::string getComponentName(int comp = 0)
     {
       TEST_EXIT(comp < static_cast<int>(componentNames.size()) && comp >= 0)
 	("invalid component number\n");
@@ -405,19 +353,19 @@ namespace AMDiS {
     }
 
     /// Returns \ref useGetBound.
-    inline bool getBoundUsed() 
+    bool getBoundUsed() const
     { 
       return useGetBound; 
     }
 
     /// Returns \ref info.
-    int getInfo()
+    int getInfo() const
     {
       return info;
     }
 
     /// Returns \ref deserialized;
-    bool isDeserialized()
+    bool isDeserialized() const
     {
       return deserialized;
     }
@@ -429,13 +377,13 @@ namespace AMDiS {
      */
 
     /// Sets \ref estimator.
-    inline void setEstimator(std::vector<Estimator*> est) 
+    void setEstimator(std::vector<Estimator*> est) 
     { 
       estimator = est; 
     }
 
     /// Sets the FE space for the given component.
-    inline void setFeSpace(const FiniteElemSpace *feSpace, int comp = 0) 
+    void setFeSpace(const FiniteElemSpace *feSpace, int comp = 0) 
     {
       feSpaces[comp] = feSpace;
     }
@@ -456,19 +404,19 @@ namespace AMDiS {
     }
     
     /// Sets \ref estimator.
-    inline void setEstimator(Estimator* est, int comp = 0) 
+    void setEstimator(Estimator* est, int comp = 0) 
     { 
       estimator[comp] = est; 
     }
 
     /// Sets \ref marker.
-    inline void setMarker(Marker* mark, int comp = 0) 
+    void setMarker(Marker* mark, int comp = 0) 
     { 
       marker[comp] = mark; 
     }
 
     /// Sets \ref solver.
-    inline void setSolver(LinearSolverInterface* sol) 
+    void setSolver(LinearSolverInterface* sol) 
     { 
       solver = sol; 
     }
@@ -479,28 +427,9 @@ namespace AMDiS {
     }
 
     ///
-    inline void setAssembleMatrixOnlyOnce(int i = 0, int j = 0, bool value = true) 
+    void setAssembleMatrixOnlyOnce(int i = 0, int j = 0, bool value = true) 
     {
       assembleMatrixOnlyOnce[i][j] = value;
-    }
-
-    ///
-    void setExactSolutionFct(std::function<double(WorldVector<double>)> fct,
-			     int component) 
-    {
-      exactSolutionFcts[component] = fct;
-    }
-
-    ///
-    std::function<double(WorldVector<double>)>& getExactSolutionFct(int i = 0) 
-    {
-      return exactSolutionFcts[i];
-    }
-
-    ///
-    std::vector< std::function<double(WorldVector<double>)> >& getExactSolutionFcts() 
-    {
-      return exactSolutionFcts;
     }
 
     ///
@@ -546,12 +475,6 @@ namespace AMDiS {
     /// the residual error estimator. 
     void writeResidualMesh(int comp, AdaptInfo *adaptInfo, std::string name);
 
-    /// Function that implements the serialization procedure.
-    void serialize(std::ostream &out) override;
-
-    /// Function that implements the deserialization procedure.
-    void deserialize(std::istream &in) override;
-
     /// Returns \ref fileWriters.
     std::vector<FileWriterInterface*>& getFileWriterList() 
     {
@@ -559,13 +482,13 @@ namespace AMDiS {
     }
     
     /// Returns \ref solutionTime.
-    double getSolutionTime()
+    double getSolutionTime() const
     {
       return solutionTime;
     }
     
     /// Returns \ref buildTime.
-    double getBuildTime()
+    double getBuildTime() const
     {
       return buildTime;
     }
@@ -669,11 +592,6 @@ namespace AMDiS {
     /// file.
     bool deserialized;
 
-    /// This vectors stores pointers to functions defining the exact solution of
-    /// the problem. This may be used to compute the real error of the computed
-    /// solution.
-    std::vector<std::function<double(WorldVector<double>)> > exactSolutionFcts;
-
     /// If true, the error is not estimated but computed from the exact solution
     /// defined by \ref exactSolutionFcts.
     bool computeExactError;
@@ -698,6 +616,7 @@ namespace AMDiS {
     
     template <class> friend class detail::CouplingProblemStat;
   };
+  
   
   namespace detail
   {
@@ -749,6 +668,5 @@ namespace AMDiS {
 #ifndef HAVE_PARALLEL_DOMAIN_AMDIS
   typedef detail::ProblemStat<ProblemStatSeq> ProblemStat;
 #endif
-}
-
-#endif
+  
+} // end namespace AMDiS

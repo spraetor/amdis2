@@ -461,14 +461,13 @@ namespace AMDiS { namespace io {
 	  return;
 	}
 	if (writeParallel) {
-	  using boost::lexical_cast;
 	  int sPos = filename.find(".arh");
 	  TEST_EXIT(sPos >= 0)("Failed to find file postfix!\n");
 	  string name = filename.substr(0, sPos);
 
 	  if (nProcs == -1) {
 #ifdef HAVE_PARALLEL_DOMAIN_AMDIS
-	    string procFilename = name + "-p" + lexical_cast<string>(MPI::COMM_WORLD.Get_rank()) + "-.arh";
+	    string procFilename = name + "-p" + std::to_string(MPI::COMM_WORLD.Get_rank()) + "-.arh";
 	    read(procFilename, mesh, vecs, byName);
 	    MSG("ARH file read from: %s\n", procFilename.c_str());
 #else
@@ -479,7 +478,7 @@ namespace AMDiS { namespace io {
 	    // check if there are no more or less files as nProcs
 	    int n = 0;
 	    for (; n < nProcs + 1; n++) {
-	      string fn = name + "-p" + boost::lexical_cast<string>(n) + "-.arh";
+	      string fn = name + "-p" + std::to_string(n) + "-.arh";
 	      if(!boost::filesystem::exists(fn)) break;
 	    }
 	    TEST_EXIT(n == nProcs)
@@ -512,7 +511,7 @@ namespace AMDiS { namespace io {
 	    }
 #endif    
 	    for (int i = 0; i < nProcs; i++) {
-	      string procFilename = name + "-p" + lexical_cast<string>(i) + "-.arh";
+	      string procFilename = name + "-p" + std::to_string(i) + "-.arh";
 	      read(procFilename, mesh, vecs, byName);
 	      MSG("ARH file read from: %s\n", procFilename.c_str());
 	    }
@@ -636,14 +635,13 @@ namespace AMDiS { namespace io {
       int readNumOfMacrosFromSgArh(std::string filename, int nProc)
       {
 	FUNCNAME("Arh2Reader::readHeaderSize");
-	using boost::lexical_cast;
 	
 	int sPos = filename.find(".arh");
 	TEST_EXIT(sPos >= 0)("Failed to find file postfix!\n");
 	
 	if (nProc >= 0) {
 	  string name = filename.substr(0, sPos);
-	  filename = name + "-p" + lexical_cast<string>(nProc) + "-.arh";
+	  filename = name + "-p" + std::to_string(nProc) + "-.arh";
 	}
 	
 	ifstream file;

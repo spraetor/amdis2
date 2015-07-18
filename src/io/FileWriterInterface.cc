@@ -25,7 +25,6 @@
 #include "AdaptInfo.h"
 #include "Initfile.h"
 
-#include <boost/lexical_cast.hpp>
 #include <boost/filesystem.hpp>
 
 namespace AMDiS {
@@ -85,7 +84,7 @@ namespace AMDiS {
 
 #if HAVE_PARALLEL_DOMAIN_AMDIS
     paraFilename = filename;
-    fn += "-p" + boost::lexical_cast<std::string>(MPI::COMM_WORLD.Get_rank()) + "-";
+    fn += "-p" + std::to_string(MPI::COMM_WORLD.Get_rank()) + "-";
     postfix = "";
 #endif
 

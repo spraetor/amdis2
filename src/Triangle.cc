@@ -1,24 +1,3 @@
-/******************************************************************************
- *
- * AMDiS - Adaptive multidimensional simulations
- *
- * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
- * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
- *
- * Authors: 
- * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
- *
- * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
- * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
- *
- *
- * This file is part of AMDiS
- *
- * See also license.opensource.txt in the distribution.
- * 
- ******************************************************************************/
-
-
 #include "Triangle.h"
 #include "DOFAdmin.h"
 #include "Mesh.h"
@@ -28,7 +7,8 @@
 
 using namespace std;
 
-namespace AMDiS {
+namespace AMDiS 
+{
 
   const int Triangle::vertexOfEdge[3][2] = {{1, 2}, {2, 0}, {0, 1}};
   const int Triangle::sideOfChild[2][3] = {{-1, 2, 0}, {2, -1, 1}};
@@ -324,4 +304,4 @@ namespace AMDiS {
     bound.elIndex =  child[ithChild]->getIndex();
   }
 
-}
+} // end namespace AMDiS

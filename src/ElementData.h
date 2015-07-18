@@ -1,35 +1,12 @@
-/******************************************************************************
- *
- * AMDiS - Adaptive multidimensional simulations
- *
- * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
- * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
- *
- * Authors: 
- * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
- *
- * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
- * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
- *
- *
- * This file is part of AMDiS
- *
- * See also license.opensource.txt in the distribution.
- * 
- ******************************************************************************/
-
-
-
 /** \file ElementData.h */
 
-#ifndef AMDIS_ELEMENTDATA_H
-#define AMDIS_ELEMENTDATA_H
+#pragma once
 
 #include "Serializable.h"
 #include "CreatorMap.h"
 
-namespace AMDiS {
-
+namespace AMDiS 
+{
   const int ESTIMATABLE = 1;
   const int COARSENABLE = 2;
   const int PERIODIC = 3;
@@ -153,6 +130,4 @@ namespace AMDiS {
     ElementData *decorated;
   };
 
-}
-
-#endif
+} // end namespace AMDiS

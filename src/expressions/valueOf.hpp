@@ -1,29 +1,6 @@
-/******************************************************************************
- *
- * AMDiS - Adaptive multidimensional simulations
- *
- * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
- * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
- *
- * Authors: 
- * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
- *
- * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
- * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
- *
- *
- * This file is part of AMDiS
- *
- * See also license.opensource.txt in the distribution.
- * 
- ******************************************************************************/
-
-
-
 /** \file valueOf.hpp */
 
-#ifndef AMDIS_VALUE_OF_HPP
-#define AMDIS_VALUE_OF_HPP
+#pragma once
 
 #include "AMDiS_fwd.h"
 #include "LazyOperatorTerm.h"
@@ -60,23 +37,23 @@ namespace AMDiS
       ValueOf(DOFVector<T>* vector) : vecDV(vector) {}
 
       template<typename List>
-      inline void insertFeSpaces(List& feSpaces) const
+      void insertFeSpaces(List& feSpaces) const
       {
 	feSpaces.insert(vecDV->getFeSpace());
       }
       
-      inline int getDegree() const
+      int getDegree() const
       {
 	return vecDV->getFeSpace()->getBasisFcts()->getDegree();
       }
 
       template<typename OT>
-      inline void initElement(OT* ot, const ElInfo* elInfo,
-			      SubAssembler* subAssembler, Quadrature *quad, 
-			      const BasisFunction *basisFct = NULL)
+      void initElement(OT* ot, const ElInfo* elInfo,
+		       SubAssembler* subAssembler, Quadrature *quad, 
+		       const BasisFunction *basisFct = NULL)
       {
-	if (ot && subAssembler)
-	  ot->getVectorAtQPs(vecDV, elInfo, subAssembler, quad, vec);
+	if (subAssembler)
+	  subAssembler->getVectorAtQPs(vecDV, elInfo, quad, vec);
 	else if (quad)
 	  vecDV->getVecAtQPs(elInfo, quad, NULL, vec);
 	else if (basisFct) {
@@ -93,33 +70,8 @@ namespace AMDiS
 	    vec[i] = localBasisFct->evalUh(*basisFct->getCoords(i), coeff);
 	}
       }
-
-
-      template<typename OT>
-      inline void initElement(OT* ot, const ElInfo* smallElInfo, const ElInfo* largeElInfo,
-			      SubAssembler* subAssembler, Quadrature *quad, 
-			      const BasisFunction *basisFct = NULL)
-      {
-	if (ot && subAssembler)
-	  ot->getVectorAtQPs(vecDV, smallElInfo, largeElInfo, subAssembler, quad, vec);
-	else if (quad)
-	  vecDV->getVecAtQPs(smallElInfo, largeElInfo, quad, NULL, vec);
-	else if (basisFct) {
-	  const BasisFunction *localBasisFct = vecDV->getFeSpace()->getBasisFcts();
-	  
-	  // get coefficients of DOFVector
-	  coeff.change_dim(localBasisFct->getNumber());
-	  vecDV->getLocalVector(smallElInfo->getElement(), coeff);
-	  
-	  // eval basisfunctions of DOFVector at coords of given basisFct
-	  size_t nBasisFct = basisFct->getNumber();
-	  vec.change_dim(nBasisFct);	
-	  for (size_t i = 0; i < nBasisFct; i++)
-	    vec[i] = localBasisFct->evalUh(*basisFct->getCoords(i), coeff);
-	}
-      }
-
-      inline value_type operator()(const int& iq) const { return vec[iq]; }
+      
+      value_type operator()(const int& iq) const { return vec[iq]; }
       
       std::string str() const { return std::string("value(") + vecDV->getName() + ")"; }
     };
@@ -138,34 +90,35 @@ namespace AMDiS
       mutable mtl::dense_vector<value_type> vec;
       mutable Matrix<mtl::dense_vector<T> > coeff;
 
-      ValueOf(Matrix<DOFVector<T>*> const& vector) : vecDV(vector) 
+      ValueOf(Matrix<DOFVector<T>*> const& vector) 
+	: vecDV(vector) 
       {
 	resize(coeff, num_rows(vecDV), num_cols(vecDV));
       }
 
       template<typename List>
-      inline void insertFeSpaces(List& feSpaces) const
+      void insertFeSpaces(List& feSpaces) const
       {
 	for (size_t i = 0; i < num_rows(vecDV); i++)
 	for (size_t j = 0; j < num_cols(vecDV); j++)
 	  feSpaces.insert(at(vecDV, i, j)->getFeSpace());
       }
       
-      inline int getDegree() const
+      int getDegree() const
       {
 	return at(vecDV, 0, 0)->getFeSpace()->getBasisFcts()->getDegree();
       }
 
       template<typename OT>
-      inline void initElement(OT* ot, const ElInfo* elInfo,
-			      SubAssembler* subAssembler, Quadrature *quad, 
-			      const BasisFunction *basisFct = NULL)
+      void initElement(OT* ot, const ElInfo* elInfo,
+		       SubAssembler* subAssembler, Quadrature *quad, 
+		       const BasisFunction *basisFct = NULL)
       {
 	Matrix<mtl::dense_vector<T> > helper; resize(helper, num_rows(vecDV), num_cols(vecDV));
 	for (size_t i = 0; i < num_rows(vecDV); i++) {
 	for (size_t j = 0; j < num_cols(vecDV); j++) {
-	  if (ot && subAssembler)
-	    ot->getVectorAtQPs(at(vecDV, i, j), elInfo, subAssembler, quad, at(helper, i, j));
+	  if (subAssembler)
+	    subAssembler->getVectorAtQPs(at(vecDV, i, j), elInfo, quad, at(helper, i, j));
 	  else if (quad)
 	    at(vecDV, i, j)->getVecAtQPs(elInfo, quad, NULL, at(helper, i, j));	
 	  else if (basisFct) {
@@ -195,16 +148,7 @@ namespace AMDiS
 	}
       }
 
-
-      template<typename OT>
-      inline void initElement(OT* ot, const ElInfo* smallElInfo, const ElInfo* largeElInfo,
-			      SubAssembler* subAssembler, Quadrature *quad, 
-			      const BasisFunction *basisFct = NULL)
-      {      
-	initElement(ot, smallElInfo, subAssembler, quad, basisFct);
-      }
-
-      inline value_type operator()(const int& iq) const { return vec[iq]; }
+      value_type operator()(const int& iq) const { return vec[iq]; }
       
       std::string str() const { return std::string("value_(") + at(vecDV, 0, 0)->getName() + ")"; }
     };
@@ -229,26 +173,26 @@ namespace AMDiS
       }
 
       template<typename List>
-      inline void insertFeSpaces(List& feSpaces) const
+      void insertFeSpaces(List& feSpaces) const
       {
 	for (size_t i = 0; i < num_rows(vecDV); i++)
 	  feSpaces.insert(at(vecDV, i)->getFeSpace());
       }
       
-      inline int getDegree() const
+      int getDegree() const
       {
 	return at(vecDV, 0)->getFeSpace()->getBasisFcts()->getDegree();
       }
 
       template<typename OT>
-      inline void initElement(OT* ot, const ElInfo* elInfo,
-			      SubAssembler* subAssembler, Quadrature *quad, 
-			      const BasisFunction *basisFct = NULL)
+      void initElement(OT* ot, const ElInfo* elInfo,
+		       SubAssembler* subAssembler, Quadrature *quad, 
+		       const BasisFunction *basisFct = NULL)
       {
 	Vector<mtl::dense_vector<T> > helper; resize(helper, num_rows(vecDV));
 	for (size_t i = 0; i < num_rows(vecDV); i++) {
-	  if (ot && subAssembler)
-	    ot->getVectorAtQPs(at(vecDV, i), elInfo, subAssembler, quad, at(helper, i));
+	  if (subAssembler)
+	    subAssembler->getVectorAtQPs(at(vecDV, i), elInfo, quad, at(helper, i));
 	  else if (quad)
 	    at(vecDV, i)->getVecAtQPs(elInfo, quad, NULL, at(helper, i));	
 	  else if (basisFct) {
@@ -274,16 +218,7 @@ namespace AMDiS
 	}
       }
 
-
-      template<typename OT>
-      inline void initElement(OT* ot, const ElInfo* smallElInfo, const ElInfo* largeElInfo,
-			      SubAssembler* subAssembler, Quadrature *quad, 
-			      const BasisFunction *basisFct = NULL)
-      {      
-	initElement(ot, smallElInfo, subAssembler, quad, basisFct);
-      }
-
-      inline value_type operator()(const int& iq) const { return vec[iq]; }
+      value_type operator()(const int& iq) const { return vec[iq]; }
       
       std::string str() const { return std::string("value_(") + at(vecDV, 0)->getName() + ")"; }
     };
@@ -307,23 +242,23 @@ namespace AMDiS
       ComponentOf(DOFVector<Vector<T> >* vector, int I_) : vecDV(vector), I(I_) {}
 
       template<typename List>
-      inline void insertFeSpaces(List& feSpaces) const
+      void insertFeSpaces(List& feSpaces) const
       {
 	feSpaces.insert(vecDV->getFeSpace());
       }
       
-      inline int getDegree() const
+      int getDegree() const
       {
 	return vecDV->getFeSpace()->getBasisFcts()->getDegree();
       }
 
       template<typename OT>
-      inline void initElement(OT* ot, const ElInfo* elInfo,
+      void initElement(OT* ot, const ElInfo* elInfo,
 			      SubAssembler* subAssembler, Quadrature *quad, 
 			      const BasisFunction *basisFct = NULL)
       {
-	if (ot && subAssembler)
-	  ot->getVectorAtQPs(vecDV, elInfo, subAssembler, quad, vec);
+	if (subAssembler)
+	  subAssembler->getVectorAtQPs(vecDV, elInfo, quad, vec);
 	else if (quad)
 	  vecDV->getVecAtQPs(elInfo, quad, NULL, vec);
 	else if (basisFct) {
@@ -341,34 +276,9 @@ namespace AMDiS
 	}
       }
 
-
-      template<typename OT>
-      inline void initElement(OT* ot, const ElInfo* smallElInfo, const ElInfo* largeElInfo,
-			      SubAssembler* subAssembler, Quadrature *quad, 
-			      const BasisFunction *basisFct = NULL)
-      {
-	if (ot && subAssembler)
-	  ot->getVectorAtQPs(vecDV, smallElInfo, largeElInfo, subAssembler, quad, vec);
-	else if (quad)
-	  vecDV->getVecAtQPs(smallElInfo, largeElInfo, quad, NULL, vec);
-	else if (basisFct) {
-	  const BasisFunction *localBasisFct = vecDV->getFeSpace()->getBasisFcts();
-	  
-	  // get coefficients of DOFVector
-	  coeff.change_dim(localBasisFct->getNumber());
-	  vecDV->getLocalVector(smallElInfo->getElement(), coeff);
-	  
-	  // eval basisfunctions of DOFVector at coords of given basisFct
-	  size_t nBasisFct = basisFct->getNumber();
-	  vec.change_dim(nBasisFct);	
-	  for (size_t i = 0; i < nBasisFct; i++)
-	    vec[i] = localBasisFct->evalUh(*basisFct->getCoords(i), coeff);
-	}
-      }
-
-      inline value_type operator()(const int& iq) const { return vec[iq][I]; }
+      value_type operator()(const int& iq) const { return vec[iq][I]; }
       
-      std::string str() const { return std::string("comp<") + boost::lexical_cast<std::string>(I) + ">(" + vecDV->getName() + ")"; }
+      std::string str() const { return std::string("comp<") + std::to_string(I) + ">(" + vecDV->getName() + ")"; }
     };
 
 
@@ -377,61 +287,35 @@ namespace AMDiS
   // value of a DOFVector<T>
   // ___________________________________________________________________________
 
-  // with Name
-  template<typename Name, typename T>
+  template <class Name = _unknown, class T>
   expressions::ValueOf<DOFVector<T>, Name > valueOf(DOFVector<T>& vector) 
   { return expressions::ValueOf<DOFVector<T>, Name >(vector); }
 
-  template<typename Name, typename T>
+  template <class Name = _unknown, class T>
   expressions::ValueOf<DOFVector<T>, Name > valueOf(DOFVector<T>* vector) 
   { return expressions::ValueOf<DOFVector<T>, Name >(vector); }
 
-  template<typename Name, template<class> class Matrix, typename T>
+  template <class Name = _unknown, template<class> class Matrix, class T>
   typename boost::enable_if<typename traits::is_matrix<Matrix<T> >::type, 
     expressions::ValueOf<Matrix<DOFVector<T>*>, Name > >::type
   valueOf(Matrix<DOFVector<T>*> &mat) 
   { return expressions::ValueOf<Matrix<DOFVector<T>*>, Name >(mat); }
 
-  template<typename Name, template<class> class Vector, typename T>
+  template <class Name = _unknown, template<class> class Vector, class T>
   typename boost::enable_if<typename traits::is_vector<Vector<T> >::type, 
     expressions::ValueOf<Vector<DOFVector<T>*>, Name > >::type
   valueOf(Vector<DOFVector<T>*> &vector) 
   { return expressions::ValueOf<Vector<DOFVector<T>*>, Name >(vector); }
-
-
-  // without Name
-  template<typename T>
-  expressions::ValueOf<DOFVector<T>, _unknown > valueOf(DOFVector<T>& vector) 
-  { return expressions::ValueOf<DOFVector<T>, _unknown >(vector); }
-
-  template<typename T>
-  expressions::ValueOf<DOFVector<T>, _unknown > valueOf(DOFVector<T>* vector) 
-  { return expressions::ValueOf<DOFVector<T>, _unknown >(vector); }
-
-  template<template<class> class Matrix, typename T>
-  typename boost::enable_if<typename traits::is_matrix<Matrix<T> >::type, 
-    expressions::ValueOf<Matrix<DOFVector<T>*>, _unknown > >::type
-  valueOf(Matrix<DOFVector<T>*> &mat) 
-  { return expressions::ValueOf<Matrix<DOFVector<T>*>, _unknown >(mat); }
-
-  template<template<class> class Vector, typename T>
-  typename boost::enable_if<typename traits::is_vector<Vector<T> >::type, 
-    expressions::ValueOf<Vector<DOFVector<T>*>, _unknown > >::type
-  valueOf(Vector<DOFVector<T>*> &vector) 
-  { return expressions::ValueOf<Vector<DOFVector<T>*>, _unknown >(vector); }
-
   
   // component of a DOFVector<Vector>
   // ___________________________________________________________________________
 
-  template<template<class> class Vector, typename T>
+  template <template<class> class Vector, class T>
   expressions::ComponentOf<DOFVector<Vector<T> > > componentOf(DOFVector<Vector<T> >& vector, int I) 
   { return expressions::ComponentOf<DOFVector<Vector<T> > >(vector, I); }
 
-  template<template<class> class Vector, typename T>
+  template <template<class> class Vector, class T>
   expressions::ComponentOf<DOFVector<Vector<T> > > componentOf(DOFVector<Vector<T> >* vector, int I) 
   { return expressions::ComponentOf<DOFVector<Vector<T> > >(vector, I); }
 
 } // end namespace AMDiS
-
-#endif // AMDIS_VALUE_OF_HPP

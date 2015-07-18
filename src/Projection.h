@@ -1,35 +1,13 @@
-/******************************************************************************
- *
- * AMDiS - Adaptive multidimensional simulations
- *
- * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
- * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
- *
- * Authors: 
- * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
- *
- * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
- * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
- *
- *
- * This file is part of AMDiS
- *
- * See also license.opensource.txt in the distribution.
- * 
- ******************************************************************************/
-
-
-
 /** \file Projection.h */
 
-#ifndef AMDIS_PROJECTION_H
-#define AMDIS_PROJECTION_H
+#pragma once
 
-#include "FixVec.h"
 #include <map>
 
-namespace AMDiS {
+#include "FixVec.h"
 
+namespace AMDiS 
+{
   /// Different possible types for a \ref Projection.
   enum ProjectionType {
     BOUNDARY_PROJECTION = 0, /**< Projection of boundary parts of an element. */
@@ -91,8 +69,7 @@ namespace AMDiS {
     static std::map<int, Projection*> projectionMap;
   };
 
-}
+} // end namespace AMDiS
 
 #include "BallProject.h"
 #include "CylinderProject.h"
-#endif

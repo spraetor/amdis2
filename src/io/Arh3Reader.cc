@@ -130,12 +130,11 @@ namespace AMDiS { namespace io {
       
       if(writeParallel) 
       {
-	using boost::lexical_cast;
 	int sPos = filename.find(".arh");
 	TEST_EXIT(sPos >= 0)("Failed to find file postfix!\n");
 	string name = filename.substr(0, sPos);
 #ifdef HAVE_PARALLEL_DOMAIN_AMDIS
-	filename = name + "-p" + lexical_cast<string>(MPI::COMM_WORLD.Get_rank()) + "-.arh";
+	filename = name + "-p" + std::to_string(MPI::COMM_WORLD.Get_rank()) + "-.arh";
 #endif
       }
       
@@ -162,12 +161,11 @@ namespace AMDiS { namespace io {
       
       if (writeParallel)
       {
-	using boost::lexical_cast;
 	int sPos = filename.find(".arh");
 	TEST_EXIT(sPos >= 0)("Failed to find file postfix!\n");
 	string name = filename.substr(0, sPos);
 #ifdef HAVE_PARALLEL_DOMAIN_AMDIS
-	filename = name + "-p" + lexical_cast<string>(MPI::COMM_WORLD.Get_rank()) + "-.arh";
+	filename = name + "-p" + std::to_string(MPI::COMM_WORLD.Get_rank()) + "-.arh";
 #endif
       }
       
@@ -191,12 +189,11 @@ namespace AMDiS { namespace io {
       
       if(writeParallel)
       {
-	using boost::lexical_cast;
 	int sPos = filename.find(".arh");
 	TEST_EXIT(sPos >= 0)("Failed to find file postfix!\n");
 	string name = filename.substr(0, sPos);
 #ifdef HAVE_PARALLEL_DOMAIN_AMDIS
-	filename = name + "-p" + lexical_cast<string>(MPI::COMM_WORLD.Get_rank()) + "-.arh";
+	filename = name + "-p" + std::to_string(MPI::COMM_WORLD.Get_rank()) + "-.arh";
 #endif
       }
       
@@ -286,7 +283,7 @@ namespace AMDiS { namespace io {
 	if (nProc == 1)
 	  arhFilename += ".arh";
 	else
-	  arhFilename += "-p" + boost::lexical_cast<string>(*it) + "-.arh";
+	  arhFilename += "-p" + std::to_string(*it) + "-.arh";
 
 	MSG("ARH2 file read from: %s\n", arhFilename.c_str());
 	detail::read(arhFilename, mesh, vecs);
@@ -367,7 +364,7 @@ namespace AMDiS { namespace io {
       // That is, if there are no more or less files as nProcs
       int i = 0;
       for (; i < nProcs + 1; i++) {
-	string fn = filename + "-p" + boost::lexical_cast<string>(i) + "-.arh";
+	string fn = filename + "-p" + std::to_string(i) + "-.arh";
 	if(!boost::filesystem::exists(fn)) break;
       }
       TEST_EXIT(i == nProcs)
@@ -378,7 +375,7 @@ namespace AMDiS { namespace io {
       
       //collect data      
       for (int i = 0; i < nProcs; i++) {
-	string fn = filename + "-p" + boost::lexical_cast<string>(i) + "-.arh";
+	string fn = filename + "-p" + std::to_string(i) + "-.arh";
 	detail::readMetaFromSgArh(fn, i, data);
       }
       

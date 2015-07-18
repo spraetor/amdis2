@@ -1,43 +1,21 @@
-/******************************************************************************
- *
- * AMDiS - Adaptive multidimensional simulations
- *
- * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
- * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
- *
- * Authors: 
- * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
- *
- * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
- * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
- *
- *
- * This file is part of AMDiS
- *
- * See also license.opensource.txt in the distribution.
- * 
- ******************************************************************************/
-
-
-
 /** \file QPsiPhi.h */
 
-#ifndef AMDIS_ASSEMBLE_H
-#define AMDIS_ASSEMBLE_H
+#pragma once
 
 #include <list>
+
 #include "AMDiS_fwd.h"
 #include "DOFAdmin.h"
 
-namespace AMDiS {
-
+namespace AMDiS 
+{
   /**
    * \ingroup Integration
    *
    * \brief
    * Used for the comparison of two QPsiPhi objects in find_if.
    */
-  template<typename T>
+  template <class T>
   class compareQPsiPhi : public std::unary_function<bool, T*>
   {
   public:
@@ -71,7 +49,7 @@ namespace AMDiS {
    * \brief
    * Used for the comparison of two QPsi objects in find_if.
    */
-  template<typename T>
+  template <class T>
   class compareQPsi : public std::unary_function<bool, T*>
   {
   public:
@@ -774,6 +752,4 @@ namespace AMDiS {
     friend class compareQPsi<Q1Psi>;
   };
 
-}
-
-#endif // AMDIS_ASSEMBLE_H
+} // end namespace AMDiS

@@ -88,17 +88,18 @@ namespace AMDiS  { namespace io {
 	class BinaryStream: public stringstream
 	{
 	  public:
-	    explicit BinaryStream(bool hp = false, ios_base::openmode mode = ios_base::in | ios_base::out | ios_base::binary) :
-	    stringstream(mode | ios_base::binary){
+	    explicit BinaryStream(bool hp = false, ios_base::openmode mode = ios_base::in | ios_base::out | ios_base::binary) 
+	      : stringstream(mode | ios_base::binary)
+	    {
 	      highPrecision = hp;
 	    }
 	    
-	    inline bool isHighPrecision()
+	    bool isHighPrecision()
 	    {
 	      return highPrecision;
 	    }
 	    
-	    inline int getSize()
+	    int getSize()
 	    {
 	      seekp(0, ios::end);
 	      return boost::lexical_cast<int>(tellp());

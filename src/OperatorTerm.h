@@ -1,35 +1,14 @@
-/******************************************************************************
- *
- * AMDiS - Adaptive multidimensional simulations
- *
- * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
- * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
- *
- * Authors: 
- * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
- *
- * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
- * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
- *
- *
- * This file is part of AMDiS
- *
- * See also license.opensource.txt in the distribution.
- * 
- ******************************************************************************/
-
-
-
 /** \file OperatorTerm.h */
 
-#ifndef AMDIS_OPERATORTERM_H
-#define AMDIS_OPERATORTERM_H
+#pragma once
 
 #include <set>
+
 #include "AMDiS_fwd.h"
 #include "SubAssembler.h"
 
-namespace AMDiS {
+namespace AMDiS 
+{
 
   /** 
    * \ingroup Assembler
@@ -64,7 +43,6 @@ namespace AMDiS {
     {
       initImpl(elInfo, subAssembler, quad);
     }
-
 
     /// Returs \auxFeSpaces, the list of all aux fe spaces the operator makes 
     /// use off.
@@ -107,23 +85,6 @@ namespace AMDiS {
     {
       evalImpl(nPoints, uhAtQP, grdUhAtQP, D2UhAtQP, result, factor);
     }
-
-    /// Determines the value of a dof vector at the quadrature points of a given 
-    /// element. It is used by all VecAtQP like operator terms.
-    template <class T>
-    void getVectorAtQPs(DOFVectorBase<T>* vec,
-			const ElInfo* elInfo, 
-			SubAssembler* subAssembler,
-			Quadrature *quad,
-			mtl::dense_vector<T>& vecAtQPs);
-
-    ///
-    template <class T>
-    void getGradientsAtQPs( DOFVectorBase<T>* vec,
-			    const ElInfo* elInfo,
-			    SubAssembler* subAssembler,
-			    Quadrature *quad,
-			    mtl::dense_vector<typename GradientType<T>::type>& grdAtQPs);
     
   private:
     // default behavior: init nothing
@@ -177,7 +138,8 @@ namespace AMDiS {
   
   /// helper class to adopt the correct OperatorTerm based on the term order
   template <int Order>
-  struct GetTerm {
+  struct GetTerm 
+  {
     typedef typename if_c<Order == 0, ZeroOrderTerm, 
 	    typename if_c<Order == 1, FirstOrderTerm, 
 	    typename if_c<Order == 2, SecondOrderTerm,
@@ -213,10 +175,9 @@ namespace AMDiS {
 			  SubAssembler* subAssembler,
 			  Quadrature* quad) override
     {
-      expr.init(this, elInfo, subAssembler, quad, NULL);
+      expr.init(elInfo, subAssembler, quad, NULL);
     }
     
-
     /// test for only one mesh allowed in expressions
     template <class FeSpaceList>
     void test_auxFeSpaces(FeSpaceList const& auxFeSpaces)
@@ -232,6 +193,7 @@ namespace AMDiS {
       }
     }
   };
+  
 
   template <class Expr>
   struct GenericOperatorTerm<Expr, -1> : public GenericOperatorTerm<Expr, -2>

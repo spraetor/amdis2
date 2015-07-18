@@ -1,24 +1,3 @@
-/******************************************************************************
- *
- * AMDiS - Adaptive multidimensional simulations
- *
- * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
- * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
- *
- * Authors: 
- * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
- *
- * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
- * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
- *
- *
- * This file is part of AMDiS
- *
- * See also license.opensource.txt in the distribution.
- * 
- ******************************************************************************/
-
-
 #include "parallel/ParallelDebug.h"
 #include "parallel/MeshDistributor.h"
 #include "parallel/MpiHelper.h"
@@ -31,7 +10,10 @@
 #include "io/VtkWriter.h"
 #include "ElementDofIterator.h"
 
-namespace AMDiS { namespace Parallel {
+namespace AMDiS 
+{ 
+  namespace Parallel 
+  {
 
   using namespace std;
 
@@ -862,7 +844,7 @@ namespace AMDiS { namespace Parallel {
     int i = 0;
     MeshToFeSpaces::iterator it = meshToFeSpaces.begin();
     while(it != meshToFeSpaces.end()) {
-      string prefix = debugOutputDir + "mpi-dbg-mesh" + boost::lexical_cast<string>(i);
+      string prefix = debugOutputDir + "mpi-dbg-mesh" + std::to_string(i);
       writeDebugFile(it->second[it->second.size() - 1],
 		     dofMap, prefix, "dat");
       it++;
@@ -1172,7 +1154,7 @@ namespace AMDiS { namespace Parallel {
   
   void ParallelDebug::writeDofMap(ParallelDofMapping &dofMap, int component, string filename, string postfix)
   {
-    filename += boost::lexical_cast<std::string>(MPI::COMM_WORLD.Get_rank());
+    filename += std::to_string(MPI::COMM_WORLD.Get_rank());
     filename = filename + "." + postfix;
      
     ofstream file;
@@ -1263,7 +1245,7 @@ namespace AMDiS { namespace Parallel {
   void ParallelDebug::writeInterchangeVector(MeshDistributor &pdb, string debugOutputDir)
   {
     for (size_t i = 0; i < pdb.interchangeVectors.size(); i++) {
-      string filename = debugOutputDir + "-int" + boost::lexical_cast<string>(i) + ".vtu";
+      string filename = debugOutputDir + "-int" + std::to_string(i) + ".vtu";
       io::VtkWriter::writeFile(pdb.interchangeVectors[i], filename);
     }
   }

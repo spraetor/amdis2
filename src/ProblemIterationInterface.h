@@ -1,34 +1,11 @@
-/******************************************************************************
- *
- * AMDiS - Adaptive multidimensional simulations
- *
- * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
- * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
- *
- * Authors: 
- * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
- *
- * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
- * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
- *
- *
- * This file is part of AMDiS
- *
- * See also license.opensource.txt in the distribution.
- * 
- ******************************************************************************/
-
-
-
 /** \file ProblemIterationInterface.h */
 
-#ifndef AMDIS_PROBLEMITERATIONINTERFACE_H
-#define AMDIS_PROBLEMITERATIONINTERFACE_H
+#pragma once
 
 #include "Flag.h"
 
-namespace AMDiS {
-
+namespace AMDiS 
+{
   class AdaptInfo;
   class ProblemStatBase;
 
@@ -67,6 +44,7 @@ namespace AMDiS {
     /// Called after each adaption loop iteration.
     virtual void endIteration(AdaptInfo *adaptInfo) {}
 
+#if 0
     /// Returns number of managed problems
     virtual int getNumProblems() = 0;
 
@@ -81,15 +59,10 @@ namespace AMDiS {
     { 
       return NULL; 
     }
+#endif
 
     /// Returns the name of the problem.
     virtual std::string getName() = 0;
-
-    /// Function that serializes the problem plus information about the iteration.
-    virtual void serialize(std::ostream &out) = 0;
-
-    /// Function that deserializes the problem plus information about the iteration.
-    virtual void deserialize(std::istream &in) = 0;
   };
 
 }

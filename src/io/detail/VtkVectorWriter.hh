@@ -40,7 +40,6 @@
 #include <boost/filesystem/convenience.hpp>
 #include <boost/iostreams/filtering_stream.hpp>
 #include <boost/iostreams/device/file_descriptor.hpp>
-#include <boost/lexical_cast.hpp>
 
 #ifdef HAVE_COMPRESSION
 #include <boost/iostreams/filter/gzip.hpp>
@@ -129,12 +128,12 @@ namespace AMDiS
 	  int numComponent = num_rows(temp);
 	  std::string name = (*dataCollector)[i]->getValues()->getName();
 	  if (name.find_first_not_of(" \n\r\t") == std::string::npos)
-	    name = "value" + boost::lexical_cast<std::string>(i);
+	    name = "value" + std::to_string(i);
 	  
 	  file << "      <PDataArray type=\"Float32\" Name=\""
 	      << name
 	      << "\" format=\"ascii\""
-	      << (numComponent > 1 ? " NumberOfComponents=\"" + boost::lexical_cast<std::string>(numComponent) + "\"" : "")
+	      << (numComponent > 1 ? " NumberOfComponents=\"" + std::to_string(numComponent) + "\"" : "")
 	      << "/>\n";
 	}
 	      
@@ -223,11 +222,11 @@ namespace AMDiS
 	  int numComponent = num_rows(temp);
 	  std::string name = (*dataCollector)[i]->getValues()->getName();
 	  if (name.find_first_not_of(" \n\r\t") == std::string::npos)
-	    name = "value" + boost::lexical_cast<std::string>(i);
+	    name = "value" + std::to_string(i);
 	  
 	  file << "        <DataArray type=\"Float32\" Name=\""
 	      << name
-	      << "\" format=\"ascii\"" << (numComponent > 1 ? " NumberOfComponents=\"" + boost::lexical_cast<std::string>(numComponent) + "\"" : "") << ">\n";
+	      << "\" format=\"ascii\"" << (numComponent > 1 ? " NumberOfComponents=\"" + std::to_string(numComponent) + "\"" : "") << ">\n";
 
 	  writeVertexValues(file, i);
 	  

@@ -35,7 +35,7 @@ namespace AMDiS
   namespace expressions 
   {  
     /// Expressions that extracts the gradient of a DOFVector at QPs
-    template<typename Vector, typename Name>
+    template <class Vector, class Name>
     struct HessianOf : public LazyOperatorTermBase
     {
       typedef typename traits::category<Vector>::value_type  T;
@@ -49,7 +49,7 @@ namespace AMDiS
       HessianOf(Vector& vector) : vecDV(&vector) {}
       HessianOf(Vector* vector) : vecDV(vector) {}
 
-      template<typename List>
+      template <class List>
       void insertFeSpaces(List& feSpaces) const
       {
 	feSpaces.insert(vecDV->getFeSpace());
@@ -60,7 +60,7 @@ namespace AMDiS
 	return vecDV->getFeSpace()->getBasisFcts()->getDegree() /* -1 */;
       }
 
-      template<typename OT>
+      template <class OT>
       void initElement(OT* ot, const ElInfo* elInfo,
 		      SubAssembler* subAssembler, Quadrature *quad, 
 		      const BasisFunction *basisFct = NULL)
@@ -87,16 +87,6 @@ namespace AMDiS
 	}
       }
 
-
-      template<typename OT>
-      inline void initElement(OT* ot, const ElInfo* smallElInfo, const ElInfo* largeElInfo,
-			      SubAssembler* subAssembler, Quadrature *quad, 
-			      const BasisFunction *basisFct = NULL)
-      { FUNCNAME("HessianOf::initElement");
-      
-	ERROR_EXIT("Hessian expression not yet implemented for Dual-mesh!\n");
-      }
-
       value_type operator()(const int& iq) const { return vec[iq]; }
       
       std::string str() const { return std::string("hessian(") + vecDV->getName() + ")"; }
@@ -104,7 +94,7 @@ namespace AMDiS
       
     
     /// Expressions that extracts the partial derivative of a DOFVector at QPs
-    template<typename Vector, typename Name>
+    template <class Vector, class Name>
     struct LaplacianOf : public LazyOperatorTermBase
     {
       typedef typename traits::category<Vector>::value_type   T;
@@ -131,7 +121,7 @@ namespace AMDiS
 	return vecDV->getFeSpace()->getBasisFcts()->getDegree() /* -1 */;
       }
 
-      template<typename OT>
+      template <class OT>
       void initElement(OT* ot, const ElInfo* elInfo,
 		      SubAssembler* subAssembler, Quadrature *quad, 
 		      const BasisFunction *basisFct = NULL)
@@ -168,15 +158,6 @@ namespace AMDiS
 	}
       }
 
-      template<typename OT>
-      void initElement(OT* ot, const ElInfo* smallElInfo, const ElInfo* largeElInfo,
-		      SubAssembler* subAssembler, Quadrature *quad, 
-		      const BasisFunction *basisFct = NULL)
-      { FUNCNAME("LaplacianOf::initElement");
-      
-	ERROR_EXIT("Laplacian expression not yet implemented for Dual-mesh!\n");
-      }
-
       value_type operator()(const int& iq) const { return vec[iq]; }
       
       std::string str() const { return std::string("laplace(") + vecDV->getName() + ")"; }
@@ -188,45 +169,26 @@ namespace AMDiS
   // gradient of a DOFVector
   // _____________________________________________________________________________
 
-  // with Name
-  template<typename Name, typename T>
+  template <class Name = _unknown, class T>
   expressions::HessianOf<DOFVector<T>, Name > hessianOf(DOFVector<T>& vector) 
   { return expressions::HessianOf<DOFVector<T>, Name >(vector); }
 
-  template<typename Name, typename T>
+  template <class Name = _unknown, class T>
   expressions::HessianOf<DOFVector<T>, Name > hessianOf(DOFVector<T>* vector) 
   { return expressions::HessianOf<DOFVector<T>, Name >(vector); }
-
-  // without Name
-  template<typename T>
-  expressions::HessianOf<DOFVector<T>, _unknown > hessianOf(DOFVector<T>& vector) 
-  { return expressions::HessianOf<DOFVector<T>, _unknown >(vector); }
-
-  template<typename T>
-  expressions::HessianOf<DOFVector<T>, _unknown > hessianOf(DOFVector<T>* vector) 
-  { return expressions::HessianOf<DOFVector<T>, _unknown >(vector); }
 
 
   // Partial derivative of a DOFVector
   // _____________________________________________________________________________
 
   // with Name
-  template<typename Name, typename T>
+  template <class Name = _unknown, class T>
   expressions::LaplacianOf<DOFVector<T>, Name > laplacianOf(DOFVector<T>& vector) 
   { return expressions::LaplacianOf<DOFVector<T>, Name >(vector); }
 
-  template<typename Name, typename T>
+  template <class Name = _unknown, class T>
   expressions::LaplacianOf<DOFVector<T>, Name > laplacianOf(DOFVector<T>* vector) 
   { return expressions::LaplacianOf<DOFVector<T>, Name >(vector); }
-
-  // without Name
-  template<typename T>
-  expressions::LaplacianOf<DOFVector<T>, _unknown > laplacianOf(DOFVector<T>& vector) 
-  { return expressions::LaplacianOf<DOFVector<T>, _unknown >(vector); }
-
-  template<typename T>
-  expressions::LaplacianOf<DOFVector<T>, _unknown > laplacianOf(DOFVector<T>* vector) 
-  { return expressions::LaplacianOf<DOFVector<T>, _unknown >(vector); }
 
 } // end namespace AMDiS
 

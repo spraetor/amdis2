@@ -1,29 +1,6 @@
-/******************************************************************************
- *
- * AMDiS - Adaptive multidimensional simulations
- *
- * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
- * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
- *
- * Authors: 
- * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
- *
- * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
- * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
- *
- *
- * This file is part of AMDiS
- *
- * See also license.opensource.txt in the distribution.
- * 
- ******************************************************************************/
-
-
-
 /** \file gradientOf.hpp */
 
-#ifndef AMDIS_GRADIENT_OF_HPP
-#define AMDIS_GRADIENT_OF_HPP
+#pragma once
 
 #include "AMDiS_fwd.h"
 #include "LazyOperatorTerm.h"
@@ -35,7 +12,7 @@ namespace AMDiS
   namespace expressions 
   {  
     /// Expressions that extracts the gradient of a DOFVector at QPs
-    template<typename Vector, typename Name>
+    template <class Vector, class Name>
     struct GradientOf : public LazyOperatorTermBase
     {
       typedef typename traits::category<Vector>::value_type T;
@@ -60,13 +37,13 @@ namespace AMDiS
 	return vecDV->getFeSpace()->getBasisFcts()->getDegree() /* -1 */;
       }
 
-      template<typename OT>
+      template <class OT>
       void initElement(OT* ot, const ElInfo* elInfo,
 		      SubAssembler* subAssembler, Quadrature *quad, 
 		      const BasisFunction *basisFct = NULL)
       {      
-	if (ot && subAssembler)
-	  ot->getGradientsAtQPs(vecDV, elInfo, subAssembler, quad, vec);
+	if (subAssembler)
+	  subAssembler->getGradientsAtQPs(vecDV, elInfo, quad, vec);
 	else if (quad)
 	  vecDV->getGrdAtQPs(elInfo, quad, NULL, vec);
 	else if (basisFct) {
@@ -86,33 +63,6 @@ namespace AMDiS
 	}
       }
 
-
-      template<typename OT>
-      inline void initElement(OT* ot, const ElInfo* smallElInfo, const ElInfo* largeElInfo,
-			      SubAssembler* subAssembler, Quadrature *quad, 
-			      const BasisFunction *basisFct = NULL)
-      {
-	if (ot && subAssembler)
-	  ot->getGradientsAtQPs(vecDV, smallElInfo, largeElInfo, subAssembler, quad, vec);
-	else if (quad)
-	  vecDV->getGrdAtQPs(smallElInfo, largeElInfo, quad, NULL, vec);
-	else if (basisFct) {
-	  const BasisFunction *localBasisFct = vecDV->getFeSpace()->getBasisFcts();
-	  
-	  // get coefficients of DOFVector
-	  coeff.change_dim(localBasisFct->getNumber());
-	  vecDV->getLocalVector(smallElInfo->getElement(), coeff);
-	  
-	  // eval basisfunctions of DOFVector at coords of given basisFct
-	  size_t nBasisFct = basisFct->getNumber();
-	  vec.change_dim(nBasisFct);	
-	  
-	  const DimVec<WorldVector<double> > &grdLambda = smallElInfo->getGrdLambda();
-	  for (size_t i = 0; i < nBasisFct; i++)
-	    localBasisFct->evalGrdUh(*basisFct->getCoords(i), grdLambda, coeff, vec[i]);
-	}
-      }
-
       value_type operator()(const int& iq) const { return vec[iq]; }
       
       std::string str() const { return std::string("grad(") + vecDV->getName() + ")"; }
@@ -120,7 +70,7 @@ namespace AMDiS
       
     
     /// Expressions that extracts the partial derivative of a DOFVector at QPs
-    template<int I, typename Vector, typename Name>
+    template <int I, class Vector, class Name>
     struct DerivativeOf : public LazyOperatorTermBase
     {
       typedef typename traits::category<Vector>::value_type T;
@@ -147,7 +97,7 @@ namespace AMDiS
 	  ("You yould specify eather template<int I>, or constructor(int I0)\n");
       }
 
-      template<typename List>
+      template <class List>
       void insertFeSpaces(List& feSpaces) const
       {
 	feSpaces.insert(vecDV->getFeSpace());
@@ -158,13 +108,13 @@ namespace AMDiS
 	return vecDV->getFeSpace()->getBasisFcts()->getDegree() /* -1 */;
       }
 
-      template<typename OT>
+      template <class OT>
       void initElement(OT* ot, const ElInfo* elInfo,
 		      SubAssembler* subAssembler, Quadrature *quad, 
 		      const BasisFunction *basisFct = NULL)
       {      
-	if (ot && subAssembler)
-	  ot->getGradientsAtQPs(vecDV, elInfo, subAssembler, quad, vec); //subAssembler->getDerivativeAtQPs(vecDV, elInfo, quad, comp, vec);
+	if (subAssembler) // TODO: use specialization for derivative instead of gradient!!!
+	  subAssembler->getGradientsAtQPs(vecDV, elInfo, quad, vec); //subAssembler->getDerivativeAtQPs(vecDV, elInfo, quad, comp, vec);
 	else if (quad)
 	  vecDV->getGrdAtQPs(elInfo, quad, NULL, vec); //vecDV->getDerivativeAtQPs(elInfo, quad, NULL, comp, vec);
 	else if (basisFct) {
@@ -188,45 +138,10 @@ namespace AMDiS
 	}
       }
 
-      template<typename OT>
-      void initElement(OT* ot, const ElInfo* smallElInfo, const ElInfo* largeElInfo,
-		      SubAssembler* subAssembler, Quadrature *quad, 
-		      const BasisFunction *basisFct = NULL)
-      {
-  //       if (op && subAssembler)
-  // 	ot->getGradientsAtQPs(vecDV, smallElInfo, largeElInfo, subAssembler, quad, vec);
-  //       else
-  // 	vecDV->getGrdAtQPs(smallElInfo, largeElInfo, localQuad, NULL, vec);
-	
-	if (ot && subAssembler)
-	  ot->getGradientsAtQPs(vecDV, smallElInfo, largeElInfo, subAssembler, quad, vec); //subAssembler->getDerivativeAtQPs(vecDV, smallElInfo, largeElInfo, quad, comp, vec);
-	else if (quad)
-	  vecDV->getGrdAtQPs(smallElInfo, largeElInfo, quad, NULL, vec); // vecDV->getDerivativeAtQPs(smallElInfo, largeElInfo, quad, NULL, comp, vec);
-	else if (basisFct) {
-	  const BasisFunction *localBasisFct = vecDV->getFeSpace()->getBasisFcts();
-	  
-	  // get coefficients of DOFVector
-	  coeff.change_dim(localBasisFct->getNumber());
-	  vecDV->getLocalVector(smallElInfo->getElement(), coeff);
-	  
-	  // eval basisfunctions of DOFVector at coords of given basisFct
-	  size_t nBasisFct = basisFct->getNumber();
-  // 	mtl::dense_vector<typename GradientType<T>::type> helper(nBasisFct);	
-	  
-	  const DimVec<WorldVector<double> > &grdLambda = smallElInfo->getGrdLambda();
-	  vec.change_dim(nBasisFct);
-	  for (size_t i = 0; i < nBasisFct; i++)
-	    localBasisFct->evalGrdUh(*basisFct->getCoords(i), grdLambda, coeff, vec[i]); //helper[i]);
-	  
-  // 	for (size_t i = 0; i < num_rows(helper); i++)
-  // 	  vec[i] = helper[i][comp];
-	}
-      }
-
       value_type operator()(const int& iq) const { return vec[iq][comp]; }
   //     value_type operator()(const int& iq) const { return vec[iq]; }
       
-      std::string str() const { return std::string("deriv<") + boost::lexical_cast<std::string>(I) + ">(" + vecDV->getName() + ")"; }
+      std::string str() const { return std::string("deriv<") + std::to_string(I) + ">(" + vecDV->getName() + ")"; }
     };
     
     
@@ -321,69 +236,43 @@ namespace AMDiS
   // _____________________________________________________________________________
 
   // with Name
-  template<typename Name, typename T>
+  template <class Name = _unknown, class T>
   expressions::GradientOf<DOFVector<T>, Name > gradientOf(DOFVector<T>& vector) 
   { return expressions::GradientOf<DOFVector<T>, Name >(vector); }
 
-  template<typename Name, typename T>
+  template <class Name = _unknown, class T>
   expressions::GradientOf<DOFVector<T>, Name > gradientOf(DOFVector<T>* vector) 
   { return expressions::GradientOf<DOFVector<T>, Name >(vector); }
-
-  // without Name
-  template<typename T>
-  expressions::GradientOf<DOFVector<T>, _unknown > gradientOf(DOFVector<T>& vector) 
-  { return expressions::GradientOf<DOFVector<T>, _unknown >(vector); }
-
-  template<typename T>
-  expressions::GradientOf<DOFVector<T>, _unknown > gradientOf(DOFVector<T>* vector) 
-  { return expressions::GradientOf<DOFVector<T>, _unknown >(vector); }
-
 
   // Partial derivative of a DOFVector
   // _____________________________________________________________________________
 
   // with Name
-  template<typename Name, int I, typename T>
+  template <class Name = _unknown, int I, class T>
   expressions::DerivativeOf<I, DOFVector<T>, Name > derivativeOf(DOFVector<T>& vector) 
   { return expressions::DerivativeOf<I, DOFVector<T>, Name >(vector); }
 
-  template<typename Name, int I, typename T>
+  template <class Name = _unknown, int I, class T>
   expressions::DerivativeOf<I, DOFVector<T>, Name > derivativeOf(DOFVector<T>* vector) 
   { return expressions::DerivativeOf<I, DOFVector<T>, Name >(vector); }
 
-  template<typename Name, typename T>
+  template <class Name = _unknown, class T>
   expressions::DerivativeOf<-1, DOFVector<T>, Name > derivativeOf(DOFVector<T>& vector, int I0) 
   { return expressions::DerivativeOf<-1, DOFVector<T>, Name >(vector, I0); }
 
-  template<typename Name, typename T>
+  template <class Name = _unknown, class T>
   expressions::DerivativeOf<-1, DOFVector<T>, Name > derivativeOf(DOFVector<T>* vector, int I0) 
   { return expressions::DerivativeOf<-1, DOFVector<T>, Name >(vector, I0); }
-
-
-  // without Name
-  template<int I, typename T>
-  expressions::DerivativeOf<I, DOFVector<T>, _unknown > derivativeOf(DOFVector<T>& vector) 
-  { return expressions::DerivativeOf<I, DOFVector<T>, _unknown >(vector); }
-
-  template<int I, typename T>
-  expressions::DerivativeOf<I, DOFVector<T>, _unknown > derivativeOf(DOFVector<T>* vector) 
-  { return expressions::DerivativeOf<I, DOFVector<T>, _unknown >(vector); }
-
-  template<typename T>
-  expressions::DerivativeOf<-1, DOFVector<T>, _unknown > derivativeOf(DOFVector<T>& vector, int I0) 
-  { return expressions::DerivativeOf<-1, DOFVector<T>, _unknown >(vector, I0); }
-
-  template<typename T>
-  expressions::DerivativeOf<-1, DOFVector<T>, _unknown > derivativeOf(DOFVector<T>* vector, int I0) 
-  { return expressions::DerivativeOf<-1, DOFVector<T>, _unknown >(vector, I0); }
 
 } // end namespace AMDiS
 
 
 // ------- something special needed for gradientOf(DOFVector<WorldVector>)
 #include <boost/numeric/mtl/operation/mult_result.hpp>
-namespace mtl {
-  namespace traits {
+namespace mtl 
+{
+  namespace traits 
+  {
   
     typedef AMDiS::WorldVector<AMDiS::WorldVector<double> > WWMatrix;
   
@@ -397,7 +286,7 @@ namespace mtl {
     struct mult_result<Op1, mtl::dense_vector<WWMatrix> > 
       : public mult_result_WWMatrix<Op1, typename boost::enable_if<is_matrix<Op1> >::type >
     {};
-  }
-}
-
-#endif // AMDIS_GRADIENT_OF_HPP
+    
+  } // end namespace traits
+  
+} // end namespace mtl

@@ -1,37 +1,14 @@
-/******************************************************************************
- *
- * AMDiS - Adaptive multidimensional simulations
- *
- * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
- * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
- *
- * Authors: 
- * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
- *
- * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
- * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
- *
- *
- * This file is part of AMDiS
- *
- * See also license.opensource.txt in the distribution.
- * 
- ******************************************************************************/
-
-
-
 /** \file ElementFunction.h */
 
-#ifndef AMDIS_ELEMENTFUNCTION_H
-#define AMDIS_ELEMENTFUNCTION_H
+#pragma once
 
 #include "DOFVector.h"
 #include "BasisFunction.h"
 
-namespace AMDiS {
-
+namespace AMDiS 
+{
   /// Abstract access to functions living on elements.
-  template<typename T>
+  template <class T>
   class ElementFunction // : public AbstractFunction<T, DimVec<double> >
   {
   public:
@@ -44,7 +21,7 @@ namespace AMDiS {
     virtual ~ElementFunction() {}
 
     /// sets \ref elInfo_;
-    inline void setElInfo(const ElInfo *elInfo_) 
+    void setElInfo(const ElInfo *elInfo_) 
     { 
       elInfo = elInfo_; 
     }
@@ -54,8 +31,9 @@ namespace AMDiS {
     const ElInfo *elInfo;
   };
 
+  
   /// ElementFunction wich encapsulates the evaluation of an analytical function.
-  template<typename T>
+  template <class T>
   class ElementFunctionAnalytic : public ElementFunction<T>
   {
   public:
@@ -80,7 +58,7 @@ namespace AMDiS {
 
 
   /// ElementFunction wich encapsulates the interpolation of an DOFVector.
-  template<typename T>
+  template <class T>
   class ElementFunctionDOFVec : public ElementFunction<T>
   {
   public:
@@ -104,8 +82,9 @@ namespace AMDiS {
     const DOFVector<T> *dofVector;
   };
   
+  
   /// Abstract access to functions living on elements, but using world coordinates
-  template<typename T>
+  template <class T>
   class ElementFunctionWorld // : public AbstractFunction<T, WorldVector<double> >
   {
   public:
@@ -131,7 +110,7 @@ namespace AMDiS {
     }
     
     /// sets \ref elInfo_;
-    inline void setElInfo(const ElInfo *elInfo_) 
+    void setElInfo(const ElInfo *elInfo_) 
     {
       elInfo = elInfo_; 
       vec->getLocalVector(elInfo->getElement(), localCoeff);
@@ -154,6 +133,4 @@ namespace AMDiS {
     double factor;
   };
 
-}
-
-#endif
+} //end namespace AMDiS

@@ -138,7 +138,7 @@ namespace AMDiS {
   {
     FUNCNAME("ProblemImplicit::getDofFilename()");
     std::string suffix = "[" + 
-      boost::lexical_cast< std::string >(implMesh) +
+      std::to_string(implMesh) +
       "]";
 
     std::string dofFilename("");
@@ -157,7 +157,7 @@ namespace AMDiS {
   double ProblemImplicit::getEpsilon(std::string path, int implMesh)
   {
     std::string suffix = "[" + 
-      boost::lexical_cast< std::string >(implMesh) +
+      std::to_string(implMesh) +
       "]";
 
     double eps(-1);
@@ -171,7 +171,7 @@ namespace AMDiS {
   int ProblemImplicit::getType(std::string path, int implMesh)
   {
     std::string suffix = "[" + 
-      boost::lexical_cast< std::string >(implMesh) +
+      std::to_string(implMesh) +
       "]";
     int serType(-1);
     Parameters::get(path + "type" + suffix, serType);
@@ -232,7 +232,7 @@ namespace AMDiS {
   bool ProblemImplicit::createImplicitMesh(int p) 
   {
     std::string path = name + "->implicit mesh[" 
-      + boost::lexical_cast< std::string >(p) + "]->";
+      + std::to_string(p) + "]->";
     int nImplMeshes(0);
     Parameters::get(path + "nr meshes", nImplMeshes);
     if (nImplMeshes == 0)
@@ -295,7 +295,7 @@ namespace AMDiS {
     implMesh.resize(meshes.size());
     for (unsigned int i = 0 ; i < meshes.size() ; ++i ) {
       std::string path = name + "->implicit mesh[" +
-	boost::lexical_cast< std::string >(i) + "]";
+	std::to_string(i) + "]";
       std::string meshFilename("");
       Parameters::get(path + "->macro file name", meshFilename);
       std::string serFilename("");

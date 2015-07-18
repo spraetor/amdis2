@@ -1,37 +1,19 @@
-/******************************************************************************
- *
- * AMDiS - Adaptive multidimensional simulations
- *
- * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
- * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
- *
- * Authors: 
- * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
- *
- * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
- * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
- *
- *
- * This file is part of AMDiS
- *
- * See also license.opensource.txt in the distribution.
- * 
- ******************************************************************************/
-
-
 #include <algorithm>
 #include <fstream>
+
 #include <boost/algorithm/string.hpp>
 #include <boost/lexical_cast.hpp>
+
 #include "Spreadsheet.h"
 #include "Global.h"
 
-namespace AMDiS { namespace io {
+namespace AMDiS 
+{ 
+  namespace io 
+  {
   
   using namespace std;
   using namespace boost;
-
-  using boost::lexical_cast;
   
   void Spreadsheet::write(string filename)
   {
@@ -86,7 +68,7 @@ namespace AMDiS { namespace io {
 
       vector<double> lineData(lineSplit.size());
       for (unsigned int i = 0; i < lineSplit.size(); i++)
-	lineData[i] = lexical_cast<double>(lineSplit[i]);
+	lineData[i] = boost::lexical_cast<double>(lineSplit[i]);
 
       data.push_back(lineData);
     }
