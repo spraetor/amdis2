@@ -52,17 +52,17 @@ SET(AMDIS_SRC ${SOURCE_DIR}/AdaptBase.cc
 	      ${SOURCE_DIR}/AdaptStationary.cc
 	      ${SOURCE_DIR}/AMDiS.cc
 	      ${SOURCE_DIR}/Assembler.cc
-#	      ${SOURCE_DIR}/BasisFunction.cc
-#	      ${SOURCE_DIR}/Boundary.cc
-#	      ${SOURCE_DIR}/BoundaryManager.cc
-#	      ${SOURCE_DIR}/BoundaryObject.cc
-#	      ${SOURCE_DIR}/CoarseningManager.cc
-#	      ${SOURCE_DIR}/CoarseningManager1d.cc
-#	      ${SOURCE_DIR}/CoarseningManager2d.cc
-#	      ${SOURCE_DIR}/CoarseningManager3d.cc
-#	      ${SOURCE_DIR}/ComponentTraverseInfo.cc
-#	      ${SOURCE_DIR}/CouplingIterationInterface.cc
-#	      ${SOURCE_DIR}/CreatorMap.cc
+	      ${SOURCE_DIR}/BasisFunction.cc
+	      ${SOURCE_DIR}/Boundary.cc
+	      ${SOURCE_DIR}/BoundaryManager.cc
+	      ${SOURCE_DIR}/BoundaryObject.cc
+	      ${SOURCE_DIR}/CoarseningManager.cc
+	      ${SOURCE_DIR}/CoarseningManager1d.cc
+	      ${SOURCE_DIR}/CoarseningManager2d.cc
+	      ${SOURCE_DIR}/CoarseningManager3d.cc
+	      ${SOURCE_DIR}/ComponentTraverseInfo.cc
+	      ${SOURCE_DIR}/CouplingIterationInterface.cc
+	      ${SOURCE_DIR}/CreatorMap.cc
 #	      ${SOURCE_DIR}/DOFAdmin.cc
 #	      ${SOURCE_DIR}/DOFIndexed.cc
 #	      ${SOURCE_DIR}/DOFMatrix.cc

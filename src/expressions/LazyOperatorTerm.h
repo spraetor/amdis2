@@ -17,8 +17,8 @@ namespace AMDiS
     // TODO: remove OT-template and implement class with variadic templates
     template <class OT>
     void initElement(OT* ot, const ElInfo* elInfo,
-		      SubAssembler* subAssembler, Quadrature *quad, 
-		    const BasisFunction *basisFct = NULL) {}
+          		       SubAssembler* subAssembler, Quadrature *quad, 
+          		       const BasisFunction *basisFct = NULL) {}
 		    
   protected: 
     virtual void helper() {}
@@ -39,8 +39,8 @@ namespace AMDiS
 
     template <class OT>
     void initElement(OT* ot, const ElInfo* elInfo,
-		    SubAssembler* subAssembler, Quadrature *quad, 
-		    const BasisFunction *basisFct = NULL)
+            		     SubAssembler* subAssembler, Quadrature *quad, 
+            		     const BasisFunction *basisFct = NULL)
     {
       term.initElement(ot, elInfo, subAssembler, quad, basisFct);
     }
@@ -65,8 +65,8 @@ namespace AMDiS
 
     template <class OT>
     void initElement(OT* ot, const ElInfo* elInfo,
-		    SubAssembler* subAssembler, Quadrature *quad, 
-		    const BasisFunction *basisFct = NULL)
+            		     SubAssembler* subAssembler, Quadrature *quad, 
+            		     const BasisFunction *basisFct = NULL)
     {
       term1.initElement(ot, elInfo, subAssembler, quad, basisFct);
       term2.initElement(ot, elInfo, subAssembler, quad, basisFct);
@@ -95,8 +95,8 @@ namespace AMDiS
 
     template <class OT>
     void initElement(OT* ot, const ElInfo* elInfo,
-			    SubAssembler* subAssembler, Quadrature *quad, 
-			    const BasisFunction *basisFct = NULL)
+          			     SubAssembler* subAssembler, Quadrature *quad, 
+          			     const BasisFunction *basisFct = NULL)
     {
       term1.initElement(ot, elInfo, subAssembler, quad, basisFct);
       term2.initElement(ot, elInfo, subAssembler, quad, basisFct);
@@ -114,6 +114,7 @@ namespace AMDiS
     Term2 term2;
     Term3 term3;
     Term4 term4;
+    
     LazyOperatorTerm4(const Term1& term1_, const Term2& term2_, const Term3& term3_, const Term4& term4_)
     : term1(term1_), term2(term2_), term3(term3_), term4(term4_) {}
     
@@ -190,38 +191,87 @@ namespace AMDiS
   };
   
   // ===========================================================================
+
   
-  // TODO: replace boost::fusion::for_each by own implementation
+
+  namespace detail 
+  {
+    /// Functor that initializes the feSpace list
+    template <class List>
+    struct InsertFeSpaces 
+    {
+      List& feSpaces;
+      InsertFeSpaces(List& feSpaces_) : feSpaces(feSpaces_) {};
+      
+      template <class Term>
+      void operator()(Term& term) {
+	       term.insertFeSpaces(feSpaces);
+      }
+    };
+    
+    /// Functor that is called on each term to initialize it on an element
+    template <class OT>
+    struct InitElement 
+    {
+      OT* ot;
+      const ElInfo *elInfo, *elInfo2;
+      SubAssembler* subAssembler;
+      Quadrature *quad;
+      const BasisFunction *basisFct;
+      
+      InitElement(OT* ot_, const ElInfo* elInfo_, SubAssembler* subAssembler_, Quadrature *quad_, const BasisFunction *basisFct_)
+      	: ot(ot_), elInfo(elInfo_), elInfo2(NULL), subAssembler(subAssembler_),
+      	  quad(quad_), basisFct(basisFct_) {}
+      
+      InitElement(OT* ot_, const ElInfo* smallElInfo_, const ElInfo* largeElInfo_, SubAssembler* subAssembler_, Quadrature *quad_,  const BasisFunction *basisFct_)
+      	: ot(ot_), elInfo(smallElInfo_), elInfo2(largeElInfo_), subAssembler(subAssembler_),
+      	  quad(quad_), basisFct(basisFct_) {}
+	  
+      template<typename Term>
+      void operator()(Term& term) {
+      	if (elInfo2)
+      	  term.initElement(ot, elInfo, elInfo2, subAssembler, quad, basisFct);
+      	else
+      	  term.initElement(ot, elInfo, subAssembler, quad, basisFct);
+      }
+    };
+    
+  } // end namespace detail
+  
+
+  /// Operator term with arbitrary number of sub-term (expressions)
   template <class... Terms>
   struct LazyOperatorTerms : public LazyOperatorTermBase
   {
-    std::tuple<Terms...> terms;
+    std::tuple<Terms...> term_tuple;
     
     template <class... Terms_>
-    LazyOperatorTerm5(Terms_&&... terms_)
-      : terms(std::fordward<Terms_>(terms)...)
-    { }
+    LazyOperatorTerms(Terms_&&... terms_)
+      : term_tuple(std::forward<Terms_>(terms_)...) {}
     
     template <class List>
     void insertFeSpaces(List& feSpaces)
     {
-      boost::fusion::for_each(terms, 
-	[feSpaces&](auto& term) { term.insertFeSpaces(feSpaces); });
+      for_each(term_tuple, detail::InsertFeSpaces<List>(feSpaces));
     }
 
-    void initElement(const ElInfo* elInfo,
-		     SubAssembler* subAssembler, Quadrature *quad, 
-		     const BasisFunction *basisFct = NULL)
+    template <class OT>
+    void initElement(OT* ot, const ElInfo* elInfo,
+		    SubAssembler* subAssembler, Quadrature *quad, 
+		    const BasisFunction *basisFct = NULL)
     {
-      boost::fusion::for_each(terms, 
-	[elInfo, subAssembler, quad, basisFct](auto& term) { 
-	    term.initElement(elInfo, subAssembler, quad, basisFct); 
-	});
+      for_each(term_tuple, detail::InitElement<OT>(ot, elInfo, subAssembler, quad, basisFct));
     }
-    
-    //TODO: add initElement for quad, and basisFct separately
+
+    template <class OT>
+    void initElement(OT* ot, const ElInfo* smallElInfo, const ElInfo* largeElInfo,
+		    SubAssembler* subAssembler, Quadrature *quad, 
+		    const BasisFunction *basisFct = NULL)
+    {
+      for_each(term_tuple, detail::InitElement<OT>(ot, smallElInfo, largeElInfo, subAssembler, quad, basisFct));
+    }
     
     double operator()(const int& iq) const;
   };
-
+  
 } // end namespace AMDiS

@@ -20,10 +20,10 @@ namespace AMDiS
     {
       int  size = v1.getSize();
       for (int i = 0; i < size; i++) {
-	if (v1[i] < v2[i]) 
-	  return true;
-	if (v1[i] > v2[i]) 
-	  return false;
+      	if (v1[i] < v2[i]) 
+      	  return true;
+      	if (v1[i] > v2[i]) 
+      	  return false;
       }
       return false;
     }
@@ -71,20 +71,20 @@ namespace AMDiS
 
     ~PeriodicBC();
 
-    void initMatrix(DOFMatrix* matrix);
+    virtual void initMatrix(DOFMatrix* matrix) override;
 
-    void fillBoundaryCondition(DOFMatrix *matrix,
-			       ElInfo *elInfo,
-			       const DegreeOfFreedom *dofIndices,
-			       const BoundaryType *localBound,
-			       int nBasFcts);
+    virtual void fillBoundaryCondition(DOFMatrix *matrix,
+                          			       ElInfo *elInfo,
+                          			       const DegreeOfFreedom *dofIndices,
+                          			       const BoundaryType *localBound,
+                          			       int nBasFcts) override;
 
-    void exitMatrix(DOFMatrix* matrix);
+    virtual void exitMatrix(DOFMatrix* matrix) override;
 
-    void exitVector(DOFVectorBase<double>* vector);
+    virtual void exitVector(DOFVectorBase<double>* vector) override;
 
     /// We are defining periodic boundary conditions, so return always true here.
-    bool isPeriodic()
+    virtual bool isPeriodic() const override
     {
       return true;
     }

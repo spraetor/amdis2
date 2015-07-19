@@ -23,11 +23,11 @@ namespace AMDiS {
 		      const FiniteElemSpace *rowFeSpace_,
 		      const FiniteElemSpace *colFeSpace_ = NULL) 
       : boundaryType(type),
-	rowFeSpace(rowFeSpace_),
-	colFeSpace(colFeSpace_)
+      	rowFeSpace(rowFeSpace_),
+      	colFeSpace(colFeSpace_)
     {
       if (!colFeSpace) 
-	colFeSpace = rowFeSpace;
+        colFeSpace = rowFeSpace;
     }
 
     /// Returns \ref boundaryType.
@@ -79,8 +79,8 @@ namespace AMDiS {
   
     /// Returns the boundary residual for the given element. Called by estimator.
     virtual double boundResidual(ElInfo *elInfo, 
-				 DOFMatrix *matrix,
-				 const DOFVectorBase<double> *dv) 
+                        				 DOFMatrix *matrix,
+                        				 const DOFVectorBase<double> *dv) 
     { 
       return 0.0; 
     }
@@ -104,7 +104,7 @@ namespace AMDiS {
     /// boundary conditions must be applied to the couple matrix, but they are
     /// set to all matrices in this row (to ensure that there are no other
     /// element entries in the Dirichlet boundary condition rows).
-    virtual bool applyBoundaryCondition()
+    virtual bool applyBoundaryCondition() const
     {
       return true;
     }

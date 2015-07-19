@@ -633,21 +633,6 @@ namespace AMDiS
 	  StandardProblemIteration(this)
       { }
 
-      /// Returns number of managed problems
-      // implements StandardProblemIteration::getNumProblems()
-      virtual int getNumProblems() override
-      { 
-	return 1; 
-      }
-
-      /// Returns the problem with the given number. If only one problem
-      /// is managed by this master problem, the number hasn't to be given.
-      // implements StandardProblemIteration::getProblem(int)
-      virtual ProblemStatBase *getProblem(int number = 0) override
-      { 
-	return this; 
-      }
-
       /// Determines the execution order of the single adaption steps. If adapt is
       /// true, mesh adaption will be performed. This allows to avoid mesh adaption,
       /// e.g. in timestep adaption loops of timestep adaptive strategies.

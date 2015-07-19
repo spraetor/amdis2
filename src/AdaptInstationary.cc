@@ -3,7 +3,6 @@
 #include "est/Estimator.h"
 #include "ProblemIterationInterface.h"
 #include "ProblemTimeInterface.h"
-#include "Serializer.h"
 
 #if HAVE_PARALLEL_DOMAIN_AMDIS
 #include "parallel/MeshDistributor.h"
@@ -18,11 +17,11 @@ namespace AMDiS {
 
   AdaptInstationary::AdaptInstationary(std::string name,
 				       ProblemIterationInterface &problemStat,  
-				       AdaptInfo &info,
+				       AdaptInfo &adaptInfo,
 				       ProblemTimeInterface &problemInstat,
 				       AdaptInfo &initialInfo,
 				       time_t initialTimestampSet)
-    : AdaptBase(name, &problemStat, &info, &problemInstat, &initialInfo),
+    : AdaptBase(name, &problemStat, &adaptInfo, &problemInstat, &initialInfo),
       breakWhenStable(0)
   {
     strategy = 0;
@@ -35,7 +34,7 @@ namespace AMDiS {
     Parameters::get(name + "->info", info);
     Parameters::get(name + "->break when stable", breakWhenStable);
 
-    fixedTimestep = (info.getMinTimestep() == info.getMaxTimestep());
+    fixedTimestep = (adaptInfo.getMinTimestep() == adaptInfo.getMaxTimestep());
   }
 
 
@@ -102,15 +101,7 @@ namespace AMDiS {
 	// === Space iterations. ===
 	do {
 	  problemIteration->beginIteration(adaptInfo);
-	      
-	  if (dbgMode) {
-	    std::cout << "=== ADAPT INFO DEBUG MODE           ===\n";
-	    std::cout << "=== in implicitTimeStrategy() ===\n";
-	    std::cout << "=== space/time iteration "<< adaptInfo->getSpaceIteration()
-	      <<" : "<< adaptInfo->getTimestepIteration() <<" ===\n";
-	    adaptInfo->printTimeErrorLowInfo();
-	  }
-	  
+	      	  
 	  Flag adapted = problemIteration->oneIteration(adaptInfo, FULL_ITERATION);
           int isAdapted = static_cast<bool>(adapted);
 #if HAVE_PARALLEL_DOMAIN_AMDIS
@@ -242,8 +233,6 @@ namespace AMDiS {
     }
 
     while (!adaptInfo->reachedEndTime()) {
-      iterationTimestamp = time(0);
-
       problemTime->initTimestep(adaptInfo);
       oneTimestep();
       problemTime->closeTimestep(adaptInfo);

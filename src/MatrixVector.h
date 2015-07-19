@@ -19,14 +19,13 @@ namespace AMDiS {
     /// Constructor.
     Vector(int s = 0) 
       : size(s),
-	valArray(size ? new T[size] : NULL)
+	      valArray(size ? new T[size] : NULL)
     { }
 
     /// Copy constructor.
     Vector(self const& other) 
-      : Serializable(),
-	size(other.size),
-	valArray(size ? new T[size] : NULL)
+      : size(other.size),
+	      valArray(size ? new T[size] : NULL)
     {
       setValues(other.valArray);
     }

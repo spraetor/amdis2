@@ -282,7 +282,7 @@ namespace AMDiS
   
   
   template <int I, int J, class Term>
-  void GenericSecondOrderTerm_ij<I, J Term>::getLALtImpl(
+  void GenericSecondOrderTerm_ij<I, J, Term>::getLALtImpl(
 	  const ElInfo *elInfo, 
 	  std::vector<mtl::dense2D<double> > &LALt) const
   {
@@ -295,7 +295,7 @@ namespace AMDiS
 
   
   template <int I, int J, class Term>
-  void GenericSecondOrderTerm_ij<I, J Term>::evalImpl(
+  void GenericSecondOrderTerm_ij<I, J, Term>::evalImpl(
 	  int nPoints,
 	  const mtl::dense_vector<double>& uhAtQP,
 	  const mtl::dense_vector<WorldVector<double> >& grdUhAtQP,
@@ -311,7 +311,7 @@ namespace AMDiS
 
   
   template <int I, int J, class Term>
-  void GenericSecondOrderTerm_ij<I, J Term>::weakEvalImpl(
+  void GenericSecondOrderTerm_ij<I, J, Term>::weakEvalImpl(
 	  const std::vector<WorldVector<double> > &grdUhAtQP,
 	  std::vector<WorldVector<double> > &result) 
   {

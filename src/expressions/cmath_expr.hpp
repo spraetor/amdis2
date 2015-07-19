@@ -93,7 +93,8 @@ namespace AMDiS
     struct Pow : public LazyOperatorTerm1<Term>
     {
       typedef LazyOperatorTerm1<Term> Super;
-      typedef typename AMDiS::detail::Pow<I,typename Term::value_type>::result_type value_type;
+//      typedef typename AMDiS::detail::Pow<I,typename Term::value_type>::result_type value_type;
+      typedef typename Term::value_type value_type;
       
       Pow(const Term& term_) : Super(term_) {}
       

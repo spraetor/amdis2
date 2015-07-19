@@ -70,13 +70,13 @@ namespace AMDiS
     }
     
     /// Returns \ref terms
-    std::vector<OperatorTerm*>* getTerms() const
+    std::vector<OperatorTerm*>* getTerms()
     { 
       return &terms; 
     }
 
     /// Returns \ref quadrature.
-    Quadrature* getQuadrature() const
+    Quadrature* getQuadrature()
     {
       return quadrature;
     }

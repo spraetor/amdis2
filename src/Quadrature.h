@@ -73,7 +73,7 @@ namespace AMDiS
      * to a function which calculates 
      * \f$ f(\lambda)|det DF_S(\hat{x}(\lambda))| \f$.
      */
-    double integrateStdSimplex(std::unction<double(DimVec<double>)> f);
+    double integrateStdSimplex(std::function<double(DimVec<double>)> f);
   
     /// Returns \ref name
     std::string getName() 

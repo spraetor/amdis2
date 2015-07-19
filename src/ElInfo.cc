@@ -71,6 +71,11 @@ namespace AMDiS
     }
   }
 
+  double ElInfo::calcDet() const
+  {
+    testFlag(Mesh::FILL_COORDS);
+    return calcDet(coord);
+  }
 
   double ElInfo::calcDet(const FixVec<WorldVector<double>, VERTEX> &coords) const
   {

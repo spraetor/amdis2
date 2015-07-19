@@ -1,33 +1,10 @@
-/******************************************************************************
- *
- * AMDiS - Adaptive multidimensional simulations
- *
- * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
- * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
- *
- * Authors: 
- * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
- *
- * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
- * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
- *
- *
- * This file is part of AMDiS
- *
- * See also license.opensource.txt in the distribution.
- * 
- ******************************************************************************/
-
-
-
 /** \file SimpleResidualEstimator.h */
 
 /** \defgroup Estimator Estimator module
  * @{ <img src="estimator.png"> @}
  */
 
-#ifndef AMDIS_SIMPLE_RESIDUAL_ESTIMATOR_H
-#define AMDIS_SIMPLE_RESIDUAL_ESTIMATOR_H
+#pragma once
 
 #include "Estimator.h"
 #include "FixVec.h"
@@ -83,7 +60,7 @@ namespace AMDiS {
     /// Returns pow(det,2.0/dim).
     inline double h2_from_det(double det, int dim) 
     {
-      return pow(det, 2.0 / dim);
+      return std::pow(det, 2.0 / dim);
     }
 
   protected:
@@ -197,6 +174,4 @@ namespace AMDiS {
 
     double kappa_inv;
   };
-}
-
-#endif // AMDIS_SIMPLE_RESIDUAL_ESTIMATOR_H
+} // end namespace AMDiS

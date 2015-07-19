@@ -1,38 +1,16 @@
-/******************************************************************************
- *
- * AMDiS - Adaptive multidimensional simulations
- *
- * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
- * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
- *
- * Authors: 
- * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
- *
- * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
- * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
- *
- *
- * This file is part of AMDiS
- *
- * See also license.opensource.txt in the distribution.
- * 
- ******************************************************************************/
-
-
-
 /** \file ResidualEstimator.h */
 
 /** \defgroup Estimator Estimator module
  * @{ <img src="estimator.png"> @}
  */
 
-#ifndef AMDIS_RESIDUALESTIMATOR_H
-#define AMDIS_RESIDUALESTIMATOR_H
+#pragma once
 
 #include "Estimator.h"
 #include "FixVec.h"
 
-namespace AMDiS {
+namespace AMDiS 
+{
 
   /** \brief
    * Returns residual square at quadrature point. Not Member of
@@ -54,7 +32,7 @@ namespace AMDiS {
   /// Returns pow(det,2.0/dim). Not Member of Estimator to avoid multiple instantiation.
   inline double h2_from_det(double det, int dim) 
   {
-    return pow(det, 2.0 / dim);
+    return std::pow(det, 2.0 / dim);
   }
 
   /**
@@ -196,6 +174,5 @@ namespace AMDiS {
     std::map<BoundaryObject, std::vector<WorldVector<double> > > elBoundGrdUhNeigh;
 #endif
   };
-}
-
-#endif // AMDIS_RESIDUALESTIMATOR_H
+  
+} // end namespace AMDiS

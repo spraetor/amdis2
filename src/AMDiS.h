@@ -36,11 +36,11 @@
 #include "ElInfo3d.h"
 #include "Element.h"
 #include "ElementDofIterator.h"
-#include "Error.h"
 #include "FiniteElemSpace.h"
 #include "FirstOrderTerm.h"
 #include "FixVec.h"
 #include "Flag.h"
+//#include "GenericOperatorTerm.h"
 #include "Global.h"
 #include "Initfile.h"
 #include "Lagrange.h"
@@ -60,7 +60,6 @@
 #include "ProblemStat.h"
 #include "ProblemInstat.h"
 #include "ProblemTimeInterface.h"
-#include "ProblemInterpol.h"
 #include "ProblemStatBase.h"
 #include "SecondOrderTerm.h"
 #include "StandardProblemIteration.h"
@@ -77,7 +76,6 @@
 #include "SurfaceQuadrature.h"
 #include "SystemVector.h"
 #include "Tetrahedron.h"
-#include "TimedObject.h"
 #include "Traverse.h"
 #include "Traits.h"
 #include "Triangle.h"
@@ -110,15 +108,15 @@
 #include "io/Reader.h"
 #include "io/Writer.h"
 
-#include "nonlin/ProblemNonLin.h"
-#include "nonlin/NonLinSolver.h"
+// #include "nonlin/ProblemNonLin.h"
+// #include "nonlin/NonLinSolver.h"
 
 #include "solver/ITL_Preconditioner.h"
 #include "solver/ITL_Solver.h"
 #include "solver/LinearSolverInterface.h"
 
-#include "time/RosenbrockAdaptInstationary.h"
-#include "time/RosenbrockStationary.h"
+// #include "time/RosenbrockAdaptInstationary.h"
+// #include "time/RosenbrockStationary.h"
 
 
 #if HAVE_PARALLEL_DOMAIN_AMDIS

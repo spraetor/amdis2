@@ -224,7 +224,7 @@ namespace AMDiS
   inline double norm(SystemVector* x) 
   {
     double result = 0.0;
-    for (int i = 0; i < x.getSize(); i++)
+    for (int i = 0; i < x->getSize(); i++)
       result += x->getDOFVector(i)->squareNrm2();
     return std::sqrt(result);
   }
@@ -233,7 +233,7 @@ namespace AMDiS
   inline double L2Norm(SystemVector* x) 
   {
     double result = 0.0;
-    for (int i = 0; i < x.getSize(); i++)
+    for (int i = 0; i < x->getSize(); i++)
       result += x->getDOFVector(i)->L2NormSquare();
     return std::sqrt(result);
   }
@@ -242,7 +242,7 @@ namespace AMDiS
   inline double H1Norm(SystemVector* x) 
   {
     double result = 0.0;
-    for (int i = 0; i < x.getSize(); i++)
+    for (int i = 0; i < x->getSize(); i++)
       result += x->getDOFVector(i)->H1NormSquare();
     return std::sqrt(result);
   }

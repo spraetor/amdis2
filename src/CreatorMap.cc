@@ -1,5 +1,4 @@
 #include "BasisFunction.h"
-#include "Bubble.h"
 #include "CreatorMap.h"
 #include "MTL4Types.h"
 #include "solver/LinearSolverInterface.h"
@@ -16,11 +15,11 @@
 #include "ElementRegion_ED.h"
 #include "DOFMatrix.h"
 #include "est/Estimator.h"
-#include "est/RecoveryEstimator.h"
+// #include "est/RecoveryEstimator.h"
 #include "est/ResidualEstimator.h"
 #include "est/SimpleResidualEstimator.h"
-#include "time/RosenbrockMethod.h"
-#include "nonlin/NonLinSolver.h"
+// #include "time/RosenbrockMethod.h"
+// #include "nonlin/NonLinSolver.h"
 
 #ifdef HAVE_SEQ_PETSC
   #include "solver/PetscSolver.h"
@@ -224,8 +223,8 @@ namespace AMDiS {
     creator = new SimpleResidualEstimator::Creator;
     addCreator("simple-residual", creator);
 
-    creator = new RecoveryEstimator::Creator;
-    addCreator("recovery", creator);
+    // creator = new RecoveryEstimator::Creator;
+    // addCreator("recovery", creator);
   }
 
 
@@ -243,8 +242,8 @@ namespace AMDiS {
     }
 
     // linear Lagrange functions plus element bubble function
-    creator = new Bubble::Creator;
-    addCreator("P1+bubble", creator);
+    // creator = new Bubble::Creator;
+    // addCreator("P1+bubble", creator);
   }
 
 
@@ -275,7 +274,7 @@ namespace AMDiS {
     addCreator("ElementRegion_ED", creator);
   }
 
-
+#if 0
   template<>
   void CreatorMap<RosenbrockMethod>::addDefaultCreators()
   {
@@ -298,5 +297,5 @@ namespace AMDiS {
     addCreator("newton", new Newton::Creator);
     addCreator("newtonArmijo", new NewtonArmijo::Creator);
   }
-  
+#endif
 } // end namespace AMDiS

@@ -115,11 +115,12 @@ namespace AMDiS
     /// Constructor.
     Pre2(Operator *op, Assembler *assembler, Quadrature *quad);
 
+  private:
     /// Implements SubAssembler::calculateElementMatrix().
-    virtual void calculateElementMatrix(const ElInfo *elInfo, ElementMatrix& mat) override;
+    virtual void calculateElementMatrixImpl(const ElInfo *elInfo, ElementMatrix& mat) override;
 
     /// Implements SubAssembler::calculateElementVector().
-    virtual void calculateElementVector(const ElInfo *, ElementVector&) override
+    virtual void calculateElementVectorImpl(const ElInfo *, ElementVector&) override
     {
       ERROR_EXIT("should not be called\n");
     }

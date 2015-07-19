@@ -72,11 +72,12 @@ namespace AMDiS
     /// Constructor
     Stand10(Operator *op, Assembler *assembler, Quadrature *quad);
 
+  private:
     /// Implements SubAssembler::calculateElementMatrix().
-    virtual void calculateElementMatrix(const ElInfo *elInfo, ElementMatrix& mat) override;
+    virtual void calculateElementMatrixImpl(const ElInfo *elInfo, ElementMatrix& mat) override;
 
     /// Implements SubAssembler::calculateElementVector().
-    virtual void calculateElementVector(const ElInfo *, ElementVector&) override;
+    virtual void calculateElementVectorImpl(const ElInfo *, ElementVector&) override;
 
   protected:
     const BasisFunction *psi, *phi;
@@ -95,11 +96,12 @@ namespace AMDiS
     /// Constructor.
     Stand01(Operator *op, Assembler *assembler, Quadrature *quad);
 
+  private:
     /// Implements SubAssembler::calculateElementMatrix().
-    virtual void calculateElementMatrix(const ElInfo *elInfo, ElementMatrix& mat) override;
+    virtual void calculateElementMatrixImpl(const ElInfo *elInfo, ElementMatrix& mat) override;
 
     /// Implements SubAssembler::calculateElementVector().
-    virtual void calculateElementVector(const ElInfo*, ElementVector&) override
+    virtual void calculateElementVectorImpl(const ElInfo*, ElementVector&) override
     {
       ERROR_EXIT("should not be called\n");
     }
@@ -123,11 +125,12 @@ namespace AMDiS
     /// Constructor.
     Quad10(Operator *op, Assembler *assembler, Quadrature *quad);
 
+  private:
     /// Implements SubAssembler::calculateElementMatrix().
-    virtual void calculateElementMatrix(const ElInfo *elInfo, ElementMatrix& mat) override;
+    virtual void calculateElementMatrixImpl(const ElInfo *elInfo, ElementMatrix& mat) override;
 
     /// Implements SubAssembler::calculateElementVector().
-    virtual void calculateElementVector(const ElInfo *, ElementVector&) override;
+    virtual void calculateElementVectorImpl(const ElInfo *, ElementVector&) override;
   };
 
   
@@ -143,11 +146,12 @@ namespace AMDiS
     /// Constructor.
     Quad01(Operator *op, Assembler *assembler, Quadrature *quad);
 
+  private:
     /// Implements SubAssembler::calculateElementMatrix().
-    virtual void calculateElementMatrix(const ElInfo *elInfo, ElementMatrix& mat) override;
+    virtual void calculateElementMatrixImpl(const ElInfo *elInfo, ElementMatrix& mat) override;
 
     /// Implements SubAssembler::calculateElementVector().
-    virtual void calculateElementVector(const ElInfo*, ElementVector&) override
+    virtual void calculateElementVectorImpl(const ElInfo*, ElementVector&) override
     {
       ERROR_EXIT("should not be called\n");
     }
@@ -166,11 +170,12 @@ namespace AMDiS
     /// Constructor.
     Pre10(Operator *op, Assembler *assembler, Quadrature *quad);
 
+  private:
     /// Implements SubAssembler::calculateElementMatrix().
-    virtual void calculateElementMatrix(const ElInfo *elInfo, ElementMatrix& mat) override;
+    virtual void calculateElementMatrixImpl(const ElInfo *elInfo, ElementMatrix& mat) override;
 
     /// Implements SubAssembler::calculateElementVector().
-    virtual void calculateElementVector(const ElInfo*, ElementVector&) override;
+    virtual void calculateElementVectorImpl(const ElInfo*, ElementVector&) override;
 
   protected:
     /// Integral of the product of the derivative of psi and phi.
@@ -195,11 +200,12 @@ namespace AMDiS
     /// Constructor.
     Pre01(Operator *op, Assembler *assembler, Quadrature *quad);
 
+  private:
     /// Implements SubAssembler::calculateElementMatrix().
-    virtual void calculateElementMatrix(const ElInfo *elInfo, ElementMatrix& mat) override;
+    virtual void calculateElementMatrixImpl(const ElInfo *elInfo, ElementMatrix& mat) override;
 
     /// Implements SubAssembler::calculateElementVector().
-    virtual void calculateElementVector(const ElInfo*, ElementVector&) override
+    virtual void calculateElementVectorImpl(const ElInfo*, ElementVector&) override
     {
       ERROR_EXIT("should not be called\n");
     }

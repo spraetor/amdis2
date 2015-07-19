@@ -1,28 +1,6 @@
-/******************************************************************************
- *
- * AMDiS - Adaptive multidimensional simulations
- *
- * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
- * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
- *
- * Authors: 
- * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
- *
- * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
- * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
- *
- *
- * This file is part of AMDiS
- *
- * See also license.opensource.txt in the distribution.
- * 
- ******************************************************************************/
-
-
 /** \file ITL_Solver.h */
 
-#ifndef AMDIS_ITL_SOLVER_H
-#define AMDIS_ITL_SOLVER_H
+#pragma once
 
 #include "solver/LinearSolver.h"
 #include "solver/ITL_Runner.h"
@@ -38,6 +16,7 @@
 #include <boost/numeric/itl/krylov/idr_s.hpp>
 #include <boost/numeric/itl/krylov/qmr.hpp>
 #include <boost/numeric/itl/krylov/tfqmr.hpp>
+
 #include "solver/itl/minres.hpp"
 #include "solver/itl/gcr.hpp"
 #include "solver/itl/fgmres.hpp"
@@ -47,9 +26,8 @@
 #include "solver/itl/preonly.hpp"
 
 
-namespace AMDiS {
-  
-
+namespace AMDiS 
+{
   /** 
    * \ingroup Solver
    * 
@@ -72,7 +50,7 @@ namespace AMDiS {
    * - @ref FGMResSolver "fgmres" (flexible GMRes method)
    * - @ref PreOnly "preonly" (solver that implements pure preconditioning applied to the rhs)
    */  
-  template< typename SolverType >
+  template <class SolverType>
   struct ITL_Solver : LinearSolver< MTLTypes::MTLMatrix, MTLTypes::MTLVector, ITL_Runner< SolverType, MTLTypes::MTLMatrix, MTLTypes::MTLVector > >
   {
     ITL_Solver(std::string name)
@@ -440,6 +418,3 @@ namespace AMDiS {
 
   
 } // end namespace AMDiS
-
-#endif // AMDIS_ITL_SOLVER
- 

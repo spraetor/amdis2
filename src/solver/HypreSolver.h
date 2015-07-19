@@ -1,29 +1,7 @@
-/******************************************************************************
- *
- * AMDiS - Adaptive multidimensional simulations
- *
- * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
- * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
- *
- * Authors: 
- * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
- *
- * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
- * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
- *
- *
- * This file is part of AMDiS
- *
- * See also license.opensource.txt in the distribution.
- * 
- ******************************************************************************/
-
-
 /** \file HypreSolver.h */
 
 
-#ifndef AMDIS_HYPRE_SOLVER_H
-#define AMDIS_HYPRE_SOLVER_H
+#pragma once
 
 #ifdef MTL_HAS_HYPRE
 
@@ -86,8 +64,8 @@ namespace AMDiS {
      * */
     Hypre_Runner(LinearSolverInterface* oemPtr)
       : oem(*oemPtr),
-	useTransposed(false),
-	solverCreated(false)
+      	useTransposed(false),
+      	solverCreated(false)
     { 
       int cycleMode = -1, interpolation = -1, relaxation = -1;
       Parameters::get(oem.getName() + "->cycle mode", cycleMode);
@@ -108,7 +86,8 @@ namespace AMDiS {
     }      
     
     /// Implementation of \ref RunnerBase::init()
-    void init(const SolverMatrix<Matrix<DOFMatrix*> >& A, const MatrixType& mtlMatrix) override
+    virtual void init(const SolverMatrix<Matrix<DOFMatrix*> >& A, 
+                      const MatrixType& mtlMatrix) override
     {
       setTransposed(typename MatrixType::orientation());
       // TODO: copy matrix directly from DOFMatrix to HYPRE matrix (?)
@@ -124,16 +103,18 @@ namespace AMDiS {
     }
         
     /// Implementation of \ref RunnerBase::solve()
-    int solve(const MatrixType& A , VectorType& mtlX, const VectorType& mtlB) override
+    virtual int solve(const MatrixType& A , 
+                      VectorType& mtlX, 
+                      const VectorType& mtlB) override
     {      
       mtl::HypreParVector x(mtlX);
       mtl::HypreParVector b(mtlB);
       config(solver);
       int error = 0;
       if(useTransposed)
-	error = HYPRE_BoomerAMGSolveT(solver, matrix, b, x);
+	       error = HYPRE_BoomerAMGSolveT(solver, matrix, b, x);
       else
-	error = HYPRE_BoomerAMGSolve(solver, matrix, b, x);
+	       error = HYPRE_BoomerAMGSolve(solver, matrix, b, x);
       mtl::convert(x.getHypreVector(), mtlX);
       
       int num_iter = 0;
@@ -149,20 +130,20 @@ namespace AMDiS {
     }
     
     /// Implementation of \ref RunnerInterface::exit()
-    void exit()
+    virtual void exit() override
     {
       if (solverCreated)
-	HYPRE_BoomerAMGDestroy(solver);
+	       HYPRE_BoomerAMGDestroy(solver);
       solverCreated = false;
     }
     
   private:
-    inline void setTransposed(mtl::row_major)
+    void setTransposed(mtl::row_major)
     { 
       useTransposed = false;
     }
     
-    inline void setTransposed(mtl::col_major)
+    void setTransposed(mtl::col_major)
     { 
       useTransposed = true;
     }
@@ -190,8 +171,6 @@ namespace AMDiS {
    */
   typedef LinearSolver< MTLTypes::MTLMatrix, MTLTypes::MTLVector, Hypre_Runner > HypreSolver;
 
-} // namespace AMDiS
+} // end namespace AMDiS
 
 #endif // MTL_HAS_HYPRE
-
-#endif // AMDIS_HYPRE_SOLVER_H

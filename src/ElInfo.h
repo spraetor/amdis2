@@ -313,11 +313,7 @@ namespace AMDiS
 
     /// Returns the absolute value of the determinant of the affine linear 
     /// parametrization's Jacobian
-    double calcDet() const
-    {
-      testFlag(Mesh::FILL_COORDS);
-      return calcDet(coord);
-    }
+    double calcDet() const;
 
     /// Used by non static method \ref calcDet(). Calculates the determinant
     /// for a given vector of vertex coordinates.

@@ -46,7 +46,7 @@ namespace AMDiS
 
     /// Returs \auxFeSpaces, the list of all aux fe spaces the operator makes 
     /// use off.
-    std::set<const FiniteElemSpace*>& getAuxFeSpaces() const
+    std::set<const FiniteElemSpace*>& getAuxFeSpaces()
     {
       return auxFeSpaces;
     }
@@ -133,18 +133,21 @@ namespace AMDiS
     friend class SecondOrderAssembler;
     friend class Operator;
   };
-
   
+  
+  // forward declarations
+  class ZeroOrderTerm;
+  class FirstOrderTerm;
+  class SecondOrderTerm;
   
   /// helper class to adopt the correct OperatorTerm based on the term order
   template <int Order>
   struct GetTerm 
   {
-    typedef typename if_c<Order == 0, ZeroOrderTerm, 
-	    typename if_c<Order == 1, FirstOrderTerm, 
-	    typename if_c<Order == 2, SecondOrderTerm,
-				      OperatorTerm
-	    >::type >::type >::type type;
+    typedef if_then_else< Order == 0, ZeroOrderTerm, 
+	          if_then_else< Order == 1, FirstOrderTerm, 
+	          if_then_else< Order == 2, SecondOrderTerm,
+				                              OperatorTerm > > > type;
   };
 
   
@@ -152,7 +155,7 @@ namespace AMDiS
   template <class Expr, int Order = -1>
   struct GenericOperatorTerm : public GetTerm<Order>::type
   {
-    typedef typename GetTerm<Order>::type super;
+    typedef typename GetTerm<Order>::type Super;
     
     /// Expression term stored as copy
     Expr expr;
@@ -160,7 +163,7 @@ namespace AMDiS
     /// constructor
     /// adds all feSpaces provided by the expression term to auxFeSpaces liste
     GenericOperatorTerm(const Expr& expr_)
-      : super(term_.getDegree()), expr(expr_) 
+      : Super(expr_.getDegree()), expr(expr_) 
     {
       expr.insertFeSpaces(this->auxFeSpaces);
 #ifndef NDEBUG
@@ -198,8 +201,8 @@ namespace AMDiS
   template <class Expr>
   struct GenericOperatorTerm<Expr, -1> : public GenericOperatorTerm<Expr, -2>
   {
-    typedef GenericOperatorTerm<Expr, -2> super;
-    GenericOperatorTerm(const Expr& expr_) : super(expr_) { }
+    typedef GenericOperatorTerm<Expr, -2> Super;
+    GenericOperatorTerm(const Expr& expr_) : Super(expr_) { }
     
   private:
     // Implements OperatorTerm::eval().
@@ -210,8 +213,5 @@ namespace AMDiS
 			  mtl::dense_vector<double>& result,
 			  double factor) override {};
   };
-}
-
-#include "OperatorTerm.hh"
-
-#endif // AMDIS_OPERATORTERM_H
+  
+} // end namespace AMDiS

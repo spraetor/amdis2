@@ -41,10 +41,10 @@ namespace AMDiS {
     
     Umfpack_Runner(LinearSolverInterface* oem_)
       : oem(*oem_),
-	solver(NULL),
-	store_symbolic(0),
-	symmetric_strategy(0),
-	alloc_init(0.7)
+      	solver(NULL),
+      	store_symbolic(0),
+      	symmetric_strategy(0),
+      	alloc_init(0.7)
     {
       Parameters::get(oem.getName() + "->store symbolic", store_symbolic); // ?
       Parameters::get(oem.getName() + "->symmetric strategy", symmetric_strategy);
@@ -52,17 +52,18 @@ namespace AMDiS {
     }
 
     /// Implementation of \ref RunnerBase::init()
-    virtual void init(const SolverMatrix<Matrix<DOFMatrix*> >& A, const MatrixType& fullMatrix) override
+    virtual void init(const SolverMatrix<Matrix<DOFMatrix*> >& A, 
+                      const MatrixType& fullMatrix) override
     {
       if (solver != NULL) {
-	delete solver;
-	solver = NULL;
+      	delete solver;
+      	solver = NULL;
       }
 
       try {
-	solver = new mtl::matrix::umfpack::solver<MatrixType>(fullMatrix, symmetric_strategy, alloc_init);
+        solver = new mtl::matrix::umfpack::solver<MatrixType>(fullMatrix, symmetric_strategy, alloc_init);
       } catch (mtl::matrix::umfpack::error& e) {
-	ERROR_EXIT("UMFPACK_ERROR(factorize, %d) = %s\n", e.code, e.what());
+        ERROR_EXIT("UMFPACK_ERROR(factorize, %d) = %s\n", e.code, e.what());
       }
     }
 
@@ -74,9 +75,9 @@ namespace AMDiS {
       
       int code = 0;
       try {
-	code = (*solver)(x, b);
+        code = (*solver)(x, b);
       } catch (mtl::matrix::umfpack::error& e) {
-	ERROR_EXIT("UMFPACK_ERROR(solve, %d) = %s\n", e.code, e.what());
+        ERROR_EXIT("UMFPACK_ERROR(solve, %d) = %s\n", e.code, e.what());
       }
       
       VectorType r(b); 
@@ -94,8 +95,8 @@ namespace AMDiS {
     ~Umfpack_Runner() 
     {
       if (solver != NULL) {	
-	delete solver;
-	solver = NULL;
+        delete solver;
+        solver = NULL;
       }
     }
     

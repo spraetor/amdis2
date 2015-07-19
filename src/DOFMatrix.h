@@ -16,7 +16,6 @@
 #include "DOFAdmin.h"
 #include "DOFIndexed.h"
 #include "Boundary.h"
-#include "Serializable.h"
 #include "MTL4Types.h"
 
 namespace AMDiS 
@@ -29,7 +28,7 @@ namespace AMDiS
    * is a CRS matrix of double.
    * TODO: make generic with value_type
    */
-  class DOFMatrix : public Serializable
+  class DOFMatrix
   {
   public:
     /// Type of scalars in the underlying matrix
@@ -277,7 +276,7 @@ namespace AMDiS
     }
 
     /// Calculates the average of non zero entries per row in matrix.
-    void calculateNnz() const
+    void calculateNnz()
     {
       nnzPerRow = 0;
 

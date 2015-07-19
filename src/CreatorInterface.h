@@ -4,7 +4,8 @@
 
 #include "DOFMatrix.h"
 
-namespace AMDiS {
+namespace AMDiS 
+{
 
   /** \ingroup Common
    * \brief
@@ -18,7 +19,7 @@ namespace AMDiS {
    * depending of a key string read from the init file, which can also be
    * your own new solver.
    */
-  template<typename BaseClass>
+  template <class BaseClass>
   class CreatorInterface
   {
   public:
@@ -46,19 +47,17 @@ namespace AMDiS {
   };
 
   /** \brief
-   * A Creator which creates no object abd returns NULL instead.
+   * A Creator which creates no object and returns NULL instead.
    * Used together with the key word 'no' in CreatorMap.
    */
-  template<typename BaseClass>
+  template <class BaseClass>
   class NullCreator : public CreatorInterface<BaseClass>
   {
     /// Creates no object.
-    BaseClass* create() 
+    virtual BaseClass* create() override 
     {
       return NULL; 
     }
-
-    virtual ~NullCreator() {}
 
     /// Implementation of \ref CreatorInterface::isNullCreator()
     virtual bool isNullCreator() override
@@ -74,12 +73,10 @@ namespace AMDiS {
    * \brief
    * Interface for creators with name.
    */
-  template< typename BaseClass >
+  template <class BaseClass>
   class CreatorInterfaceName : public CreatorInterface<BaseClass>
   { 
   public:
-    virtual ~CreatorInterfaceName() {}
-
     /// Sets \ref name
     void setName(std::string str) 
     { 

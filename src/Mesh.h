@@ -502,12 +502,6 @@ namespace AMDiS
       }
     }
 
-    /// Serialize the mesh to a file.
-    void serialize(std::ostream &out);
-
-    /// Deserialize a mesh from a file.
-    void deserialize(std::istream &in);
-
     /// Returns \ref elementIndex and increments it by 1.
     int getNextElementIndex() 
     { 

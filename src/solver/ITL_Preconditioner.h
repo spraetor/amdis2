@@ -1,54 +1,31 @@
-/******************************************************************************
- *
- * AMDiS - Adaptive multidimensional simulations
- *
- * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
- * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
- *
- * Authors: 
- * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
- *
- * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
- * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
- *
- *
- * This file is part of AMDiS
- *
- * See also license.opensource.txt in the distribution.
- * 
- ******************************************************************************/
-
-
 /** \file ITL_Preconditioner.h */
 
-#ifndef AMDIS_ITL_PRECONDITIONER_H
-#define AMDIS_ITL_PRECONDITIONER_H
+#pragma once
 
 #include "solver/LinearSolverInterface.h"
 #include "MTL4Types.h"
 #include "DOFMatrix.h"
 #include "CreatorInterface.h"
 
-#include "itl/masslumping.hpp"
-
 #include <boost/numeric/itl/itl.hpp>
 #include <boost/numeric/itl/pc/ilu_0.hpp>
 #include <boost/numeric/itl/pc/ic_0.hpp>
 #include <boost/numeric/mtl/vector/assigner.hpp>
 
-namespace AMDiS {
-  
+#include "itl/masslumping.hpp"
+
+namespace AMDiS 
+{
   /**
    * \ingroup Solver
    * 
    * \brief Common base class for wrappers to use ITL preconditioners in AMDiS.
    */
-  template< class MatrixType, class VectorType >
+  template <class MatrixType, class VectorType>
   struct ITL_PreconditionerBase : public PreconditionerInterface
   {
-    virtual ~ITL_PreconditionerBase() {}
-    
-    virtual void init(const SolverMatrix<Matrix<DOFMatrix*> >& A, const MatrixType& fullMatrix) = 0;
+    virtual void init(const SolverMatrix<Matrix<DOFMatrix*> >& A, 
+                      const MatrixType& fullMatrix) = 0;
     
     virtual void solve(const VectorType& x, VectorType& y) const = 0;
     
@@ -56,14 +33,14 @@ namespace AMDiS {
   };
   
   
-  template< typename MatrixType, typename VectorType >
+  template <class MatrixType, class VectorType>
   inline itl::pc::solver<ITL_PreconditionerBase< MatrixType, VectorType >, VectorType, false>
   solve(const ITL_PreconditionerBase< MatrixType, VectorType >& P, const VectorType& vin)
   {
     return itl::pc::solver<ITL_PreconditionerBase< MatrixType, VectorType >, VectorType, false>(P, vin);
   }
 
-  template< typename MatrixType, typename VectorType >
+  template <class MatrixType, class VectorType>
   inline itl::pc::solver<ITL_PreconditionerBase< MatrixType, VectorType >, VectorType, true>
   adjoint_solve(const ITL_PreconditionerBase< MatrixType, VectorType >& P, const VectorType& vin)
   {
@@ -76,7 +53,7 @@ namespace AMDiS {
    * 
    * \brief Wrapper for using ITL preconditioners in AMDiS.
    */
-  template < typename Preconditioner, typename MatrixType, typename VectorType >
+  template <class Preconditioner, class MatrixType, class VectorType>
   class ITL_Preconditioner : public ITL_PreconditionerBase< MatrixType, VectorType >
   {
   public:
@@ -84,10 +61,9 @@ namespace AMDiS {
     typedef ITL_Preconditioner<Preconditioner, MatrixType, VectorType>  self;
     
     /// Creator class
-    struct Creator : CreatorInterfaceName<precon_base>
+    struct Creator : public CreatorInterfaceName<precon_base>
     {
-      virtual ~Creator() {}
-      precon_base* create() { return new self(); }
+      virtual precon_base* create() override { return new self(); }
     };
     
     ITL_Preconditioner() 
@@ -97,16 +73,17 @@ namespace AMDiS {
     ~ITL_Preconditioner()
     {
       if (precon) {
-	delete precon;
-	precon = NULL;
+      	delete precon;
+      	precon = NULL;
       }
     }
     
     /// Implementation of \ref ITL_PreconditionerBase::init()
-    virtual void init(const SolverMatrix<Matrix<DOFMatrix*> >& A, const MatrixType& fullMatrix) override
+    virtual void init(const SolverMatrix<Matrix<DOFMatrix*> >& A, 
+                      const MatrixType& fullMatrix) override
     {
       if (precon)
-	delete precon;
+	       delete precon;
       precon = new Preconditioner(fullMatrix);
     }
     
@@ -114,22 +91,22 @@ namespace AMDiS {
     virtual void exit() override
     {
       if (precon) {
-	delete precon;
-	precon = NULL;
+      	delete precon;
+      	precon = NULL;
       }
     }
     
     /// Implementation of \ref ITL_PreconditionerBase::solve()
     virtual void solve(const VectorType& vin, VectorType& vout) const override
     {
-      assert(precon != NULL);
+      TEST_EXIT_DBG(precon)("No preconditioner initialized!\n");
       precon->solve(vin, vout);
     }
     
     /// Implementation of \ref ITL_PreconditionerBase::adjoint_solve()
     virtual void adjoint_solve(const VectorType& vin, VectorType& vout) const override
     {
-      assert(precon != NULL);
+      TEST_EXIT_DBG(precon)("No preconditioner initialized!\n");
       precon->adjoint_solve(vin, vout);
     }
     
@@ -190,5 +167,3 @@ namespace AMDiS {
 
 
 } // namespace AMDiS
-
-#endif // AMDIS_ITL_PRECONDITIONER_H

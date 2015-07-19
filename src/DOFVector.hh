@@ -11,7 +11,6 @@
 #include "Boundary.h"
 #include "DOFAdmin.h"
 #include "ElInfo.h"
-#include "Error.h"
 #include "FiniteElemSpace.h"
 #include "Global.h"
 #include "Mesh.h"
@@ -706,47 +705,6 @@ namespace AMDiS
 
 
   template <class T>
-  void DOFVectorBase<T>::getVecAtQPs(const ElInfo *smallElInfo, 
-					  const ElInfo *largeElInfo,
-					  const Quadrature *quad,
-					  const FastQuadrature *quadFast,
-					  mtl::dense_vector<T>& vecAtQPs) const
-  {
-    FUNCNAME_DBG("DOFVector<T>::getVecAtQPs()");
- 
-    TEST_EXIT_DBG(quad || quadFast)("neither quad nor quadFast defined\n");
-    TEST_EXIT_DBG(!(quad && quadFast) || quad == quadFast->getQuadrature())
-      ("quad != quadFast->quadrature\n");
-    TEST_EXIT_DBG(!quadFast || quadFast->getBasisFunctions() == feSpace->getBasisFcts())
-      ("invalid basis functions");
-
-    if (smallElInfo->getMesh() == feSpace->getMesh())
-      return getVecAtQPs(smallElInfo, quad, quadFast, vecAtQPs);    
-
-    const BasisFunction *basFcts = feSpace->getBasisFcts();
-    int nBasFcts  = basFcts->getNumber();
-    int nPoints = quad->getNumPoints();
-
-    vecAtQPs.change_dim(nPoints);
-    
-    mtl::dense_vector<T> localVec(nBasFcts);
-    this->getLocalVector(largeElInfo->getElement(), localVec);
-    mtl::dense2D<double> &m = smallElInfo->getSubElemCoordsMat(basFcts->getDegree());
-
-    for (int iq = 0; iq < nPoints; iq++) {
-      nullify(vecAtQPs[iq]);
-      for (int j = 0; j < nBasFcts; j++) {
-	double val = 0.0;
-	for (int k = 0; k < nBasFcts; k++)
-	  val += m[j][k] * (*(basFcts->getPhi(k)))(quad->getLambda(iq));
-
-	vecAtQPs[iq] += localVec[j] * val;
-      }
-    }
-  }
-
-
-  template <class T>
   void DOFVectorBase<T>::getGrdAtQPs(const ElInfo *elInfo,
 				     const Quadrature *quad,
 				     const FastQuadrature *quadFast,
@@ -812,67 +770,6 @@ namespace AMDiS
 
 
   template <class T>
-  void DOFVectorBase<T>::getGrdAtQPs(const ElInfo *smallElInfo,
-				     const ElInfo *largeElInfo,
-				     const Quadrature *quad,
-				     const FastQuadrature *quadFast,
-				     mtl::dense_vector<typename GradientType<T>::type> &grdAtQPs) const
-  {
-    FUNCNAME_DBG("DOFVector<T>::getGrdAtQPs()");
-
-    TEST_EXIT_DBG(quad || quadFast)("neither quad nor quadFast defined\n");
-    TEST_EXIT_DBG(!(quad && quadFast) || quad == quadFast->getQuadrature())
-      ("quad != quadFast->quadrature\n");
-    TEST_EXIT_DBG(!quadFast || quadFast->getBasisFunctions() == feSpace->getBasisFcts())
-      ("invalid basis functions");
-
-    if (smallElInfo->getMesh() == feSpace->getMesh())
-      return getGrdAtQPs(smallElInfo, quad, quadFast, grdAtQPs);
-
-    const BasisFunction *basFcts = feSpace->getBasisFcts();
-    int nBasFcts  = basFcts->getNumber();
-    int dow = Global::getGeo(WORLD);
-    int nPoints = quadFast ? quadFast->getQuadrature()->getNumPoints() : quad->getNumPoints();
-
-    mtl::dense_vector<T> localVec(nBasFcts);
-    this->getLocalVector(largeElInfo->getElement(), localVec);
-
-    mtl::dense2D<double> &m = smallElInfo->getSubElemCoordsMat(basFcts->getDegree());
-
-    int parts = Global::getGeo(PARTS, dim);
-    const DimVec<WorldVector<double> > &grdLambda = largeElInfo->getGrdLambda();
-
-    mtl::dense_vector<T> grd1(dim + 1);
-    mtl::dense_vector<double> grdPhi(dim + 1);
-    mtl::dense_vector<double> tmp(dim + 1);
-
-    grdAtQPs.change_dim(nPoints);
-    for (int iq = 0; iq < nPoints; iq++) {
-      nullify(grd1);
-
-      for (int j = 0; j < nBasFcts; j++) {
-	grdPhi = 0.0;
-
-	for (int k = 0; k < nBasFcts; k++) {
-	  (*(basFcts->getGrdPhi(k)))(quad->getLambda(iq), tmp);
-	  tmp *= m[j][k];
-	  grdPhi += tmp;
-	}
-
-	for (int k = 0; k < parts; k++)
-	  grd1[k] += grdPhi[k] * localVec[j];
-      }
-
-      for (int l = 0; l < dow; l++) {
-	nullify(grdAtQPs[iq][l]);
-	for (int k = 0; k < parts; k++)
-	  grdAtQPs[iq][l] += grdLambda[k][l] * grd1[k];
-      }
-    }
-  }
-
-
-  template <class T>
   void DOFVectorBase<T>::getDerivativeAtQPs(const ElInfo *elInfo,
 					    const Quadrature *quad,
 					    const FastQuadrature *quadFast,
@@ -931,64 +828,6 @@ namespace AMDiS
     }
   }
 
-
-  template <class T>
-  void DOFVectorBase<T>::getDerivativeAtQPs(const ElInfo *smallElInfo,
-					    const ElInfo *largeElInfo,
-					    const Quadrature *quad,
-					    const FastQuadrature *quadFast,
-					    int comp,
-					    mtl::dense_vector<T> &derivativeAtQPs) const
-  {
-    FUNCNAME_DBG("DOFVector<T>::getGrdAtQPs()");
-
-    TEST_EXIT_DBG(quad || quadFast)("neither quad nor quadFast defined\n");
-    TEST_EXIT_DBG(!(quad && quadFast) || quad == quadFast->getQuadrature())
-      ("quad != quadFast->quadrature\n");
-    TEST_EXIT_DBG(!quadFast || quadFast->getBasisFunctions() == feSpace->getBasisFcts())
-      ("invalid basis functions");
-
-    if (smallElInfo->getMesh() == feSpace->getMesh())
-      return getDerivativeAtQPs(smallElInfo, quad, quadFast, comp, derivativeAtQPs);
-
-    const BasisFunction *basFcts = feSpace->getBasisFcts();
-    int nBasFcts  = basFcts->getNumber();
-    int nPoints = quadFast ? quadFast->getQuadrature()->getNumPoints() : quad->getNumPoints();
-
-    mtl::dense_vector<T> localVec(nBasFcts);
-    this->getLocalVector(largeElInfo->getElement(), localVec);
-
-    mtl::dense2D<double> &m = smallElInfo->getSubElemCoordsMat(basFcts->getDegree());
-
-    int parts = Global::getGeo(PARTS, dim);
-    const DimVec<WorldVector<double> > &grdLambda = largeElInfo->getGrdLambda();
-
-    mtl::dense_vector<T> grd1(dim + 1);
-    mtl::dense_vector<double> grdPhi(dim + 1);
-    mtl::dense_vector<double> tmp(dim + 1);
-
-    derivativeAtQPs.change_dim(nPoints);
-    for (int iq = 0; iq < nPoints; iq++) {
-      nullify(grd1);
-
-      for (int j = 0; j < nBasFcts; j++) {
-	grdPhi = 0.0;
-
-	for (int k = 0; k < nBasFcts; k++) {
-	  (*(basFcts->getGrdPhi(k)))(quad->getLambda(iq), tmp);
-	  tmp *= m[j][k];
-	  grdPhi += tmp;
-	}
-
-	for (int k = 0; k < parts; k++)
-	  grd1[k] += grdPhi[k] * localVec[j];
-      }
-
-      nullify(derivativeAtQPs[iq]);
-      for (int k = 0; k < parts; k++)
-	derivativeAtQPs[iq] += grdLambda[k][comp] * grd1[k];
-    }
-  }
 
   template <class T>
   inline void set_to_zero(AMDiS::DOFVector<T>& v)
@@ -1233,5 +1072,144 @@ namespace AMDiS
 
     return r;
   }
+  
+  
+  
+  
+
+  template<typename T>
+  const DOFVector<T>& operator*=(DOFVector<T>& x, T scal)
+  {
+    FUNCNAME_DBG("DOFVector<T>::operator*=(DOFVector<T>& x, T scal)");
+
+    TEST_EXIT_DBG(x.getFeSpace() && x.getFeSpace()->getAdmin())
+      ("pointer is NULL: %8X, %8X\n", x.getFeSpace(), x.getFeSpace()->getAdmin());
+
+    typename DOFVector<T>::Iterator vecIterator(dynamic_cast<DOFIndexed<T>*>(&x), 
+						USED_DOFS);
+    for (vecIterator.reset(); !vecIterator.end(); ++vecIterator)
+      (*vecIterator) *= scal; 
+
+    return x;
+  }
+
+
+  template<typename T>
+  const DOFVector<T>& operator+=(DOFVector<T>& x, const DOFVector<T>& y)
+  {
+    FUNCNAME_DBG("DOFVector<T>::operator+=(DOFVector<T>& x, const DOFVector<T>& y)");
+    
+    TEST_EXIT_DBG(x.getFeSpace() && y.getFeSpace())
+      ("feSpace is NULL: %8X, %8X\n", x.getFeSpace(), y.getFeSpace());
+    TEST_EXIT_DBG(x.getFeSpace()->getAdmin() &&
+	      (x.getFeSpace()->getAdmin() == y.getFeSpace()->getAdmin()))
+      ("no admin or different admins: %8X, %8X\n",
+       x.getFeSpace()->getAdmin(), y.getFeSpace()->getAdmin());
+    TEST_EXIT_DBG(x.getSize() == y.getSize())("different sizes\n");
+    
+    typename DOFVector<T>::Iterator xIterator(dynamic_cast<DOFIndexed<T>*>(&x), USED_DOFS);
+    typename DOFVector<T>::Iterator yIterator(dynamic_cast<DOFIndexed<T>*>(const_cast<DOFVector<T>*>(&y)), USED_DOFS);
+    for (xIterator.reset(), yIterator.reset(); !xIterator.end();
+	 ++xIterator, ++yIterator)
+      *xIterator += *yIterator; 
+
+    return x;
+  }
+
+
+  template<typename T>
+  const DOFVector<T>& operator-=(DOFVector<T>& x, const DOFVector<T>& y)
+  {
+    FUNCNAME_DBG("DOFVector<T>::operator-=(DOFVector<T>& x, const DOFVector<T>& y)");
+
+    TEST_EXIT_DBG(x.getFeSpace() && y.getFeSpace())
+      ("feSpace is NULL: %8X, %8X\n", x.getFeSpace(), y.getFeSpace());
+    TEST_EXIT_DBG(x.getFeSpace()->getAdmin() &&
+	      (x.getFeSpace()->getAdmin() == y.getFeSpace()->getAdmin()))
+      ("no admin or different admins: %8X, %8X\n",
+       x.getFeSpace()->getAdmin(), y.getFeSpace()->getAdmin());
+    TEST_EXIT_DBG(x.getSize() == y.getSize())("different sizes\n");
+    
+    typename DOFVector<T>::Iterator xIterator(dynamic_cast<DOFIndexed<T>*>(&x), USED_DOFS);
+    typename DOFVector<T>::Iterator yIterator(dynamic_cast<DOFIndexed<T>*>(const_cast<DOFVector<T>*>(&y)), USED_DOFS);
+    for (xIterator.reset(), yIterator.reset(); !xIterator.end();
+	 ++xIterator, ++yIterator)
+      *xIterator -= *yIterator; 
+
+    return x;
+  }
+
+
+  template<typename T>
+  const DOFVector<T>& operator*=(DOFVector<T>& x, const DOFVector<T>& y)
+  {
+    FUNCNAME_DBG("DOFVector<T>::operator*=(DOFVector<T>& x, const DOFVector<T>& y)");
+    
+    TEST_EXIT_DBG(x.getFeSpace() && y.getFeSpace())
+      ("feSpace is NULL: %8X, %8X\n", x.getFeSpace(), y.getFeSpace());
+    TEST_EXIT_DBG(x.getFeSpace()->getAdmin() &&
+	      (x.getFeSpace()->getAdmin() == y.getFeSpace()->getAdmin()))
+      ("no admin or different admins: %8X, %8X\n",
+       x.getFeSpace()->getAdmin(), y.getFeSpace()->getAdmin());
+    TEST_EXIT_DBG(x.getSize() == y.getSize())("different sizes\n");
+    
+    typename DOFVector<T>::Iterator xIterator(dynamic_cast<DOFIndexed<T>*>(&x), USED_DOFS);
+    typename DOFVector<T>::Iterator yIterator(dynamic_cast<DOFIndexed<T>*>(const_cast<DOFVector<T>*>(&y)), USED_DOFS);
+    for (xIterator.reset(), yIterator.reset(); !xIterator.end();
+	 ++xIterator, ++yIterator)
+      *xIterator *= *yIterator; 
+
+    return x;
+  }
+
+
+  template<typename T>
+  T operator*(DOFVector<T>& x, DOFVector<T>& y)
+  {
+    FUNCNAME("DOFVector<T>::operator*(DOFVector<T>& x, DOFVector<T>& y)");
+    const DOFAdmin *admin = NULL;
+
+    TEST_EXIT(x.getFeSpace() && y.getFeSpace())
+      ("feSpace is NULL: %8X, %8X\n", x.getFeSpace(), y.getFeSpace());
+    TEST_EXIT((admin = x.getFeSpace()->getAdmin()) && (admin == y.getFeSpace()->getAdmin()))
+      ("no admin or different admins: %8X, %8X\n",
+       x.getFeSpace()->getAdmin(), y.getFeSpace()->getAdmin());
+    TEST_EXIT(x.getSize() == y.getSize())("different sizes\n");
+
+    T dot = 0;
+
+    typename DOFVector<T>::Iterator xIterator(dynamic_cast<DOFIndexed<T>*>(&x), USED_DOFS);
+    typename DOFVector<T>::Iterator yIterator(dynamic_cast<DOFIndexed<T>*>(&y), USED_DOFS);
+    for (xIterator.reset(), yIterator.reset(); !xIterator.end();
+	 ++xIterator, ++yIterator) 
+      dot += (*xIterator) * (*yIterator);
+
+    return dot;
+  }
+  
+
+  template<typename T>
+  const DOFVector<T>& operator*(const DOFVector<T>& v, double d)
+  {
+    static DOFVector<T> result; // TODO: REMOVE STATIC
+    return mult(d, v, result); 
+  }
+
+
+  template<typename T>
+  const DOFVector<T>& operator*(double d, const DOFVector<T>& v)
+  {
+    static DOFVector<T> result; // TODO: REMOVE STATIC
+    return mult(d, v, result);
+  }
+
+
+  template<typename T>
+  const DOFVector<T>& operator+(const DOFVector<T> &v1 , const DOFVector<T> &v2)
+  {
+    static DOFVector<T> result; // TODO: REMOVE STATIC
+    return add(v1, v2, result);
+  }
+
   
 } // end namespace AMDiS

@@ -5,6 +5,8 @@
 #include "BoundaryCondition.h"
 #include "DOFMatrix.h"
 
+#include "expressions/expr_traits.hpp"
+
 namespace AMDiS 
 {
   /** 
@@ -30,10 +32,10 @@ namespace AMDiS
 	neumannOperators(NULL), 
 	robinOperators(NULL)
     {
-      using JExprType = typename taits::to_expr<JExpr>::to;
-      using AlphaExprType = typename taits::to_expr<AlphaExpr>::to;
+      using JExprType = typename traits::to_expr<JExpr>::to;
+      using AlphaExprType = typename traits::to_expr<AlphaExpr>::to;
       
-      if (boost::is_same<AlphaExpr, tag::dummy>::value)
+      if (std::is_same<AlphaExpr, tag::dummy>::value)
 	init(JExprType::get(j), tag::dummy());
       else
 	init(JExprType::get(j), AlphaExprType::get(j));

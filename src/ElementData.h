@@ -2,7 +2,6 @@
 
 #pragma once
 
-#include "Serializable.h"
 #include "CreatorMap.h"
 
 namespace AMDiS 
@@ -19,7 +18,7 @@ namespace AMDiS
    * chain-of-responsibility pattern is applied. So only data have to be managed 
    * at each element which are used for this element at this time.
    */
-  class ElementData : public Serializable
+  class ElementData
   {
   public:
     /// constructor
@@ -75,12 +74,6 @@ namespace AMDiS
      * typeName. Must return true, even if typeName describes a base class.
      */
     virtual bool isOfType(int typeID) const = 0;
-
-    /// Implements Serializable::serialize().
-    virtual void serialize(std::ostream& out);
-
-    /// Implements Serializable::deserialize().
-    virtual void deserialize(std::istream& in);
 
     /// Returns first element data in the chain which is of the spcified type.
     inline ElementData *getElementData(int typeID) 

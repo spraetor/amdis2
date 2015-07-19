@@ -129,7 +129,7 @@ namespace AMDiS
   template <class Expr>
   void GenericFirstOrderTerm_1<Expr>::getLbImpl(
 	  const ElInfo *elInfo,
-	  std::vector<mtl::dense_vector<double> >& Lb) const;
+	  std::vector<mtl::dense_vector<double> >& Lb) const
   {
     const DimVec<WorldVector<double> > &grdLambda = elInfo->getGrdLambda();
     const int nPoints = static_cast<int>(Lb.size());

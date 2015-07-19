@@ -27,20 +27,25 @@ namespace AMDiS
     /// Implementation of \ref ProblemIterationInterface::endIteration()
     virtual void endIteration(AdaptInfo *adaptInfo) override;
 
-    /// Implementation of \ref ProblemIterationInterface::getNumProblems()
-    virtual int getNumProblems() override
-    { 
-      return 1; 
-    }
-
-    /// Implementation of \ref ProblemIterationInterface::getProblem(int)
-    virtual ProblemStatBase *getProblem(int number = 0) override
-    {
-      return problem;
-    }
-
     /// Returns the name of the problem. TODO: why is this virtual???
     virtual std::string getName() override;
+    
+    virtual int getNumProblems() override
+    {
+      return 1;
+    }
+    
+    virtual ProblemStatBase *getProblem(int number = 0) override
+    { FUNCNAME_DBG("StandardProblemIteration::getProblem");
+      TEST_EXIT_DBG(number == 0)("Problem number out of range!\n");
+      return problem;
+    }
+    
+    virtual ProblemStatBase *getProblem(std::string name) override
+    { FUNCNAME_DBG("StandardProblemIteration::getProblem");
+      TEST_EXIT_DBG(name == problem.getName())("Problem name does not match!\n");
+      return problem;
+    }
 
     /// Nested assemblage and mesh adaption. TODO: make this prortected
     Flag buildAndAdapt(AdaptInfo *adaptInfo, Flag toDo);

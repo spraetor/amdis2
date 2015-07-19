@@ -77,7 +77,7 @@ namespace AMDiS  { namespace io {
 	  basis[i][j] = p[i + 1][j] ; 
 	  lengthBasis[i] += basis[i][j] * basis[i][j];
 	}
-	lengthBasis[i] = sqrt(lengthBasis[i]);
+	lengthBasis[i] = std::sqrt(lengthBasis[i]);
       }
 
       // norm basis, get steps
@@ -191,7 +191,7 @@ namespace AMDiS  { namespace io {
 	  basis[i][j] = p[i + 1][j] ;
 	  lengthBasis[i] += basis[i][j] * basis[i][j];
 	}
-	lengthBasis[i] = sqrt(lengthBasis[i]);
+	lengthBasis[i] = std::sqrt(lengthBasis[i]);
       }
 
       // norm basis, get steps

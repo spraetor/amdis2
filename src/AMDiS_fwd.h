@@ -75,7 +75,7 @@ namespace AMDiS {
   class Tetrahedron;
   class TraverseStack;
   class Triangle;
-  class VertexInfo;
+  struct VertexInfo;
   class VertexVector;
   
   namespace io {

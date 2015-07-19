@@ -85,7 +85,7 @@ namespace AMDiS
   
 
     /// implements Element::clone
-    inline Element *clone() 
+    inline Element *clone() const
     { 
       return new Line(mesh); 
     }

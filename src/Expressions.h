@@ -4,7 +4,7 @@
 
 #include "AMDiS_fwd.h"
 #include "OperatorTerm.h"
-#include "Functors.h"
+//#include "Functors.h"
 #include "MatrixVectorOperations.h"
 
 #include <boost/static_assert.hpp>

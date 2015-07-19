@@ -491,7 +491,7 @@ namespace AMDiS {
     }  
 
     /// Gets \ref &time
-    double* getTimePtr() const
+    double* getTimePtr()
     { 
       return &time; 
     }  
@@ -561,7 +561,7 @@ namespace AMDiS {
     }  
     
     /// Gets \ref &timestep
-    double* getTimestepPtr() const
+    double* getTimestepPtr()
     { 
       return &timestep; 
     }  

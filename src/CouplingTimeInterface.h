@@ -19,58 +19,47 @@ namespace AMDiS {
   public:
     void addTimeInterface(ProblemTimeInterface *interface) 
     {
-      interfaces_.push_back(interface);
+      problemInterfaces.push_back(interface);
     }
 
     /// Executes all needed operations when the simulation time changes.
-    virtual void setTime(AdaptInfo *adaptInfo) 
+    virtual void setTime(AdaptInfo *adaptInfo) override
     {
-      int size = static_cast<int>(interfaces_.size());
-      for (int i = 0; i < size; i++)
-	interfaces_[i]->setTime(adaptInfo);
+      for (ProblemTimeInterface* prob : problemInterfaces)
+	       prob->setTime(adaptInfo);
     }
 
     /// Called at the beginning of each timestep
-    virtual void initTimestep(AdaptInfo *adaptInfo) 
+    virtual void initTimestep(AdaptInfo *adaptInfo) override 
     {
-      int size = static_cast<int>(interfaces_.size());
-      for (int i = 0; i < size; i++)
-	interfaces_[i]->initTimestep(adaptInfo);
+      for (ProblemTimeInterface* prob : problemInterfaces)
+	       prob->initTimestep(adaptInfo);
     }
 
     /// Called at the end of each timestep.
-    virtual void closeTimestep(AdaptInfo *adaptInfo) 
+    virtual void closeTimestep(AdaptInfo *adaptInfo) override 
     {
-      int size = static_cast<int>(interfaces_.size());
-      for (int i = 0; i < size; i++)
-	interfaces_[i]->closeTimestep(adaptInfo);
+      for (ProblemTimeInterface* prob : problemInterfaces)
+	       prob->closeTimestep(adaptInfo);
     }
 
     /// Solves the initial problem.
-    virtual void solveInitialProblem(AdaptInfo *adaptInfo) 
+    virtual void solveInitialProblem(AdaptInfo *adaptInfo) override 
     {
-      int size = static_cast<int>(interfaces_.size());
-      for (int i = 0; i < size; i++)
-	interfaces_[i]->solveInitialProblem(adaptInfo);
+      for (ProblemTimeInterface* prob : problemInterfaces)
+	       prob->solveInitialProblem(adaptInfo);
     }
 
     /// Solves the initial problem.
-    virtual void transferInitialSolution(AdaptInfo *adaptInfo) 
+    virtual void transferInitialSolution(AdaptInfo *adaptInfo) override 
     {
-      int size = static_cast<int>(interfaces_.size());
-      for (int i = 0; i < size; i++)
-	interfaces_[i]->transferInitialSolution(adaptInfo);
+      for (ProblemTimeInterface* prob : problemInterfaces)
+	       prob->transferInitialSolution(adaptInfo);
     }
-
-    /// Function that serializes the problem plus information about the iteration.
-    virtual void serialize(std::ostream &out) {};
-
-    /// Function that deserializes the problem plus information about the iteration.
-    virtual void deserialize(std::istream &in) {};
 
   protected:
     /// vector of coupled time interfaces
-    std::vector<ProblemTimeInterface*> interfaces_;
+    std::vector<ProblemTimeInterface*> problemInterfaces;
   };
 
 } // end namespace AMDiS

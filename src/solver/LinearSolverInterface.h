@@ -1,24 +1,3 @@
-/******************************************************************************
- *
- * AMDiS - Adaptive multidimensional simulations
- *
- * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
- * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
- *
- * Authors: 
- * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
- *
- * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
- * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
- *
- *
- * This file is part of AMDiS
- *
- * See also license.opensource.txt in the distribution.
- * 
- ******************************************************************************/
-
-
 /** \file LinearSolverInterface.h */
 
 /**
@@ -30,8 +9,7 @@
  * systems.
  */
 
-#ifndef AMDIS_LINEAR_SOLVER_H
-#define AMDIS_LINEAR_SOLVER_H
+#pragma once
 
 #include "Global.h"
 #include "AMDiS_fwd.h"
@@ -52,12 +30,16 @@ namespace AMDiS {
   /// Non-templated base-class for Preconditioner types
   struct PreconditionerInterface
   {
+    virtual ~PreconditionerInterface() {}
     virtual void exit() {}
   };
 
   /// Non-templates base-class for Runner / Worker types
   struct RunnerInterface
   {
+    // virtual destructor
+    virtual ~RunnerInterface() {}
+    
     virtual void exit() {}
     
     virtual PreconditionerInterface* getLeftPrecon()
@@ -83,16 +65,16 @@ namespace AMDiS {
     /// The constructor reads needed parameters and sets solvers \ref name.
     LinearSolverInterface(std::string name_) 
       : name(name_),
-	tolerance(DBL_TOL),
-	relative(0),
-	max_iter(1000),
-	info(0),
-	residual(-1.0),
-	rel_residual(-1.0),
-	print_cycle(100),
-	iterations(-1),
-	error(-1),
-	breakTolNotReached(true)
+      	tolerance(DBL_TOL),
+      	relative(0),
+      	max_iter(1000),
+      	info(0),
+      	residual(-1.0),
+      	rel_residual(-1.0),
+      	print_cycle(100),
+      	iterations(-1),
+      	error(-1),
+      	breakTolNotReached(true)
     {      
       Parameters::get(name + "->tolerance", tolerance);
       Parameters::get(name + "->relative tolerance", relative);
@@ -103,15 +85,14 @@ namespace AMDiS {
     }
 
     /// destructor
-    virtual ~LinearSolverInterface() 
-    {}
+    virtual ~LinearSolverInterface() { }
 
 
     int solveSystem(const SolverMatrix<Matrix<DOFMatrix*> >& A,
-		    SystemVector& x,
-		    SystemVector& b,
-		    bool createMatrixData,
-		    bool storeMatrixData)
+            		    SystemVector& x,
+            		    SystemVector& b,
+            		    bool createMatrixData,
+            		    bool storeMatrixData)
     { FUNCNAME("LinearSolverInterface::solveSystem()");
       MSG("LinearSolverInterface::solveSystem()\n");
     
@@ -121,35 +102,35 @@ namespace AMDiS {
       
       // calculate and print resiual
       if (info > 0) {
-	if (residual >= 0.0 && rel_residual >= 0.0) {
-	  MSG("Residual norm: ||b-Ax|| = %e, ||b-Ax||/||b|| = %e\n", residual, rel_residual);
-	} else if (residual >= 0.0) {
-	  MSG("Residual norm: ||b-Ax|| = %e\n", residual);
-	}
-	
+      	if (residual >= 0.0 && rel_residual >= 0.0) {
+      	  MSG("Residual norm: ||b-Ax|| = %e, ||b-Ax||/||b|| = %e\n", residual, rel_residual);
+      	} else if (residual >= 0.0) {
+      	  MSG("Residual norm: ||b-Ax|| = %e\n", residual);
+      	}
+      	
 #if DEBUG != 0
-	if (getIterations() > 0) {
-	  MSG("Nr. of iterations needed = %d\n", getIterations());
-	}
-	
-	if (error_code != 0) {
-	  MSG("ERROR-Code = %d\n", error_code);
-	}
-	
-	if (!isNumber(residual) || !isNumber(rel_residual)) {
-	  MSG("Residual or relative residual is NaN/Inf!\n");
-	}
+      	if (getIterations() > 0) {
+      	  MSG("Nr. of iterations needed = %d\n", getIterations());
+      	}
+      	
+      	if (error_code != 0) {
+      	  MSG("ERROR-Code = %d\n", error_code);
+      	}
+      	
+      	if (!isNumber(residual) || !isNumber(rel_residual)) {
+      	  MSG("Residual or relative residual is NaN/Inf!\n");
+      	}
 #endif
-
-	// test for absolute tolerance
-	TEST_EXIT((isNumber(residual) && (residual < 0.0  || tolerance < 1.e-30 || residual <= tolerance))
-		  || !breakTolNotReached)
-	  ("Tolerance tol = %e could not be reached!\n Set tolerance by '->solver->tolerance:' \n", tolerance);
-	  
-	// test for relative tolerance
-	TEST_EXIT((isNumber(rel_residual) && (rel_residual < 0.0  || relative < 1.e-30 || rel_residual <= relative))
-		  || (residual < 1.e-30) || !breakTolNotReached)
-	  ("Relative tolerance rtol = %e could not be reached!\n Set tolerance by '->solver->relative tolerance:' \n", relative);
+      
+      	// test for absolute tolerance
+      	TEST_EXIT((isNumber(residual) && (residual < 0.0  || tolerance < 1.e-30 || residual <= tolerance))
+      		  || !breakTolNotReached)
+      	  ("Tolerance tol = %e could not be reached!\n Set tolerance by '->solver->tolerance:' \n", tolerance);
+      	  
+      	// test for relative tolerance
+      	TEST_EXIT((isNumber(rel_residual) && (rel_residual < 0.0  || relative < 1.e-30 || rel_residual <= relative))
+      		  || (residual < 1.e-30) || !breakTolNotReached)
+      	  ("Relative tolerance rtol = %e could not be reached!\n Set tolerance by '->solver->relative tolerance:' \n", relative);
       }
       return error_code;
     }
@@ -159,55 +140,55 @@ namespace AMDiS {
      */
 
     /// Returns solvers \ref name.
-    inline std::string getName() const
+    std::string getName() const
     { 
       return name; 
     }
 
     /// Returns \ref tolerance
-    inline double getTolerance() const
+    double getTolerance() const
     {
       return tolerance;
     }  
 
     /// Returns \ref max_iter
-    inline int getMaxIterations() const
+    int getMaxIterations() const
     {
       return max_iter;
     }
 
     /// Returns number of iterations in last run of an iterative solver
-    inline int getIterations() 
+    int getIterations() 
     {
       return iterations;
     }
 
     /// Returns error code in last run of an iterative solver
-    inline int getErrorCode() 
+    int getErrorCode() 
     {
       return error;
     }
 
     /// Returns info
-    inline int getInfo()
+    int getInfo()
     {
       return info;
     }
 
     /// Returns \ref print_cycle
-    inline int getPrint_cycle() const
+    int getPrint_cycle() const
     {
       return print_cycle;
     }
 
     /// Returns \ref residual
-    inline double getResidual() const
+    double getResidual() const
     {
       return residual;
     }
 
     /// Returns \ref relative
-    inline double getRelative() const
+    double getRelative() const
     {
       return relative;
     }
@@ -241,46 +222,46 @@ namespace AMDiS {
      */
 
     /// Sets \ref tolerance
-    inline void setTolerance(double tol) 
+    void setTolerance(double tol) 
     {
       tolerance = tol;
     }
 
-    inline void setResidual(double r)
+    void setResidual(double r)
     {
       residual = r;
     }
 
     /// Sets \ref relative
-    inline void setRelative(double rel) 
+    void setRelative(double rel) 
     {
       relative = rel;
     }
 
-    inline void setRelativeResidual(double r)
+    void setRelativeResidual(double r)
     {
       rel_residual = r;
     }
 
     /// Sets \ref max_iter
-    inline void setMaxIterations(int i) 
+    void setMaxIterations(int i) 
     {
       max_iter = i;
     }
 
-    inline void setIterations(int i)
+    void setIterations(int i)
     {
       iterations=i;
     }
 
     /// set the \ref error
-    inline void setErrorCode(int code)
+    void setErrorCode(int code)
     {
       error=code;
     }
   
     /// Sets \ref info
-    inline void setInfo(int i) 
+    void setInfo(int i) 
     {
       info = i;
     }
@@ -332,6 +313,5 @@ namespace AMDiS {
   
   
   typedef CreatorInterfaceName<LinearSolverInterface> LinearSolverCreator;
-}
-
-#endif // AMDIS_LINEAR_SOLVER_H
+  
+} // end namespace AMDiS

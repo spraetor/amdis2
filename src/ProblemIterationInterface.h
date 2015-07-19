@@ -44,7 +44,7 @@ namespace AMDiS
     /// Called after each adaption loop iteration.
     virtual void endIteration(AdaptInfo *adaptInfo) {}
 
-#if 0
+
     /// Returns number of managed problems
     virtual int getNumProblems() = 0;
 
@@ -59,13 +59,9 @@ namespace AMDiS
     { 
       return NULL; 
     }
-#endif
 
     /// Returns the name of the problem.
     virtual std::string getName() = 0;
   };
 
-}
-
-#endif
-
+} // end namespace AMDiS

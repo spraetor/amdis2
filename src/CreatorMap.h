@@ -48,8 +48,8 @@ namespace AMDiS {
       init();
       CreatorInterface<BaseClass> *creator = creatorMap[key];
       TEST_EXIT(creator)
-	("No creator for key \"%s\" defined in init file for parameter \"%s\"\n", 
-	  key.c_str(), initFileStr.c_str());
+        ("No creator for key \"%s\" defined in init file for parameter \"%s\"\n", 
+          key.c_str(), initFileStr.c_str());
 	
       return creator;
     }
@@ -63,10 +63,10 @@ namespace AMDiS {
     static void init() 
     {
       if (!initialized) {
-	initialized = true;
-	NullCreator<BaseClass> *nullCreator = new NullCreator<BaseClass>;
-	addCreator("0", nullCreator);
-	addDefaultCreators();
+      	initialized = true;
+      	NullCreator<BaseClass> *nullCreator = new NullCreator<BaseClass>;
+      	addCreator("0", nullCreator);
+      	addDefaultCreators();
       }
     }
 

@@ -37,6 +37,7 @@
 #include "boost/tuple/tuple.hpp"
 #include "AMDiS_fwd.h"
 #include "OpenMP.h"
+#include "Math.h"
 
 namespace AMDiS {
 

@@ -117,12 +117,12 @@ namespace AMDiS
     virtual void getNodeDofsAtFace(const FiniteElemSpace* feSpace, 
 				  BoundaryObject bound,
 				  DofContainer& dofs,
-				  bool baseDofPtr) const override;
+				  bool baseDofPtr) const;
 
     virtual void getNodeDofsAtEdge(const FiniteElemSpace* feSpace, 
 				  BoundaryObject bound,
 				  DofContainer& dofs,
-				  bool baseDofPtr) const override;
+				  bool baseDofPtr) const;
 
     virtual void getHigherOrderDofs(const FiniteElemSpace* feSpace,
 				    BoundaryObject bound,
@@ -311,6 +311,8 @@ namespace AMDiS
 
     /// See \ref Element::getVertexOfParent for more information.
     static const int vertexOfParent[3][2][4];
+    
+    friend class CoarseningManager3d;
   };
 
 } // end namespace AMDiS

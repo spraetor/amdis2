@@ -57,7 +57,7 @@ namespace AMDiS {
 			  const DenseVector<WorldVector<double> >& grdUhAtQP,
 			  const DenseVector<WorldMatrix<double> >& D2UhAtQP,
 			  DenseVector<double>& result,
-			  double fac) const override;
+			  double fac) const override
     {
       for (int iq = 0; iq < nPoints; iq++)
 	result[iq] += fac * this->expr(iq) * uhAtQP[iq];

@@ -60,7 +60,7 @@ namespace AMDiS
     template <class C>
     void addZeroOrderTerm(C const& c)
     {
-      typedef typename taits::to_expr<C>::to Expr;
+      typedef typename traits::to_expr<C>::to Expr;
       addZOTImpl(Expr::get(c));
     }
 
@@ -68,9 +68,9 @@ namespace AMDiS
     template <class B>
     void addFirstOrderTerm(B const& b, FirstOrderType type = GRD_PHI, int i = -1)
     {
-      typedef typename category<B>::value_type    ValueType;
-      typedef typename category<ValueType>::tag   Tag;
-      typedef typename taits::to_expr<B>::to      Expr;
+      typedef typename traits::category<B>::value_type    ValueType;
+      typedef typename traits::category<ValueType>::tag   Tag;
+      typedef typename traits::to_expr<B>::to      Expr;
       addFOTImpl(Tag(), Expr::get(b), type, i);
     }
 
@@ -79,11 +79,11 @@ namespace AMDiS
     void addSecondOrderTerm(A const& a, int i = -1, int j = -1, 
 			    bool_<symmetric> s = bool_<symmetric>())
     {
-      typedef typename category<A>::value_type    ValueType;
-      typedef typename category<ValueType>::tag   Tag;
-      typedef typename taits::to_expr<A>::to      Expr;
-      typedef typename if_< boost::is_same<Tag, tag::scalar>, 
-			    bool_<true>, bool_<symmetric> >::type Sym;
+      typedef typename traits::category<A>::value_type    ValueType;
+      typedef typename traits::category<ValueType>::tag   Tag;
+      typedef typename traits::to_expr<A>::to      Expr;
+      typedef if_then_else< std::is_same<Tag, tag::scalar>::value, 
+			    bool_<true>, bool_<symmetric> > Sym;
       addSOTImpl(Tag(), Expr::get(a), i, j, Sym::value);
     }
 
@@ -115,7 +115,7 @@ namespace AMDiS
     }
 
     /// Returns \ref auxFeSpaces.
-    std::set<const FiniteElemSpace*>& getAuxFeSpaces() const
+    std::set<const FiniteElemSpace*>& getAuxFeSpaces()
     {
       return auxFeSpaces;
     }
@@ -135,7 +135,7 @@ namespace AMDiS
     /// Sets \ref assembler
     void setAssembler(Assembler *ass)
     {
-      assembler.set(a);
+      assembler.set(ass);
     }
 
     /// Sets \ref fillFlag, the flag used for this Operator while mesh traversal.
@@ -352,8 +352,6 @@ namespace AMDiS
     friend class SecondOrderAssembler;
   };
 
-}
+} // end namespace AMDiS
 
 #include "Operator.hh"
-
-#endif // AMDIS_OPERATOR_H

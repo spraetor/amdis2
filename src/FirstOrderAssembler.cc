@@ -112,7 +112,7 @@ namespace AMDiS
   }
 
 
-  void Stand10::calculateElementMatrix(const ElInfo *elInfo, ElementMatrix& mat)
+  void Stand10::calculateElementMatrixImpl(const ElInfo *elInfo, ElementMatrix& mat)
   {
     mtl::dense_vector<double> grdPsi(dim + 1, 0.0);
     int nPoints = quadrature->getNumPoints();
@@ -141,7 +141,7 @@ namespace AMDiS
   }
 
 
-  void Stand10::calculateElementVector(const ElInfo *elInfo, ElementVector& vec)
+  void Stand10::calculateElementVectorImpl(const ElInfo *elInfo, ElementVector& vec)
   {
     mtl::dense_vector<double> grdPsi(dim + 1, 0.0);
     int nPoints = quadrature->getNumPoints();
@@ -173,7 +173,7 @@ namespace AMDiS
   }
 
 
-  void Quad10::calculateElementMatrix(const ElInfo *elInfo, ElementMatrix& mat)
+  void Quad10::calculateElementMatrixImpl(const ElInfo *elInfo, ElementMatrix& mat)
   {
     if (firstCall) {
       const BasisFunction *basFcts = rowFeSpace->getBasisFcts();
@@ -209,7 +209,7 @@ namespace AMDiS
   }
 
 
-  void Quad10::calculateElementVector(const ElInfo *elInfo, ElementVector& vec)
+  void Quad10::calculateElementVectorImpl(const ElInfo *elInfo, ElementVector& vec)
   {
     if (firstCall) {
       const BasisFunction *basFcts = rowFeSpace->getBasisFcts();
@@ -246,7 +246,7 @@ namespace AMDiS
   }
 
 
-  void Pre10::calculateElementMatrix(const ElInfo *elInfo, ElementMatrix& mat)
+  void Pre10::calculateElementMatrixImpl(const ElInfo *elInfo, ElementMatrix& mat)
   {
     if (firstCall) {
       q10 = Q10PsiPhi::provideQ10PsiPhi(rowFeSpace->getBasisFcts(), 
@@ -294,7 +294,7 @@ namespace AMDiS
   }
 
 
-  void Stand01::calculateElementMatrix(const ElInfo *elInfo, ElementMatrix& mat)
+  void Stand01::calculateElementMatrixImpl(const ElInfo *elInfo, ElementMatrix& mat)
   {
     int nPoints = quadrature->getNumPoints();
     Lb.resize(nPoints);
@@ -328,7 +328,7 @@ namespace AMDiS
   }
 
 
-  void Quad01::calculateElementMatrix(const ElInfo *elInfo, ElementMatrix& mat)
+  void Quad01::calculateElementMatrixImpl(const ElInfo *elInfo, ElementMatrix& mat)
   {
     if (firstCall) {
       const BasisFunction *basFcts = rowFeSpace->getBasisFcts();
@@ -373,7 +373,7 @@ namespace AMDiS
   }
 
 
-  void Pre01::calculateElementMatrix(const ElInfo *elInfo, ElementMatrix& mat)
+  void Pre01::calculateElementMatrixImpl(const ElInfo *elInfo, ElementMatrix& mat)
   {
     if (firstCall) {
       q01 = Q01PsiPhi::provideQ01PsiPhi(rowFeSpace->getBasisFcts(), 
@@ -405,7 +405,7 @@ namespace AMDiS
   }
 
 
-  void Pre10::calculateElementVector(const ElInfo *elInfo, ElementVector& vec)
+  void Pre10::calculateElementVectorImpl(const ElInfo *elInfo, ElementVector& vec)
   {
     if (firstCall) {
       q10 = Q10PsiPhi::provideQ10PsiPhi(rowFeSpace->getBasisFcts(), 

@@ -14,7 +14,6 @@
 
 #include "Global.h"
 #include "FixVec.h"
-#include "Serializable.h"
 #include "AMDiS_fwd.h"
 
 namespace AMDiS 

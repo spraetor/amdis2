@@ -4,7 +4,6 @@
 #include "DOFVector.h"
 #include "BasisFunction.h"
 #include "Lagrange.h"
-#include "Bubble.h"
 
 namespace AMDiS {
 

@@ -1,28 +1,6 @@
-/******************************************************************************
- *
- * AMDiS - Adaptive multidimensional simulations
- *
- * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
- * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
- *
- * Authors: 
- * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
- *
- * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
- * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
- *
- *
- * This file is part of AMDiS
- *
- * See also license.opensource.txt in the distribution.
- * 
- ******************************************************************************/
- 
-
 /** \file BlockMTLMatrix.h */
 
-#ifndef AMDIS_BLOCK_MTL_MATRIX_H
-#define AMDIS_BLOCK_MTL_MATRIX_H
+#pragma once
 
 #include "solver/SolverMatrix.h"
 #include "solver/Mapper.h"
@@ -70,18 +48,18 @@ namespace AMDiS {
       int start = 0;
       mapper.setCol(0);
       for (size_t i = 0; i < n_rows; i++) {
-	mapper.setRow(i+1);
-	int finish = mapper.row(0);
-	r_rows[i].set(start, finish);
-	start = finish;
+      	mapper.setRow(i+1);
+      	int finish = mapper.row(0);
+      	r_rows[i].set(start, finish);
+      	start = finish;
       }
       start = 0;
       mapper.setRow(0);
       for (size_t i = 0; i < n_cols; i++) {
-	mapper.setCol(i+1);
-	int finish = mapper.col(0);
-	r_cols[i].set(start, finish);
-	start = finish;
+      	mapper.setCol(i+1);
+      	int finish = mapper.col(0);
+      	r_cols[i].set(start, finish);
+      	start = finish;
       }
       initialized = true;
     }
@@ -108,19 +86,19 @@ namespace AMDiS {
       TEST_EXIT_DBG(initialized)("Block matrix not initialized. Assign a SolverMatrix first!\n");
       
       for (size_t i = 0; i < n_rows; i++) {
-	VectorOut x_i(x[r_rows[i]]);
-	bool first = true;
-	for (size_t j = 0; j < n_cols; j++) {
-	  if ((*A->getOriginalMat())[i][j]) {
-	    const VectorIn b_j(b[r_cols[j]]);
-	    if (first) {
-	      Assign::first_update(x_i, A->getSubMatrix(i, j) * b_j);
-	      first = false;
-	    } else {
-	      Assign::update(x_i, A->getSubMatrix(i, j) * b_j);
-	    }
-	  }
-	}
+      	VectorOut x_i(x[r_rows[i]]);
+      	bool first = true;
+      	for (size_t j = 0; j < n_cols; j++) {
+      	  if ((*A->getOriginalMat())[i][j]) {
+      	    const VectorIn b_j(b[r_cols[j]]);
+      	    if (first) {
+      	      Assign::first_update(x_i, A->getSubMatrix(i, j) * b_j);
+      	      first = false;
+      	    } else {
+      	      Assign::update(x_i, A->getSubMatrix(i, j) * b_j);
+      	    }
+      	  }
+      	}
       }
     }
 
@@ -172,8 +150,7 @@ namespace mtl
     { 
       typedef nonscal type;
     };
+    
   } // end namespace ashape
   
 } // end namespace mtl
-
-#endif // AMDIS_BLOCK_MTL_MATRIX_H

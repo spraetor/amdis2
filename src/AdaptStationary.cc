@@ -12,8 +12,8 @@ namespace AMDiS {
 
   AdaptStationary::AdaptStationary(std::string name,
 				   ProblemIterationInterface& prob,
-				   AdaptInfo& info) 
-    : AdaptBase(name, &prob, &info)
+				   AdaptInfo& adaptInfo) 
+    : AdaptBase(name, &prob, &adaptInfo)
   {
     Parameters::get(name + "->info", info);
   }

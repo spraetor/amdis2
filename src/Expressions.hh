@@ -1,5 +1,8 @@
 /** \file Expressions.hh */
 
+#include "Traverse.h"
+#include "DualTraverse.h"
+
 namespace AMDiS 
 {
   template <class Expr>
@@ -87,7 +90,7 @@ namespace AMDiS
   // works only for nodal basis functions!
   template <class T, class Expr>
   inline typename boost::enable_if<
-    nd_<traits::is_expr<Expr>, 
+    and_<traits::is_expr<Expr>, 
 	traits::is_convertible<typename Expr::value_type, T> >
     >::type
   transformDOF(Expr expr, DOFVector<T>* result)

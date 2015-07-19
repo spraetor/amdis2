@@ -30,23 +30,23 @@ namespace AMDiS
 				const BoundaryType* localBound,
 				int nBasFcts) override;
 
-      ///
-      void initVector(DOFVectorBase<double>* vec);
+      /// Implementation of BoundaryCondition::initVector()
+      virtual void initVector(DOFVectorBase<double>* vec) override;
 
       /// Implementation of BoundaryCondition::boundResidual().
-      double boundResidual(ElInfo*, DOFMatrix*, const DOFVectorBase<double>*) 
+      virtual double boundResidual(ElInfo*, DOFMatrix*, const DOFVectorBase<double>*) override 
       { 
 	return 0.0; 
       }
 
       /// Because this is a Dirichlet boundary condition, always return true.
-      bool isDirichlet() const
+      virtual bool isDirichlet() const override
       { 
 	return true; 
       }
 
       /// Returns \ref applyBC.
-      bool applyBoundaryCondition() const
+      virtual bool applyBoundaryCondition() const override
       {
 	return applyBC;
       }
@@ -75,7 +75,7 @@ namespace AMDiS
   {
     using Super = detail::DirichletBC;
     using ToExpr = typename traits::to_expr<Expr>::to;
-    using ExprType typename ToExpr::type ExprType;
+    using ExprType = typename ToExpr::type;
     
   public:
     /// Constructor.

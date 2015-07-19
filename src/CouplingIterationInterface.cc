@@ -3,8 +3,8 @@
 #include "Flag.h"
 #include "CouplingIterationInterface.h"
 
-namespace AMDiS {
-
+namespace AMDiS 
+{
   /// add problem by number
   void CouplingIterationInterface::addIterationInterface(ProblemIterationInterface* probIter, int number)
   {
@@ -68,7 +68,7 @@ namespace AMDiS {
   /// Returns number of managed problems
   int CouplingIterationInterface::getNumProblems()
   {
-    size_t num= 0;
+    int num= 0;
     for (size_t i = 0; i < problems.size(); ++i)
       num += problems[i]->getNumProblems();
     return num;
@@ -80,30 +80,29 @@ namespace AMDiS {
     * is managed by this master problem, the number hasn't to be given.
     */
   ProblemStatBase *CouplingIterationInterface::getProblem(int number)
-  {
-    size_t maxNum = getNumProblems();
-    if (maxNum <= static_cast<size_t>(number))
-      throw(std::runtime_error("Problem number out of range."));
+  { FUNCNAME("CouplingIterationInterface::getProblem");
     
-    size_t sum = 0;
+    int maxNum = getNumProblems();
+    TEST_EXIT(maxNum > number)("Problem number out of range.");
+    
+    int sum = 0;
     ProblemStatBase *probIter = NULL;
     for (size_t i = 0; i < problems.size(); ++i) {
-      if (sum + problems[i]->getNumProblems() <= static_cast<size_t>(number))
+      if (sum + problems[i]->getNumProblems() <= number)
         sum += problems[i]->getNumProblems();
       else
         probIter = problems[i]->getProblem(number - sum);
     }
-    if (probIter == NULL)
-      throw(std::runtime_error("Problem not found. Should not happen, since number is in range."));
+    
+    TEST_EXIT_DBG(probIter)("Problem not found. Should not happen, since number is in range.");
     return probIter;
   }
 
 
   /// Returns the name of the problem.
-  std::string CouplingIterationInterface::getName(size_t number)
+  std::string CouplingIterationInterface::getName(int number)
   {
-    if (static_cast<size_t>(problems.size()) <= number)
-      throw(std::runtime_error("Problem number out of range."));
+    TEST_EXIT(getNumIterationInterfaces() > number)("Problem number out of range.");
 
     return problems[number]->getName();
   }

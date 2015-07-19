@@ -54,7 +54,7 @@ namespace AMDiS {
     double boundResidual(ElInfo *elInfo, DOFMatrix *matrix, 
 			 const DOFVectorBase<double> *dv);
 
-    BoundaryCondition *getBoundaryCondition(BoundaryType type) const
+    BoundaryCondition *getBoundaryCondition(BoundaryType type)
     {
       return localBCs[type];
     }
@@ -73,8 +73,8 @@ namespace AMDiS {
     /// boundary id, which implements a periodic boundary.
     static bool isBoundaryPeriodic(BoundaryType b)
     {
-      for (auto const& boundary_map : globalBoundaryMap[b])
-	if (boundary_map[i]->isPeriodic())
+      for (BoundaryCondition* boundary_map : globalBoundaryMap[b])
+	if (boundary_map->isPeriodic())
 	  return true;
 
       return false;

@@ -377,7 +377,7 @@ namespace AMDiS
     }
 
 
-    class PeriodicInfo : public Serializable
+    class PeriodicInfo
     {
     public:
       PeriodicInfo() 

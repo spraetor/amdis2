@@ -5,7 +5,6 @@
 #include "AMDiS_fwd.h"
 #include "Global.h"
 #include "RefinementManager.h"
-#include "Serializable.h"
 #include "ElementData.h"
 #include "LeafData.h"
 

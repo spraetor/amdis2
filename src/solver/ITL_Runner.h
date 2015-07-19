@@ -1,39 +1,16 @@
-/******************************************************************************
- *
- * AMDiS - Adaptive multidimensional simulations
- *
- * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
- * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
- *
- * Authors: 
- * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
- *
- * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
- * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
- *
- *
- * This file is part of AMDiS
- *
- * See also license.opensource.txt in the distribution.
- * 
- ******************************************************************************/
-
-
 /** \file ITL_Runner.h */
 
-
-#ifndef AMDIS_ITL_RUNNER_H
-#define AMDIS_ITL_RUNNER_H
-
-#include "solver/LinearSolver.h"
-#include "solver/ITL_Preconditioner.h"
+#pragma once
 
 #include <boost/numeric/itl/itl.hpp>
 #include <boost/numeric/mtl/mtl.hpp>
 
-namespace AMDiS {
+#include "solver/LinearSolver.h"
+#include "solver/ITL_Preconditioner.h"
 
-  template< typename MatrixType, typename VectorType >
+namespace AMDiS 
+{
+  template <class MatrixType, class VectorType>
   struct PreconPair
   { 
     /// Pointer to the left preconditioner
@@ -54,14 +31,14 @@ namespace AMDiS {
    * Wrapper class for different MTL4 itl-solvers. These solvers
    * are parametrized by Matrix- and VectorType. 
    **/
-  template< typename ITLSolver, typename MatrixType, typename VectorType >
+  template <class ITLSolver, class MatrixType, class VectorType>
   struct ITL_Runner : public RunnerBase< MatrixType, VectorType >
   {       
     typedef RunnerBase< MatrixType, VectorType > super;
     
     ITL_Runner(LinearSolverInterface* oemPtr)
       : oem(*oemPtr),
-	solver(oem.getName())
+	      solver(oem.getName())
     {
       setPrecon(preconPair);
     }
@@ -69,21 +46,22 @@ namespace AMDiS {
     ~ITL_Runner()
     {
       if (preconPair.l != NULL) {
-	preconPair.l->exit();
-	delete preconPair.l;
-	preconPair.l = NULL;
+      	preconPair.l->exit();
+      	delete preconPair.l;
+      	preconPair.l = NULL;
       }
 
       if (preconPair.r != NULL) {
-	preconPair.r->exit();
-	delete preconPair.r;
-	preconPair.r = NULL;
+      	preconPair.r->exit();
+      	delete preconPair.r;
+      	preconPair.r = NULL;
       }
     }
     
     
     /// Implementation of \ref RunnerBase::init()
-    virtual void init(const SolverMatrix<Matrix<DOFMatrix*> >& A, const MatrixType& fullMatrix) override
+    virtual void init(const SolverMatrix<Matrix<DOFMatrix*> >& A, 
+                      const MatrixType& fullMatrix) override
     {
       preconPair.l->init(A, fullMatrix);
       preconPair.r->init(A, fullMatrix);
@@ -91,7 +69,8 @@ namespace AMDiS {
     
     
     /// Implementation of \ref RunnerBase::solve()
-    virtual int solve(const MatrixType& A , VectorType& x, const VectorType& b) override
+    virtual int solve(const MatrixType& A , VectorType& x, 
+                      const VectorType& b) override
     { FUNCNAME("ITL_Runner::solve()");
     
       TEST_EXIT(preconPair.l != NULL)("there is no left preconditioner\n");
@@ -101,31 +80,31 @@ namespace AMDiS {
             
       VectorType r(num_rows(b)); r = b;
       if (two_norm(x) != 0) {
-	r = A * x ; 
-	r -= b;
+      	r = A * x ; 
+      	r -= b;
       }
       int error = 0;
       if (oem.getInfo() == 0) {
         // iteration that does not print residual per iteration
-	itl::basic_iteration<value_type> 
-	  iter(r, oem.getMaxIterations(), oem.getRelative(), oem.getTolerance());
-	
-	error = solver(A, x, b, *(preconPair.l), *(preconPair.r), iter);
-	oem.setErrorCode(error);
-	oem.setIterations(iter.iterations());
-	oem.setResidual(iter.resid());
-	oem.setRelativeResidual(iter.relresid());
+      	itl::basic_iteration<value_type> 
+      	  iter(r, oem.getMaxIterations(), oem.getRelative(), oem.getTolerance());
+      	
+      	error = solver(A, x, b, *(preconPair.l), *(preconPair.r), iter);
+      	oem.setErrorCode(error);
+      	oem.setIterations(iter.iterations());
+      	oem.setResidual(iter.resid());
+      	oem.setRelativeResidual(iter.relresid());
       } else {
         // print information about the solution process
-	itl::cyclic_iteration<value_type> 
-	  iter(r, oem.getMaxIterations(), oem.getRelative(), oem.getTolerance(), 
-	       oem.getPrint_cycle());
-	
-	error = solver(A, x, b, *(preconPair.l), *(preconPair.r), iter);
-	oem.setErrorCode(error);
-	oem.setIterations(iter.iterations());
-	oem.setResidual(iter.resid());
-	oem.setRelativeResidual(iter.relresid());
+      	itl::cyclic_iteration<value_type> 
+      	  iter(r, oem.getMaxIterations(), oem.getRelative(), oem.getTolerance(), 
+      	       oem.getPrint_cycle());
+      	
+      	error = solver(A, x, b, *(preconPair.l), *(preconPair.r), iter);
+      	oem.setErrorCode(error);
+      	oem.setIterations(iter.iterations());
+      	oem.setResidual(iter.resid());
+      	oem.setRelativeResidual(iter.relresid());
       }
       
       return error;
@@ -133,7 +112,9 @@ namespace AMDiS {
 
     
     /// Implementation of \ref RunnerBase::adjoint_solve()
-    virtual int adjoint_solve(const MatrixType& A , VectorType& x, const VectorType& b) override
+    virtual int adjoint_solve(const MatrixType& A , 
+                              VectorType& x, 
+                              const VectorType& b) override
     { FUNCNAME("ITL_Runner::adjoint_solve()");
     
       TEST_EXIT(preconPair.l != NULL)("there is no left preconditioner\n");
@@ -145,22 +126,22 @@ namespace AMDiS {
       VectorType r(B * x - b); 
       int error = 0;
       if (oem.getInfo() == 0) {
-	itl::basic_iteration<value_type> 
-	  iter(r, oem.getMaxIterations(), oem.getRelative(), oem.getTolerance());
-	
-	error = solver(B, x, b, *(preconPair.l), *(preconPair.r), iter);
-	oem.setErrorCode(error);
-	oem.setIterations(iter.iterations());
-	oem.setResidual(iter.resid());
+      	itl::basic_iteration<value_type> 
+      	  iter(r, oem.getMaxIterations(), oem.getRelative(), oem.getTolerance());
+      	
+      	error = solver(B, x, b, *(preconPair.l), *(preconPair.r), iter);
+      	oem.setErrorCode(error);
+      	oem.setIterations(iter.iterations());
+      	oem.setResidual(iter.resid());
       } else {
-	itl::cyclic_iteration<value_type> 
-	  iter(r, oem.getMaxIterations(), oem.getRelative(), oem.getTolerance(), 
-	       oem.getPrint_cycle());
-	
-	error = solver(B, x, b, *(preconPair.l), *(preconPair.r), iter);
-	oem.setErrorCode(error);
-	oem.setIterations(iter.iterations());
-	oem.setResidual(iter.resid());
+      	itl::cyclic_iteration<value_type> 
+      	  iter(r, oem.getMaxIterations(), oem.getRelative(), oem.getTolerance(), 
+      	       oem.getPrint_cycle());
+      	
+      	error = solver(B, x, b, *(preconPair.l), *(preconPair.r), iter);
+      	oem.setErrorCode(error);
+      	oem.setIterations(iter.iterations());
+      	oem.setResidual(iter.resid());
       }
       
       return error;
@@ -208,18 +189,18 @@ namespace AMDiS {
       std::string initFileStr = oem.getName() + "->left precon";
       Parameters::get(initFileStr, preconType);
       leftCreator = dynamic_cast<CreatorInterfaceName< ITL_PreconditionerBase<MatrixType, VectorType> >*>(
-	CreatorMap<ITL_PreconditionerBase<MatrixType, VectorType> >::getCreator(preconType, initFileStr) );
+	       CreatorMap<ITL_PreconditionerBase<MatrixType, VectorType> >::getCreator(preconType, initFileStr) );
       TEST_EXIT(leftCreator != NULL)
-	("There is no creator for the given left preconditioner '%s'\n", preconType.c_str());
+	       ("There is no creator for the given left preconditioner '%s'\n", preconType.c_str());
       leftCreator->setName(initFileStr);
 
       preconType = "no";
       initFileStr = oem.getName() + "->right precon";
       Parameters::get(initFileStr, preconType);
       rightCreator = dynamic_cast<CreatorInterfaceName< ITL_PreconditionerBase<MatrixType, VectorType> >*>(
-	CreatorMap<ITL_PreconditionerBase<MatrixType, VectorType> >::getCreator(preconType, initFileStr) );
+	       CreatorMap<ITL_PreconditionerBase<MatrixType, VectorType> >::getCreator(preconType, initFileStr) );
       TEST_EXIT(rightCreator != NULL)
-	("There is no creator for the given right preconditioner '%s'\n", preconType.c_str());
+	       ("There is no creator for the given right preconditioner '%s'\n", preconType.c_str());
       rightCreator->setName(initFileStr);
 
       pair.l = leftCreator->create();
@@ -230,6 +211,4 @@ namespace AMDiS {
     PreconPair<MatrixType, VectorType> preconPair;
   };
 
-} // namespace AMDiS
-
-#endif // AMDIS_ITL_RUNNER_H
+} // end namespace AMDiS

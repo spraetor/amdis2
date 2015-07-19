@@ -173,7 +173,7 @@ namespace AMDiS
     }
 
     /// Returns \ref l[i][j] 
-    onst int *getLVec(unsigned int i, unsigned int j) const 
+    const int *getLVec(unsigned int i, unsigned int j) const 
     {
       if (l && l[i] && l[i][j]) 
 	return l[i][j];
@@ -545,7 +545,7 @@ namespace AMDiS
 				       const Quadrature*);
   
     /// Compares two Q00PsiPhi objects.
-    bool operator==(const Q00PsiPhi&) const
+    bool operator==(const Q00PsiPhi& q00pp) const
     {
       return (q00pp.psi == psi && q00pp.phi == phi && q00pp.quadrature == quadrature);
     }
@@ -611,7 +611,7 @@ namespace AMDiS
     static Q0Psi* provideQ0Psi(const BasisFunction *, const Quadrature*);
   
     /// Compares two Q0Psi objects.
-    bool operator==(const Q0Psi&) const
+    bool operator==(const Q0Psi& q0p) const
     {
       return (q0p.psi == psi && q0p.quadrature == quadrature);
     }

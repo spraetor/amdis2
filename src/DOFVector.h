@@ -16,7 +16,6 @@
 #include "DOFContainer.h"
 #include "Boundary.h"
 #include "CreatorInterface.h"
-#include "Serializable.h"
 #include "DOFMatrix.h" 
 #include "BasisFunction.h"
 #include "FiniteElemSpace.h"
@@ -668,6 +667,37 @@ namespace AMDiS
   {
     vec->print();
   }
+  
+  
+  // point wise multiplication
+  template<typename T>
+  const DOFVector<T>& operator*=(DOFVector<T>& x, const DOFVector<T>& y);
+
+  // multiplication with scalar
+  template<typename T>
+  const DOFVector<T>& operator*=(DOFVector<T>& x, T scal);
+
+  // scalar product
+  template<typename T>
+  T operator*(DOFVector<T>& x, DOFVector<T>& y);
+
+  // addition
+  template<typename T>
+  const DOFVector<T>& operator+=(DOFVector<T>& x, const DOFVector<T>& y);
+
+  // subtraction
+  template<typename T>
+  const DOFVector<T>& operator-=(DOFVector<T>& x, const DOFVector<T>& y);
+
+  template<typename T>
+  const DOFVector<T>& operator*(const DOFVector<T>& v, double d);
+
+  template<typename T>
+  const DOFVector<T>& operator*(double d, const DOFVector<T>& v);
+
+  template<typename T>
+  const DOFVector<T>& operator+(const DOFVector<T>&v1 , const DOFVector<T>& v2);
+
 
   template<typename T>
   inline void set(DOFVector<T>& vec, T d) 

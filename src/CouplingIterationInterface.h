@@ -26,46 +26,48 @@ namespace AMDiS {
     virtual void addIterationInterface(ProblemIterationInterface* probIter, int number = -1);
 
     /// Called before each adaption loop iteration.
-    virtual void beginIteration(AdaptInfo *adaptInfo);
+    virtual void beginIteration(AdaptInfo *adaptInfo) override;
 
     /** \brief
      * Determines the execution order of the single adaption steps. If adapt is
      * true, mesh adaption will be performed. This allows to avoid mesh adaption,
      * e.g. in timestep adaption loops of timestep adaptive strategies.
      */
-    virtual Flag oneIteration(AdaptInfo *adaptInfo, Flag toDo = FULL_ITERATION);
+    virtual Flag oneIteration(AdaptInfo *adaptInfo, Flag toDo = FULL_ITERATION) override;
 
     /// Called after each adaption loop iteration.
-    virtual void endIteration(AdaptInfo *adaptInfo);
+    virtual void endIteration(AdaptInfo *adaptInfo) override;
 
-    virtual int getNumProblems();
+    virtual int getNumProblems() override;
 
     /// Returns number of managed problems
-    virtual size_t getNumIterationInterfaces() { return problems.size(); }
+    virtual int getNumIterationInterfaces() 
+    { 
+      return static_cast<int>(problems.size()); 
+    }
 
     /** \brief
      * Returns the problem with the given number. If only one problem
      * is managed by this master problem, the number hasn't to be given.
      */
-    virtual ProblemStatBase *getProblem(int number = 0);
+    virtual ProblemStatBase *getProblem(int number = 0) override;
 
-    virtual ProblemIterationInterface *getIterationInterface(size_t number = 0) { return problems[number]; }
+    virtual ProblemIterationInterface *getIterationInterface(int number = 0) 
+    { 
+      return problems[number]; 
+    }
 
     /// Returns the name of the problem with the given number.
-    virtual std::string getName(size_t number);
-    virtual std::string getName() { return getName(0); }
+    virtual std::string getName(int number);
+    virtual std::string getName() override { return "CouplingIterationInterface"; }
 
-    virtual void setSolveProblem(size_t number, bool flag = true) { solveProblem[number] = flag; }
+    virtual void setSolveProblem(int number, bool flag = true) 
+    { 
+      solveProblem[number] = flag; 
+    }
     virtual void setSolveProblem(std::string name, bool flag = true);
 
-    /// Function that serializes the problem plus information about the iteration.
-    virtual void serialize(std::ostream &out) {};
-
-    /// Function that deserializes the problem plus information about the iteration.
-    virtual void deserialize(std::istream &in) {};
-
   protected:
-
     /// vector/map of coupled stationary problems
     std::vector<ProblemIterationInterface*> problems;
     std::vector<bool> solveProblem;
