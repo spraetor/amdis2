@@ -429,8 +429,9 @@ namespace AMDiS
 	  
 	  basisFcts->getLocalIndices(el, feSpace->getAdmin(), myLocalIndices);
 	  
-	  ElementVector rvec(nBasisFcts);	  
-	  basisFcts->interpol(elInfo, nBasisFcts, NULL, &F, rvec);
+	  ElementVector rvec(nBasisFcts);
+	  std::function<double(WorldVector<double>)> f = F;
+	  basisFcts->interpol(elInfo, nBasisFcts, NULL, f, rvec);
 	  
 	  for (int i = 0; i < nBasisFcts; i++) {
 	    if (vec[myLocalIndices[i]] == 0.0) {
@@ -545,7 +546,8 @@ namespace AMDiS
 	  v->getLocalVector(el, vLocalCoeffs);
 	  
 	  mtl::dense_vector<WorldVector<double> > rvec(nBasFcts);
-	  basFcts->interpol(elInfo, nBasFcts, NULL, &F, rvec);
+    std::function<WorldVector<double>(WorldVector<double>)> f = F;
+	  basFcts->interpol(elInfo, nBasFcts, NULL, f, rvec);
 	  
 	  for (int i = 0; i < nBasFcts; i++) {
 	    if (vec[myLocalIndices[i]] == nul) {

@@ -11,70 +11,19 @@ using namespace std;
 namespace AMDiS 
 {
 
-  const unsigned char Tetrahedron::nChildEdge[3][2][2] = {{{5,4},{4,5}},
-							  {{5,4},{5,4}},
-							  {{5,4},{5,4}}};
-
-  const unsigned char Tetrahedron::nChildFace[3][2][2] = {{{1,2},{2,1}},
-							  {{1,2},{1,2}},
-							  {{1,2},{1,2}}};
-
-  const int Tetrahedron::childVertex[3][2][4] = {{{0,2,3,4},{1,3,2,4}},
-						 {{0,2,3,4},{1,2,3,4}},
-						 {{0,2,3,4},{1,2,3,4}}};
-
-  const int Tetrahedron::childEdge[3][2][6] = {{{1,2,0,5,5,4}, {4,3,0,5,5,4}},
-					       {{1,2,0,5,4,5}, {3,4,0,5,4,5}},
-					       {{1,2,0,5,4,5}, {3,4,0,5,4,5}}};
-
-  const unsigned char Tetrahedron::adjacentChild[2][2] = {{0,1}, {1,0}};
-
-  const signed char Tetrahedron::childOrientation[3][2] = {{1,1}, 
-							   {1,-1}, 
-							   {1,-1}};
-
-  const unsigned char Tetrahedron::edgeOfDofs[4][4] =  {{255, 0, 1, 2},
-							{0, 255, 3, 4},
-							{1, 3, 255, 5},
-							{2, 4, 5, 255}};
-
-  const int Tetrahedron::vertexOfEdge[6][2] = {{0,1},
-					       {0,2},
-					       {0,3},
-					       {1,2},
-					       {1,3},
-					       {2,3}};
-
-  const int Tetrahedron::vertexOfFace[4][3] = {{1,2,3},
-					       {0,2,3},
-					       {0,1,3},
-					       {0,1,2}};
-
-  const int Tetrahedron::sideOfChild[3][2][4] = {{{-1, 3, 1, 2},  // type 0
-						  {3, -1, 2, 1}},
-						 {{-1, 3, 1, 2},  // type 1
-						  {3, -1, 1, 2}},
-						 {{-1, 3, 1, 2},  // type 2
-						  {3, -1, 1, 2}}};
-
-  const int Tetrahedron::edgeOfChild[3][2][6] = {{{2, 0, 1, -1, -1, 3},   // type 0
-						  {2, -1, -1, 1, 0, 3}},
-						 {{2, 0, 1, -1, -1, 3},   // type 1
-						  {2, -1, -1, 0, 1, 3}},
-						 {{2, 0, 1, -1, -1, 3},   // type 2
-						  {2, -1, -1, 0, 1, 3}}};
-
-  const int Tetrahedron::vertexOfParent[3][2][4] = {{{0, 2, 3, -1},  // type 0
-						     {1, 3, 2, -1}},
-						    {{0, 2, 3, -1},  // type 1
-						     {1, 2, 3, -1}},
-						    {{0, 2, 3, -1},  // type 2
-						     {1, 2, 3, -1}}};
-
-  const int Tetrahedron::edgeOfFace[4][3] = {{5, 4, 3},  // face 0
-					     {5, 2, 1},  // face 1
-					     {4, 2, 0},  // face 2
-					     {3, 1, 0}}; // face 3
+  constexpr unsigned char Tetrahedron::nChildEdge[3][2][2];
+  constexpr unsigned char Tetrahedron::nChildFace[3][2][2];
+  constexpr int Tetrahedron::childVertex[3][2][4];
+  constexpr int Tetrahedron::childEdge[3][2][6];
+  constexpr unsigned char Tetrahedron::adjacentChild[2][2];
+  constexpr signed char Tetrahedron::childOrientation[3][2];
+  constexpr unsigned char Tetrahedron::edgeOfDofs[4][4];
+  constexpr int Tetrahedron::vertexOfEdge[6][2];
+  constexpr int Tetrahedron::vertexOfFace[4][3];
+  constexpr int Tetrahedron::sideOfChild[3][2][4];
+  constexpr int Tetrahedron::edgeOfChild[3][2][6];
+  constexpr int Tetrahedron::vertexOfParent[3][2][4];
+  constexpr int Tetrahedron::edgeOfFace[4][3];
 
 
   bool Tetrahedron::hasSide(Element* sideElem) const

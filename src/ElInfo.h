@@ -48,26 +48,26 @@ namespace AMDiS
      * \{ 
      */
 
-    /// Get ElInfo's \ref mesh
+    /// Get ElInfo's \ref mesh    
     Mesh* getMesh() const 
     { 
       return mesh; 
     }
 
     /// Get ElInfo's \ref macroElement
-    MacroElement* getMacroElement() const 
+    MacroElement* getMacroElement() const
     { 
       return macroElement; 
     }
 
     /// Get ElInfo's \ref element
-    Element* getElement() const 
+    Element* getElement() const
     { 
       return element; 
     }
 
     /// Get ElInfo's \ref parent
-    Element* getParent() const 
+    Element* getParent() const
     { 
       return parent; 
     }
@@ -479,9 +479,9 @@ namespace AMDiS
     /// child.
     static const int childEdge[3][2][6];
 
-//     friend class ElInfo1d;
-//     friend class ElInfo2d;
-//     friend class ElInfo3d;
+    friend class ElInfo1d;
+    friend class ElInfo2d;
+    friend class ElInfo3d;
   };
   
   

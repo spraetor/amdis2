@@ -1,4 +1,5 @@
 #include "ElementRegion_ED.h"
+#include "Element.h"
 
 namespace AMDiS 
 {

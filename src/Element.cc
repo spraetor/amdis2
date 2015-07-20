@@ -4,7 +4,6 @@
 #include "CoarseningManager.h"
 #include "FixVec.h"
 #include "ElementRegion_ED.h"
-#include "Serializer.h"
 #include "MeshStructure.h"
 #include "BasisFunction.h"
 
@@ -138,7 +137,7 @@ namespace AMDiS
       }
     }
 
-    delete [] dof; dof = NULL
+    delete [] dof; dof = NULL;
     
     if (child[0])
       child[0]->deleteElementDOFs();

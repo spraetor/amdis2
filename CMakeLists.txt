@@ -25,6 +25,7 @@ if(CMAKE_CXX_COMPILER MATCHES ".*icpc")
 	list(APPEND CMAKE_CXX_FLAGS "-diag-disable 654 -diag-disable 858") 
 endif()
 
+list(APPEND COMPILEFLAGS "-std=c++11 -Wall -pedantic")
 
 SET(ENABLE_PARALLEL_DOMAIN "OFF" CACHE STRING "use parallel domain decomposition. please set to one of: PMTL, PETSC, OFF" )
 option(ENABLE_ZOLTAN false)
@@ -63,54 +64,52 @@ SET(AMDIS_SRC ${SOURCE_DIR}/AdaptBase.cc
 	      ${SOURCE_DIR}/ComponentTraverseInfo.cc
 	      ${SOURCE_DIR}/CouplingIterationInterface.cc
 	      ${SOURCE_DIR}/CreatorMap.cc
-#	      ${SOURCE_DIR}/DOFAdmin.cc
+	      ${SOURCE_DIR}/DOFAdmin.cc
 #	      ${SOURCE_DIR}/DOFIndexed.cc
-#	      ${SOURCE_DIR}/DOFMatrix.cc
-#	      ${SOURCE_DIR}/DOFVector.cc
+	      ${SOURCE_DIR}/DOFMatrix.cc
+	      ${SOURCE_DIR}/DOFVector.cc
 #	      ${SOURCE_DIR}/Debug.cc
-#	      ${SOURCE_DIR}/DirichletBC.cc
-#	      ${SOURCE_DIR}/DualTraverse.cc
-#	      ${SOURCE_DIR}/ElInfo.cc
-#	      ${SOURCE_DIR}/ElInfo1d.cc
-#	      ${SOURCE_DIR}/ElInfo2d.cc
-#	      ${SOURCE_DIR}/ElInfo3d.cc
-#	      ${SOURCE_DIR}/ElInfoStack.cc
-#	      ${SOURCE_DIR}/Element.cc
-#	      ${SOURCE_DIR}/ElementData.cc
-#	      ${SOURCE_DIR}/ElementDofIterator.cc
-#	      ${SOURCE_DIR}/ElementRegion_ED.cc	
-#	      ${SOURCE_DIR}/FiniteElemSpace.cc
-#	      ${SOURCE_DIR}/FirstOrderAssembler.cc
-#	      ${SOURCE_DIR}/FirstOrderTerm.cc
-#	      ${SOURCE_DIR}/FixVec.cc
+	      ${SOURCE_DIR}/DirichletBC.cc
+	      ${SOURCE_DIR}/DualTraverse.cc
+	      ${SOURCE_DIR}/ElInfo.cc
+	      ${SOURCE_DIR}/ElInfo1d.cc
+	      ${SOURCE_DIR}/ElInfo2d.cc
+	      ${SOURCE_DIR}/ElInfo3d.cc
+	      ${SOURCE_DIR}/ElInfoStack.cc
+	      ${SOURCE_DIR}/Element.cc
+	      ${SOURCE_DIR}/ElementData.cc
+	      ${SOURCE_DIR}/ElementDofIterator.cc
+	      ${SOURCE_DIR}/ElementRegion_ED.cc	
+	      ${SOURCE_DIR}/FiniteElemSpace.cc
+	      ${SOURCE_DIR}/FirstOrderAssembler.cc
+	      ${SOURCE_DIR}/FirstOrderTerm.cc
+	      ${SOURCE_DIR}/FixVec.cc
 #	      ${SOURCE_DIR}/Global.cc
-#	      ${SOURCE_DIR}/GlobalDOFNumbering.cc
-#	      ${SOURCE_DIR}/GlobalElementNumbering.cc
-#	      ${SOURCE_DIR}/Initfile.cc
-#	      ${SOURCE_DIR}/Lagrange.cc
-#	      ${SOURCE_DIR}/LeafData.cc
-#	      ${SOURCE_DIR}/Line.cc
-#	      ${SOURCE_DIR}/MacroElement.cc
-#	      ${SOURCE_DIR}/Marker.cc
-#	      ${SOURCE_DIR}/Mesh.cc
-#	      ${SOURCE_DIR}/MeshStructure.cc
-#	      ${SOURCE_DIR}/Operator.cc
-#	      ${SOURCE_DIR}/OperatorTerm.cc
-#	      ${SOURCE_DIR}/Parametric.cc
-#	      ${SOURCE_DIR}/PeriodicBC.cc
-#	      ${SOURCE_DIR}/ProblemInstat.cc
-#	      ${SOURCE_DIR}/ProblemStat.cc
-#	      ${SOURCE_DIR}/ProblemStatDbg.cc
-#	      ${SOURCE_DIR}/Projection.cc
-#	      ${SOURCE_DIR}/QPInfo.cc
-#	      ${SOURCE_DIR}/QPsiPhi.cc
-#	      ${SOURCE_DIR}/Quadrature.cc
-#	      ${SOURCE_DIR}/RCNeighbourList.cc
-#	      ${SOURCE_DIR}/RefinementManager.cc
-#	      ${SOURCE_DIR}/RefinementManager1d.cc
-#	      ${SOURCE_DIR}/RefinementManager2d.cc
-#	      ${SOURCE_DIR}/RefinementManager3d.cc
-#	      ${SOURCE_DIR}/RobinBC.cc
+	      ${SOURCE_DIR}/Initfile.cc
+	      ${SOURCE_DIR}/Lagrange.cc
+	      ${SOURCE_DIR}/LeafData.cc
+	      ${SOURCE_DIR}/Line.cc
+	      ${SOURCE_DIR}/MacroElement.cc
+	      ${SOURCE_DIR}/Marker.cc
+	      ${SOURCE_DIR}/Mesh.cc
+	      ${SOURCE_DIR}/MeshStructure.cc
+	      ${SOURCE_DIR}/Operator.cc
+	      ${SOURCE_DIR}/OperatorTerm.cc
+	      ${SOURCE_DIR}/Parametric.cc
+	      ${SOURCE_DIR}/PeriodicBC.cc
+	      ${SOURCE_DIR}/ProblemInstat.cc
+	      ${SOURCE_DIR}/ProblemStat.cc
+	      ${SOURCE_DIR}/ProblemStatDbg.cc
+	      ${SOURCE_DIR}/Projection.cc
+	      ${SOURCE_DIR}/QPInfo.cc
+	      ${SOURCE_DIR}/QPsiPhi.cc
+	      ${SOURCE_DIR}/Quadrature.cc
+	      ${SOURCE_DIR}/RCNeighbourList.cc
+	      ${SOURCE_DIR}/RefinementManager.cc
+	      ${SOURCE_DIR}/RefinementManager1d.cc
+	      ${SOURCE_DIR}/RefinementManager2d.cc
+	      ${SOURCE_DIR}/RefinementManager3d.cc
+	      ${SOURCE_DIR}/RobinBC.cc
 #	      ${SOURCE_DIR}/ScalableQuadrature.cc
 #	      ${SOURCE_DIR}/SecondOrderAssembler.cc
 #	      ${SOURCE_DIR}/SecondOrderTerm.cc

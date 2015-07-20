@@ -42,32 +42,4 @@ namespace AMDiS
   {
   }
 
-  void ElementData::serialize(std::ostream& out) 
-  {
-    std::string decoratedType;
-    if (decorated) {
-      decoratedType = decorated->getTypeName();
-      out << decoratedType << "\n";
-      decorated->serialize(out);
-    } else {
-      out << "NULL\n";
-    }
-  }
-
-  void ElementData::deserialize(std::istream& in) 
-  {
-    TEST_EXIT(decorated == NULL)
-      ("there are already decorated element data\n");
-    std::string decoratedType;
-    in >> decoratedType; 
-    in.get();
-    if (decoratedType != "NULL") {
-      decorated = 
-	CreatorMap<ElementData>::getCreator(decoratedType, "deserialization from file")->create();
-      decorated->deserialize(in);
-    } else {
-      decorated = NULL;
-    }
-  }
-
 } // end namespace AMDiS

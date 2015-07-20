@@ -69,8 +69,8 @@ namespace AMDiS
       typename is_valid_arg<T2>::type,
       typename boost::mpl::or_
       <
-	typename is_expr<T1>::type,
-	typename is_expr<T2>::type
+      	typename is_expr<T1>::type,
+      	typename is_expr<T2>::type
       >::type
     >::type {};
     
@@ -82,9 +82,9 @@ namespace AMDiS
       typename is_valid_arg<T3>::type,
       typename boost::mpl::or_
       <
-	typename is_expr<T1>::type,
-	typename is_expr<T2>::type,
-	typename is_expr<T3>::type
+      	typename is_expr<T1>::type,
+      	typename is_expr<T2>::type,
+      	typename is_expr<T3>::type
       >::type
     >::type {};
     
@@ -114,7 +114,7 @@ namespace AMDiS
       typedef T type;
       static const type& get(const T& t)
       {
-	return t;
+        return t;
       }
     };
     
@@ -124,7 +124,7 @@ namespace AMDiS
       typedef ::AMDiS::expressions::RValue<T> type;
       static type get(const T& t)
       {
-	return type(t);
+        return type(t);
       }
     };
       

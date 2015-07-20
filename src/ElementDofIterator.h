@@ -130,36 +130,4 @@ namespace AMDiS
     int dofPos;
   };
   
-  
-  /* ----- IMPLEMENTATION DETAILS ------------------------------------------- */
-  
-  
-  ElementDofIterator::ElementDofIterator(const FiniteElemSpace* feSpace, bool inOrderPos)
-    : admin(feSpace->getAdmin()),
-      basisFcts(feSpace->getBasisFcts()),
-      mesh(feSpace->getMesh()),
-      dim(mesh->getDim()),
-      inOrder(inOrderPos)
-  { }
-  
-  
-  inline const DegreeOfFreedom* 
-  ElementDofIterator::getDofPtr() const
-  {
-    if (inOrder)
-      return &dofs[node0 + elementPos][n0 + orderPosition[dofPos]];
-    else
-      return &dofs[node0 + elementPos][n0 + dofPos];
-  }
-  
-  
-  inline DegreeOfFreedom 
-  ElementDofIterator::getDof() const
-  {
-    if (inOrder) 
-      return dofs[node0 + elementPos][n0 + orderPosition[dofPos]];
-    else
-      return dofs[node0 + elementPos][n0 + dofPos];
-  }
-  
 } // end namespace AMDiS

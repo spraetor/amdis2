@@ -122,10 +122,10 @@ namespace AMDiS
 				   bool assembleMatrix = true,
 				   bool assembleVector = true) override;
 
-    bool dualMeshTraverseRequired();
+    // bool dualMeshTraverseRequired();
 
-    void dualAssemble(AdaptInfo *adaptInfo, Flag flag, 
-		      bool asmMatrix = true, bool asmVector = true);
+    // void dualAssemble(AdaptInfo *adaptInfo, Flag flag, 
+		//       bool asmMatrix = true, bool asmVector = true);
 
     /// Returns nr of components \ref nComponents
     virtual int getNumComponents()
@@ -182,8 +182,7 @@ namespace AMDiS
     /// Adds Robin boundary condition.
     // TODO: replace by generic expression
     virtual void addRobinBC(BoundaryType type, int row, int col, 
-			    Operator *n,
-			    Operator *r);
+			    Operator *n, Operator *r);
 
     /// Adds a periodic boundary condition.
     virtual void addPeriodicBC(BoundaryType type, int row, int col);
@@ -364,12 +363,6 @@ namespace AMDiS
       return info;
     }
 
-    /// Returns \ref deserialized;
-    bool isDeserialized() const
-    {
-      return deserialized;
-    }
-
     /** \} */
 
     /** \name setting methods
@@ -432,12 +425,6 @@ namespace AMDiS
       assembleMatrixOnlyOnce[i][j] = value;
     }
 
-    ///
-    void setComputeExactError(bool v) 
-    {
-      computeExactError = v;
-    }
-
     /// Sets \ref writeAsmInfo;
     void setWriteAsmInfo(bool b)
     {
@@ -492,11 +479,6 @@ namespace AMDiS
     {
       return buildTime;
     }
-
-  protected:
-    /// If the exact solution is known, the problem can compute the exact
-    /// error instead of the error estimation. This is done in this function.
-    void computeError(AdaptInfo *adaptInfo);
 
   protected:
     
@@ -587,14 +569,6 @@ namespace AMDiS
   
     /// Info level.
     int info;
-
-    /// If true, the stationary problem was deserialized from some serialization
-    /// file.
-    bool deserialized;
-
-    /// If true, the error is not estimated but computed from the exact solution
-    /// defined by \ref exactSolutionFcts.
-    bool computeExactError;
     
     /// If at least on boundary condition is set, this variable is true. It is 
     /// used to ensure that no operators are added after boundary condition were

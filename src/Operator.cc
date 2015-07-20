@@ -45,22 +45,6 @@ namespace AMDiS
   }
 
 
-  void Operator::getElementMatrix(const ElInfo *rowElInfo, const ElInfo *colElInfo,
-				  const ElInfo *smallElInfo, const ElInfo *largeElInfo,
-				  bool rowColFeSpaceEqual,
-				  ElementMatrix& userMat, 
-				  double factor)
-  {
-    if (!assembler.get())
-      initAssembler(NULL, NULL, NULL, NULL);
-
-    assembler.get()->calculateElementMatrix(rowElInfo, colElInfo, 
-					    smallElInfo, largeElInfo,
-					    rowColFeSpaceEqual,
-					    userMat, factor);
-  }
-
-
   void Operator::getElementVector(const ElInfo *elInfo, 
 				  ElementVector& userVec, 
 				  double factor)
@@ -69,20 +53,6 @@ namespace AMDiS
       initAssembler(NULL, NULL, NULL, NULL);
 
     assembler.get()->calculateElementVector(elInfo, userVec, factor);
-  }
-
-
-  void Operator::getElementVector(const ElInfo *mainElInfo, const ElInfo *auxElInfo,
-				  const ElInfo *smallElInfo, const ElInfo *largeElInfo,
-				  ElementVector& userVec,
-				  double factor)
-  {
-    if (!assembler.get())
-      initAssembler(NULL, NULL, NULL, NULL);
-
-    assembler.get()->calculateElementVector(mainElInfo, auxElInfo, 
-					    smallElInfo, largeElInfo,
-					    userVec, factor);
   }
 
 
@@ -131,7 +101,7 @@ namespace AMDiS
     int phiDegree = phi->getDegree();
     int maxTermDegree = 0;
 
-    for (OperatorTerm* term : terms)
+    for (OperatorTerm* term : *terms)
       maxTermDegree = std::max(maxTermDegree, term->degree);
    
     return psiDegree + phiDegree - order + maxTermDegree;

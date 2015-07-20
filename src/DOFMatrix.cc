@@ -15,7 +15,6 @@
 #include "BoundaryCondition.h"
 #include "BoundaryManager.h"
 #include "Assembler.h"
-#include "Serializer.h"
 
 namespace AMDiS 
 {

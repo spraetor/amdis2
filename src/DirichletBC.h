@@ -5,6 +5,10 @@
 #include "AMDiS_fwd.h"
 #include "BoundaryCondition.h"
 #include "FixVec.h"
+#include "OperatorTerm.h"
+#include "DOFVector.h"
+
+#include "expressions/expr_traits.hpp"
 
 namespace AMDiS 
 {  
@@ -16,39 +20,40 @@ namespace AMDiS
 		  
       /// Constructor.
       DirichletBC(BoundaryType type,
-		  const FiniteElemSpace *rowFeSpace,
-		  const FiniteElemSpace *colFeSpace,
-		  bool apply)
-	: BoundaryCondition(type, rowFeSpace, colFeSpace), 
-	  applyBC(apply) 
+            		  const FiniteElemSpace *rowFeSpace,
+            		  const FiniteElemSpace *colFeSpace,
+            		  bool apply)
+      	: BoundaryCondition(type, rowFeSpace, colFeSpace), 
+      	  applyBC(apply) 
       { }
 
       /// Implementation of BoundaryCondition::fillBoundaryCondition().
       virtual void fillBoundaryCondition(DOFMatrix* matrix,
-				ElInfo* elInfo,
-				const DegreeOfFreedom* dofIndices,
-				const BoundaryType* localBound,
-				int nBasFcts) override;
+                                				 ElInfo* elInfo,
+                                				 const DegreeOfFreedom* dofIndices,
+                                				 const BoundaryType* localBound,
+                                				 int nBasFcts) override;
 
       /// Implementation of BoundaryCondition::initVector()
       virtual void initVector(DOFVectorBase<double>* vec) override;
 
       /// Implementation of BoundaryCondition::boundResidual().
-      virtual double boundResidual(ElInfo*, DOFMatrix*, const DOFVectorBase<double>*) override 
+      virtual double boundResidual(ElInfo*, DOFMatrix*, 
+                                   const DOFVectorBase<double>*) override 
       { 
-	return 0.0; 
+        return 0.0; 
       }
 
       /// Because this is a Dirichlet boundary condition, always return true.
       virtual bool isDirichlet() const override
       { 
-	return true; 
+        return true; 
       }
 
       /// Returns \ref applyBC.
       virtual bool applyBoundaryCondition() const override
       {
-	return applyBC;
+        return applyBC;
       }
 
     protected:
@@ -101,11 +106,11 @@ namespace AMDiS
       // initialize expression on ElInfo
       fct.initElement(&term, elInfo, NULL, NULL, basFcts);
       for (int i = 0; i < nBasFcts; i++)
-	if (localBound[i] == boundaryType) {
-	  typename ExprType::value_type value = fct(i);
-	  vector->setDirichletDofValue(dofIndices[i], value);
-	  (*vector)[dofIndices[i]] = value;
-	}
+      	if (localBound[i] == boundaryType) {
+      	  typename ExprType::value_type value = fct(i);
+      	  vector->setDirichletDofValue(dofIndices[i], value);
+      	  (*vector)[dofIndices[i]] = value;
+      	}
     }
 			      
   protected:

@@ -69,7 +69,7 @@ namespace AMDiS
     return val;
   }
 
-  const double *Quadrature::fAtQp(const std::unction<double(DimVec<double>)>& f,
+  const double *Quadrature::fAtQp(const std::function<double(DimVec<double>)>& f,
 				  double *vec) const
   {
     static double *quad_vec = NULL;
@@ -1442,27 +1442,20 @@ namespace AMDiS
   }
 
 
-  double Quadrature::integrateStdSimplex(std::unction<double(DimVec<double>)> f)
+  double Quadrature::integrateStdSimplex(std::function<double(DimVec<double>)> f)
   {
-    FUNCNAME("Quadrature::integrateStdSimplex()");
-
-    if (!f) {
-      ERROR("no function specified\n");
-      return 0;
-    }
-
     double result = 0.0;
     // calculate weighted sum over all quadrature-points
     for (int i = 0; i < n_points; i++)
-      result += w[i] * (*f)((*lambda)[i]);
+      result += w[i] * f((*lambda)[i]);
 
     return result;
   }
 
 
   FastQuadrature* FastQuadrature::provideFastQuadrature(const BasisFunction* bas_fcts,
-							const Quadrature& quad, 
-							Flag init_flag)
+                                          							const Quadrature& quad, 
+                                          							Flag init_flag)
   {
     FastQuadrature *quad_fast = NULL;
 
@@ -1470,25 +1463,25 @@ namespace AMDiS
     {
       list<FastQuadrature*>::iterator fast = fastQuadList.begin(); 
       for (; fast != fastQuadList.end(); fast++)
-	if ((*fast)->basisFunctions == bas_fcts && 
-	    (*fast)->quadrature == &quad)  
-	  break;
+      	if ((*fast)->basisFunctions == bas_fcts && 
+      	    (*fast)->quadrature == &quad)  
+      	  break;
       
       if (fast != fastQuadList.end() && 
-	  ((*fast)->init_flag & init_flag) == init_flag) {
-	quad_fast = *fast;
+      	  ((*fast)->init_flag & init_flag) == init_flag) {
+      	quad_fast = *fast;
       } else {
-	if (fast == fastQuadList.end()) {
-	  quad_fast = 
-	    new FastQuadrature(const_cast<BasisFunction*>(bas_fcts), 
-			       const_cast<Quadrature*>(&quad), 0);
+      	if (fast == fastQuadList.end()) {
+      	  quad_fast = 
+      	    new FastQuadrature(const_cast<BasisFunction*>(bas_fcts), 
+      			       const_cast<Quadrature*>(&quad), 0);
 	  
-	  fastQuadList.push_front(quad_fast);
-	  
-	  max_points = std::max(max_points, quad.getNumPoints());
-	} else {
-	  quad_fast = (*fast);
-	}
+      	  fastQuadList.push_front(quad_fast);
+      	  
+      	  max_points = std::max(max_points, quad.getNumPoints());
+      	} else {
+      	  quad_fast = (*fast);
+      	}
       }
       
       quad_fast->init(init_flag);  
@@ -1513,9 +1506,9 @@ namespace AMDiS
 
       // fill memory
       for (int i = 0; i< nPoints; i++) {
-	lambda = quadrature->getLambda(i);
-	for (int j = 0; j < nBasFcts; j++)
-	  phi[i][j] = (*(basisFunctions->getPhi(j)))(lambda);
+      	lambda = quadrature->getLambda(i);
+      	for (int j = 0; j < nBasFcts; j++)
+      	  phi[i][j] = (*(basisFunctions->getPhi(j)))(lambda);
       }
     
       // update flag
@@ -1530,13 +1523,13 @@ namespace AMDiS
 
       // fill memory
       for (int i = 0; i< nPoints; i++) {
-	grdPhi[i].resize(nBasFcts);
-	lambda = quadrature->getLambda(i);
-
-	for (int j = 0; j < nBasFcts; j++) {
-	  grdPhi[i][j].change_dim(dim + 1);
-	  (*(basisFunctions->getGrdPhi(j)))(lambda, grdPhi[i][j]);
-	}
+      	grdPhi[i].resize(nBasFcts);
+      	lambda = quadrature->getLambda(i);
+      
+      	for (int j = 0; j < nBasFcts; j++) {
+      	  grdPhi[i][j].change_dim(dim + 1);
+      	  (*(basisFunctions->getGrdPhi(j)))(lambda, grdPhi[i][j]);
+      	}
       }
     
       // update flag
@@ -1552,9 +1545,9 @@ namespace AMDiS
 
       // fill memory
       for (int i = 0; i < nPoints; i++) {
-	lambda = quadrature->getLambda(i);
-	for (int j = 0; j < nBasFcts; j++)
-	  (*(basisFunctions->getD2Phi(j)))(lambda, (*(D2Phi))[i][j]);
+      	lambda = quadrature->getLambda(i);
+      	for (int j = 0; j < nBasFcts; j++)
+      	  (*(basisFunctions->getD2Phi(j)))(lambda, (*(D2Phi))[i][j]);
       }
     
       // update flag
@@ -1589,17 +1582,17 @@ namespace AMDiS
     if (!fastQuad.grdPhi.empty()) {
       grdPhi.resize(nPoints);
       for (int i = 0; i < nPoints; i++) {
-	grdPhi[i].resize(nBasFcts);
-	for (int j = 0; j < nBasFcts; j++)
-	  grdPhi[i][j] = fastQuad.grdPhi[i][j];
+      	grdPhi[i].resize(nBasFcts);
+      	for (int j = 0; j < nBasFcts; j++)
+      	  grdPhi[i][j] = fastQuad.grdPhi[i][j];
       }
     }
 
     if (fastQuad.D2Phi) {
       D2Phi = new MatrixOfFixVecs<DimMat<double> >(dim, nPoints, nBasFcts, NO_INIT);
       for (int i = 0; i < nPoints; i++)
-	for (int j = 0; j < nBasFcts; j++)
-	  (*D2Phi)[i][j] = (*(fastQuad.D2Phi))[i][j];
+    	for (int j = 0; j < nBasFcts; j++)
+    	  (*D2Phi)[i][j] = (*(fastQuad.D2Phi))[i][j];
     }
   }
 

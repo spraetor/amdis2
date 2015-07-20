@@ -22,7 +22,7 @@ namespace AMDiS
     {
       tmpWorldVecs.resize(3);
       for (int i = 0; i < 3; i++)
-	tmpWorldVecs[i].resize(3);
+        tmpWorldVecs[i].resize(3);
     }
 
     /// Assignment operator
@@ -60,6 +60,13 @@ namespace AMDiS
 
     /// 3-dimensional realisation of ElInfo's getNormal method.
     virtual double getNormal(int side, WorldVector<double> &normal) const override;
+    
+    
+    virtual double getElementNormal(WorldVector<double> &normal) const override
+    {
+      ERROR_EXIT("ElementNormal not available in 3d!");
+      return 0.0;
+    }
 
     /// update ElInfo after refinement (of some neighbours). Only in 3d!
     void update();

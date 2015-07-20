@@ -380,7 +380,7 @@ namespace AMDiS {
 		if (value(*icursor) == 0.0) {
 		  counter0++;
 		} else {
-		  int a = static_cast<int>(floor(log10(fabs(value(*icursor)))));
+		  int a = static_cast<int>(std::floor(std::log10(std::abs(value(*icursor)))));
 		  counter[a]++;
 		}
 	      }
@@ -391,8 +391,8 @@ namespace AMDiS {
 
       std::cout << "value = 0: " << counter0 << std::endl;
       for (std::map<int, int>::iterator it = counter.begin(); it != counter.end(); ++it)
-	std::cout << pow(10.0, it->first) << " <= values <= " 
-		  << pow(10.0, it->first + 1.0) << ": " 
+	std::cout << std::pow(10.0, it->first) << " <= values <= " 
+		  << std::pow(10.0, it->first + 1.0) << ": " 
 		  << it->second << std::endl;
     }
 
@@ -416,17 +416,17 @@ namespace AMDiS {
 
 
     void getAllDofs(const FiniteElemSpace *feSpace, 
-		    std::set<const DegreeOfFreedom*>& dofs)
+		                std::set<const DegreeOfFreedom*>& dofs)
     {
       ElementDofIterator elDofIter(feSpace);
       TraverseStack stack;
       ElInfo *elInfo = stack.traverseFirst(feSpace->getMesh(), -1, Mesh::CALL_LEAF_EL);
       while (elInfo) {	
-	elDofIter.reset(elInfo->getElement());
-	do {
-	  dofs.insert(elDofIter.getDofPtr());
-	} while (elDofIter.next());
-	elInfo = stack.traverseNext(elInfo);
+      	elDofIter.reset(elInfo->getElement());
+      	do {
+      	  dofs.insert(elDofIter.getDofPtr());
+      	} while (elDofIter.next());
+      	elInfo = stack.traverseNext(elInfo);
       }      
     }
 

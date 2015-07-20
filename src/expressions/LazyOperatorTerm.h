@@ -6,7 +6,12 @@
 #include "Traits.h"
 
 namespace AMDiS 
-{  
+{
+  class SubAssembler;
+  class Quadrature;
+  class BasisFunction;
+  class ElInfo;
+  
   struct LazyOperatorTermBase
   {
     template <class List>
@@ -19,9 +24,6 @@ namespace AMDiS
     void initElement(OT* ot, const ElInfo* elInfo,
           		       SubAssembler* subAssembler, Quadrature *quad, 
           		       const BasisFunction *basisFct = NULL) {}
-		    
-  protected: 
-    virtual void helper() {}
   };
 
 
@@ -54,7 +56,9 @@ namespace AMDiS
   {
     Term1 term1;
     Term2 term2;
-    LazyOperatorTerm2(const Term1& term1_, const Term2& term2_) : term1(term1_), term2(term2_) {}
+    
+    LazyOperatorTerm2(const Term1& term1_, const Term2& term2_) 
+      : term1(term1_), term2(term2_) {}
     
     template <class List>
     void insertFeSpaces(List& feSpaces)
@@ -82,8 +86,9 @@ namespace AMDiS
     Term1 term1;
     Term2 term2;
     Term3 term3;
+    
     LazyOperatorTerm3(const Term1& term1_, const Term2& term2_, const Term3& term3_)
-    : term1(term1_), term2(term2_), term3(term3_) {}
+      : term1(term1_), term2(term2_), term3(term3_) {}
     
     template <class List>
     void insertFeSpaces(List& feSpaces)
@@ -116,7 +121,7 @@ namespace AMDiS
     Term4 term4;
     
     LazyOperatorTerm4(const Term1& term1_, const Term2& term2_, const Term3& term3_, const Term4& term4_)
-    : term1(term1_), term2(term2_), term3(term3_), term4(term4_) {}
+      : term1(term1_), term2(term2_), term3(term3_), term4(term4_) {}
     
     template <class List>
     void insertFeSpaces(List& feSpaces)
@@ -150,8 +155,9 @@ namespace AMDiS
     Term3 term3;
     Term4 term4;
     Term5 term5;
+    
     LazyOperatorTerm5(const Term1& term1_, const Term2& term2_, const Term3& term3_, const Term4& term4_, const Term5& term5_)
-    : term1(term1_), term2(term2_), term3(term3_), term4(term4_), term5(term5_) {}
+      : term1(term1_), term2(term2_), term3(term3_), term4(term4_), term5(term5_) {}
     
     template<typename List>
     inline void insertFeSpaces(List& feSpaces)

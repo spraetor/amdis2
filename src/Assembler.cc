@@ -42,22 +42,22 @@ namespace AMDiS {
     if (remember && (factor != 1.0 || operat->uhOld))
       rememberElMat = true;
 
-    Element *el = elInfo->getElement();
+    Element* el = elInfo->getElement();
 
     if (el != lastMatEl || !operat->isOptimized()) {
       initElement(elInfo);
 
       if (rememberElMat)
-	set_to_zero(elementMatrix);
+        set_to_zero(elementMatrix);
 
       lastMatEl = el;
     } else {
       // Only possible in single mesh case when one operator 
       // is used more than twice?
       if (rememberElMat) {
-	if (&userMat != &elementMatrix)
-	  userMat += factor * elementMatrix;
-	return;
+        if (&userMat != &elementMatrix)
+          userMat += factor * elementMatrix;
+        return;
       }
     }
     

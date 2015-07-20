@@ -37,7 +37,7 @@ namespace AMDiS
     virtual double getNormal(int side, WorldVector<double> &normal) const override;
 
     /// 1-dimensional realisation of ElInfo's getElementNormal method.
-    virtual double getElementNormal( WorldVector<double> &normal) const override;
+    virtual double getElementNormal(WorldVector<double> &normal) const override;
 
     int getSideOfNeighbour(int i) const
     { 

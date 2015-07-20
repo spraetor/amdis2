@@ -5,12 +5,10 @@
 #include "Boundary.h"
 #include "DOFAdmin.h"
 #include "ElInfo.h"
-#include "Error.h"
 #include "FiniteElemSpace.h"
 #include "Mesh.h"
 #include "DOFVector.h"
 #include "DOFIterator.h"
-#include "Serializer.h"
 
 namespace AMDiS 
 {

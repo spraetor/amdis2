@@ -123,7 +123,7 @@ namespace AMDiS
       Lb[iq].change_dim(dim + 1);
       Lb[iq] = 0.0;
     }
-    for (FirstOrderTerm* term : terms)
+    for (OperatorTerm* term : terms)
       static_cast<FirstOrderTerm*>(term)->getLb(elInfo, Lb);
   
     for (int iq = 0; iq < nPoints; iq++) {
@@ -152,7 +152,7 @@ namespace AMDiS
       Lb[iq] = 0.0;
     }
 
-    for (FirstOrderTerm* term : terms)
+    for (OperatorTerm* term : terms)
       static_cast<FirstOrderTerm*>(term)->getLb(elInfo, Lb);
   
     for (int iq = 0; iq < nPoints; iq++) {
@@ -190,7 +190,7 @@ namespace AMDiS
       Lb[iq] = 0.0;
     }
 
-    for (FirstOrderTerm* term : terms)
+    for (OperatorTerm* term : terms)
       static_cast<FirstOrderTerm*>(term)->getLb(elInfo, Lb);
 
     const mtl::dense2D<double>& phi = phiFast->getPhi();
@@ -226,7 +226,7 @@ namespace AMDiS
       Lb[iq] = 0.0;
     }
 
-    for (FirstOrderTerm* term : terms)
+    for (OperatorTerm* term : terms)
       static_cast<FirstOrderTerm*>(term)->getLb(elInfo, Lb);
   
     for (int iq = 0; iq < nPoints; iq++) {
@@ -260,7 +260,7 @@ namespace AMDiS
     // Do not need do resize Lb, because it's size is always at least one.
     Lb[0] = 0.0;
 
-    for (FirstOrderTerm* term : terms)
+    for (OperatorTerm* term : terms)
       static_cast<FirstOrderTerm*>(term)->getLb(elInfo, Lb);
 
     Lb[0] *= elInfo->getDet();
@@ -303,7 +303,7 @@ namespace AMDiS
       Lb[iq] = 0.0;
     }
 
-    for (FirstOrderTerm* term : terms)
+    for (OperatorTerm* term : terms)
       static_cast<FirstOrderTerm*>(term)->getLb(elInfo, Lb);
   
     for (int iq = 0; iq < nPoints; iq++) {
@@ -345,7 +345,7 @@ namespace AMDiS
       Lb[iq] = 0.0;
     }
 
-    for (FirstOrderTerm* term : terms)
+    for (OperatorTerm* term : terms)
       static_cast<FirstOrderTerm*>(term)->getLb(elInfo, Lb);
 
     const mtl::dense2D<double>& psi = psiFast->getPhi();
@@ -387,7 +387,7 @@ namespace AMDiS
     // Do not need to resize Lb, because it's size is always at least one!
     Lb[0] = 0.0;
 
-    for (FirstOrderTerm* term : terms)
+    for (OperatorTerm* term : terms)
       static_cast<FirstOrderTerm*>(term)->getLb(elInfo, Lb);
 
     Lb[0] *= elInfo->getDet();
@@ -419,7 +419,7 @@ namespace AMDiS
     // Do not need to resize Lb, because it's size is always at least one!
     Lb[0] = 0.0;
 
-    for (FirstOrderTerm* term : terms)
+    for (OperatorTerm* term : terms)
       static_cast<FirstOrderTerm*>(term)->getLb(elInfo, Lb);
 
     Lb[0] *= elInfo->getDet();

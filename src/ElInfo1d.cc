@@ -128,7 +128,7 @@ namespace AMDiS
       grd_lam[0] = grd_lam[1] * -1.0;
     }
 
-    return sqrt(adet2);
+    return std::sqrt(adet2);
   }
   
 
@@ -148,7 +148,7 @@ namespace AMDiS
     TEST_EXIT_DBG(dim == 1)("dim!=1\n");
     TEST_EXIT_DBG(dimOfWorld == dim)("not yet for DIM != DIM_OF_WORLD\n");
 
-    if (abs(length) < DBL_TOL) {
+    if (std::abs(length) < DBL_TOL) {
       ERROR_EXIT("length = %le; abort\n", length);
       return 0;
     }
@@ -217,15 +217,15 @@ namespace AMDiS
     FUNCNAME_DBG("ElInfo1d::fillElInfo()");
 
     Element *nb;
-    Element *elem = elInfoOld->element;
+    Element *elem = elInfoOld->getElement();
 
     TEST_EXIT_DBG(elem->getChild(0))("no children?\n");
     element = const_cast<Element*>(elem->getChild(ichild));
 
     TEST_EXIT_DBG(element)("missing child %d?\n", ichild);
 
-    macroElement = elInfoOld->macroElement;
-    fillFlag = elInfoOld->fillFlag;
+    macroElement = elInfoOld->getMacroElement();
+    fillFlag = elInfoOld->getFillFlag();
     parent = elem;
     level = elInfoOld->level + 1;
     iChild = ichild;

@@ -16,8 +16,8 @@ namespace AMDiS
   void ProblemInstatBase::solveInitialProblem(AdaptInfo *adaptInfo)
   {
     AdaptStationary initialAdapt((name + "->initial->adapt").c_str(),
-				 new StandardProblemIteration(initialProblem),
-				 adaptInfo);
+                        				 *(new StandardProblemIteration(initialProblem)),
+                        				 *adaptInfo);
 
     initialAdapt.adapt();
   }

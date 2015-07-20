@@ -974,7 +974,7 @@ namespace AMDiS {
 
       for (int iq = 0; iq < nPoints; iq++) {
 	elInfo->coordToWorld(quad->getLambda(iq), x);
-	wdetf_qp[iq] = quad->getWeight(iq) * det * ((*f)(x));
+	wdetf_qp[iq] = quad->getWeight(iq) * det * f(x);
       }
       
       for (int j = 0; j < nBasFcts; j++) {
