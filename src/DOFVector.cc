@@ -379,7 +379,7 @@ namespace AMDiS
     }
   }
 
-
+#if 0
   template<>
   void DOFVector<double>::interpol(DOFVector<double> *source, double factor) 
   {
@@ -561,7 +561,7 @@ namespace AMDiS
       ERROR_EXIT("not yet implemented for dual traverse\n");
     }
   }
-
+#endif
 
   template<>
   WorldVector<DOFVector<double>*> *DOFVector<double>::getGradient(WorldVector<DOFVector<double>*> *grad) const

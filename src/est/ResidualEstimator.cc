@@ -26,6 +26,7 @@
 #include "Assembler.h"
 #include "Traverse.h"
 #include "Initfile.h"
+#include "Parametric.h"
 
 #ifdef HAVE_PARALLEL_DOMAIN_AMDIS
 #include <mpi.h>
@@ -323,13 +324,14 @@ namespace AMDiS {
     MPI::COMM_WORLD.Allreduce(&send_est_t_max, &est_t_max, 1, MPI_DOUBLE, MPI_MAX);
 #endif
 
-    est_sum = sqrt(est_sum);
-    est_t_sum = sqrt(est_t_sum);
+    est_sum = std::sqrt(est_sum);
+    est_t_sum = std::sqrt(est_t_sum);
 
     if (output) {
       MSG("estimate for component %d = %.8e\n", row, est_sum);
-      if (C3)
-	MSG("time estimate for component %d = %.8e\n", row, est_t_sum);
+      if (C3) {
+        MSG("time estimate for component %d = %.8e\n", row, est_t_sum);
+      }
     }
 
     delete [] basFcts;

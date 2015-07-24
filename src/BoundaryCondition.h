@@ -2,9 +2,10 @@
 
 #pragma once
 
+#include "AMDiS_fwd.h"
+#include "AMDiS_base.h"
 #include "Boundary.h"
 #include "FiniteElemSpace.h"
-#include "AMDiS_fwd.h"
 
 namespace AMDiS {
 

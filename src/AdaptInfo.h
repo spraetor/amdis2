@@ -24,36 +24,7 @@ namespace AMDiS {
     class ScalContent {
     public:
       /// Constructor.
-      ScalContent(std::string prefix)
-	: est_sum(0.0),
-	  est_t_sum(0.0),
-	  est_max(0.0),
-	  est_t_max(0.0),
-	  fac_max(0.0),
-	  fac_sum(1.0),
-	  spaceTolerance(0.0),
-	  timeTolerance(0.0),
-	  timeRelativeTolerance(0.0),
-	  timeErrLow(0.0),
-	  coarsenAllowed(0),
-	  refinementAllowed(1),
-	  refineBisections(1),
-	  coarseBisections(1)	  	
-      {
-	Parameters::get(prefix + "->tolerance", spaceTolerance);
-	Parameters::get(prefix + "->time tolerance", timeTolerance);
-	Parameters::get(prefix + "->time relative tolerance", timeRelativeTolerance);
-	Parameters::get(prefix + "->coarsen allowed", coarsenAllowed);
-	Parameters::get(prefix + "->refinement allowed", refinementAllowed);
-	Parameters::get(prefix + "->refine bisections", refineBisections);
-	Parameters::get(prefix + "->coarsen bisections", coarseBisections);
-	Parameters::get(prefix + "->sum factor", fac_sum);
-	Parameters::get(prefix + "->max factor", fac_max);
-
-	if (timeTolerance == 0.0 && timeRelativeTolerance == 0.0)
-	  timeTolerance = 1.0;
-	timeErrLow = timeTolerance * 0.3;
-      }
+      ScalContent(std::string prefix);
 
       /// Sum of all error estimates
       double est_sum;
@@ -105,85 +76,40 @@ namespace AMDiS {
 
   public:
     /// Constructor.
-    AdaptInfo(std::string name_, int size = 1) 
-      : name(name_), 
-	spaceIteration(-1),
-	maxSpaceIteration(-1),
-	timestepIteration(0),
-	maxTimestepIteration(30),
-	timeIteration(0),
-	maxTimeIteration(30),
-	time(0.0),
-	startTime(0.0),
-	endTime(1.0),
-	timestep(0.0),
-	lastProcessedTimestep(0.0),
-	minTimestep(0.0),
-	maxTimestep(1.0),
-	timestepNumber(0),
-	nTimesteps(0),
-	solverIterations(0),
-	maxSolverIterations(0),
-	solverTolerance(1e-8),
-	solverResidual(0.0),
-	globalTimeTolerance(1.0),
-        scalContents(size),
-	deserialized(false),
-	rosenbrockMode(false)
-    {
-      init();
-      char number[5];
-      for (int i = 0; i < size; i++) {
-	sprintf(number, "[%d]", i);
-	scalContents[i] = new ScalContent(name + std::string(number));  
-      }
-    }
+    AdaptInfo(std::string name_, int size = 1);
 
     /// Destructor.
     virtual ~AdaptInfo() 
     {
       for (size_t i = 0;  i < scalContents.size(); i++)
-	delete scalContents[i];
+        delete scalContents[i];
     }
 
     /// Sets initial values to time/timestep variables
-    inline void init()
-    {
-      Parameters::get(name + "->start time", startTime);
-      time = startTime;
-      Parameters::get(name + "->timestep", timestep);
-      Parameters::get(name + "->end time", endTime);
-      Parameters::get(name + "->max iteration", maxSpaceIteration);
-      Parameters::get(name + "->max timestep iteration", maxTimestepIteration);
-      Parameters::get(name + "->max time iteration", maxTimeIteration);
-      Parameters::get(name + "->min timestep", minTimestep);
-      Parameters::get(name + "->max timestep", maxTimestep);
-      Parameters::get(name + "->number of timesteps", nTimesteps);
-      Parameters::get(name + "->time tolerance", globalTimeTolerance);
-    }
+    // inline void init()
+    // {
+    //   Parameters::get(name + "->start time", startTime);
+    //   time = startTime;
+    //   Parameters::get(name + "->timestep", timestep);
+    //   Parameters::get(name + "->end time", endTime);
+    //   Parameters::get(name + "->max iteration", maxSpaceIteration);
+    //   Parameters::get(name + "->max timestep iteration", maxTimestepIteration);
+    //   Parameters::get(name + "->max time iteration", maxTimeIteration);
+    //   Parameters::get(name + "->min timestep", minTimestep);
+    //   Parameters::get(name + "->max timestep", maxTimestep);
+    //   Parameters::get(name + "->number of timesteps", nTimesteps);
+    //   Parameters::get(name + "->time tolerance", globalTimeTolerance);
+    // }
 
     /// Resets all variables to zero (or something equivalent)
-    inline void reset() 
-    {
-      spaceIteration = -1;
-      timestepIteration = 0;
-      timeIteration = 0;
-      time = 0.0;
-      timestep = 0.0;
-      timestepNumber = 0;
-      solverIterations = 0;
-      solverResidual = 0.0;
-
-      Parameters::get(name + "->timestep", timestep);
-      lastProcessedTimestep=timestep;
-    }
+    void reset();
 
     /// Returns whether space tolerance is reached.
     virtual bool spaceToleranceReached() const
     {
       for (size_t i = 0; i < scalContents.size(); i++) {
-	if (!(scalContents[i]->est_sum < scalContents[i]->spaceTolerance))
-	  return false;
+        if (!(scalContents[i]->est_sum < scalContents[i]->spaceTolerance))
+          return false;
       }
 
       return true;
@@ -193,17 +119,17 @@ namespace AMDiS {
     virtual bool spaceToleranceReached(int i) const
     {
       if (!(scalContents[i]->est_sum < scalContents[i]->spaceTolerance))
-	return false;
+        return false;
       else
-	return true;
+        return true;
     }
 
     /// Returns whether time tolerance is reached.
     virtual bool timeToleranceReached() const
     {
       for (size_t i = 0; i < scalContents.size(); i++)
-	if (!(getTimeEstCombined(i) < scalContents[i]->timeTolerance))
-	  return false;
+        if (!(getTimeEstCombined(i) < scalContents[i]->timeTolerance))
+          return false;
 
       return true;
     }
@@ -212,17 +138,17 @@ namespace AMDiS {
     virtual bool timeToleranceReached(int i) const
     {
       if (!(getTimeEstCombined(i) < scalContents[i]->timeTolerance))
-	return false;
+        return false;
       else
-	return true;
+        return true;
     }
 
     /// Returns whether time error is under its lower bound.
     virtual bool timeErrorLow() const
     {
       for (size_t i = 0; i < scalContents.size(); i++)
-	if (!(getTimeEstCombined(i) < scalContents[i]->timeErrLow))
-	  return false;
+        if (!(getTimeEstCombined(i) < scalContents[i]->timeErrLow))
+          return false;
 
       return true;
     }
@@ -231,27 +157,13 @@ namespace AMDiS {
     double getTimeEstCombined(unsigned i) const 
     { 
       return 
-	scalContents[i]->est_t_max * scalContents[i]->fac_max +
-	scalContents[i]->est_t_sum * scalContents[i]->fac_sum; 
+      	scalContents[i]->est_t_max * scalContents[i]->fac_max +
+      	scalContents[i]->est_t_sum * scalContents[i]->fac_sum; 
     }
 
 
     /// Print debug information about time error and its bound.
-    void printTimeErrorLowInfo() const
-    {
-      for (size_t i = 0; i < scalContents.size(); i++){
-	std::cout << "    Time error estimate     ["<<i<<"] = " 
-		  << getTimeEstCombined(i) << "\n"
-		  << "    Time error estimate sum ["<<i<<"] = " 
-		  << scalContents[i]->est_t_sum << "\n" 
-		  << "    Time error estimate max ["<<i<<"] = " 
-		  << scalContents[i]->est_t_max << "\n"
-		  << "    Time error low bound    ["<<i<<"] = " 
-		  << scalContents[i]->timeErrLow << "\n"
-		  << "    Time error high bound   ["<<i<<"] = " 
-		  << scalContents[i]->timeTolerance << "\n";
-      }
-    }
+    void printTimeErrorLowInfo() const;
 
     /// Returns \ref spaceIteration.
     int getSpaceIteration() const
@@ -403,7 +315,7 @@ namespace AMDiS {
       FUNCNAME_DBG("AdaptInfo::getEstSum()");
 
       TEST_EXIT_DBG(static_cast<size_t>(index) < scalContents.size())
-	("Wrong index for adaptInfo!\n");
+        ("Wrong index for adaptInfo!\n");
 
       return scalContents[index]->est_sum; 
     }
@@ -420,7 +332,7 @@ namespace AMDiS {
       FUNCNAME_DBG("AdaptInfo::getEstSum()");
 
       TEST_EXIT_DBG(static_cast<size_t>(index) < scalContents.size())
-	("Wrong index for adaptInfo!\n");
+        ("Wrong index for adaptInfo!\n");
 
       return scalContents[index]->est_max; 
     }
@@ -477,9 +389,9 @@ namespace AMDiS {
     { 
       time = t; 
       if (time > endTime) 
-	time = endTime;
+        time = endTime;
       if (time < startTime) 
-	time = startTime;
+        time = startTime;
 
       return time;
     }
@@ -501,11 +413,11 @@ namespace AMDiS {
     { 
       timestep = t; 
       if (timestep > maxTimestep)
-	timestep = maxTimestep;
+        timestep = maxTimestep;
       if (timestep < minTimestep)
-	timestep = minTimestep;
+        timestep = minTimestep;
       if (time + timestep > endTime)
-	timestep = endTime - time;
+        timestep = endTime - time;
       
       return timestep;
     }
@@ -522,7 +434,7 @@ namespace AMDiS {
 
     double getLastProcessedTimestep() const
     {
-	return lastProcessedTimestep;
+      return lastProcessedTimestep;
     } 
 
     /// Returns true, if the end time is reached and no more timestep
@@ -530,7 +442,7 @@ namespace AMDiS {
     bool reachedEndTime() const
     {
       if (nTimesteps > 0) 
-	return !(timestepNumber < nTimesteps);
+        return !(timestepNumber < nTimesteps);
 
       return !(std::abs(time - endTime) > DBL_TOL);
     }
@@ -707,8 +619,8 @@ namespace AMDiS {
      * any check. Is used by the parareal algorithm.
      */
     void resetTimeValues(double newTimeStep,
-			 double newStartTime,
-			 double newEndTime)
+                  			 double newStartTime,
+                  			 double newEndTime)
     {
       time = newStartTime;
       startTime = newStartTime;

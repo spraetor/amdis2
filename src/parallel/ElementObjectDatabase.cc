@@ -212,35 +212,35 @@ namespace AMDiS { namespace Parallel {
 	  
 	  /// Add all three vertices of the face to be periodic.
 	  DegreeOfFreedom mappedDof0 = 
-	    macroMesh->getPeriodicAssociations(boundaryType)[face0.get<0>()];
+	    macroMesh->getPeriodicAssociations(boundaryType)[std::get<0>(face0)];
 	  DegreeOfFreedom mappedDof1 = 
-	    macroMesh->getPeriodicAssociations(boundaryType)[face0.get<1>()];
+	    macroMesh->getPeriodicAssociations(boundaryType)[std::get<1>(face0)];
 	  DegreeOfFreedom mappedDof2 = 
-	    macroMesh->getPeriodicAssociations(boundaryType)[face0.get<2>()];
+	    macroMesh->getPeriodicAssociations(boundaryType)[std::get<2>(face0)];
 
-	  periodicVertices[make_pair(face0.get<0>(), mappedDof0)] = boundaryType;
-	  periodicVertices[make_pair(face0.get<1>(), mappedDof1)] = boundaryType;
-	  periodicVertices[make_pair(face0.get<2>(), mappedDof2)] = boundaryType;
+	  periodicVertices[make_pair(std::get<0>(face0), mappedDof0)] = boundaryType;
+	  periodicVertices[make_pair(std::get<1>(face0), mappedDof1)] = boundaryType;
+	  periodicVertices[make_pair(std::get<2>(face0), mappedDof2)] = boundaryType;
 	  
-	  periodicDofAssoc[face0.get<0>()].insert(boundaryType);
-	  periodicDofAssoc[face0.get<1>()].insert(boundaryType);
-	  periodicDofAssoc[face0.get<2>()].insert(boundaryType);
+	  periodicDofAssoc[std::get<0>(face0)].insert(boundaryType);
+	  periodicDofAssoc[std::get<1>(face0)].insert(boundaryType);
+	  periodicDofAssoc[std::get<2>(face0)].insert(boundaryType);
 	  
-	  TEST_EXIT_DBG(face0.get<0>() == 
-			macroMesh->getPeriodicAssociations(boundaryType)[face1.get<0>()] &&
-			face0.get<1>() == 
-			macroMesh->getPeriodicAssociations(boundaryType)[face1.get<1>()] &&
-			face0.get<2>() == 
-			macroMesh->getPeriodicAssociations(boundaryType)[face1.get<2>()])
+	  TEST_EXIT_DBG(std::get<0>(face0) == 
+			macroMesh->getPeriodicAssociations(boundaryType)[std::get<0>(face1)] &&
+			std::get<1>(face0) == 
+			macroMesh->getPeriodicAssociations(boundaryType)[std::get<1>(face1)] &&
+			std::get<2>(face0) == 
+			macroMesh->getPeriodicAssociations(boundaryType)[std::get<2>(face1)])
 	    ("Should not happen!\n");
 	  
 	  // Create all three edges of the element and add them to be periodic.
-	  DofEdge elEdge0 = make_pair(face0.get<0>(), face0.get<1>());
-	  DofEdge elEdge1 = make_pair(face0.get<0>(), face0.get<2>());
-	  DofEdge elEdge2 = make_pair(face0.get<1>(), face0.get<2>());
-	  DofEdge neighEdge0 = make_pair(face1.get<0>(), face1.get<1>());
-	  DofEdge neighEdge1 = make_pair(face1.get<0>(), face1.get<2>());
-	  DofEdge neighEdge2 = make_pair(face1.get<1>(), face1.get<2>());
+	  DofEdge elEdge0 = make_pair(std::get<0>(face0), std::get<1>(face0));
+	  DofEdge elEdge1 = make_pair(std::get<0>(face0), std::get<2>(face0));
+	  DofEdge elEdge2 = make_pair(std::get<1>(face0), std::get<2>(face0));
+	  DofEdge neighEdge0 = make_pair(std::get<0>(face1), std::get<1>(face1));
+	  DofEdge neighEdge1 = make_pair(std::get<0>(face1), std::get<2>(face1));
+	  DofEdge neighEdge2 = make_pair(std::get<1>(face1), std::get<2>(face1));
 	  	  
 	  periodicEdges[make_pair(elEdge0, neighEdge0)] = boundaryType;
 	  periodicEdges[make_pair(elEdge1, neighEdge1)] = boundaryType;

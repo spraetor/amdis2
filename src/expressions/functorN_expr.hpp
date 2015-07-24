@@ -49,13 +49,13 @@ namespace AMDiS
     template <class R, class C, class... As>
     struct Function<R (C::*)(As...)>
     {
-	typedef R result_type;
+      typedef R result_type;
     };
 
     template<class R, class C, class... As>
     struct Function<R (C::*)(As...) const>
     {
-	typedef R type;
+      typedef R type;
     };
     
     template<class T>
@@ -89,31 +89,31 @@ namespace AMDiS
       typedef LazyOperatorTerms<Terms...> super;
       static const int N = sizeof...(Terms);
       
-      typedef typename result_of::Functor<F>::type value_type;
+      typedef typename result_of::Functor<typename std::decay<F>::type>::type value_type;
       BOOST_STATIC_ASSERT_MSG( (!boost::is_same<value_type, traits::no_valid_type>::value), "********** ERROR: You have to define a result_type for your Functor **********" );
       
       F f; ///< the functor
       
       template<typename... Terms_>
       FunctionN(const F& f_, Terms_... terms_)
-	: super(terms_...), f(f_) {}
+        : super(terms_...), f(f_) {}
       
       // call f.getDegree() function    
       template<int I, typename... Terms_>
       int getDegree(int_<I>, const Terms_&... terms) const
       {
-	return getDegree(int_<I-1>(), std::get<I-1>(super::term_tuple), terms...);
+        return getDegree(int_<I-1>(), std::get<I-1>(super::term_tuple), terms...);
       }
       
       template<typename... Terms_>
       int getDegree(int_<0>, const Terms_&... terms) const
       {
-	return traits::functor_degree<F>::eval(f, terms.getDegree()...);
+        return traits::functor_degree<F>::eval(f, terms.getDegree()...);
       }
       
       int getDegree() const
       {
-	return getDegree(int_<N>());
+        return getDegree(int_<N>());
       }
 
       // call f.operator()(...)
@@ -171,15 +171,15 @@ namespace AMDiS
     template <typename F, typename... Terms>
     struct FunctionN : std::enable_if
       <
-	and_< typename traits::is_valid_arg<Terms>::type... >::value,
-	expressions::FunctionN< F, typename traits::to_expr<Terms>::type...> 
+      	and_< typename traits::is_valid_arg<Terms>::type... >::value,
+      	expressions::FunctionN< F, typename traits::to_expr<Terms>::type...> 
       > {};
       
     template <typename F, typename Term>
     struct FunctionN<F, Term> : std::enable_if
       <
-	traits::is_valid_arg<Term>::value,
-	expressions::FunctionN< F, typename traits::to_expr<Term>::type> 
+      	traits::is_valid_arg<Term>::value,
+      	expressions::FunctionN< F, typename traits::to_expr<Term>::type> 
       > {};
       
   } // end namespace result_of
@@ -195,6 +195,7 @@ namespace AMDiS
 	    (std::forward<F>(f), traits::to_expr<Terms>::to::get(ts)...); 
   }
 
+#if 1
   template<typename F, typename... Terms>
   inline typename result_of::FunctionN<F, Terms...>::type
   func(F&& f, Terms... ts) 
@@ -202,6 +203,14 @@ namespace AMDiS
     return expressions::FunctionN<F, typename traits::to_expr<Terms>::to::type...>
 	    (std::forward<F>(f), traits::to_expr<Terms>::to::get(ts)...); 
   }
+#else
+  template<typename F, typename... Terms>
+  inline auto func(F&& f, Terms... ts) -> 
+      expressions::FunctionN<F, typename traits::to_expr<Terms>::to::type...>
+  {
+    return {std::forward<F>(f), traits::to_expr<Terms>::to::get(ts)...}; 
+  }
+#endif
 
   template<typename F, typename Term0, typename... Terms>
   inline typename result_of::FunctionN<F, Term0, Terms...>::type

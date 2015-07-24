@@ -8,10 +8,10 @@ namespace AMDiS {
 
   VertexVector::VertexVector(const DOFAdmin *a, std::string n)
     : DOFVectorDOF(),
-      name(n),
-      feSpace(NULL),
       admin(a)
   {
+    name = n;
+    feSpace = NULL;
     const_cast<DOFAdmin*>(admin)->addDOFIndexed(this);
     const_cast<DOFAdmin*>(admin)->addDOFContainer(this);
   }
@@ -29,7 +29,7 @@ namespace AMDiS {
     DOFIteratorBase it(const_cast<DOFAdmin*>(admin), USED_DOFS);
     for (it.reset(); !it.end(); ++it)
       if (!it.isDofFree()) 
-	operator[](it.getDOFIndex()) = val;
+        operator[](it.getDOFIndex()) = val;
   } 
 
   
@@ -58,9 +58,9 @@ namespace AMDiS {
     
     for (auto const& d : dofIndexMap)
       if (vec[d.first] == -1)
-	tmp[d.second] = -1;
+        tmp[d.second] = -1;
       else 
-	tmp[d.second] = dofIndexMap[vec[d.first]];
+        tmp[d.second] = dofIndexMap[vec[d.first]];
 
     std::swap(vec, tmp);
   }

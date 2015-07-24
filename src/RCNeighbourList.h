@@ -6,6 +6,7 @@
 #include <deque>
 
 #include "AMDiS_fwd.h"
+#include "AMDiS_base.h"
 #include "Global.h"
 
 namespace AMDiS 

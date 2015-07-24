@@ -84,11 +84,12 @@ SET(AMDIS_SRC ${SOURCE_DIR}/AdaptBase.cc
 	      ${SOURCE_DIR}/FirstOrderAssembler.cc
 	      ${SOURCE_DIR}/FirstOrderTerm.cc
 	      ${SOURCE_DIR}/FixVec.cc
-#	      ${SOURCE_DIR}/Global.cc
+	      ${SOURCE_DIR}/Global.cc
 	      ${SOURCE_DIR}/Initfile.cc
 	      ${SOURCE_DIR}/Lagrange.cc
 	      ${SOURCE_DIR}/LeafData.cc
 	      ${SOURCE_DIR}/Line.cc
+	      ${SOURCE_DIR}/Log.cc
 	      ${SOURCE_DIR}/MacroElement.cc
 	      ${SOURCE_DIR}/Marker.cc
 	      ${SOURCE_DIR}/Mesh.cc
@@ -110,57 +111,57 @@ SET(AMDIS_SRC ${SOURCE_DIR}/AdaptBase.cc
 	      ${SOURCE_DIR}/RefinementManager2d.cc
 	      ${SOURCE_DIR}/RefinementManager3d.cc
 	      ${SOURCE_DIR}/RobinBC.cc
-#	      ${SOURCE_DIR}/ScalableQuadrature.cc
-#	      ${SOURCE_DIR}/SecondOrderAssembler.cc
-#	      ${SOURCE_DIR}/SecondOrderTerm.cc
-#	      ${SOURCE_DIR}/StandardProblemIteration.cc
-#	      ${SOURCE_DIR}/SubAssembler.cc
-#	      ${SOURCE_DIR}/SubElInfo.cc
-#	      ${SOURCE_DIR}/SubQuadrature.cc
-#	      ${SOURCE_DIR}/SurfaceQuadrature.cc
-#	      ${SOURCE_DIR}/SurfaceRegion_ED.cc
-#	      ${SOURCE_DIR}/SystemVector.cc
-#	      ${SOURCE_DIR}/Tetrahedron.cc
-#	      ${SOURCE_DIR}/Timer.cc
-#	      ${SOURCE_DIR}/Traverse.cc
-#	      ${SOURCE_DIR}/Triangle.cc
-#	      ${SOURCE_DIR}/VertexVector.cc
-#	      ${SOURCE_DIR}/ZeroOrderAssembler.cc
+	      ${SOURCE_DIR}/ScalableQuadrature.cc
+	      ${SOURCE_DIR}/SecondOrderAssembler.cc
+	      ${SOURCE_DIR}/SecondOrderTerm.cc
+	      ${SOURCE_DIR}/StandardProblemIteration.cc
+	      ${SOURCE_DIR}/SubAssembler.cc
+	      ${SOURCE_DIR}/SubElInfo.cc
+	      ${SOURCE_DIR}/SubQuadrature.cc
+	      ${SOURCE_DIR}/SurfaceQuadrature.cc
+	      ${SOURCE_DIR}/SurfaceRegion_ED.cc
+	      ${SOURCE_DIR}/SystemVector.cc
+	      ${SOURCE_DIR}/Tetrahedron.cc
+	      ${SOURCE_DIR}/Timer.cc
+	      ${SOURCE_DIR}/Traverse.cc
+	      ${SOURCE_DIR}/Triangle.cc
+	      ${SOURCE_DIR}/VertexVector.cc
+	      ${SOURCE_DIR}/ZeroOrderAssembler.cc
 #	      ${SOURCE_DIR}/ZeroOrderTerm.cc
-#	      ${SOURCE_DIR}/est/Estimator.cc
+	      ${SOURCE_DIR}/est/Estimator.cc
 #	      ${SOURCE_DIR}/est/RecoveryEstimator.cc
-#	      ${SOURCE_DIR}/est/ResidualEstimator.cc
-#	      ${SOURCE_DIR}/est/SimpleResidualEstimator.cc
-#	      ${SOURCE_DIR}/io/ArhReader.cc
-#	      ${SOURCE_DIR}/io/detail/ArhReader.cc
-#              ${SOURCE_DIR}/io/Arh2Reader.cc
-#              ${SOURCE_DIR}/io/Arh2Writer.cc
-#              ${SOURCE_DIR}/io/Arh3Reader.cc
-#              ${SOURCE_DIR}/io/Arh3Writer.cc
-#              ${SOURCE_DIR}/io/detail/Arh2Reader.cc
-#	      ${SOURCE_DIR}/io/detail/ArhWriter.cc
-#              ${SOURCE_DIR}/io/detail/Arh2Writer.cc
-#              ${SOURCE_DIR}/io/detail/Arh3Reader.cc
-#              ${SOURCE_DIR}/io/detail/Arh3Writer.cc
-#	      ${SOURCE_DIR}/io/DofWriter.cc
-#	      ${SOURCE_DIR}/io/ElementFileWriter.cc
-#	      ${SOURCE_DIR}/io/FileWriterInterface.cc
-#	      ${SOURCE_DIR}/io/FileWriter.cc
-#	      ${SOURCE_DIR}/io/GNUPlotWriter.cc
-#	      ${SOURCE_DIR}/io/MacroInfo.cc
-#	      ${SOURCE_DIR}/io/MacroReader.cc
-#	      ${SOURCE_DIR}/io/MacroWriter.cc
-#	      ${SOURCE_DIR}/io/PngReader.cc
-#	      ${SOURCE_DIR}/io/PngWriter.cc
-#	      ${SOURCE_DIR}/io/PovrayWriter.cc
-#	      ${SOURCE_DIR}/io/Spreadsheet.cc
-#	      ${SOURCE_DIR}/io/ValueReader.cc
-#	      ${SOURCE_DIR}/io/ValueWriter.cc
+	      ${SOURCE_DIR}/est/ResidualEstimator.cc
+	      ${SOURCE_DIR}/est/SimpleResidualEstimator.cc
+	      ${SOURCE_DIR}/io/ArhReader.cc
+	      ${SOURCE_DIR}/io/detail/ArhReader.cc
+          ${SOURCE_DIR}/io/Arh2Reader.cc
+          ${SOURCE_DIR}/io/Arh2Writer.cc
+          ${SOURCE_DIR}/io/Arh3Reader.cc
+          ${SOURCE_DIR}/io/Arh3Writer.cc
+          ${SOURCE_DIR}/io/detail/Arh2Reader.cc
+	      ${SOURCE_DIR}/io/detail/ArhWriter.cc
+          ${SOURCE_DIR}/io/detail/Arh2Writer.cc
+          ${SOURCE_DIR}/io/detail/Arh3Reader.cc
+          ${SOURCE_DIR}/io/detail/Arh3Writer.cc
+	      ${SOURCE_DIR}/io/DofWriter.cc
+	      ${SOURCE_DIR}/io/ElementFileWriter.cc
+	      ${SOURCE_DIR}/io/FileWriterInterface.cc
+	      ${SOURCE_DIR}/io/FileWriter.cc
+	      ${SOURCE_DIR}/io/GNUPlotWriter.cc
+	      ${SOURCE_DIR}/io/MacroInfo.cc
+	      ${SOURCE_DIR}/io/MacroReader.cc
+	      ${SOURCE_DIR}/io/MacroWriter.cc
+	      ${SOURCE_DIR}/io/PngReader.cc
+	      ${SOURCE_DIR}/io/PngWriter.cc
+	      ${SOURCE_DIR}/io/PovrayWriter.cc
+	      ${SOURCE_DIR}/io/Spreadsheet.cc
+	      ${SOURCE_DIR}/io/ValueReader.cc
+	      ${SOURCE_DIR}/io/ValueWriter.cc
 #	      ${SOURCE_DIR}/io/VtkWriter.cc
 #	      ${SOURCE_DIR}/io/VtkVectorWriter.cc
-#             ${SOURCE_DIR}/io/detail/VtkWriter.cc
+#         ${SOURCE_DIR}/io/detail/VtkWriter.cc
 #	      ${SOURCE_DIR}/nonlin/ProblemNonLin.cc
-#	      ${SOURCE_DIR}/solver/SolverMatrix.cc
+	      ${SOURCE_DIR}/solver/SolverMatrix.cc
 #	      ${SOURCE_DIR}/time/RosenbrockAdaptInstationary.cc
 #	      ${SOURCE_DIR}/time/RosenbrockMethod.cc
 #	      ${SOURCE_DIR}/time/RosenbrockStationary.cc

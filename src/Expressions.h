@@ -177,6 +177,30 @@ namespace AMDiS
     result << expr.str();
     return result;
   }
+  
+  
+  /* ----- IMPLEMENTATION OF DOFVECTOR::INTERPOL METHODS --------------------- */
+  
+
+  template <class T>
+    template <class Expr>
+  void DOFVector<T>::interpol(Expr expr)
+  {
+    using ToExpr = typename traits::to_expr<Expr>::to;
+    transformDOF(ToExpr::get(expr), this);
+  }
+  
+  template <class T>
+  void DOFVector<T>::interpol(std::function<T(WorldVector<double>)> f)
+  {
+    this->interpol(func(f, X()));
+  }
+
+  template <class T>
+  void DOFVector<T>::interpol(DOFVector<T> *v, double factor)
+  {
+    this->interpol(factor * valueOf(v));
+  }
 
 } // end namespace AMDiS
 

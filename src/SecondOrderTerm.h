@@ -29,48 +29,48 @@ namespace AMDiS
 
     /// Evaluation of \f$ \Lambda A \Lambda^t \f$ at all quadrature points.
     void getLALt(const ElInfo *elInfo, 
-		 std::vector<mtl::dense2D<double> > &result) const
+		             std::vector<mtl::dense2D<double> > &result) const
     {
       getLALtImpl(elInfo, result);
     }
 
     /// Evaluation of \f$ A \nabla u(\vec{x}) \f$ at all quadrature points.
     void weakEval(const std::vector<WorldVector<double> > &grdUhAtQP,
-		  std::vector<WorldVector<double> > &result) const
+		              std::vector<WorldVector<double> > &result) const
     {
       weakEvalImpl(grdUhAtQP, result);
     }
 
   private:
     virtual void getLALtImpl(const ElInfo *elInfo, 
-			     std::vector<mtl::dense2D<double> > &result) const = 0;
+		                         std::vector<mtl::dense2D<double> > &result) const = 0;
 
     virtual void weakEvalImpl(const std::vector<WorldVector<double> > &grdUhAtQP,
-			      std::vector<WorldVector<double> > &result) const = 0;
+			                        std::vector<WorldVector<double> > &result) const = 0;
 			  
   protected:
     /// Evaluation of \f$ \Lambda \cdot A \cdot \Lambda^t\f$.
     void lalt(const DimVec<WorldVector<double> >& Lambda,
-	      const WorldMatrix<double>& matrix,
-	      mtl::dense2D<double>& LALt,
-	      bool symm,
-	      double factor) const;
+      	      const WorldMatrix<double>& matrix,
+      	      mtl::dense2D<double>& LALt,
+      	      bool symm,
+      	      double factor) const;
 
 	      
     /// Evaluation of \f$ \Lambda \cdot A \cdot \Lambda^t\f$ for \f$ A \f$
     /// the matrix having a ONE in the position \f$ (K,L) \f$
     /// and ZEROS in all other positions.
     void lalt_kl(const DimVec<WorldVector<double> >& Lambda,
-		 int k, int l,
-		 mtl::dense2D<double>& LALt,
-		 double factor) const;
+            		 int k, int l,
+            		 mtl::dense2D<double>& LALt,
+            		 double factor) const;
 
     
     /// Evaluation of \f$ \Lambda \cdot A \cdot \Lambda^t\f$ for A equal to 
     /// the identity.
     void l1lt(const DimVec<WorldVector<double> >& Lambda, 
-		     mtl::dense2D<double>& LALt,
-		     double factor) const;
+    		      mtl::dense2D<double>& LALt,
+    		      double factor) const;
   
   };
   
@@ -91,19 +91,19 @@ namespace AMDiS
   private:
     /// Implements SecondOrderTerm::getLALt().
     virtual void getLALtImpl(const ElInfo *elInfo, 
-			     std::vector<mtl::dense2D<double> > &LALt) const override;
+			                       std::vector<mtl::dense2D<double> > &LALt) const override;
 
     /// Implemetation of OperatorTerm::eval().
     virtual void evalImpl(int nPoints,
-			  const mtl::dense_vector<double>& uhAtQP,
-			  const mtl::dense_vector<WorldVector<double> >& grdUhAtQP,
-			  const mtl::dense_vector<WorldMatrix<double> >& D2UhAtQP,
-			  mtl::dense_vector<double>& result,
-			  double f) override;
+                  			  const mtl::dense_vector<double>& uhAtQP,
+                  			  const mtl::dense_vector<WorldVector<double> >& grdUhAtQP,
+                  			  const mtl::dense_vector<WorldMatrix<double> >& D2UhAtQP,
+                  			  mtl::dense_vector<double>& result,
+                  			  double f) const override;
 
     /// Implemetation of SecondOrderTerm::weakEval().
     virtual void weakEvalImpl(const std::vector<WorldVector<double> > &grdUhAtQP,
-			      std::vector<WorldVector<double> > &result) override;
+			                        std::vector<WorldVector<double> > &result) override;
   };
 
 
@@ -120,19 +120,19 @@ namespace AMDiS
   private:
     /// Implements SecondOrderTerm::getLALt().
     virtual void getLALtImpl(const ElInfo *elInfo, 
-			     std::vector<mtl::dense2D<double> > &LALt) const override;
+			                       std::vector<mtl::dense2D<double> > &LALt) const override;
 
     /// Implemetation of OperatorTerm::eval().
     virtual void evalImpl(int nPoints,
-			  const mtl::dense_vector<double>& uhAtQP,
-			  const mtl::dense_vector<WorldVector<double> >& grdUhAtQP,
-			  const mtl::dense_vector<WorldMatrix<double> >& D2UhAtQP,
-			  mtl::dense_vector<double>& result,
-			  double factor) override;
+                  			  const mtl::dense_vector<double>& uhAtQP,
+                  			  const mtl::dense_vector<WorldVector<double> >& grdUhAtQP,
+                  			  const mtl::dense_vector<WorldMatrix<double> >& D2UhAtQP,
+                  			  mtl::dense_vector<double>& result,
+                  			  double factor) const override;
 
     /// Implemetation of SecondOrderTerm::weakEval().
     virtual void weakEvalImpl(const std::vector<WorldVector<double> > &grdUhAtQP,
-			      std::vector<WorldVector<double> > &result) override;
+			                        std::vector<WorldVector<double> > &result) override;
   };
 
 
@@ -154,25 +154,25 @@ namespace AMDiS
     {
       this->setSymmetric(row == col);
       TEST_EXIT_DBG( I < 0 && I0 >= 0 && J < 0 && J0 >= 0 ) 
-	("You yould specify eather template<int I, int J>, or constructor(int I0, int J0)\n");
+        ("You yould specify eather template<int I, int J>, or constructor(int I0, int J0)\n");
     }
 
   private:
     /// Implements SecondOrderTerm::getLALt().
     virtual void getLALtImpl(const ElInfo *elInfo, 
-			     std::vector<mtl::dense2D<double> > &LALt) const override;
+			                       std::vector<mtl::dense2D<double> > &LALt) const override;
 
     /// Implemetation of OperatorTerm::eval().
     virtual void evalImpl(int nPoints,
-			  const mtl::dense_vector<double>& uhAtQP,
-			  const mtl::dense_vector<WorldVector<double> >& grdUhAtQP,
-			  const mtl::dense_vector<WorldMatrix<double> >& D2UhAtQP,
-			  mtl::dense_vector<double>& result,
-			  double fac) override;
+                  			  const mtl::dense_vector<double>& uhAtQP,
+                  			  const mtl::dense_vector<WorldVector<double> >& grdUhAtQP,
+                  			  const mtl::dense_vector<WorldMatrix<double> >& D2UhAtQP,
+                  			  mtl::dense_vector<double>& result,
+                  			  double fac) const override;
 
     /// Implemetation of SecondOrderTerm::weakEval().
     virtual void weakEvalImpl(const std::vector<WorldVector<double> > &grdUhAtQP,
-			      std::vector<WorldVector<double> > &result) override;
+		                          std::vector<WorldVector<double> > &result) override;
   };
   
   
@@ -181,8 +181,8 @@ namespace AMDiS
   
   template <class Term>
   void GenericSecondOrderTerm_1<Term>::getLALtImpl(
-	  const ElInfo *elInfo, 
-	  std::vector<mtl::dense2D<double> > &LALt) const
+      	  const ElInfo *elInfo, 
+      	  std::vector<mtl::dense2D<double> > &LALt) const
   {
     const DimVec<WorldVector<double> > &grdLambda = elInfo->getGrdLambda();
     const int nPoints = static_cast<int>(LALt.size());
@@ -194,22 +194,22 @@ namespace AMDiS
   
   template <class Term>
   void GenericSecondOrderTerm_1<Term>::evalImpl(
-	  int nPoints,
-	  const mtl::dense_vector<double>& uhAtQP,
-	  const mtl::dense_vector<WorldVector<double> >& grdUhAtQP,
-	  const mtl::dense_vector<WorldMatrix<double> >& D2UhAtQP,
-	  mtl::dense_vector<double>& result,
-	  double f) 
+      	  int nPoints,
+      	  const mtl::dense_vector<double>& uhAtQP,
+      	  const mtl::dense_vector<WorldVector<double> >& grdUhAtQP,
+      	  const mtl::dense_vector<WorldMatrix<double> >& D2UhAtQP,
+      	  mtl::dense_vector<double>& result,
+      	  double f) const
   {
     int dow = Global::getGeo(WORLD);
 
     if (num_rows(D2UhAtQP) > 0) {
       for (int iq = 0; iq < nPoints; iq++) {
-	double resultQP = 0.0;
-	for (int i = 0; i < dow; i++) {
-	  resultQP += D2UhAtQP[iq][i][i];
-	}
-	result[iq] += resultQP * f * this->term(iq);
+      	double resultQP = 0.0;
+      	for (int i = 0; i < dow; i++)
+      	  resultQP += D2UhAtQP[iq][i][i];
+      	
+      	result[iq] += resultQP * f * this->term(iq);
       }
     }
   }
@@ -217,8 +217,8 @@ namespace AMDiS
   
   template <class Term>
   void GenericSecondOrderTerm_1<Term>::weakEvalImpl(
-	  const std::vector<WorldVector<double> > &grdUhAtQP,
-	  std::vector<WorldVector<double> > &result) 
+      	  const std::vector<WorldVector<double> > &grdUhAtQP,
+      	  std::vector<WorldVector<double> > &result) 
   {
     int nPoints = grdUhAtQP.size();
     for (int iq = 0; iq < nPoints; iq++)
@@ -228,8 +228,8 @@ namespace AMDiS
   
   template <class Term, bool symmetric>
   void GenericSecondOrderTerm_A<Term, symmetric>::getLALtImpl(
-	  const ElInfo *elInfo, 
-	  std::vector<mtl::dense2D<double> > &LALt) const
+      	  const ElInfo *elInfo, 
+      	  std::vector<mtl::dense2D<double> > &LALt) const
   {
     const DimVec<WorldVector<double> > &grdLambda = elInfo->getGrdLambda();
     const int nPoints = static_cast<int>(LALt.size());
@@ -241,12 +241,12 @@ namespace AMDiS
   
   template <class Term, bool symmetric>
   void GenericSecondOrderTerm_A<Term, symmetric>::evalImpl(
-	  int nPoints,
-	  const mtl::dense_vector<double>& uhAtQP,
-	  const mtl::dense_vector<WorldVector<double> >& grdUhAtQP,
-	  const mtl::dense_vector<WorldMatrix<double> >& D2UhAtQP,
-	  mtl::dense_vector<double>& result,
-	  double factor) 
+      	  int nPoints,
+      	  const mtl::dense_vector<double>& uhAtQP,
+      	  const mtl::dense_vector<WorldVector<double> >& grdUhAtQP,
+      	  const mtl::dense_vector<WorldMatrix<double> >& D2UhAtQP,
+      	  mtl::dense_vector<double>& result,
+      	  double factor) const
   {
     int dow = Global::getGeo(WORLD);
 
@@ -256,12 +256,12 @@ namespace AMDiS
       WorldMatrix<double> A = this->term(iq);
 
       if (num_rows(D2UhAtQP) > 0)
-	for (int i = 0; i < dow; i++)
-	  for (int j = 0; j < dow; j++)
-	    resultQP += A[i][j] * D2UhAtQP[iq][j][i];
+      	for (int i = 0; i < dow; i++)
+      	  for (int j = 0; j < dow; j++)
+      	    resultQP += A[i][j] * D2UhAtQP[iq][j][i];
 #if 0
       if (num_rows(grdUhAtQP) > 0)
-	resultQP += (*divFct)(A) * grdUhAtQP[iq];
+        resultQP += (*divFct)(A) * grdUhAtQP[iq];
 #endif
       result[iq] += resultQP * factor;
     }
@@ -270,21 +270,20 @@ namespace AMDiS
   
   template <class Term, bool symmetric>
   void GenericSecondOrderTerm_A<Term, symmetric>::weakEvalImpl(
-	  const std::vector<WorldVector<double> > &grdUhAtQP,
-	  std::vector<WorldVector<double> > &result)
+      	  const std::vector<WorldVector<double> > &grdUhAtQP,
+      	  std::vector<WorldVector<double> > &result)
   {
     int nPoints = grdUhAtQP.size();
     WorldMatrix<double> A;
-    for (int iq = 0; iq < nPoints; iq++) {
+    for (int iq = 0; iq < nPoints; iq++)
       result[iq] += this->term(iq) * grdUhAtQP[iq];
-    }    
   }
   
   
   template <int I, int J, class Term>
   void GenericSecondOrderTerm_ij<I, J, Term>::getLALtImpl(
-	  const ElInfo *elInfo, 
-	  std::vector<mtl::dense2D<double> > &LALt) const
+      	  const ElInfo *elInfo, 
+      	  std::vector<mtl::dense2D<double> > &LALt) const
   {
     const DimVec<WorldVector<double> > &grdLambda = elInfo->getGrdLambda();
     const int nPoints = static_cast<int>(LALt.size());
@@ -296,24 +295,24 @@ namespace AMDiS
   
   template <int I, int J, class Term>
   void GenericSecondOrderTerm_ij<I, J, Term>::evalImpl(
-	  int nPoints,
-	  const mtl::dense_vector<double>& uhAtQP,
-	  const mtl::dense_vector<WorldVector<double> >& grdUhAtQP,
-	  const mtl::dense_vector<WorldMatrix<double> >& D2UhAtQP,
-	  mtl::dense_vector<double>& result,
-	  double fac) 
+      	  int nPoints,
+      	  const mtl::dense_vector<double>& uhAtQP,
+      	  const mtl::dense_vector<WorldVector<double> >& grdUhAtQP,
+      	  const mtl::dense_vector<WorldMatrix<double> >& D2UhAtQP,
+      	  mtl::dense_vector<double>& result,
+      	  double fac) const
   {
     if (num_rows(D2UhAtQP) > 0) {
       for (int iq = 0; iq < nPoints; iq++)
-	result[iq] += D2UhAtQP[iq][row][col] * this->term(iq) * fac;
+        result[iq] += D2UhAtQP[iq][row][col] * this->term(iq) * fac;
     }
   }
 
   
   template <int I, int J, class Term>
   void GenericSecondOrderTerm_ij<I, J, Term>::weakEvalImpl(
-	  const std::vector<WorldVector<double> > &grdUhAtQP,
-	  std::vector<WorldVector<double> > &result) 
+      	  const std::vector<WorldVector<double> > &grdUhAtQP,
+      	  std::vector<WorldVector<double> > &result) 
   {
     int nPoints = grdUhAtQP.size();
     for (int iq = 0; iq < nPoints; iq++)

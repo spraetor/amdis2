@@ -4,9 +4,9 @@
 #include <zoltan_cpp.h>
 #endif
 #ifdef MTL_HAS_HYPRE
-#include "mpi.h"
+#include <mpi.h>
 #endif
-#include "boost/program_options.hpp"
+#include <boost/program_options.hpp>
 
 #if defined HAVE_PETSC || defined HAVE_SEQ_PETSC || defined HAVE_PARALLEL_PETSC
 #include <petsc.h>
@@ -14,8 +14,8 @@
 
 #include "AMDiS.h"
 
-namespace AMDiS {
-
+namespace AMDiS 
+{
   using namespace std;
 
 #if defined(HAVE_PARALLEL_MTL4)
@@ -24,24 +24,24 @@ namespace AMDiS {
 
   void init(int argc, char **argv, std::string initFileName)
   {
-  #ifdef HAVE_PARALLEL_MTL4
+#ifdef HAVE_PARALLEL_MTL4
     mtl_environment = new mtl::par::environment(argc, argv);
-  #elif defined HAVE_PETSC || defined HAVE_SEQ_PETSC || defined HAVE_PARALLEL_PETSC
+#elif defined HAVE_PETSC || defined HAVE_SEQ_PETSC || defined HAVE_PARALLEL_PETSC
     PetscInitialize(&argc, &argv, NULL, NULL);
-  #elif defined MTL_HAS_HYPRE
+#elif defined MTL_HAS_HYPRE
     MPI_Init(&argc, &argv);
-  #endif
+#endif
     
-  #if defined(HAVE_PARALLEL_DOMAIN_AMDIS)
+#if defined(HAVE_PARALLEL_DOMAIN_AMDIS)
     Parallel::mpi::startRand();
-  #else
+#else
     srand(time(0));
-  #endif    
+#endif    
     
-  #ifdef HAVE_ZOLTAN
+#ifdef HAVE_ZOLTAN
     float zoltanVersion = 0.0;
     Zoltan_Initialize(argc, argv, &zoltanVersion);
-  #endif
+#endif
     
     Parameters::clearData();
     
@@ -84,9 +84,10 @@ namespace AMDiS {
     
     if (initFileName == "") {
       if (vm.count("init-file"))
-	Parameters::init(vm["init-file"].as<std::string>());
-      else
-	throw(std::runtime_error("No init file specified!"));
+        Parameters::init(vm["init-file"].as<std::string>());
+      else {
+        ERROR_EXIT("No init file specified!\n");
+      }
     } else {
       Parameters::init(initFileName);
     }

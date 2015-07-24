@@ -1196,7 +1196,7 @@ namespace AMDiS
   }
 
 
-  void ProblemStatSeq::interpolInitialSolution(vector<std::function<double(WorldVector<double>)> > *fct) 
+  void ProblemStatSeq::interpolInitialSolution(vector<std::function<double(WorldVector<double>)> >& fct) 
   {
     solution->interpol(fct);
   }

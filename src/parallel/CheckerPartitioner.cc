@@ -300,9 +300,9 @@ namespace AMDiS { namespace Parallel {
 	for (int i = 0; i < mesh->getGeo(FACE); i++) {
 	  DofFace face = mel->getElement()->getFace(i);
 	  bool allVertexInFace = 
-	    faceDofs.count(face.get<0>()) &&
-	    faceDofs.count(face.get<1>()) &&
-	    faceDofs.count(face.get<2>());
+	    faceDofs.count(std::get<0>(face)) &&
+	    faceDofs.count(std::get<1>(face)) &&
+	    faceDofs.count(std::get<2>(face));
 	  if (allVertexInFace) {
 	    localFace = i;
 	    break;

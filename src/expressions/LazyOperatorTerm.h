@@ -180,18 +180,6 @@ namespace AMDiS
       term4.initElement(ot, elInfo, subAssembler, quad, basisFct);
       term5.initElement(ot, elInfo, subAssembler, quad, basisFct);
     }
-
-    template<typename OT>
-    inline void initElement(OT* ot, const ElInfo* smallElInfo, const ElInfo* largeElInfo,
-		    SubAssembler* subAssembler, Quadrature *quad, 
-		    const BasisFunction *basisFct = NULL)
-    {
-      term1.initElement(ot, smallElInfo, largeElInfo, subAssembler, quad, basisFct);
-      term2.initElement(ot, smallElInfo, largeElInfo, subAssembler, quad, basisFct);
-      term3.initElement(ot, smallElInfo, largeElInfo, subAssembler, quad, basisFct);
-      term4.initElement(ot, smallElInfo, largeElInfo, subAssembler, quad, basisFct);
-      term5.initElement(ot, smallElInfo, largeElInfo, subAssembler, quad, basisFct);
-    }
     
     inline double operator()(const int& iq) const;
   };
@@ -220,25 +208,18 @@ namespace AMDiS
     struct InitElement 
     {
       OT* ot;
-      const ElInfo *elInfo, *elInfo2;
+      const ElInfo *elInfo;
       SubAssembler* subAssembler;
       Quadrature *quad;
       const BasisFunction *basisFct;
       
       InitElement(OT* ot_, const ElInfo* elInfo_, SubAssembler* subAssembler_, Quadrature *quad_, const BasisFunction *basisFct_)
-      	: ot(ot_), elInfo(elInfo_), elInfo2(NULL), subAssembler(subAssembler_),
-      	  quad(quad_), basisFct(basisFct_) {}
-      
-      InitElement(OT* ot_, const ElInfo* smallElInfo_, const ElInfo* largeElInfo_, SubAssembler* subAssembler_, Quadrature *quad_,  const BasisFunction *basisFct_)
-      	: ot(ot_), elInfo(smallElInfo_), elInfo2(largeElInfo_), subAssembler(subAssembler_),
+      	: ot(ot_), elInfo(elInfo_), subAssembler(subAssembler_),
       	  quad(quad_), basisFct(basisFct_) {}
 	  
       template<typename Term>
       void operator()(Term& term) {
-      	if (elInfo2)
-      	  term.initElement(ot, elInfo, elInfo2, subAssembler, quad, basisFct);
-      	else
-      	  term.initElement(ot, elInfo, subAssembler, quad, basisFct);
+    	  term.initElement(ot, elInfo, subAssembler, quad, basisFct);
       }
     };
     
@@ -267,14 +248,6 @@ namespace AMDiS
 		    const BasisFunction *basisFct = NULL)
     {
       for_each(term_tuple, detail::InitElement<OT>(ot, elInfo, subAssembler, quad, basisFct));
-    }
-
-    template <class OT>
-    void initElement(OT* ot, const ElInfo* smallElInfo, const ElInfo* largeElInfo,
-		    SubAssembler* subAssembler, Quadrature *quad, 
-		    const BasisFunction *basisFct = NULL)
-    {
-      for_each(term_tuple, detail::InitElement<OT>(ot, smallElInfo, largeElInfo, subAssembler, quad, basisFct));
     }
     
     double operator()(const int& iq) const;

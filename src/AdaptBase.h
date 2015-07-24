@@ -5,7 +5,6 @@
 #include <string>
 
 #include "AMDiS_fwd.h"
-#include "Global.h"
 
 namespace AMDiS 
 {
@@ -15,15 +14,15 @@ namespace AMDiS
   public:
     /// Constructor
     AdaptBase(std::string sname,
-	      ProblemIterationInterface *problemIteration_,
-	      AdaptInfo *adapt,
-	      ProblemTimeInterface *problemTime_ = NULL,
-	      AdaptInfo *initialAdaptInfo_ = NULL)
+      	      ProblemIterationInterface *problemIteration_,
+      	      AdaptInfo *adapt,
+      	      ProblemTimeInterface *problemTime_ = NULL,
+      	      AdaptInfo *initialAdaptInfo_ = NULL)
       : name(sname),
-	problemIteration(problemIteration_),
-	adaptInfo(adapt),
-	problemTime(problemTime_),
-	initialAdaptInfo(initialAdaptInfo_)
+      	problemIteration(problemIteration_),
+      	adaptInfo(adapt),
+      	problemTime(problemTime_),
+      	initialAdaptInfo(initialAdaptInfo_)
     { }
 
     /// Destructor

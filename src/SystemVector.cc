@@ -12,27 +12,25 @@ namespace AMDiS
   }
 
   
-  double& SystemVector::operator[](int index) 
+  double& SystemVector::operator[](DegreeOfFreedom index) 
   {
-    int localIndex = index;
-    int vectorIndex = 0;
+    DegreeOfFreedom localIndex = index;
+    DegreeOfFreedom vectorIndex = 0;
 
-    while (localIndex >= vectors[vectorIndex]->getUsedSize()) {
+    while (localIndex >= vectors[vectorIndex]->getUsedSize())
       localIndex -= vectors[vectorIndex++]->getUsedSize();
-    }
 
     return (*(vectors[vectorIndex]))[localIndex];
   }
 
   
-  double SystemVector::operator[](int index) const 
+  double SystemVector::operator[](DegreeOfFreedom index) const 
   {
-    int localIndex = index;
-    int vectorIndex = 0;
+    DegreeOfFreedom localIndex = index;
+    DegreeOfFreedom vectorIndex = 0;
 
-    while (localIndex >= vectors[vectorIndex]->getUsedSize()) {
+    while (localIndex >= vectors[vectorIndex]->getUsedSize())
       localIndex -= vectors[vectorIndex++]->getUsedSize();
-    }
 
     return (*(vectors[vectorIndex]))[localIndex];
   }
@@ -70,7 +68,6 @@ namespace AMDiS
   SystemVector& SystemVector::operator=(const SystemVector& rhs) 
   {
     TEST_EXIT_DBG(rhs.vectors.size() == vectors.size())("Invalied sizes!\n");
-
     for (size_t i = 0; i < vectors.size(); i++)
       (*(vectors[i])) = (*(rhs.getDOFVector(i)));
 
@@ -86,7 +83,7 @@ namespace AMDiS
   }
 
   
-  void SystemVector::interpol(std::vector<std::function<double(WorldVector<double>)> > *f) 
+  void SystemVector::interpol(std::vector<std::function<double(WorldVector<double>)> >& f) 
   {
     for (size_t i = 0; i < vectors.size(); i++)
       vectors[i]->interpol(f[i]);

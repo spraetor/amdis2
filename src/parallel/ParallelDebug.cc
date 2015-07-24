@@ -1215,10 +1215,10 @@ namespace AMDiS
     file << "periodicFaces:\n";
     for (PerBoundMap<DofFace>::iterator it = elObjDb.periodicFaces.begin(); 
 	 it != elObjDb.periodicFaces.end(); it++) {
-      file << it->first.first.get<0>() << it->first.first.get<1>()
-	   << it->first.first.get<2>() << ", "
-	   << it->first.second.get<0>() << it->first.second.get<1>()
-	   << it->first.second.get<2>() << " : " 
+      file << std::get<0>(it->first.first) << std::get<1>(it->first.first)
+	   << std::get<2>(it->first.first) << ", "
+	   << std::get<0>(it->first.second) << std::get<1>(it->first.second)
+	   << std::get<2>(it->first.second) << " : " 
 	   << it->second << endl;
     }
     file << "periodicDofAssoc:\n";

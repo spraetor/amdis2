@@ -36,11 +36,11 @@
 #include "ElInfo3d.h"
 #include "Element.h"
 #include "ElementDofIterator.h"
+#include "Expressions.h"
 #include "FiniteElemSpace.h"
 #include "FirstOrderTerm.h"
 #include "FixVec.h"
 #include "Flag.h"
-//#include "GenericOperatorTerm.h"
 #include "Global.h"
 #include "Initfile.h"
 #include "Lagrange.h"
@@ -137,8 +137,8 @@
 #include <petsc.h>
 #endif
 
-namespace AMDiS {
-
+namespace AMDiS 
+{
   void init(int argc, char **argv, std::string initFileName = "");
 
   void init(std::string initFileName);

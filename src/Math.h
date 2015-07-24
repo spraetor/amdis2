@@ -15,17 +15,21 @@ namespace AMDiS
 {
   
   // ===== some simple template functions ====================================== 
-#if 0
-  template <class T> inline T abs(T a) 
+  template <class T> 
+  inline typename std::enable_if< std::is_arithmetic<T>::value, T >::type
+  abs(T a) 
   {
-    return (a >= 0 ? a : -a);
+    return  (a >= 0 ? a : -a);
   }
-#endif
 
-  template <class T> inline T sqr(T a) 
+
+  template <class T> 
+  inline typename std::enable_if< std::is_arithmetic<T>::value, T >::type 
+  sqr(T a) 
   {
     return a*a;
   }
+  
 
   template <class T> inline void nullify(T &a)
   {
@@ -59,7 +63,13 @@ namespace AMDiS
   }
 
   /// Calculates factorial of i
-  int fac(int i);
+  inline int fac(int i)
+  {
+    if (i <= 1) 
+      return 1;
+    else 
+      return i * fac(i - 1);
+  }
   
   /// check for inf and nan values
   inline bool isNumber(double val)

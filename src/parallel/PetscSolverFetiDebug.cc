@@ -659,9 +659,9 @@ namespace AMDiS { namespace Parallel {
 	     edgeIt != it->end(); ++edgeIt) {
 	  if (edgeIt->subObj == FACE) {
 	    DofFace face = edgeIt->el->getFace(edgeIt->ithObj);
-	    WorldVector<double> c0 = coords[face.get<0>()];
-	    WorldVector<double> c1 = coords[face.get<1>()];
-	    WorldVector<double> c2 = coords[face.get<2>()];
+	    WorldVector<double> c0 = coords[std::get<0>(face)];
+	    WorldVector<double> c1 = coords[std::get<1>(face)];
+	    WorldVector<double> c2 = coords[std::get<2>(face)];
 	    sendData.push_back(c0[0]);
 	    sendData.push_back(c0[1]);
 	    sendData.push_back(c0[2]);

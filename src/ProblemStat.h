@@ -146,7 +146,7 @@ namespace AMDiS
     void writeFiles(AdaptInfo &adaptInfo, bool force);
 
     /// Interpolates fct to \ref solution.
-    void interpolInitialSolution(std::vector<std::function<double(WorldVector<double>)> > *fct);
+    void interpolInitialSolution(std::vector<std::function<double(WorldVector<double>)> >& fct);
 
     /// Adds an operator to \ref A.
     void addMatrixOperator(Operator *op, int i, int j,

@@ -12,11 +12,11 @@ using namespace std;
 namespace AMDiS 
 {
   SubAssembler::SubAssembler(Operator *op,
-			     Assembler *assembler,
-			     Quadrature *quadrat,
-			     int order, 
-			     bool optimized,
-			     FirstOrderType type) 
+                  			     Assembler *assembler,
+                  			     Quadrature *quadrat,
+                  			     int order, 
+                  			     bool optimized,
+                  			     FirstOrderType type) 
     : rowFeSpace(assembler->rowFeSpace),
       colFeSpace(assembler->colFeSpace),
       nRow(0),
@@ -94,31 +94,24 @@ namespace AMDiS
   }
 
 
-  void SubAssembler::initImpl(const ElInfo* smallElInfo,
-			      const ElInfo *largeElInfo,
-			      Quadrature *quad)
+  void SubAssembler::initImpl(const ElInfo* elInfo,
+                  			      const ElInfo*,
+                  			      Quadrature *quad)
   {
     // set corrdsAtQPs invalid
     coordsValid = false;
 
     // set values at QPs invalid
-    map<const void*, ValuesAtQPs*>::iterator itAny;
-    for (itAny = cachedValuesAtQPs.begin(); itAny != cachedValuesAtQPs.end(); ++itAny)
-      (*itAny).second->valid = false;
+    for (auto& itAny : cachedValuesAtQPs)
+      itAny.second->valid = false;
 
     // set gradients at QPs invalid
-    map<const void*, ValuesAtQPs*>::iterator itAnyGrd;
-    for (itAnyGrd = cachedGradientsAtQPs.begin(); itAnyGrd != cachedGradientsAtQPs.end(); ++itAnyGrd)
-      (*itAnyGrd).second->valid = false;
+    for (auto& itAnyGrd : cachedGradientsAtQPs)
+      itAnyGrd.second->valid = false;
     
     // calls initElement of each term
-    for (vector<OperatorTerm*>::iterator it = terms.begin(); 
-	 it != terms.end(); ++it) {
-      if (largeElInfo == NULL || smallElInfo == largeElInfo)
-	(*it)->initElement(smallElInfo, this, quad);
-      else
-	(*it)->initElement(smallElInfo, largeElInfo, this, quad);      
-    }
+    for (OperatorTerm* term : terms)
+      term->initElement(elInfo, this, quad);
   }
 
 

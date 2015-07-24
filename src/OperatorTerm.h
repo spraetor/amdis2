@@ -27,9 +27,9 @@ namespace AMDiS
     /// for the assemblage.  
     OperatorTerm(int deg) 
       : properties(0), 
-	degree(deg),
-	dimOfWorld(Global::getGeo(WORLD)),
-	bOne(-1)
+      	degree(deg),
+      	dimOfWorld(Global::getGeo(WORLD)),
+      	bOne(-1)
     {}
 
     /// Destructor.
@@ -39,7 +39,7 @@ namespace AMDiS
     /// each OperatorTerm belonging to this SubAssembler. E.g., vectors
     /// and coordinates at quadrature points can be calculated here.
     void initElement(const ElInfo* elInfo, SubAssembler* subAssembler, 
-		     Quadrature *quad = NULL) 
+		                 Quadrature *quad = NULL) 
     {
       initImpl(elInfo, subAssembler, quad);
     }
@@ -77,11 +77,11 @@ namespace AMDiS
 
     /// Evaluation of the OperatorTerm at all quadrature points.
     void eval(int nPoints,
-	      const mtl::dense_vector<double>& uhAtQP,
-	      const mtl::dense_vector<WorldVector<double> >& grdUhAtQP,
-	      const mtl::dense_vector<WorldMatrix<double> >& D2UhAtQP,
-	      mtl::dense_vector<double>& result,
-	      double factor) const
+      	      const mtl::dense_vector<double>& uhAtQP,
+      	      const mtl::dense_vector<WorldVector<double> >& grdUhAtQP,
+      	      const mtl::dense_vector<WorldMatrix<double> >& D2UhAtQP,
+      	      mtl::dense_vector<double>& result,
+      	      double factor) const
     {
       evalImpl(nPoints, uhAtQP, grdUhAtQP, D2UhAtQP, result, factor);
     }
@@ -92,11 +92,11 @@ namespace AMDiS
     
     // must be implemented by derived class
     virtual void evalImpl(int nPoints,
-			  const mtl::dense_vector<double>& uhAtQP,
-			  const mtl::dense_vector<WorldVector<double> >& grdUhAtQP,
-			  const mtl::dense_vector<WorldMatrix<double> >& D2UhAtQP,
-			  mtl::dense_vector<double>& result,
-			  double factor) const = 0;
+                  			  const mtl::dense_vector<double>& uhAtQP,
+                  			  const mtl::dense_vector<WorldVector<double> >& grdUhAtQP,
+                  			  const mtl::dense_vector<WorldMatrix<double> >& D2UhAtQP,
+                  			  mtl::dense_vector<double>& result,
+                  			  double factor) const = 0;
     
   protected:
     /// Stores the properties of this OperatorTerm
@@ -175,10 +175,10 @@ namespace AMDiS
     /// \brief Implements OperatorTerm::initImpl().
     /// calls init() for \ref expr
     virtual void initImpl(const ElInfo* elInfo,
-			  SubAssembler* subAssembler,
-			  Quadrature* quad) override
+                  			  SubAssembler* subAssembler,
+                  			  Quadrature* quad) override
     {
-      expr.init(elInfo, subAssembler, quad, NULL);
+      expr.initElement(this, elInfo, subAssembler, quad, NULL);
     }
     
     /// test for only one mesh allowed in expressions
@@ -187,12 +187,12 @@ namespace AMDiS
     {
       typedef typename FeSpaceList::const_iterator fe_iter;
       if (auxFeSpaces.size() > 0) {
-	Mesh* mesh0 = (*auxFeSpaces.begin())->getMesh();
-	for (fe_iter it = auxFeSpaces.begin(); it != auxFeSpaces.end(); it++) {
-	  if ((*it)->getMesh() != mesh0) {
-	    ERROR_EXIT("Only one mesh allowed in expression.\n");
-	  }
-	}
+      	Mesh* mesh0 = (*auxFeSpaces.begin())->getMesh();
+      	for (fe_iter it = auxFeSpaces.begin(); it != auxFeSpaces.end(); it++) {
+      	  if ((*it)->getMesh() != mesh0) {
+      	    ERROR_EXIT("Only one mesh allowed in expression.\n");
+      	  }
+      	}
       }
     }
   };
@@ -207,11 +207,11 @@ namespace AMDiS
   private:
     // Implements OperatorTerm::eval().
     virtual void evalImpl(int nPoints,
-			  const mtl::dense_vector<double>& uhAtQP,
-			  const mtl::dense_vector<WorldVector<double> >& grdUhAtQP,
-			  const mtl::dense_vector<WorldMatrix<double> >& D2UhAtQP,
-			  mtl::dense_vector<double>& result,
-			  double factor) override {};
+                  			  const mtl::dense_vector<double>& uhAtQP,
+                  			  const mtl::dense_vector<WorldVector<double> >& grdUhAtQP,
+                  			  const mtl::dense_vector<WorldMatrix<double> >& D2UhAtQP,
+                  			  mtl::dense_vector<double>& result,
+                  			  double factor) const override {};
   };
   
 } // end namespace AMDiS

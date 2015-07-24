@@ -12,8 +12,8 @@
 #include <stdexcept>
 #include <iostream>
 #include <typeinfo>
-#include "FixVec.h"
 
+#include "FixVec.h"
 #include "traits/size.hpp"
 
 #include <boost/lexical_cast.hpp>

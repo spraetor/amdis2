@@ -113,7 +113,7 @@ namespace AMDiS {
 
     // === Calculate the root of the estimations and make output. ===
 
-    est_sum = sqrt(est_sum);
+    est_sum = std::sqrt(est_sum);
 
     if (output)
       MSG("estimate = %.8e\n", est_sum);

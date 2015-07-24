@@ -23,6 +23,7 @@
 #include <map>
 #include <iostream>
 #include <fstream>
+
 #include "MacroReader.h"
 #include "MacroWriter.h"
 #include "MacroElement.h"
@@ -603,7 +604,7 @@ namespace AMDiS { namespace io {
 	      if (periodic[k])
 		neighEl->setDof(lnode+ov, mesh->getDof(FACE));
 	      else
-		neighEl->setDof(lnode+ov, const_cast<int*>((*(mel + i))->getElement()->
+		neighEl->setDof(lnode+ov, const_cast<DegreeOfFreedom*>((*(mel + i))->getElement()->
 							   getDof(lnode + k)));	      
 	    }
 	  }
@@ -1026,7 +1027,7 @@ namespace AMDiS { namespace io {
       }    
   
       for (i = 0; i < 7; i++)
-	d[i] = const_cast<int*>(me->getElement()->getDof(i));      
+	d[i] = const_cast<DegreeOfFreedom*>(me->getElement()->getDof(i));      
 
       if (ka == 1) { 
 	me->coord[0] = macr->coord[2];

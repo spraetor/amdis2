@@ -4,9 +4,10 @@
 
 #include <iostream>
 
+#include "AMDiS_fwd.h"
+#include "AMDiS_base.h"
 #include "Global.h"
 #include "MatrixVector.h"
-#include "AMDiS_fwd.h"
 
 namespace AMDiS 
 {

@@ -264,6 +264,12 @@ namespace AMDiS
     static constexpr int childEdge[3][2][6] = { {{1,2,0,5,5,4}, {4,3,0,5,5,4}},
 					                                      {{1,2,0,5,4,5}, {3,4,0,5,4,5}},
 					                                      {{1,2,0,5,4,5}, {3,4,0,5,4,5}} };
+
+    /// edgeOfDOFs[i][j]: gives the local index of edge with vertices i and j 
+    static constexpr unsigned char edgeOfDofs[4][4] = {{255, 0, 1, 2},
+							                                         {0, 255, 3, 4},
+							                                         {1, 3, 255, 5},
+							                                         {2, 4, 5, 255}};
     
   protected:
     /// nChildEdge[el_type][ichild][dir] gives local index of new edge on 
@@ -297,12 +303,6 @@ namespace AMDiS
     static constexpr signed char childOrientation[3][2] = {{1,1}, 
 							                                             {1,-1}, 
 							                                             {1,-1}};
-
-    /// edgeOfDOFs[i][j]: gives the local index of edge with vertices i and j 
-    static constexpr unsigned char edgeOfDofs[4][4] = {{255, 0, 1, 2},
-							                                         {0, 255, 3, 4},
-							                                         {1, 3, 255, 5},
-							                                         {2, 4, 5, 255}};
 
     ///
     static constexpr int edgeOfFace[4][3] = {{5, 4, 3},  // face 0

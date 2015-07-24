@@ -21,6 +21,7 @@
 #include "FiniteElemSpace.h"
 #include "SurfaceQuadrature.h"
 #include "Traits.h"
+// #include "Expressions.h"
 
 namespace AMDiS 
 {
@@ -517,10 +518,15 @@ namespace AMDiS
 
     /// Computes the coefficients of the interpolant of the function fct and
     /// stores these in the DOFVector
+    // implementation in Expressions.h
     template <class Expr>
-    void interpol(Expr expr);
+    inline void interpol(Expr expr);
+    
+    // implementation in Expressions.h
+    inline void interpol(std::function<T(WorldVector<double>)> f);
 
-    void interpol(DOFVector<T> *v, double factor = 1.0);
+    // implementation in Expressions.h
+    inline void interpol(DOFVector<T> *v, double factor = 1.0);
 
 
     /// Eval DOFVector at given point p. If oldElInfo != NULL the search for 

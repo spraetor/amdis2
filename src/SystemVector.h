@@ -15,35 +15,35 @@ namespace AMDiS
   public:
     /// Constructor.
     SystemVector(std::string name_,
-		 std::vector<const FiniteElemSpace*> feSpace_, 
-		 int size,
-		 bool createVec_ = false)
+            		 std::vector<const FiniteElemSpace*> feSpace_, 
+            		 int size,
+            		 bool createVec_ = false)
       : name(name_),
-	componentSpaces(feSpace_),
-	vectors(size),
-	createVec(createVec_)
+      	componentSpaces(feSpace_),
+      	vectors(size),
+      	createVec(createVec_)
     {
       if (createVec_)
-	for (int i = 0; i < size; i++)
-	  vectors[i] = new DOFVector<double>(componentSpaces[i], "tmp");
+        for (int i = 0; i < size; i++)
+          vectors[i] = new DOFVector<double>(componentSpaces[i], "tmp");
     }
 
     /// Copy Constructor.
     SystemVector(const SystemVector& rhs)
       : name(rhs.getName()),
-	componentSpaces(rhs.getFeSpaces()),
-	vectors(rhs.getSize())
+      	componentSpaces(rhs.getFeSpaces()),
+      	vectors(rhs.getSize())
     {
       for (size_t i = 0; i < vectors.size(); i++)
-	vectors[i] = new DOFVector<double>(*rhs.getDOFVector(i));
+        vectors[i] = new DOFVector<double>(*rhs.getDOFVector(i));
     }
 
     /// Destructor, deletes all DOFVectors
     ~SystemVector() 
     {
       if (createVec) {
-	for (size_t i = 0; i < vectors.size(); i++)
-	  delete vectors[i];
+        for (size_t i = 0; i < vectors.size(); i++)
+          delete vectors[i];
       }
     }
 
@@ -51,7 +51,7 @@ namespace AMDiS
     void setDOFVector(int index, DOFVector<double> *vec) 
     {
       TEST_EXIT_DBG(index < getSize())
-	("Invalid index %d!\n", index);
+        ("Invalid index %d!\n", index);
       vectors[index] = vec;
     }
 
@@ -59,7 +59,7 @@ namespace AMDiS
     DOFVector<double> *getDOFVector(int index) 
     {
       TEST_EXIT_DBG(index < getSize())
-	("Invalid index %d!\n", index);
+        ("Invalid index %d!\n", index);
       return vectors[index];
     }
 
@@ -67,7 +67,7 @@ namespace AMDiS
     const DOFVector<double> *getDOFVector(int index) const 
     {
       TEST_EXIT_DBG(index < getSize())
-	("Invalid index %d!\n", index);
+        ("Invalid index %d!\n", index);
       return vectors[index];
     }
 
@@ -101,10 +101,10 @@ namespace AMDiS
     /// is used as a global index which indicates a local vector number and
     /// a local index on this vector. The operator returns this local vector
     /// at the local index.
-    double& operator[](int index);
+    double& operator[](DegreeOfFreedom index);
 
     /// For const access.
-    double operator[](int index) const;
+    double operator[](DegreeOfFreedom index) const;
 
     /// Sets all entries in all vectors to value.
     void set(double value);
@@ -124,7 +124,7 @@ namespace AMDiS
     /// Set the refine operation for all DOFVectors
     void setRefineOperation(RefineCoarsenOperation op);
 
-    void interpol(std::vector<std::function<double(WorldVector<double>)> > *f);
+    void interpol(std::vector<std::function<double(WorldVector<double>)> >& f);
 
     void interpol(SystemVector *v, double factor);
 

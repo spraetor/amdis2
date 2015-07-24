@@ -13,9 +13,9 @@ namespace AMDiS
     struct Iterator : public DOFIterator<DegreeOfFreedom> 
     {
       Iterator(VertexVector *c, DOFIteratorType type)
-	: DOFIterator<DegreeOfFreedom>(const_cast<DOFAdmin*>(c->getAdmin()), 
-				       dynamic_cast<DOFIndexed<DegreeOfFreedom>*>(c), 
-				       type)
+      	: DOFIterator<DegreeOfFreedom>(const_cast<DOFAdmin*>(c->getAdmin()), 
+                        				       dynamic_cast<DOFIndexed<DegreeOfFreedom>*>(c), 
+                        				       type)
       { }   
     };
 

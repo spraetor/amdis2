@@ -349,15 +349,6 @@ namespace AMDiS
 
 
   template <class T>
-  template <class Expr>
-  void DOFVector<T>::interpol(Expr expr)
-  {
-    using ToExpr = typename traits::to_expr<Expr>::to;
-    transformDOF(ToExpr::get(expr), this);
-  }
-
-
-  template <class T>
   double DOFVector<T>::Int(int meshLevel, Quadrature* q) const
   {
     Mesh* mesh = this->feSpace->getMesh();
