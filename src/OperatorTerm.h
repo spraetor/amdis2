@@ -178,7 +178,7 @@ namespace AMDiS
                   			  SubAssembler* subAssembler,
                   			  Quadrature* quad) override
     {
-      expr.initElement(this, elInfo, subAssembler, quad, NULL);
+      expr.initElement(elInfo, subAssembler, quad, NULL);
     }
     
     /// test for only one mesh allowed in expressions

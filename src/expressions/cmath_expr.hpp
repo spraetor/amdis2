@@ -13,75 +13,75 @@ namespace AMDiS
   {
     /// Expression that represents an absolute value |v|
     template <class Term>
-    struct Abs : public LazyOperatorTerm1<Term>
+    struct Abs : public LazyOperatorTerms<Term>
     {
-      typedef LazyOperatorTerm1<Term> Super;
-      typedef typename Term::value_type value_type;
+      using Super = LazyOperatorTerms<Term>;
+      using value_type = Value_t<Term>;
       
-      Abs(const Term& term_) : Super(term_) {}
+      Abs(Term&& term_) : Super(std::forward<Term>(term_)) {}
       
       int getDegree() const
       {
-	return Super::term.getDegree();
+        return degree<0>(*this);
       }
 
-      value_type operator()(const int& iq) const { return std::abs(Super::term(iq)); }
+      value_type operator()(const int& iq) const { return std::abs(term<0>(*this)(iq)); }
       
-      std::string str() const { return std::string("abs(") + Super::term.str() + ")"; }
+      std::string str() const { return std::string("abs(") + term<0>(*this).str() + ")"; }
     };
     
     
     /// Expressions that represents the sign of a value == sign(v)
     template <class Term>
-    struct Signum : public LazyOperatorTerm1<Term>
+    struct Signum : public LazyOperatorTerms<Term>
     {
-      typedef LazyOperatorTerm1<Term> Super;
-      typedef typename Term::value_type value_type;
+      using Super = LazyOperatorTerms<Term>;
+      using value_type = Value_t<Term>;
       
-      Signum(const Term& term_) : Super(term_) {}
+      Signum(Term&& term_) : Super(std::forward<Term>(term_)) {}
       
       int getDegree() const
       {
-	return 2*Super::term.getDegree();
+        return 2*degree<0>(*this);
       }
 
-      value_type operator()(const int& iq) const { return (Super::term(iq) > 0.0 ? 1.0 : -1.0); }
+      value_type operator()(const int& iq) const { return (term<0>(*this)(iq) > 0.0 ? 1.0 : -1.0); }
       
-      std::string str() const { return std::string("sign(") + Super::term.str() + ")"; }
+      std::string str() const { return std::string("sign(") + term<0>(*this).str() + ")"; }
     };
     
     
     /// Expressions for ceiling a value
     template <class Term>
-    struct Ceil : public LazyOperatorTerm1<Term>
+    struct Ceil : public LazyOperatorTerms<Term>
     {
-      typedef LazyOperatorTerm1<Term> Super;
-      typedef typename Term::value_type value_type;
+      using Super = LazyOperatorTerms<Term>;
+      using value_type = Value_t<Term>;
       
-      Ceil(const Term& term_) : Super(term_) {}
+      Ceil(Term&& term_) : Super(std::forward<Term>(term_)) {}
       
-      int getDegree() const { return Super::term.getDegree(); }
+      int getDegree() const { return degree<0>(*this); }
 
-      value_type operator()(const int& iq) const { return std::ceil(Super::term(iq)); }
+      value_type operator()(const int& iq) const { return std::ceil(term<0>(*this)(iq)); }
       
-      std::string str() const { return std::string("ceil(") + Super::term.str() + ")"; }
+      std::string str() const { return std::string("ceil(") + term<0>(*this).str() + ")"; }
     };
     
     
     /// Expressions to round to a lower integer
     template <class Term>
-    struct Floor : public LazyOperatorTerm1<Term>
+    struct Floor : public LazyOperatorTerms<Term>
     {
-      typedef LazyOperatorTerm1<Term> Super;
-      typedef typename Term::value_type value_type;
+      using Super = LazyOperatorTerms<Term>;
+      using value_type = Value_t<Term>;
       
-      Floor(const Term& term_) : Super(term_) {}
+      Floor(Term&& term_) : Super(std::forward<Term>(term_)) {}
       
-      int getDegree() const { return Super::term.getDegree(); }
+      int getDegree() const { return degree<0>(*this); }
 
-      value_type operator()(const int& iq) const { return std::floor(Super::term(iq)); }
+      value_type operator()(const int& iq) const { return std::floor(term<0>(*this)(iq)); }
       
-      std::string str() const { return std::string("floor(") + Super::term.str() + ")"; }
+      std::string str() const { return std::string("floor(") + term<0>(*this).str() + ")"; }
     };
     
     
@@ -90,42 +90,42 @@ namespace AMDiS
     
     /// Expressions that represents the Ith power of E
     template <int I, class Term>
-    struct Pow : public LazyOperatorTerm1<Term>
+    struct Pow : public LazyOperatorTerms<Term>
     {
-      typedef LazyOperatorTerm1<Term> Super;
+      using Super = LazyOperatorTerms<Term>;
 //      typedef typename AMDiS::detail::Pow<I,typename Term::value_type>::result_type value_type;
-      typedef typename Term::value_type value_type;
+      using value_type = Value_t<Term>;
       
-      Pow(const Term& term_) : Super(term_) {}
+      Pow(Term&& term_) : Super(std::forward<Term>(term_)) {}
       
       int getDegree() const
       {
-	return I * (Super::term.getDegree());
+        return I * (degree<0>(*this));
       }
 
-      value_type operator()(const int& iq) const { return functors::pow<I,typename Term::value_type>::eval(Super::term(iq)); }
+      value_type operator()(const int& iq) const { return functors::pow<I,Value_t<Term> >::eval(term<0>(*this)(iq)); }
       
-      std::string str() const { return std::string("pow<") + std::to_string(I) + ">(" + Super::term.str() + ")"; }
+      std::string str() const { return std::string("pow<") + std::to_string(I) + ">(" + term<0>(*this).str() + ")"; }
     };
 
     
     /// Expression that represents that square root of E
     template <class Term>
-    struct Sqrt : public LazyOperatorTerm1<Term>
+    struct Sqrt : public LazyOperatorTerms<Term>
     {
-      typedef LazyOperatorTerm1<Term> Super;
-      typedef typename Term::value_type value_type;
+      using Super = LazyOperatorTerms<Term>;
+      using value_type = Value_t<Term>;
       
-      Sqrt(const Term& term_) : Super(term_) {}
+      Sqrt(Term&& term_) : Super(std::forward<Term>(term_)) {}
       
       int getDegree() const
       {
-	return 2 * (Super::term.getDegree()); // stimmt nicht ganz
+        return 2 * (degree<0>(*this)); // stimmt nicht ganz
       }
 
-      value_type operator()(const int& iq) const { return std::sqrt(Super::term(iq)); }
+      value_type operator()(const int& iq) const { return std::sqrt(term<0>(*this)(iq)); }
       
-      std::string str() const { return std::string("sqrt(") + Super::term.str() + ")"; }
+      std::string str() const { return std::string("sqrt(") + term<0>(*this).str() + ")"; }
     };
 
     
@@ -133,42 +133,42 @@ namespace AMDiS
     
     /// Expressions for the exponential function
     template <class Term>
-    struct Exp : public LazyOperatorTerm1<Term>
+    struct Exp : public LazyOperatorTerms<Term>
     {
-      typedef LazyOperatorTerm1<Term> Super;
-      typedef typename Term::value_type value_type;
-      int degree;
+      using Super = LazyOperatorTerms<Term>;
+      using value_type = Value_t<Term>;
+      int deg;
       
-      Exp(const Term& term_, int degree_ = 1) : Super(term_), degree(degree_) {}
+      Exp(Term&& term_, int degree_ = 1) : Super(std::forward<Term>(term_)), deg(degree_) {}
       
       int getDegree() const
       {
-	return degree * (Super::term.getDegree());
+        return deg * (degree<0>(*this));
       }
 
-      value_type operator()(const int& iq) const { return std::exp(Super::term(iq)); }
+      value_type operator()(const int& iq) const { return std::exp(term<0>(*this)(iq)); }
       
-      std::string str() const { return std::string("exp(") + Super::term.str() + ")"; }
+      std::string str() const { return std::string("exp(") + term<0>(*this).str() + ")"; }
     };
 
     /// Expression for the logarithm
     template <class Term>
-    struct Log : public LazyOperatorTerm1<Term>
+    struct Log : public LazyOperatorTerms<Term>
     {
-      typedef LazyOperatorTerm1<Term> Super;
-      typedef typename Term::value_type value_type;
-      int degree;
+      using Super = LazyOperatorTerms<Term>;
+      using value_type = Value_t<Term>;
+      int deg;
       
-      Log(const Term& term_, int degree_ = 1) : Super(term_), degree(degree_) {}
+      Log(Term&& term_, int degree_ = 1) : Super(std::forward<Term>(term_)), deg(degree_) {}
       
       int getDegree() const
       {
-	return degree * (Super::term.getDegree());
+        return deg * (degree<0>(*this));
       }
 
-      value_type operator()(const int& iq) const { return std::log(Super::term(iq)); }
+      value_type operator()(const int& iq) const { return std::log(term<0>(*this)(iq)); }
       
-      std::string str() const { return std::string("log(") + Super::term.str() + ")"; }
+      std::string str() const { return std::string("log(") + term<0>(*this).str() + ")"; }
     };
     
     // ___________________________________________________________________________
@@ -176,62 +176,62 @@ namespace AMDiS
 
     /// Expressions for Cosine
     template <class Term>
-    struct Cos : public LazyOperatorTerm1<Term>
+    struct Cos : public LazyOperatorTerms<Term>
     {
-      typedef LazyOperatorTerm1<Term> Super;
-      typedef typename Term::value_type value_type;
-      int degree;
+      using Super = LazyOperatorTerms<Term>;
+      using value_type = Value_t<Term>;
+      int deg;
       
-      Cos(const Term& term_, int degree_ = 1) : Super(term_), degree(degree_) {}
+      Cos(Term&& term_, int degree_ = 1) : Super(std::forward<Term>(term_)), deg(degree_) {}
       
       int getDegree() const
       {
-	return degree * (Super::term.getDegree());
+        return deg * (degree<0>(*this));
       }
 
-      value_type operator()(const int& iq) const { return std::cos(Super::term(iq)); }
+      value_type operator()(const int& iq) const { return std::cos(term<0>(*this)(iq)); }
       
-      std::string str() const { return std::string("cos(") + Super::term.str() + ")"; }
+      std::string str() const { return std::string("cos(") + term<0>(*this).str() + ")"; }
     };
 
     /// Expressions for Sine
     template <class Term>
-    struct Sin : public LazyOperatorTerm1<Term>
+    struct Sin : public LazyOperatorTerms<Term>
     {
-      typedef LazyOperatorTerm1<Term> Super;
-      typedef typename Term::value_type value_type;
-      int degree;
+      using Super = LazyOperatorTerms<Term>;
+      using value_type = Value_t<Term>;
+      int deg;
       
-      Sin(const Term& term_, int degree_ = 1) : Super(term_), degree(degree_) {}
+      Sin(Term&& term_, int degree_ = 1) : Super(std::forward<Term>(term_)), deg(degree_) {}
       
       int getDegree() const
       {
-	return degree * (Super::term.getDegree());
+        return deg * (degree<0>(*this));
       }
 
-      value_type operator()(const int& iq) const { return std::sin(Super::term(iq)); }
+      value_type operator()(const int& iq) const { return std::sin(term<0>(*this)(iq)); }
       
-      std::string str() const { return std::string("sin(") + Super::term.str() + ")"; }
+      std::string str() const { return std::string("sin(") + term<0>(*this).str() + ")"; }
     };
 
     /// Expressions for Tangence
     template <class Term>
-    struct Tan : public LazyOperatorTerm1<Term>
+    struct Tan : public LazyOperatorTerms<Term>
     {
-      typedef LazyOperatorTerm1<Term> Super;
-      typedef typename Term::value_type value_type;
-      int degree;
+      using Super = LazyOperatorTerms<Term>;
+      using value_type = Value_t<Term>;
+      int deg;
       
-      Tan(const Term& term_, int degree_ = 1) : Super(term_), degree(degree_) {}
+      Tan(Term&& term_, int degree_ = 1) : Super(std::forward<Term>(term_)), deg(degree_) {}
       
       int getDegree() const
       {
-	return degree * (Super::term.getDegree());
+        return deg * (degree<0>(*this));
       }
 
-      value_type operator()(const int& iq) const { return std::tan(Super::term(iq)); }
+      value_type operator()(const int& iq) const { return std::tan(term<0>(*this)(iq)); }
       
-      std::string str() const { return std::string("tan(") + Super::term.str() + ")"; }
+      std::string str() const { return std::string("tan(") + term<0>(*this).str() + ")"; }
     };
     
     // ___________________________________________________________________________
@@ -239,82 +239,84 @@ namespace AMDiS
 
     /// Expressions for arcus cosine
     template <class Term>
-    struct Acos : public LazyOperatorTerm1<Term>
+    struct Acos : public LazyOperatorTerms<Term>
     {
-      typedef LazyOperatorTerm1<Term> Super;
-      typedef typename Term::value_type value_type;
-      int degree;
+      using Super = LazyOperatorTerms<Term>;
+      using value_type = Value_t<Term>;
+      int deg;
       
-      Acos(const Term& term_, int degree_ = 1) : Super(term_), degree(degree_) {}
+      Acos(Term&& term_, int degree_ = 1) : Super(std::forward<Term>(term_)), deg(degree_) {}
       
       int getDegree() const
       {
-	return degree * (Super::term.getDegree());
+        return deg * (degree<0>(*this));
       }
 
-      value_type operator()(const int& iq) const { return std::acos(Super::term(iq)); }
+      value_type operator()(const int& iq) const { return std::acos(term<0>(*this)(iq)); }
       
-      std::string str() const { return std::string("acos(") + Super::term.str() + ")"; }
+      std::string str() const { return std::string("acos(") + term<0>(*this).str() + ")"; }
     };
 
     /// Expressions for arcus sine
     template <class Term>
-    struct Asin : public LazyOperatorTerm1<Term>
+    struct Asin : public LazyOperatorTerms<Term>
     {
-      typedef LazyOperatorTerm1<Term> Super;
-      typedef typename Term::value_type value_type;
-      int degree;
+      using Super = LazyOperatorTerms<Term>;
+      using value_type = Value_t<Term>;
+      int deg;
       
-      Asin(const Term& term_, int degree_ = 1) : Super(term_), degree(degree_) {}
+      Asin(Term&& term_, int degree_ = 1) : Super(std::forward<Term>(term_)), deg(degree_) {}
       
       int getDegree() const
       {
-	return degree * (Super::term.getDegree());
+        return deg * (degree<0>(*this));
       }
 
-      value_type operator()(const int& iq) const { return std::asin(Super::term(iq)); }
+      value_type operator()(const int& iq) const { return std::asin(term<0>(*this)(iq)); }
       
-      std::string str() const { return std::string("asin(") + Super::term.str() + ")"; }
+      std::string str() const { return std::string("asin(") + term<0>(*this).str() + ")"; }
     };
 
     /// Expressions for arcus tangence
     template <class Term>
-    struct Atan : public LazyOperatorTerm1<Term>
+    struct Atan : public LazyOperatorTerms<Term>
     {
-      typedef LazyOperatorTerm1<Term> Super;
-      typedef typename Term::value_type value_type;
-      int degree;
+      using Super = LazyOperatorTerms<Term>;
+      using value_type = Value_t<Term>;
+      int deg;
       
-      Atan(const Term& term_, int degree_ = 1) : Super(term_), degree(degree_) {}
+      Atan(Term&& term_, int degree_ = 1) : Super(std::forward<Term>(term_)), deg(degree_) {}
       
       int getDegree() const
       {
-	return degree * (Super::term.getDegree());
+        return deg * (degree<0>(*this));
       }
 
-      value_type operator()(const int& iq) const { return std::atan(Super::term(iq)); }
+      value_type operator()(const int& iq) const { return std::atan(term<0>(*this)(iq)); }
       
-      std::string str() const { return std::string("atan(") + Super::term.str() + ")"; }
+      std::string str() const { return std::string("atan(") + term<0>(*this).str() + ")"; }
     };
 
     /// Expressions for arcus tangence2, i.e. atan(x/y)
     template <class Term1, class Term2>
-    struct Atan2 : public LazyOperatorTerm2<Term1, Term2>
+    struct Atan2 : public LazyOperatorTerms<Term1, Term2>
     {
-      typedef LazyOperatorTerm2<Term1, Term2> Super;
-      typedef typename Term1::value_type value_type;
-      int degree;
+      using Super = LazyOperatorTerms<Term1, Term2>;
+      using value_type = Value_t<Term1>;
+      int deg;
       
-      Atan2(const Term1& term1_, const Term2& term2_, int degree_ = 1) : Super(term1_, term2_), degree(degree_) {}
+      Atan2(Term1&& term1_, Term2&& term2_, int degree_ = 1) 
+        : Super(std::forward<Term1>(term1_), std::forward<Term2>(term2_)), deg(degree_) 
+      { }
       
       int getDegree() const
       {
-	return degree * (Super::term1.getDegree() + Super::term2.getDegree());
+        return deg * (degree<0>(*this) + degree<1>(*this));
       }
 
-      value_type operator()(const int& iq) const { return std::atan2(Super::term1(iq), Super::term2(iq)); }
+      value_type operator()(const int& iq) const { return std::atan2(term<0>(*this)(iq), term<0>(*this)(iq)); }
       
-      std::string str() const { return std::string("atan2(") + Super::term.str() + ")"; }
+      std::string str() const { return std::string("atan2(") + term<0>(*this).str() + ", " + term<1>(*this) + ")"; }
     };
     
     // ___________________________________________________________________________
@@ -322,62 +324,62 @@ namespace AMDiS
 
     /// Expressions for cosine hyperbolicus
     template <class Term>
-    struct Cosh : public LazyOperatorTerm1<Term>
+    struct Cosh : public LazyOperatorTerms<Term>
     {
-      typedef LazyOperatorTerm1<Term> Super;
-      typedef typename Term::value_type value_type;
-      int degree;
+      using Super = LazyOperatorTerms<Term>;
+      using value_type = Value_t<Term>;
+      int deg;
       
-      Cosh(const Term& term_, int degree_ = 1) : Super(term_), degree(degree_) {}
+      Cosh(Term&& term_, int degree_ = 1) : Super(std::forward<Term>(term_)), deg(degree_) {}
       
       int getDegree() const
       {
-	return degree * (Super::term.getDegree());
+        return deg * (degree<0>(*this));
       }
 
-      value_type operator()(const int& iq) const { return std::cosh(Super::term(iq)); }
+      value_type operator()(const int& iq) const { return std::cosh(term<0>(*this)(iq)); }
       
-      std::string str() const { return std::string("cosh(") + Super::term.str() + ")"; }
+      std::string str() const { return std::string("cosh(") + term<0>(*this).str() + ")"; }
     };
 
     /// Expressions for sine hyperbolicus
     template <class Term>
-    struct Sinh : public LazyOperatorTerm1<Term>
+    struct Sinh : public LazyOperatorTerms<Term>
     {
-      typedef LazyOperatorTerm1<Term> Super;
-      typedef typename Term::value_type value_type;
-      int degree;
+      using Super = LazyOperatorTerms<Term>;
+      using value_type = Value_t<Term>;
+      int deg;
       
-      Sinh(const Term& term_, int degree_ = 1) : Super(term_), degree(degree_) {}
+      Sinh(Term&& term_, int degree_ = 1) : Super(std::forward<Term>(term_)), deg(degree_) {}
       
       int getDegree() const
       {
-	return degree * (Super::term.getDegree());
+        return deg * (degree<0>(*this));
       }
 
-      value_type operator()(const int& iq) const { return std::sinh(Super::term(iq)); }
+      value_type operator()(const int& iq) const { return std::sinh(term<0>(*this)(iq)); }
       
-      std::string str() const { return std::string("sinh(") + Super::term.str() + ")"; }
+      std::string str() const { return std::string("sinh(") + term<0>(*this).str() + ")"; }
     };
 
     /// Expressions for tangence hyperbolicus
     template <class Term>
-    struct Tanh : public LazyOperatorTerm1<Term>
+    struct Tanh : public LazyOperatorTerms<Term>
     {
-      typedef LazyOperatorTerm1<Term> Super;
-      typedef typename Term::value_type value_type;
-      int degree;
+      using Super = LazyOperatorTerms<Term>;
+      using value_type = Value_t<Term>;
+      int deg;
       
-      Tanh(const Term& term_, int degree_ = 1) : Super(term_), degree(degree_) {}
+      Tanh(Term&& term_, int degree_ = 1) : Super(std::forward<Term>(term_)), deg(degree_) {}
       
       int getDegree() const
       {
-	return degree * (Super::term.getDegree());
+        return deg * (degree<0>(*this));
       }
 
-      value_type operator()(const int& iq) const { return std::tanh(Super::term(iq)); }
+      value_type operator()(const int& iq) const { return std::tanh(term<0>(*this)(iq)); }
       
-      std::string str() const { return std::string("tanh(") + Super::term.str() + ")"; }
+      std::string str() const { return std::string("tanh(") + term<0>(*this).str() + ")"; }
     };
     
     // ___________________________________________________________________________
@@ -385,75 +387,76 @@ namespace AMDiS
 
     /// Expressions for arcus cosine hyperbolicus
     template <class Term>
-    struct Acosh : public LazyOperatorTerm1<Term>
+    struct Acosh : public LazyOperatorTerms<Term>
     {
-      typedef LazyOperatorTerm1<Term> Super;
-      typedef typename Term::value_type value_type;
-      int degree;
+      using Super = LazyOperatorTerms<Term>;
+      using value_type = Value_t<Term>;
+      int deg;
       
-      Acosh(const Term& term_, int degree_ = 1) 
-	: Super(term_), degree(degree_) {}
+      Acosh(Term&& term_, int degree_ = 1) 
+        : Super(std::forward<Term>(term_)), deg(degree_) {}
       
       int getDegree() const
       {
-	return degree * (Super::term.getDegree());
+        return deg * degree<0>(*this);
       }
 
       value_type operator()(const int& iq) const 
       { 
-	value_type tmp = Super::term(iq);
-	return std::log(tmp + std::sqrt(sqr(tmp) - 1.0)); 
+        value_type tmp = term<0>(*this)(iq);
+      	return std::log(tmp + std::sqrt(sqr(tmp) - 1.0)); 
       }
       
-      std::string str() const { return std::string("acosh(") + Super::term.str() + ")"; }
+      std::string str() const { return std::string("acosh(") + term<0>(*this).str() + ")"; }
     };
 
     /// Expressions for arcus sine hyperbolicus
     template <class Term>
-    struct Asinh : public LazyOperatorTerm1<Term>
+    struct Asinh : public LazyOperatorTerms<Term>
     {
-      typedef LazyOperatorTerm1<Term> Super;
-      typedef typename Term::value_type value_type;
-      int degree;
+      using Super = LazyOperatorTerms<Term>;
+      using value_type = Value_t<Term>;
+      int deg;
       
-      Asinh(const Term& term_, int degree_ = 1) : Super(term_), degree(degree_) {}
+      Asinh(Term&& term_, int degree_ = 1) 
+        : Super(std::forward<Term>(term_)), deg(degree_) {}
       
       int getDegree() const
       {
-	return degree * (Super::term.getDegree());
+        return deg * degree<0>(*this);
       }
 
       value_type operator()(const int& iq) const 
       { 
-	value_type tmp = Super::term(iq);
-	return std::log(tmp + std::sqrt(sqr(tmp) + 1.0)); 
+        value_type tmp = term<0>(*this)(iq);
+        return std::log(tmp + std::sqrt(sqr(tmp) + 1.0)); 
       }
       
-      std::string str() const { return std::string("asinh(") + Super::term.str() + ")"; }
+      std::string str() const { return std::string("asinh(") + term<0>(*this).str() + ")"; }
     };
 
     /// Expressions for arcus tangence hyperbolicus
     template <class Term>
-    struct Atanh : public LazyOperatorTerm1<Term>
+    struct Atanh : public LazyOperatorTerms<Term>
     {
-      typedef LazyOperatorTerm1<Term> Super;
-      typedef typename Term::value_type value_type;
-      int degree;
+      using Super = LazyOperatorTerms<Term>;
+      using value_type = Value_t<Term>;
+      int deg;
       
-      Atanh(const Term& term_, int degree_ = 1) : Super(term_), degree(degree_) {}
+      Atanh(Term&& term_, int deg_ = 1) : Super(std::forward<Term>(term_)), deg(deg_) {}
       
       int getDegree() const
       {
-	return degree * (Super::term.getDegree());
+        return deg * degree<0>(*this);
       }
 
       value_type operator()(const int& iq) const 
       { 
-	value_type tmp = Super::term(iq);
-	return 0.5 * std::log((1.0 + tmp) / (1.0 - tmp)); 
+      	value_type tmp = term<0>(*this)(iq);
+      	return 0.5 * std::log((1.0 + tmp) / (1.0 - tmp)); 
       }
       
-      std::string str() const { return std::string("atanh(") + Super::term.str() + ")"; }
+      std::string str() const { return std::string("atanh(") + term<0>(*this).str() + ")"; }
     };
     
     
@@ -462,49 +465,51 @@ namespace AMDiS
     
     /// Expressions for the maximum of two expressions max(E1, E2)
     template <class Term1, class Term2>
-    struct Max : public LazyOperatorTerm2<Term1, Term2>
+    struct Max : public LazyOperatorTerms<Term1, Term2>
     {
-      typedef LazyOperatorTerm2<Term1, Term2> Super;
-      typedef typename Term1::value_type value_type;
+      using Super = LazyOperatorTerms<Term1, Term2>;
+      using value_type = typename std::common_type<Value_t<Term1>, Value_t<Term2> >::type;
       
-      Max(const Term1& term1_, const Term2& term2_)
-	: Super(term1_, term2_) {}
+      Max(Term1&& term1_, Term2&& term2_)
+        : Super(std::forward<Term1>(term1_), std::forward<Term2>(term2_)) 
+      { }
       
       int getDegree() const
       {
-	return std::max(Super::term1.getDegree(), Super::term2.getDegree());
+        return std::max(degree<0>(*this), degree<1>(*this));
       }
 
       value_type operator()(const int& iq) const
       {
-	return std::max(Super::term1(iq), Super::term2(iq)); 
+        return std::max(term<0>(*this)(iq), term<1>(*this)(iq)); 
       }
       
-      std::string str() const { return std::string("max(") + Super::term1.str() + ", " + Super::term2.str() + ")"; }
+      std::string str() const { return std::string("max(") + term<0>(*this).str() + ", " + term<1>(*this).str() + ")"; }
     };
     
     
     /// Expressions for the minimum of two expressions min(E1, E2)
     template <class Term1, class Term2>
-    struct Min : public LazyOperatorTerm2<Term1, Term2>
+    struct Min : public LazyOperatorTerms<Term1, Term2>
     {
-      typedef LazyOperatorTerm2<Term1, Term2> Super;
-      typedef typename Term1::value_type value_type;
+      using Super = LazyOperatorTerms<Term1, Term2>;
+      using value_type = typename std::common_type<Value_t<Term1>, Value_t<Term2> >::type;
       
-      Min(const Term1& term1_, const Term2& term2_)
-	: Super(term1_, term2_) {}
+      Min(Term1&& term1_, Term2&& term2_)
+        : Super(std::forward<Term1>(term1_), std::forward<Term2>(term2_)) 
+      { }
       
       int getDegree() const
       {
-	return std::max(Super::term1.getDegree(), Super::term2.getDegree());
+        return std::max(degree<0>(*this), degree<1>(*this));
       }
 
       value_type operator()(const int& iq) const 
       {
-	return std::min(Super::term1(iq), Super::term2(iq)); 
+      	return std::min(term<0>(*this)(iq), term<1>(*this)(iq)); 
       }
       
-      std::string str() const { return std::string("min(") + Super::term1.str() + ", " + Super::term2.str() + ")"; }
+      std::string str() const { return std::string("min(") + term<0>(*this).str() + ", " + term<1>(*this).str() + ")"; }
     };
     
   } // end namespace expressions
@@ -513,27 +518,27 @@ namespace AMDiS
   namespace result_of
   {
     template <class Term1, class Term2>
-    struct Min : boost::enable_if
+    using Min = enable_if
       < 
-	traits::is_valid_arg2<Term1, Term2>,
-	expressions::Min
-	<
-	  typename traits::to_expr<Term1>::type, 
-	  typename traits::to_expr<Term2>::type
-	>
-      > {};
+      	traits::is_valid_arg2<Term1, Term2>,
+      	expressions::Min
+      	<
+      	  typename traits::to_expr<Term1>::type, 
+      	  typename traits::to_expr<Term2>::type
+      	>
+      >;
       
       
     template <class Term1, class Term2>
-    struct Max : boost::enable_if
+    using Max = enable_if
       < 
-	traits::is_valid_arg2<Term1, Term2>,
-	expressions::Max
-	<
-	  typename traits::to_expr<Term1>::type, 
-	  typename traits::to_expr<Term2>::type
-	>
-      > {};
+      	traits::is_valid_arg2<Term1, Term2>,
+      	expressions::Max
+      	<
+      	  typename traits::to_expr<Term1>::type, 
+      	  typename traits::to_expr<Term2>::type
+      	>
+      >;
       
   } // end namespace result_of
 
@@ -542,24 +547,22 @@ namespace AMDiS
   // _____________________________________________________________________________
   template <class Term1, class Term2>
   inline typename result_of::Max<Term1, Term2>::type
-  max(const Term1& t1, const Term2& t2) 
+  max(Term1&& t1, Term2&& t2) 
   { 
-    typedef typename traits::to_expr<Term1>::to Expr1;
-    typedef typename traits::to_expr<Term2>::to Expr2;
-    return expressions::Max< typename Expr1::type, typename Expr2::type >
-	    (Expr1::get(t1), Expr2::get(t2));
+    using Expr1 = traits::to_expr<Term1>;
+    using Expr2 = traits::to_expr<Term2>;
+    return {Expr1::get(t1), Expr2::get(t2)};
   }
 
   // minimum of two terms
   // _____________________________________________________________________________
   template <class Term1, class Term2>
   inline typename result_of::Min<Term1, Term2>::type
-  min(const Term1& t1, const Term2& t2) 
+  min(Term1&& t1, Term2&& t2) 
   { 
-    typedef typename traits::to_expr<Term1>::to Expr1;
-    typedef typename traits::to_expr<Term2>::to Expr2;
-    return expressions::Min< typename Expr1::type, typename Expr2::type >
-	    (Expr1::get(t1), Expr2::get(t2));
+    using Expr1 = traits::to_expr<Term1>;
+    using Expr2 = traits::to_expr<Term2>;
+    return {Expr1::get(t1), Expr2::get(t2)};
   }
 
 
@@ -567,154 +570,135 @@ namespace AMDiS
 
   // absolute value of a term
   template <class Term>
-  inline typename boost::enable_if<
-    traits::is_expr<Term>,
+  inline typename boost::enable_if< traits::is_expr<Term>,
     expressions::Abs<Term> >::type
-  abs_(const Term& t) { return expressions::Abs<Term>(t); } // TODO: Funktionsnamen ohne Unterstrich
+  abs_(Term&& t) { return {std::forward<Term>(t)}; } // TODO: Funktionsnamen ohne Unterstrich
 
   // signum of a term
   template <class Term>
-  inline typename boost::enable_if<
-    traits::is_expr<Term>,
+  inline typename boost::enable_if< traits::is_expr<Term>,
     expressions::Signum<Term> >::type
-  signum(const Term& t) { return expressions::Signum<Term>(t); }
+  signum(Term&& t) { return {std::forward<Term>(t)}; }
 
   // 
   template <class Term>
-  inline typename boost::enable_if<
-    typename traits::is_expr<Term>::type,
+  inline typename boost::enable_if< traits::is_expr<Term>,
     expressions::Ceil<Term> >::type
-  ceil(const Term& t) { return expressions::Ceil<Term>(t); }
+  ceil(Term&& t) { return {std::forward<Term>(t)}; }
 
   // 
   template <class Term>
-  inline typename boost::enable_if<
-    traits::is_expr<Term>,
+  inline typename boost::enable_if< traits::is_expr<Term>,
     expressions::Floor<Term> >::type
-  floor(const Term& t) { return expressions::Floor<Term>(t); }
+  floor(Term&& t) { return {std::forward<Term>(t)}; }
 
   //______________________________________________________________________________
 
   // I'th power of a term
   template <int I, class Term>
-  inline typename boost::enable_if<
-    traits::is_expr<Term>,
+  inline typename enable_if< traits::is_expr<Term>,
     expressions::Pow<I, Term> >::type
-  pow(const Term& t) { return expressions::Pow<I, Term>(t); }
+  pow(Term&& t) { return {std::forward<Term>(t)}; }
 
   // square root of a term
   template <class Term>
-  inline typename boost::enable_if<
-    traits::is_expr<Term>,
+  inline typename enable_if< traits::is_expr<Term>,
     expressions::Sqrt<Term> >::type
-  sqrt(const Term& t) { return expressions::Sqrt<Term>(t); }
+  sqrt(Term&& t) { return {std::forward<Term>(t)}; }
 
   //______________________________________________________________________________
 
   // exponential function of a term
   template <class Term>
-  inline typename boost::enable_if<
-    traits::is_expr<Term>,
+  inline typename enable_if< traits::is_expr<Term>,
     expressions::Exp<Term> >::type
-  exp(const Term& t) { return expressions::Exp<Term>(t); }
+  exp(Term&& t) { return {std::forward<Term>(t)}; }
 
   // natural logarithm of a term
   template <class Term>
-  inline typename boost::enable_if<
-    traits::is_expr<Term>,
+  inline typename enable_if< traits::is_expr<Term>,
     expressions::Log<Term> >::type
-  log(const Term& t) { return expressions::Log<Term>(t); }
+  log(Term&& t) { return {std::forward<Term>(t)}; }
 
   //______________________________________________________________________________
 
   // cosine function of a term
   template <class Term>
-  inline typename boost::enable_if<
-    traits::is_expr<Term>,
+  inline typename enable_if< traits::is_expr<Term>,
     expressions::Cos<Term> >::type
-  cos(const Term& t) { return expressions::Cos<Term>(t); }
+  cos(Term&& t) { return {std::forward<Term>(t)}; }
 
   // sine function of a term
   template <class Term>
-  inline typename boost::enable_if<
-    traits::is_expr<Term>,
+  inline typename enable_if< traits::is_expr<Term>,
     expressions::Sin<Term> >::type
-  sin(const Term& t) { return expressions::Sin<Term>(t); }
+  sin(Term&& t) { return {std::forward<Term>(t)}; }
 
   // tangens function of a term
   template <class Term>
-  inline typename boost::enable_if<
-    traits::is_expr<Term>,
+  inline typename enable_if< traits::is_expr<Term>,
     expressions::Tan<Term> >::type
-  tan(const Term& t) { return expressions::Tan<Term>(t); }
+  tan(Term&& t) { return {std::forward<Term>(t)}; }
 
   //______________________________________________________________________________
 
   // arkuscosine function of a term
   template <class Term>
-  inline typename boost::enable_if<
-    traits::is_expr<Term>,
+  inline typename enable_if< traits::is_expr<Term>,
     expressions::Acos<Term> >::type
-  acos(const Term& t) { return expressions::Acos<Term>(t); }
+  acos(Term&& t) { return {std::forward<Term>(t)}; }
 
   // arkussine function of a term
   template <class Term>
-  inline typename boost::enable_if<
-    traits::is_expr<Term>,
+  inline typename enable_if< traits::is_expr<Term>,
     expressions::Asin<Term> >::type
-  asin(const Term& t) { return expressions::Asin<Term>(t); }
+  asin(Term&& t) { return {std::forward<Term>(t)}; }
 
   // arkustangens function of a term
   template <class Term>
-  inline typename boost::enable_if<
-    traits::is_expr<Term>,
+  inline typename enable_if< traits::is_expr<Term>,
     expressions::Atan<Term> >::type
-  atan(const Term& t) { return expressions::Atan<Term>(t); }
+  atan(Term&& t) { return {std::forward<Term>(t)}; }
 
   //______________________________________________________________________________
 
   // cosine-hyperbolicus function of a term
   template <class Term>
-  inline typename boost::enable_if<
-    traits::is_expr<Term>,
+  inline typename enable_if< traits::is_expr<Term>,
     expressions::Cosh<Term> >::type
-  cosh(const Term& t) { return expressions::Cosh<Term>(t); }
+  cosh(Term&& t) { return {std::forward<Term>(t)}; }
 
   // sine-hyperbolicus function of a term
   template <class Term>
-  inline typename boost::enable_if<
-    traits::is_expr<Term>,
+  inline typename enable_if< traits::is_expr<Term>,
     expressions::Sinh<Term> >::type
-  sinh(const Term& t) { return expressions::Sinh<Term>(t); }
+  sinh(Term&& t) { return {std::forward<Term>(t)}; }
 
   // tangens-hyperbolicus function of a term
   template <class Term>
-  inline typename boost::enable_if<
-    traits::is_expr<Term>,
+  inline typename enable_if< traits::is_expr<Term>,
     expressions::Tanh<Term> >::type
-  tanh(const Term& t) { return expressions::Tanh<Term>(t); }
+  tanh(Term&& t) { return {std::forward<Term>(t)}; }
 
   //______________________________________________________________________________
 
   // arkuscosine-hypüerbolicus function of a term
   template <class Term>
-  inline typename boost::enable_if<
-    traits::is_expr<Term>,
+  inline typename enable_if< traits::is_expr<Term>,
     expressions::Acosh<Term> >::type
-  acosh(const Term& t) { return expressions::Acosh<Term>(t); }
+  acosh(Term&& t) { return {std::forward<Term>(t)}; }
 
   // arkussine-hyperbolicus function of a term
   template <class Term>
-  inline typename boost::enable_if<
-    traits::is_expr<Term>,
+  inline typename enable_if< traits::is_expr<Term>,
     expressions::Asinh<Term> >::type
-  asinh(const Term& t) { return expressions::Asinh<Term>(t); }
+  asinh(Term&& t) { return {std::forward<Term>(t)}; }
 
   // arkustangens-hyperbolicus function of a term
   template<class Term>
   inline typename boost::enable_if<
     traits::is_expr<Term>,
     expressions::Atanh<Term> >::type
-  atanh(const Term& t) { return expressions::Atanh<Term>(t); }
+  atanh(Term&& t) { return {std::forward<Term>(t)}; }
 
 } // end namespace AMDiS

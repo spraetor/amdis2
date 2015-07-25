@@ -219,7 +219,7 @@ namespace AMDiS
 	dofMin2 = std::max(dof0, dof1);
       }
       
-      return {dofMin0, dofMin1, dofMin2};
+      return {{dofMin0, dofMin1, dofMin2}};
     }
 
     /// Returns for an edge number its local edge number on a child element. See

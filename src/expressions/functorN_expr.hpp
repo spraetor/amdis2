@@ -7,34 +7,28 @@
 // #include "Functors.h"
 // #include "expressions/functor_expr.hpp"
 #include "operations/functors.hpp"
-
-#include <boost/static_assert.hpp>
+#include "traits/meta_basic.hpp"
 
 #include <tuple>
 #include <utility> 
 #include <functional>
 
 namespace AMDiS 
-{
-
-  template<int I>
-  using int_ = std::integral_constant<int, I>;
-  
-  
+{ 
   namespace traits
   {
     /// get the degree of a functor by combining the degrees of the arguments
-    template<typename F, typename Enable = void>
+    template <class F, class Enable = void>
     struct functor_degree
     {
       template<typename... Int>
       static int eval(F f, Int... d) { return 0; }
     };
     
-    template<typename F>
-    struct functor_degree<F, typename enable_if< boost::is_base_of<FunctorBase, F> >::type >
+    template <class F>
+    struct functor_degree<F, typename enable_if< std::is_base_of<FunctorBase, F> >::type >
     {
-      template<typename... Int>
+      template <class... Int>
       static int eval(F f, Int... d) { return f.getDegree(d...); }
     };
     
@@ -46,19 +40,19 @@ namespace AMDiS
     template <class FPtr>
     struct Function;
 
-    template <class R, class C, class... As>
-    struct Function<R (C::*)(As...)>
+    template <class R, class C, class... Args>
+    struct Function<R (C::*)(Args...)>
     {
-      typedef R result_type;
+      typedef R type;
     };
 
-    template<class R, class C, class... As>
-    struct Function<R (C::*)(As...) const>
+    template <class R, class C, class... Args>
+    struct Function<R (C::*)(Args...) const>
     {
       typedef R type;
     };
     
-    template<class T>
+    template <class T>
     typename Function<T>::type function_helper(T);
 
     /// extract result type from functors
@@ -68,8 +62,8 @@ namespace AMDiS
       typedef decltype(function_helper(&F::operator())) type;
     };
     
-    template <class R, class... As>
-    struct Functor<std::function<R(As...)> >
+    template <class R, class... Args>
+    struct Functor<std::function<R(Args...)> >
     {
       typedef R type;
     };
@@ -83,29 +77,30 @@ namespace AMDiS
   namespace expressions 
   {
     /// Functor that takes arbitrary number of arguments
-    template<typename F, typename... Terms>
+    template <class F, class... Terms>
     struct FunctionN : public LazyOperatorTerms<Terms...>
     {
-      typedef LazyOperatorTerms<Terms...> super;
-      static const int N = sizeof...(Terms);
+      using Super = LazyOperatorTerms<Terms...>;
+      static constexpr int N = sizeof...(Terms);
       
-      typedef typename result_of::Functor<typename std::decay<F>::type>::type value_type;
-      BOOST_STATIC_ASSERT_MSG( (!boost::is_same<value_type, traits::no_valid_type>::value), "********** ERROR: You have to define a result_type for your Functor **********" );
+      using value_type = typename result_of::Functor<typename std::decay<F>::type>::type;
+      static_assert( (!std::is_same<value_type, traits::no_valid_type>::value), 
+                     "********** ERROR: You have to define a result_type for your Functor **********" );
       
       F f; ///< the functor
       
-      template<typename... Terms_>
-      FunctionN(const F& f_, Terms_... terms_)
-        : super(terms_...), f(f_) {}
+      template <class... Terms_>
+      FunctionN(const F& f_, Terms_&&... terms_)
+        : Super(std::forward<Terms_>(terms_)...), f(f_) {}
       
       // call f.getDegree() function    
-      template<int I, typename... Terms_>
+      template <int I, class... Terms_>
       int getDegree(int_<I>, const Terms_&... terms) const
       {
-        return getDegree(int_<I-1>(), std::get<I-1>(super::term_tuple), terms...);
+        return getDegree(int_<I-1>(), Super::getTerm(int_<I-1>()), terms...);
       }
       
-      template<typename... Terms_>
+      template <class... Terms_>
       int getDegree(int_<0>, const Terms_&... terms) const
       {
         return traits::functor_degree<F>::eval(f, terms.getDegree()...);
@@ -117,13 +112,13 @@ namespace AMDiS
       }
 
       // call f.operator()(...)
-      template<int I, typename... Terms_>
+      template <int I, class... Terms_>
       value_type eval(const int& iq, int_<I>, const Terms_&... terms) const
       {
-	       return eval(iq, int_<I-1>(), std::get<I-1>(super::term_tuple), terms...);
+	       return eval(iq, int_<I-1>(), Super::getTerm(int_<I-1>()), terms...);
       }
       
-      template<typename... Terms_>
+      template <class... Terms_>
       value_type eval(const int& iq, int_<0>, Terms_... terms) const
       {
 	       return f(terms(iq)...);  // f(term1(iq), term2(iq), term3(iq),...)
@@ -132,101 +127,59 @@ namespace AMDiS
       value_type operator()(const int& iq) const { return eval(iq, int_<N>()); }
     };
     
-    template<typename F, typename Term>
+    template <class F, class Term>
     using Function1 = FunctionN<F, Term>;
     
-    template<typename F, typename Term1, typename Term2>
+    template <class F, class Term1, class Term2>
     using Function2 = FunctionN<F, Term1, Term2>;
     
-    template<typename F, typename Term1, typename Term2, typename Term3>
+    template <class F, class Term1, class Term2, class Term3>
     using Function3 = FunctionN<F, Term1, Term2, Term3>;
     
-    template<typename F, typename Term1, typename Term2, typename Term3, typename Term4>
+    template <class F, class Term1, class Term2, class Term3, class Term4>
     using Function4 = FunctionN<F, Term1, Term2, Term3, Term4>;
-    
-#if 0
-    /// A wrapper functor for AMDiS::AbstractFunctions
-    template<typename TOut, typename TIn>
-    struct Wrapper : public FunctorBase
-    {
-      typedef TOut result_type;
-      Wrapper(AbstractFunction<TOut, TIn>* fct_) : fct(fct_) {}
-      int getDegree(int degree) const { return fct->getDegree(); }
-      
-      TOut operator()(const TIn& x) const 
-      {
-	return (*fct)(x);
-      }
-      
-    protected:
-      AbstractFunction<TOut, TIn>* fct;
-    };
-#endif
+
   } // end namespace expressions
 
 
   namespace result_of
   {
     // result of generator-functions (used for enable_if constructs)
-    template <typename F, typename... Terms>
-    struct FunctionN : std::enable_if
+    template <class F, class... Terms>
+    using FunctionN = std::enable_if
       <
-      	and_< typename traits::is_valid_arg<Terms>::type... >::value,
+      	and_< traits::is_valid_arg<Terms>... >::value,
       	expressions::FunctionN< F, typename traits::to_expr<Terms>::type...> 
-      > {};
-      
-    template <typename F, typename Term>
-    struct FunctionN<F, Term> : std::enable_if
-      <
-      	traits::is_valid_arg<Term>::value,
-      	expressions::FunctionN< F, typename traits::to_expr<Term>::type> 
-      > {};
+      >;
       
   } // end namespace result_of
 
   // generator-functions
   // _____________________________________________________________________________
 
-  template<typename F, typename... Terms>
+  template <class F, class... Terms>
   inline typename result_of::FunctionN<F, Terms...>::type
   function_(F&& f, Terms... ts) 
   {
-    return expressions::FunctionN<F, typename traits::to_expr<Terms>::to::type...>
-	    (std::forward<F>(f), traits::to_expr<Terms>::to::get(ts)...); 
+    return {std::forward<F>(f), traits::to_expr<Terms>::get(ts)...}; 
   }
 
-#if 1
-  template<typename F, typename... Terms>
+  template <class F, class... Terms>
   inline typename result_of::FunctionN<F, Terms...>::type
-  func(F&& f, Terms... ts) 
+  func(F&& f, Terms... ts)
   {
-    return expressions::FunctionN<F, typename traits::to_expr<Terms>::to::type...>
-	    (std::forward<F>(f), traits::to_expr<Terms>::to::get(ts)...); 
-  }
-#else
-  template<typename F, typename... Terms>
-  inline auto func(F&& f, Terms... ts) -> 
-      expressions::FunctionN<F, typename traits::to_expr<Terms>::to::type...>
-  {
-    return {std::forward<F>(f), traits::to_expr<Terms>::to::get(ts)...}; 
-  }
-#endif
-
-  template<typename F, typename Term0, typename... Terms>
-  inline typename result_of::FunctionN<F, Term0, Terms...>::type
-  eval(F&& f, Term0 t0, Terms... ts) 
-  {
-    return expressions::FunctionN<F, typename traits::to_expr<Term0>::to::type, 
-				     typename traits::to_expr<Terms>::to::type...>
-      (std::forward<F>(f), traits::to_expr<Term0>::to::get(t0), traits::to_expr<Terms>::to::get(ts)...); 
+    return {std::forward<F>(f), traits::to_expr<Terms>::get(ts)...}; 
   }
 
 #if 0
-  // function wrapper for abstract functions
-  // _____________________________________________________________________________
-  template<typename TOut, typename TIn>
-  inline expressions::Wrapper<TOut,TIn> wrap(AbstractFunction<TOut, TIn>* fct) 
-  { return expressions::Wrapper<TOut,TIn>(fct); }
+  template <class F, class Term0, class... Terms>
+  inline typename result_of::FunctionN<F, Term0, Terms...>::type
+  eval(F&& f, Term0 t0, Terms... ts) 
+  {
+    return expressions::FunctionN<F, typename traits::to_expr<Term0>::type, 
+				     typename traits::to_expr<Terms>::type...>
+      (std::forward<F>(f), traits::to_expr<Term0>::get(t0), traits::to_expr<Terms>::get(ts)...); 
+  }
 #endif
 
 } // end namespace AMDiS

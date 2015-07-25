@@ -41,8 +41,8 @@ namespace AMDiS
       value_type V;
       
       CVector() : V(Size) {
-	int values[3] = {V0, V1, V2};
-	V.setValues(values);
+      	int values[3] = {V0, V1, V2};
+      	V.setValues(values);
       }
 		    
       inline value_type operator()(const int& iq) const { return V; }
@@ -59,9 +59,9 @@ namespace AMDiS
       value_type V;
       
       WVector() {
-	V[0] = V0;
-	if (size(V) > 1) V[1] = V1;
-	if (size(V) > 2) V[2] = V2;
+      	V[0] = V0;
+      	if (size(V) > 1) V[1] = V1;
+      	if (size(V) > 2) V[2] = V2;
       }
 		    
       inline value_type operator()(const int& iq) const { return V; }
@@ -76,8 +76,8 @@ namespace AMDiS
       value_type V;
       
       E(int I_ = -1) {
-	assert((I >= 0 && I_ < 0) || (I < 0 && I_ >= 0));
-	V = 0; V[std::max(I, I_)] = 1;
+      	assert((I >= 0 && I_ < 0) || (I < 0 && I_ >= 0));
+      	V = 0; V[std::max(I, I_)] = 1;
       }
 		    
       inline value_type operator()(const int& iq) const { return V; }
@@ -100,8 +100,8 @@ namespace AMDiS
       value_type M;
       
       CMatrix() : M(Rows, Cols) {
-	int values[9] = {V0, V1, V2, V3, V4, V5, V6, V7, V8};
-	M.setValues(values);
+      	int values[9] = {V0, V1, V2, V3, V4, V5, V6, V7, V8};
+      	M.setValues(values);
       }
 		    
       inline value_type operator()(const int& iq) const { return M; }
@@ -120,15 +120,15 @@ namespace AMDiS
       value_type M;
       
       WMatrix() {
-	M[0][0] = V0;
-	if (Global::getGeo(WORLD) == 2) {
-	                M[0][1] = V1;
-	  M[1][0] = V2; M[1][1] = V3;
-	} else if (Global::getGeo(WORLD) == 3) {
-	                M[0][1] = V1; M[0][2] = V2;
-	  M[1][0] = V3; M[1][1] = V4; M[1][2] = V5;
-	  M[2][0] = V6; M[2][1] = V7; M[2][2] = V8;
-	}
+      	M[0][0] = V0;
+      	if (Global::getGeo(WORLD) == 2) {
+      	                M[0][1] = V1;
+      	  M[1][0] = V2; M[1][1] = V3;
+      	} else if (Global::getGeo(WORLD) == 3) {
+      	                M[0][1] = V1; M[0][2] = V2;
+      	  M[1][0] = V3; M[1][1] = V4; M[1][2] = V5;
+      	  M[2][0] = V6; M[2][1] = V7; M[2][2] = V8;
+      	}
       }
 		    
       inline value_type operator()(const int& iq) const { return M; }
@@ -145,9 +145,9 @@ namespace AMDiS
       value_type M;
       
       Eye(int n_) : n(n_ < 0 ? N : n_), M(n,n) {
-	M = 0;
-	for (size_t i = 0; i < n; ++i)
-	  M[i][i] = 1;
+      	M = 0;
+      	for (size_t i = 0; i < n; ++i)
+      	  M[i][i] = 1;
       }
 		    
       inline value_type operator()(const int& iq) const { return M; }
@@ -162,9 +162,9 @@ namespace AMDiS
       value_type M;
       
       Eye() {
-	M = 0;
-	for (size_t i = 0; i < (size_t)Global::getGeo(WORLD); ++i)
-	  M[i][i] = 1;
+      	M = 0;
+      	for (size_t i = 0; i < (size_t)Global::getGeo(WORLD); ++i)
+      	  M[i][i] = 1;
       }
 		    
       inline value_type operator()(const int& iq) const { return M; }
@@ -185,9 +185,9 @@ namespace AMDiS
     struct remove_all_qualifiers
     {
       typedef typename boost::remove_cv
-	< typename boost::remove_pointer
-	  < typename boost::remove_reference<T>::type >::type
-	>::type type;
+      	< typename boost::remove_pointer
+      	  < typename boost::remove_reference<T>::type >::type
+      	>::type type;
     };
 	  
 	
@@ -233,18 +233,12 @@ namespace AMDiS
       
       int getDegree() const
       {
-	return 0;
+        return 0;
       }
 
-      template<typename OT>
-      void initElement(OT* ot, const ElInfo* elInfo,
-		      SubAssembler* subAssembler, Quadrature *quad, 
-		    const BasisFunction *basisFct = NULL) {}
-
-      template<typename OT>
-      void initElement(OT* ot, const ElInfo* smallElInfo, const ElInfo* largeElInfo,
-	      SubAssembler* subAssembler, Quadrature *quad, 
-		    const BasisFunction *basisFct = NULL) {}
+      void initElement(const ElInfo* elInfo,
+              		     SubAssembler* subAssembler, Quadrature *quad, 
+              		     const BasisFunction *basisFct = NULL) {}
 
       inline value_type operator()(const int& iq) const { return traits::pure_value<T>::eval(value); }
       
@@ -258,36 +252,40 @@ namespace AMDiS
   // _____________________________________________________________________________
 
   template<typename T>
-  inline expressions::RValue<T> constant(T value) { return expressions::RValue<T>(value); }
+  inline expressions::RValue<T> 
+  constant(T value) { return {value}; }
 
   template<int I>
-  inline expressions::CValue<I> constant() { return expressions::CValue<I>(); }
+  inline expressions::CValue<I> 
+  constant() { return {}; }
 
   template<typename T>
-  inline expressions::Reference<T> ref_(T& value) { return expressions::Reference<T>(value); }
+  inline expressions::Reference<T> 
+  ref_(T& value) { return {value}; }
 
   template<typename T>
-  inline expressions::Reference<T> ref_(T* value) { return expressions::Reference<T>(value); }
+  inline expressions::Reference<T> 
+  ref_(T* value) { return {value}; }
 
   
   // unit vectors
-  template<int I>
-  inline expressions::E<I> E() 
-  { return expressions::E<I>(); }
+  template <int I>
+  inline expressions::E<I> 
+  E() { return {}; }
   
-  inline expressions::E<-1> E(int i) 
-  { return expressions::E<-1>(i); }
+  inline expressions::E<-1> 
+  E(int i) { return{i}; }
   
   // unit matrix
-  template<int N>
-  inline expressions::Eye<N> eye() 
-  { return expressions::Eye<N>(); }  // NxN unit-matrix 
+  template <int N>
+  inline expressions::Eye<N> 
+  eye() { return {}; }  // NxN unit-matrix 
   
-  inline expressions::Eye<-1> eye(int n) 
-  { return expressions::Eye<-1>(n); } // nxn unit-matrix
+  inline expressions::Eye<-1> 
+  eye(int n) { return {n}; } // nxn unit-matrix
   
-  inline expressions::Eye<-2> eye() 
-  { return expressions::Eye<-2>(); } // dow x dow unit-matrix
+  inline expressions::Eye<-2> 
+  eye() { return {}; } // dow x dow unit-matrix
   
   
 } // end namespace AMDiS

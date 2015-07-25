@@ -23,28 +23,26 @@ namespace AMDiS
       
       int getDegree() const { return 1; }
 
-      template <class OT>
-      void initElement(OT* ot, const ElInfo* elInfo,
+      void initElement(const ElInfo* elInfo,
 		       SubAssembler* subAssembler, Quadrature *quad, 
 		       const BasisFunction *basisFct = NULL)
       {
-	if (subAssembler) {
-	  subAssembler->getCoordsAtQPs(elInfo, quad, x); 
-	}
-	else if (quad) {
-	  const int nPoints = quad->getNumPoints();
-	
-	  x.change_dim(nPoints);
-	  for (int i = 0; i < nPoints; i++)
-	    elInfo->coordToWorld(quad->getLambda(i), x[i]);
-	}
-	else if (basisFct) {
-	  const int nBasisFct = basisFct->getNumber();
-	
-	  x.change_dim(nBasisFct);
-	  for (int i = 0; i < nBasisFct; i++)
-	    elInfo->coordToWorld(*basisFct->getCoords(i), x[i]);
-	}
+      	if (subAssembler)
+      	  subAssembler->getCoordsAtQPs(elInfo, quad, x); 
+      	else if (quad) {
+      	  const int nPoints = quad->getNumPoints();
+      	
+      	  x.change_dim(nPoints);
+      	  for (int i = 0; i < nPoints; i++)
+      	    elInfo->coordToWorld(quad->getLambda(i), x[i]);
+      	}
+      	else if (basisFct) {
+      	  const int nBasisFct = basisFct->getNumber();
+      	
+      	  x.change_dim(nBasisFct);
+      	  for (int i = 0; i < nBasisFct; i++)
+      	    elInfo->coordToWorld(*basisFct->getCoords(i), x[i]);
+      	}
       }
 
       value_type operator()(const int& iq) const { return x[iq]; }
@@ -68,28 +66,26 @@ namespace AMDiS
       
       int getDegree() const { return 1; }
 
-      template <class OT>
-      void initElement(OT* ot, const ElInfo* elInfo,
-		       SubAssembler* subAssembler, Quadrature *quad, 
-		       const BasisFunction *basisFct = NULL)
+      void initElement(const ElInfo* elInfo,
+            		       SubAssembler* subAssembler, Quadrature *quad, 
+            		       const BasisFunction *basisFct = NULL)
       {
-	if (subAssembler) {
-	  subAssembler->getCoordsAtQPs(elInfo, quad, x); 
-	}
-	else if (quad) {
-	  const int nPoints = quad->getNumPoints();
-	
-	  x.change_dim(nPoints);
-	  for (int i = 0; i < nPoints; i++)
-	    elInfo->coordToWorld(quad->getLambda(i), x[i]);
-	}
-	else if (basisFct) {
-	  const int nBasisFct = basisFct->getNumber();
-	
-	  x.change_dim(nBasisFct);
-	  for (int i = 0; i < nBasisFct; i++)
-	    elInfo->coordToWorld(*basisFct->getCoords(i), x[i]);
-	}
+      	if (subAssembler)
+      	  subAssembler->getCoordsAtQPs(elInfo, quad, x); 
+      	else if (quad) {
+      	  const int nPoints = quad->getNumPoints();
+      	
+      	  x.change_dim(nPoints);
+      	  for (int i = 0; i < nPoints; i++)
+      	    elInfo->coordToWorld(quad->getLambda(i), x[i]);
+      	}
+      	else if (basisFct) {
+      	  const int nBasisFct = basisFct->getNumber();
+      	
+      	  x.change_dim(nBasisFct);
+      	  for (int i = 0; i < nBasisFct; i++)
+      	    elInfo->coordToWorld(*basisFct->getCoords(i), x[i]);
+      	}
       }
 
       double operator()(const int& iq) const { return x[iq][I]; }
@@ -114,18 +110,18 @@ namespace AMDiS
       
       int getDegree() const { return 1; }
 
-      template <class OT>
-      void initElement(OT* ot, const ElInfo* elInfo,
-		       SubAssembler* subAssembler, Quadrature *quad, 
-		       const BasisFunction *basisFct = NULL)
+      void initElement(const ElInfo* elInfo,
+            		       SubAssembler* subAssembler, Quadrature *quad, 
+            		       const BasisFunction *basisFct = NULL)
       {
-	int dim = elInfo->getMesh()->getDim();
-	for (int side = 0; side < dim+1; ++side) {
-	  if (elInfo->getBoundary(side) == boundary) {
-	    elInfo->getNormal(side, normal);
-	    break;
-	  }
-	}
+        // TODO: test for fillFlag FILL_BOUND
+      	int dim = elInfo->getMesh()->getDim();
+      	for (int side = 0; side < dim+1; ++side) {
+      	  if (elInfo->getBoundary(side) == boundary) {
+      	    elInfo->getNormal(side, normal);
+      	    break;
+      	  }
+      	}
       }
 
       value_type operator()(const int& iq) const { return normal; }
@@ -151,18 +147,18 @@ namespace AMDiS
       
       int getDegree() const { return 1; }
 
-      template <class OT>
-      void initElement(OT* ot, const ElInfo* elInfo,
-		       SubAssembler* subAssembler, Quadrature *quad, 
-		       const BasisFunction *basisFct = NULL)
+      void initElement(const ElInfo* elInfo,
+            		       SubAssembler* subAssembler, Quadrature *quad, 
+            		       const BasisFunction *basisFct = NULL)
       {
-	int dim = elInfo->getMesh()->getDim();
-	for (int side = 0; side < dim+1; ++side) {
-	  if (elInfo->getBoundary(side) == boundary) {
-	    elInfo->getNormal(side, normal);
-	    break;
-	  }
-	}
+        // TODO: test for fillFlag FILL_BOUND
+      	int dim = elInfo->getMesh()->getDim();
+      	for (int side = 0; side < dim+1; ++side) {
+      	  if (elInfo->getBoundary(side) == boundary) {
+      	    elInfo->getNormal(side, normal);
+      	    break;
+      	  }
+      	}
       }
 
       value_type operator()(const int& iq) const { return normal[I]; }
@@ -184,12 +180,11 @@ namespace AMDiS
       
       int getDegree() const { return 1; }
 
-      template <class OT>
-      void initElement(OT* ot, const ElInfo* elInfo,
+      void initElement(const ElInfo* elInfo,
 		       SubAssembler* subAssembler, Quadrature *quad, 
 		       const BasisFunction *basisFct = NULL)
       {
-	elInfo->getElementNormal(elementNormal);
+        elInfo->getElementNormal(elementNormal);
       }
 
       value_type operator()(const int& iq) const { return elementNormal; }
@@ -212,12 +207,11 @@ namespace AMDiS
       
       int getDegree() const { return 1; }
 
-      template <class OT>
-      void initElement(OT* ot, const ElInfo* elInfo,
+      void initElement(const ElInfo* elInfo,
 		       SubAssembler* subAssembler, Quadrature *quad, 
 		       const BasisFunction *basisFct = NULL)
       {
-	elInfo->getElementNormal(elementNormal);
+        elInfo->getElementNormal(elementNormal);
       }
 
       value_type operator()(const int& iq) const { return elementNormal[I]; }
@@ -228,29 +222,29 @@ namespace AMDiS
   } // end namespace expressions
   
 
-  inline expressions::Coords X() 
-  { return expressions::Coords(); }
+  inline expressions::Coords 
+  X() { return {}; }
   
   template <int I>
-  inline expressions::Coord<I> X() 
-  { return expressions::Coord<I>(); }
+  inline expressions::Coord<I> 
+  X() { return {}; }
   
-  inline expressions::Coord<-1> X(int i) 
-  { return expressions::Coord<-1>(i); }
-  
-
-  inline expressions::Normals N(int side) 
-  { return expressions::Normals(side); }
-  
-  inline expressions::Normal N(int side, int I) 
-  { return expressions::Normal(side, I); }
+  inline expressions::Coord<-1> 
+  X(int i) { return {i}; }
   
 
-  inline expressions::ElementNormals M() 
-  { return expressions::ElementNormals(); }
+  inline expressions::Normals 
+  N(int side) { return {side}; }
   
-  inline expressions::ElementNormal M(int I) 
-  { return expressions::ElementNormal(I); }
+  inline expressions::Normal 
+  N(int side, int I) { return {side, I}; }
+  
+
+  inline expressions::ElementNormals 
+  M() { return {}; }
+  
+  inline expressions::ElementNormal 
+  M(int I) { return {I}; }
 
 
 } // end namespace AMDiS

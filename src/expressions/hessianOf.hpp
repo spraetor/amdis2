@@ -52,39 +52,38 @@ namespace AMDiS
       template <class List>
       void insertFeSpaces(List& feSpaces) const
       {
-	feSpaces.insert(vecDV->getFeSpace());
+        feSpaces.insert(vecDV->getFeSpace());
       }
       
       int getDegree() const
       {
-	return vecDV->getFeSpace()->getBasisFcts()->getDegree() /* -1 */;
+        return vecDV->getFeSpace()->getBasisFcts()->getDegree() /* -1 */;
       }
 
-      template <class OT>
-      void initElement(OT* ot, const ElInfo* elInfo,
-		      SubAssembler* subAssembler, Quadrature *quad, 
-		      const BasisFunction *basisFct = NULL)
+      void initElement(const ElInfo* elInfo,
+            		       SubAssembler* subAssembler, Quadrature *quad, 
+            		       const BasisFunction *basisFct = NULL)
       { FUNCNAME("HessianOf::initElement");
       
-	if (ot && subAssembler) {
-	  ERROR_EXIT("Hessian expression not yet implemented for operator-terms!\n");
-	} else if (quad)
-	  vecDV->getD2AtQPs(elInfo, quad, NULL, vec);
-	else if (basisFct) {
-	  const BasisFunction *localBasisFct = vecDV->getFeSpace()->getBasisFcts();
-	  
-	  // get coefficients of DOFVector
-	  coeff.change_dim(localBasisFct->getNumber());
-	  vecDV->getLocalVector(elInfo->getElement(), coeff);
-	  
-	  // eval basisfunctions of DOFVector at coords of given basisFct
-	  size_t nBasisFct = basisFct->getNumber();
-	  vec.change_dim(nBasisFct);	
-	  
-	  const DimVec<WorldVector<double> > &grdLambda = elInfo->getGrdLambda();
-	  for (size_t i = 0; i < nBasisFct; i++)
-	    localBasisFct->evalD2Uh(*basisFct->getCoords(i), grdLambda, coeff, &vec[i]);
-	}
+      	if (subAssembler) {
+      	  ERROR_EXIT("Hessian expression not yet implemented for operator-terms!\n");
+      	} else if (quad)
+      	  vecDV->getD2AtQPs(elInfo, quad, NULL, vec);
+      	else if (basisFct) {
+      	  const BasisFunction *localBasisFct = vecDV->getFeSpace()->getBasisFcts();
+      	  
+      	  // get coefficients of DOFVector
+      	  coeff.change_dim(localBasisFct->getNumber());
+      	  vecDV->getLocalVector(elInfo->getElement(), coeff);
+      	  
+      	  // eval basisfunctions of DOFVector at coords of given basisFct
+      	  size_t nBasisFct = basisFct->getNumber();
+      	  vec.change_dim(nBasisFct);	
+      	  
+      	  const DimVec<WorldVector<double> > &grdLambda = elInfo->getGrdLambda();
+      	  for (size_t i = 0; i < nBasisFct; i++)
+      	    localBasisFct->evalD2Uh(*basisFct->getCoords(i), grdLambda, coeff, &vec[i]);
+      	}
       }
 
       value_type operator()(const int& iq) const { return vec[iq]; }
@@ -113,49 +112,48 @@ namespace AMDiS
       template<typename List>
       void insertFeSpaces(List& feSpaces) const
       {
-	feSpaces.insert(vecDV->getFeSpace());
+        feSpaces.insert(vecDV->getFeSpace());
       }
       
       int getDegree() const
       {
-	return vecDV->getFeSpace()->getBasisFcts()->getDegree() /* -1 */;
+        return vecDV->getFeSpace()->getBasisFcts()->getDegree() /* -1 */;
       }
 
-      template <class OT>
-      void initElement(OT* ot, const ElInfo* elInfo,
-		      SubAssembler* subAssembler, Quadrature *quad, 
-		      const BasisFunction *basisFct = NULL)
+      void initElement(const ElInfo* elInfo,
+            		       SubAssembler* subAssembler, Quadrature *quad, 
+            		       const BasisFunction *basisFct = NULL)
       { FUNCNAME("LaplacianOf::initElement");
-      
-	if (ot && subAssembler) {
-	  ERROR_EXIT("Laplacian expression not yet implemented for operator-terms!\n");
-	} else if (quad) {
-	  vecDV->getD2AtQPs(elInfo, quad, NULL, vec_tmp); 
-	  for (size_t i = 0; i < size(vec_tmp); i++) {
-	    vec[i] = vec_tmp[i][0][0];
-	    for (int j = 1; j < Global::getGeo(WORLD); j++)
-	      vec[i] += vec_tmp[i][j][j];
-	  }
-	} else if (basisFct) {
-	  const BasisFunction *localBasisFct = vecDV->getFeSpace()->getBasisFcts();
-	  
-	  // get coefficients of DOFVector
-	  coeff.change_dim(localBasisFct->getNumber());
-	  vecDV->getLocalVector(elInfo->getElement(), coeff);
-	  
-	  // eval basisfunctions of DOFVector at coords of given basisFct
-	  size_t nBasisFct = basisFct->getNumber();
-	  vec.change_dim(nBasisFct);	
-	  WorldMatrix<double> hessian;
-	  
-	  const DimVec<WorldVector<double> > &grdLambda = elInfo->getGrdLambda();
-	  for (size_t i = 0; i < nBasisFct; i++) {
-	    localBasisFct->evalD2Uh(*basisFct->getCoords(i), grdLambda, coeff, &hessian);
-	    vec[i] = hessian[0][0];
-	    for (int j = 1; j < Global::getGeo(WORLD); j++)
-	      vec[i] += hessian[j][j];
-	  }
-	}
+            
+      	if (subAssembler) {
+      	  ERROR_EXIT("Laplacian expression not yet implemented for operator-terms!\n");
+      	} else if (quad) {
+      	  vecDV->getD2AtQPs(elInfo, quad, NULL, vec_tmp); 
+      	  for (size_t i = 0; i < size(vec_tmp); i++) {
+      	    vec[i] = vec_tmp[i][0][0];
+      	    for (int j = 1; j < Global::getGeo(WORLD); j++)
+      	      vec[i] += vec_tmp[i][j][j];
+      	  }
+      	} else if (basisFct) {
+      	  const BasisFunction *localBasisFct = vecDV->getFeSpace()->getBasisFcts();
+      	  
+      	  // get coefficients of DOFVector
+      	  coeff.change_dim(localBasisFct->getNumber());
+      	  vecDV->getLocalVector(elInfo->getElement(), coeff);
+      	  
+      	  // eval basisfunctions of DOFVector at coords of given basisFct
+      	  size_t nBasisFct = basisFct->getNumber();
+      	  vec.change_dim(nBasisFct);	
+      	  WorldMatrix<double> hessian;
+      	  
+      	  const DimVec<WorldVector<double> > &grdLambda = elInfo->getGrdLambda();
+      	  for (size_t i = 0; i < nBasisFct; i++) {
+      	    localBasisFct->evalD2Uh(*basisFct->getCoords(i), grdLambda, coeff, &hessian);
+      	    vec[i] = hessian[0][0];
+      	    for (int j = 1; j < Global::getGeo(WORLD); j++)
+      	      vec[i] += hessian[j][j];
+      	  }
+      	}
       }
 
       value_type operator()(const int& iq) const { return vec[iq]; }
@@ -170,12 +168,12 @@ namespace AMDiS
   // _____________________________________________________________________________
 
   template <class Name = _unknown, class T>
-  expressions::HessianOf<DOFVector<T>, Name > hessianOf(DOFVector<T>& vector) 
-  { return expressions::HessianOf<DOFVector<T>, Name >(vector); }
+  expressions::HessianOf<DOFVector<T>, Name > 
+  hessianOf(DOFVector<T>& vector) { return {vector}; }
 
   template <class Name = _unknown, class T>
-  expressions::HessianOf<DOFVector<T>, Name > hessianOf(DOFVector<T>* vector) 
-  { return expressions::HessianOf<DOFVector<T>, Name >(vector); }
+  expressions::HessianOf<DOFVector<T>, Name > 
+  hessianOf(DOFVector<T>* vector) { return {vector}; }
 
 
   // Partial derivative of a DOFVector
@@ -183,12 +181,12 @@ namespace AMDiS
 
   // with Name
   template <class Name = _unknown, class T>
-  expressions::LaplacianOf<DOFVector<T>, Name > laplacianOf(DOFVector<T>& vector) 
-  { return expressions::LaplacianOf<DOFVector<T>, Name >(vector); }
+  expressions::LaplacianOf<DOFVector<T>, Name > 
+  laplacianOf(DOFVector<T>& vector) { return {vector}; }
 
   template <class Name = _unknown, class T>
-  expressions::LaplacianOf<DOFVector<T>, Name > laplacianOf(DOFVector<T>* vector) 
-  { return expressions::LaplacianOf<DOFVector<T>, Name >(vector); }
+  expressions::LaplacianOf<DOFVector<T>, Name > 
+  laplacianOf(DOFVector<T>* vector) { return {vector}; }
 
 } // end namespace AMDiS
 

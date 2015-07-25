@@ -18,6 +18,15 @@
 
 namespace AMDiS 
 {
+  
+  template <class T>
+  using Value_t = typename T::value_type;
+  
+  template <class T>
+  using Size_t = typename T::size_type;
+  
+  template <class T>
+  using Result_t = typename T::result_type;
 
   // introduce some shortcuts for boost::mpl
   // ---------------------------------------

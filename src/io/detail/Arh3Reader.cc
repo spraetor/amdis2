@@ -498,123 +498,123 @@ namespace AMDiS { namespace io {
       template<typename T>
       void readValues(stringstream& file, vector<double>& values)
       {
-	size_t size = values.size();
-	T* data = new T[size];
-	file.read(reinterpret_cast<char*>(&data[0]), sizeof(T) * size);
-	
-	for (size_t i = 0; i < size; i++)
-	  values[i] = static_cast<double>(data[i]);
-	delete data;
+      	size_t size = values.size();
+      	T* data = new T[size];
+      	file.read(reinterpret_cast<char*>(&data[0]), sizeof(T) * size);
+      	
+      	for (size_t i = 0; i < size; i++)
+      	  values[i] = static_cast<double>(data[i]);
+      	delete [] data;
       }
     
       void readFile(string filename, Mesh *mesh,
-			  vector<DOFVector<double>*> vecs,
-			  bool writeParallel,
-			  int nProcs,
-			  bool byName)
+            			  vector<DOFVector<double>*> vecs,
+            			  bool writeParallel,
+            			  int nProcs,
+            			  bool byName)
       {
-	FUNCNAME("Arh3Reader::detail::readFile()");
-	//The last element in vecs must NOT be NULL
-	std::set<string> nameSet;
-	pair<std::set<string>::iterator,bool> ret;
-	  
-	while(!vecs.empty())
-	{
-	  if(vecs.back() == NULL)
-	    vecs.pop_back();
-	  else
-	    break;
-	}
-	// This is the precondition
-	for(size_t i = 0; i < vecs.size(); i++)
-	{
-	  if(vecs[i])
-	  {
-	    if(!mesh)
-	      mesh = vecs[i]->getFeSpace()->getMesh();
-	    else
-	      TEST_EXIT(mesh == vecs[i]->getFeSpace()->getMesh())
-		("The mesh of the DOFVectors should be the same for Reader because in one file there is only one mesh.\n");
-	    ret = nameSet.insert(vecs[i]->getName());
-	    TEST_EXIT(ret.second)("DOFVectors in vecs cannot have idential name. Please check.\n");
-	  }
-	}
-	if(!mesh)
-	{
-	  WARNING("You haven't specified the target, no mesh or DOFVectors is given.\n");
-	  return;
-	}
-	if (writeParallel) {
-	  int sPos = filename.find(".arh");
-	  TEST_EXIT(sPos >= 0)("Failed to find file postfix!\n");
-	  string name = filename.substr(0, sPos);
-
-	  if (nProcs == -1) {
-#ifdef HAVE_PARALLEL_DOMAIN_AMDIS
-	    string procFilename = name + "-p" + std::to_string(MPI::COMM_WORLD.Get_rank()) + "-.arh";
-	    read(procFilename, mesh, vecs, byName);
-	    MSG("ARH file read from: %s\n", procFilename.c_str());
-#else
-	    ERROR_EXIT("Reading parallel ARH files in sequential computations requires to specify the number of nodes on which the ARH file was created!\n");
-#endif
-	  } else {
-	    string parhfn = name + ".parh", filenameType = "";
-	    int nProcs_ = 0, nMacros_ = 0, nMacros = 0;
-	    vector<int> partition;
-	    
-	    bool parh = boost::filesystem::exists(parhfn);
-	    if (parh)
-	      readParallelFile(parhfn, filenameType, partition, nProcs_, nMacros_);
-	    else {
-	      for (; nProcs_ < nProcs + 1; nProcs_++) {
-		string fn = name + "-p" + std::to_string(nProcs_) + "-.arh";
-		if(!boost::filesystem::exists(fn)) break;
-	      }
-	    }
-	    TEST_EXIT(nProcs_ == nProcs)
-	      ("Number of arh files doesn't match number of processors: %d vs %d\n", nProcs_, nProcs);
-	      
-	    if (!parh) {
-#ifdef HAVE_PARALLEL_DOMAIN_AMDIS	      
-	      if(MPI::COMM_WORLD.Get_rank() == 0)
-#endif
-	        for(int i = 0; i < nProcs; i++)
-		  nMacros_ += readNumOfMacrosFromSgArh(filename, i);
-	    }
-	      
-	    nMacros = mesh->getNumberOfMacros();
-#ifdef HAVE_PARALLEL_DOMAIN_AMDIS
-	    Parallel::mpi::globalAdd(nMacros);
-	    if(MPI::COMM_WORLD.Get_rank() == 0)
-#endif	      
-	    {
-	      TEST_EXIT(nMacros == nMacros_)
-		  ("Number of macro elements in parallel ARH files doesn't match to the current runtime. %d vs %d\n",
-		  nMacros, nMacros_); 
-	    }
-
-	    if (!parh) {
-	      for (int i = 0; i < nProcs; i++) {
-		string procFilename = name + "-p" + std::to_string(i) + "-.arh";
-		read(procFilename, mesh, vecs, byName);
-	      }
-	    } else {
-	      std::set<int> needFiles;
-	      deque<MacroElement*>::iterator it = mesh->firstMacroElement();
-	      for (;it != mesh->endOfMacroElements(); it++)
-		needFiles.insert(partition[(*it)->getIndex()]);
-	      
-	      std::set<int>::iterator it2 = needFiles.begin();
-	      for (;it2 != needFiles.end(); it2++) {
-		string procFilename = name + "-p" + std::to_string(*it2) + "-.arh";
-		read(procFilename, mesh, vecs, byName);
-	      }
-	    }
-	  }
-	} else {
-	  read(filename, mesh, vecs, byName);
-	}
-	MSG("ARH file read from: %s\n", filename.c_str());
+      	FUNCNAME("Arh3Reader::detail::readFile()");
+      	//The last element in vecs must NOT be NULL
+      	std::set<string> nameSet;
+      	pair<std::set<string>::iterator,bool> ret;
+      	  
+      	while(!vecs.empty())
+      	{
+      	  if(vecs.back() == NULL)
+      	    vecs.pop_back();
+      	  else
+      	    break;
+      	}
+      	// This is the precondition
+      	for(size_t i = 0; i < vecs.size(); i++)
+      	{
+      	  if(vecs[i])
+      	  {
+      	    if(!mesh)
+      	      mesh = vecs[i]->getFeSpace()->getMesh();
+      	    else
+      	      TEST_EXIT(mesh == vecs[i]->getFeSpace()->getMesh())
+      		("The mesh of the DOFVectors should be the same for Reader because in one file there is only one mesh.\n");
+      	    ret = nameSet.insert(vecs[i]->getName());
+      	    TEST_EXIT(ret.second)("DOFVectors in vecs cannot have idential name. Please check.\n");
+      	  }
+      	}
+      	if(!mesh)
+      	{
+      	  WARNING("You haven't specified the target, no mesh or DOFVectors is given.\n");
+      	  return;
+      	}
+      	if (writeParallel) {
+      	  int sPos = filename.find(".arh");
+      	  TEST_EXIT(sPos >= 0)("Failed to find file postfix!\n");
+      	  string name = filename.substr(0, sPos);
+      
+      	  if (nProcs == -1) {
+      #ifdef HAVE_PARALLEL_DOMAIN_AMDIS
+      	    string procFilename = name + "-p" + std::to_string(MPI::COMM_WORLD.Get_rank()) + "-.arh";
+      	    read(procFilename, mesh, vecs, byName);
+      	    MSG("ARH file read from: %s\n", procFilename.c_str());
+      #else
+      	    ERROR_EXIT("Reading parallel ARH files in sequential computations requires to specify the number of nodes on which the ARH file was created!\n");
+      #endif
+      	  } else {
+      	    string parhfn = name + ".parh", filenameType = "";
+      	    int nProcs_ = 0, nMacros_ = 0, nMacros = 0;
+      	    vector<int> partition;
+      	    
+      	    bool parh = boost::filesystem::exists(parhfn);
+      	    if (parh)
+      	      readParallelFile(parhfn, filenameType, partition, nProcs_, nMacros_);
+      	    else {
+      	      for (; nProcs_ < nProcs + 1; nProcs_++) {
+      		string fn = name + "-p" + std::to_string(nProcs_) + "-.arh";
+      		if(!boost::filesystem::exists(fn)) break;
+      	      }
+      	    }
+      	    TEST_EXIT(nProcs_ == nProcs)
+      	      ("Number of arh files doesn't match number of processors: %d vs %d\n", nProcs_, nProcs);
+      	      
+      	    if (!parh) {
+      #ifdef HAVE_PARALLEL_DOMAIN_AMDIS	      
+      	      if(MPI::COMM_WORLD.Get_rank() == 0)
+      #endif
+      	        for(int i = 0; i < nProcs; i++)
+      		  nMacros_ += readNumOfMacrosFromSgArh(filename, i);
+      	    }
+      	      
+      	    nMacros = mesh->getNumberOfMacros();
+      #ifdef HAVE_PARALLEL_DOMAIN_AMDIS
+      	    Parallel::mpi::globalAdd(nMacros);
+      	    if(MPI::COMM_WORLD.Get_rank() == 0)
+      #endif	      
+      	    {
+      	      TEST_EXIT(nMacros == nMacros_)
+      		  ("Number of macro elements in parallel ARH files doesn't match to the current runtime. %d vs %d\n",
+      		  nMacros, nMacros_); 
+      	    }
+      
+      	    if (!parh) {
+      	      for (int i = 0; i < nProcs; i++) {
+      		string procFilename = name + "-p" + std::to_string(i) + "-.arh";
+      		read(procFilename, mesh, vecs, byName);
+      	      }
+      	    } else {
+      	      std::set<int> needFiles;
+      	      deque<MacroElement*>::iterator it = mesh->firstMacroElement();
+      	      for (;it != mesh->endOfMacroElements(); it++)
+      		needFiles.insert(partition[(*it)->getIndex()]);
+      	      
+      	      std::set<int>::iterator it2 = needFiles.begin();
+      	      for (;it2 != needFiles.end(); it2++) {
+      		string procFilename = name + "-p" + std::to_string(*it2) + "-.arh";
+      		read(procFilename, mesh, vecs, byName);
+      	      }
+      	    }
+      	  }
+      	} else {
+      	  read(filename, mesh, vecs, byName);
+      	}
+      	MSG("ARH file read from: %s\n", filename.c_str());
       }
       
       void readMetaFromSgArh(std::string filename, int nProc, 

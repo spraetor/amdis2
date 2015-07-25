@@ -1,29 +1,6 @@
-/******************************************************************************
- *
- * AMDiS - Adaptive multidimensional simulations
- *
- * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
- * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
- *
- * Authors: 
- * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
- *
- * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
- * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
- *
- *
- * This file is part of AMDiS
- *
- * See also license.opensource.txt in the distribution.
- * 
- ******************************************************************************/
-
-
-
 /** \file mult_expr.hpp */
 
-#ifndef AMDIS_MULT_EXPRESSION_HPP
-#define AMDIS_MULT_EXPRESSION_HPP
+#pragma once
 
 #include "AMDiS_fwd.h"
 #include "LazyOperatorTerm.h"
@@ -34,52 +11,49 @@ namespace AMDiS
   {
     
     /// Expressions that represents the multiplication of two expressions: E1 * E2
-    template<typename Term1, typename Term2>
-    struct Mult : public LazyOperatorTerm2<Term1, Term2>
+    template <class Term1, class Term2>
+    struct Mult : public LazyOperatorTerms<Term1, Term2>
     {
-      typedef LazyOperatorTerm2<Term1, Term2> super;
-      typedef typename traits::mult_type
-      <
-	typename Term1::value_type, 
-	typename Term2::value_type
-      >::type value_type;
+      using Super = LazyOperatorTerms<Term1, Term2>;
+      using value_type = typename traits::mult_type< Value_t<Term1>, Value_t<Term2> >::type;
       
-      BOOST_STATIC_ASSERT_MSG( !(boost::is_same<value_type, traits::no_valid_type>::value), "********** ERROR: Can not multiply terms **********" );
+      static_assert( !(std::is_same<value_type, traits::no_valid_type>::value), 
+                     "********** ERROR: Can not multiply terms **********" );
       
-      Mult(const Term1& term1_, const Term2& term2_)
-	: super(term1_, term2_) {}
+      Mult(Term1&& term1_, Term2&& term2_)
+        : Super(std::forward<Term1>(term1_), std::forward<Term2>(term2_)) {}
       
       int getDegree() const
       {
-	return super::term1.getDegree() + super::term2.getDegree();
+        return degree<0>(*this) + degree<1>(*this);
       }
 
-      inline value_type operator()(const int& iq) const { return super::term1(iq) * super::term2(iq); }
+      inline value_type operator()(const int& iq) const { return term<0>(*this)(iq) * term<1>(*this)(iq); }
       
-      std::string str() const { return std::string("(") + super::term1.str() + " * " + super::term2.str() + ")"; }
+      std::string str() const { return std::string("(") + term<0>(*this).str() + " * " + term<1>(*this).str() + ")"; }
     };
     
     
     /// Expressions that represents the inverse of an expressions: 1/E
-    template<typename Term>
-    struct MultInverse : public LazyOperatorTerm1<Term>
+    template <class Term>
+    struct MultInverse : public LazyOperatorTerms<Term>
     {
-      typedef LazyOperatorTerm1<Term> super;
-      typedef typename Term::value_type value_type;
+      using Super = LazyOperatorTerms<Term>;
+      using value_type = Value_t<Term>;
       
-      MultInverse(const Term& term_)
-	: super(term_) {}
+      MultInverse(Term&& term_)
+        : Super(std::forward<Term>(term_)) {}
       
       int getDegree() const
       {
-	return super::term.getDegree();
+        return degree<0>(*this);
       }
 
       // works only for scalar types
       // TODO: extend implementation to inverse of matrices
-      inline value_type operator()(const int& iq) const { return 1.0 / super::term(iq); } 
+      inline value_type operator()(const int& iq) const { return 1.0 / term<0>(*this)(iq); } 
       
-      std::string str() const { return std::string("(") + super::term.str() + ")^(-1)"; }
+      std::string str() const { return std::string("(") + term<0>(*this).str() + ")^(-1)"; }
     };
     
   } // end namespace expressions
@@ -87,55 +61,52 @@ namespace AMDiS
 
   namespace result_of
   {
-    template<typename Term1, typename Term2>
-    struct Mult : boost::enable_if
+    template <class Term1, class Term2>
+    using Mult = enable_if
       < 
-	typename traits::is_valid_arg2<Term1, Term2>::type,
-	expressions::Mult
-	<
-	  typename traits::to_expr<Term1>::type, 
-	  typename traits::to_expr<Term2>::type
-	>
-      > {};
+      	traits::is_valid_arg2<Term1, Term2>,
+      	expressions::Mult
+      	<
+      	  typename traits::to_expr<Term1>::type, 
+      	  typename traits::to_expr<Term2>::type
+      	>
+      >;
       
       
-    template<typename Term1, typename Term2>
-    struct Divide : boost::enable_if
+    template <class Term1, class Term2>
+    using Divide = enable_if
       < 
-	typename traits::is_valid_arg2<Term1, Term2>::type,
-	expressions::Mult
-	<
-	  typename traits::to_expr<Term1>::type, 
-	  expressions::MultInverse< typename traits::to_expr<Term2>::type >
-	>
-      > {};
+      	traits::is_valid_arg2<Term1, Term2>,
+      	expressions::Mult
+      	<
+      	  typename traits::to_expr<Term1>::type, 
+      	  expressions::MultInverse< typename traits::to_expr<Term2>::type >
+      	>
+      >;
       
   } // end namespace result_of
   
 
   // multiply two terms
   // _____________________________________________________________________________
-  template<typename Term1, typename Term2>
+  template <class Term1, class Term2>
   inline typename result_of::Mult<Term1, Term2>::type
   operator*(const Term1& t1, const Term2& t2)
   {
-    typedef typename traits::to_expr<Term1>::to Expr1;
-    typedef typename traits::to_expr<Term2>::to Expr2;
-    return expressions::Mult< typename Expr1::type, typename Expr2::type >
-	    (Expr1::get(t1), Expr2::get(t2));
+    using Expr1 = traits::to_expr<Term1>;
+    using Expr2 = traits::to_expr<Term2>;
+    return {Expr1::get(t1), Expr2::get(t2)};
   }
 
 
   // divide two terms
   // _____________________________________________________________________________
-  template<typename Term1, typename Term2>
+  template <class Term1, class Term2>
   inline typename result_of::Divide<Term1, Term2>::type
   operator/(const Term1& t1, const Term2& t2)
   {
-    typedef typename traits::to_expr<Term2>::to Expr2;
+    using Expr2 = traits::to_expr<Term2>;
     return t1 * expressions::MultInverse< typename Expr2::type >(Expr2::get(t2));
   }
 
 } // end namespace AMDiS
-
-#endif // AMDIS_MULT_EXPRESSION_HPP

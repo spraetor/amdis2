@@ -1,33 +1,11 @@
-/******************************************************************************
- *
- * AMDiS - Adaptive multidimensional simulations
- *
- * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
- * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
- *
- * Authors: 
- * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
- *
- * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
- * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
- *
- *
- * This file is part of AMDiS
- *
- * See also license.opensource.txt in the distribution.
- * 
- ******************************************************************************/
-
-
-
 /** \file add_expr.hpp */
 
-#ifndef AMDIS_ADD_EXPRESSION_HPP
-#define AMDIS_ADD_EXPRESSION_HPP
+#pragma once
 
 #include "AMDiS_fwd.h"
 #include "LazyOperatorTerm.h"
 
+#include <string>
 #include <boost/static_assert.hpp>
 
 namespace AMDiS 
@@ -35,75 +13,92 @@ namespace AMDiS
   namespace expressions 
   {
     /// Expression that represents "E1 + E2"
-    template<typename Term1, typename Term2>
-    struct Add : public LazyOperatorTerm2<Term1, Term2>
+    template <class Term1, class Term2>
+    struct Add : public LazyOperatorTerms<Term1, Term2>
     {
-      typedef LazyOperatorTerm2<Term1, Term2> super;
-      typedef typename traits::add_type
-      <
-	typename Term1::value_type,
-	typename Term2::value_type
-      >::type value_type;
+      using Super = LazyOperatorTerms<Term1, Term2>;
+      using value_type = typename traits::add_type< Value_t<Term1>, Value_t<Term2> >::type;
       
-      BOOST_STATIC_ASSERT_MSG( !(boost::is_same<value_type, traits::no_valid_type>::value), "********** ERROR: Can not add terms **********" );
+      static_assert( !(std::is_same<value_type, traits::no_valid_type>::value), 
+                     "********** ERROR: Can not add terms **********" );
       
-      Add(const Term1& term1_, const Term2& term2_)
-	: super(term1_, term2_) {}
+      Add(Term1&& term1, Term2&& term2)
+        : Super(std::forward<Term1>(term1), std::forward<Term2>(term2)) 
+      { }
       
       int getDegree() const
       {
-	return std::max(super::term1.getDegree(), super::term2.getDegree());
+        return std::max(degree<0>(*this), degree<1>(*this));
       }
 
-      inline value_type operator()(const int& iq) const { return super::term1(iq) + super::term2(iq); }
+      value_type operator()(const int& iq) const 
+      { 
+        return term<0>(*this)(iq) + term<1>(*this)(iq); 
+      }
       
-      std::string str() const { return std::string("(") + super::term1.str() + " + " + super::term2.str() + ")"; }
+      std::string str() const 
+      { 
+        return std::string("(") + term<0>(*this).str() + " + " + term<1>(*this).str() + ")"; 
+      }
     };
+    
     
     /// Expression that represents "E1 - E2"
-    template<typename Term1, typename Term2>
-    struct Subtract : public LazyOperatorTerm2<Term1, Term2>
+    template <class Term1, class Term2>
+    struct Subtract : public LazyOperatorTerms<Term1, Term2>
     {
-      typedef LazyOperatorTerm2<Term1, Term2> super;
-      typedef typename traits::add_type
-      <
-	typename Term1::value_type,
-	typename Term2::value_type
-      >::type value_type;
+      using Super = LazyOperatorTerms<Term1, Term2>;
+      using value_type = typename traits::add_type<Value_t<Term1>, Value_t<Term2> >::type;
       
-      BOOST_STATIC_ASSERT_MSG( !(boost::is_same<value_type, traits::no_valid_type>::value), "********** ERROR: Can not subtract terms **********" );
+      static_assert( !(std::is_same<value_type, traits::no_valid_type>::value), 
+                     "********** ERROR: Can not subtract terms **********" );
       
-      Subtract(const Term1& term1_, const Term2& term2_)
-	: super(term1_, term2_) {}
+      Subtract(Term1&& term1_, Term2&& term2_)
+        : Super(std::forward<Term1>(term1_), std::forward<Term2>(term2_))
+      { }
       
       int getDegree() const
       {
-	return std::max(super::term1.getDegree(), super::term2.getDegree());
+        return std::max(degree<0>(*this), degree<1>(*this));
       }
 
-      inline value_type operator()(const int& iq) const { return super::term1(iq) - super::term2(iq); }
+      value_type operator()(const int& iq) const 
+      {
+        return term<0>(*this)(iq) - term<1>(*this)(iq); 
+      }
       
-      std::string str() const { return std::string("(") + super::term1.str() + " - " + super::term2.str() + ")"; }
+      std::string str() const 
+      { 
+        return std::string("(") + term<0>(*this).str() + " - " + term<1>(*this).str() + ")"; 
+      }
     };
     
+    
     /// Expression that represents "-E"
-    template<typename Term>
-    struct Negative : public LazyOperatorTerm1<Term>
+    template <class Term>
+    struct Negative : public LazyOperatorTerms<Term>
     {
-      typedef LazyOperatorTerm1<Term> super;
-      typedef typename Term::value_type value_type;
+      using Super = LazyOperatorTerms<Term>;
+      using value_type = Value_t<Term>;
       
-      Negative(const Term& term_)
-	: super(term_) {}
+      Negative(Term&& term_)
+        : Super(std::forward<Term>(term_)) 
+      { }
       
       int getDegree() const
       {
-	return super::term.getDegree();
+        return degree<0>(*this);
       }
 
-      inline value_type operator()(const int& iq) const { return -super::term(iq); }
+      value_type operator()(const int& iq) const 
+      { 
+        return -term<0>(*this)(iq); 
+      }
       
-      std::string str() const { return std::string("-(") + super::term.str() + ")"; }
+      std::string str() const 
+      { 
+        return std::string("-(") + term<0>(*this).str() + ")"; 
+      }
     };
     
   } // end namespace expressions
@@ -111,38 +106,39 @@ namespace AMDiS
 
   namespace result_of
   {
-    template<typename Term1, typename Term2>
-    struct Add : boost::enable_if
+    template <class Term1, class Term2>
+    using Add = boost::enable_if
       < 
-	typename traits::is_valid_arg2<Term1, Term2>::type,
-	expressions::Add
-	<
-	  typename traits::to_expr<Term1>::type, 
-	  typename traits::to_expr<Term2>::type
-	>
-      > {};
+      	typename traits::is_valid_arg2<Term1, Term2>::type,
+      	expressions::Add
+      	<
+      	  typename traits::to_expr<Term1>::type, 
+      	  typename traits::to_expr<Term2>::type
+      	>
+      >;
       
       
-    template<typename Term>
-    struct Negative : boost::enable_if
+    template <class Term>
+    using Negative = boost::enable_if
       < 
-	typename traits::is_valid_arg<Term>::type,
-	expressions::Negative
-	<
-	  typename traits::to_expr<Term>::type
-	>
-      > {};
+      	typename traits::is_valid_arg<Term>::type,
+      	expressions::Negative
+      	<
+      	  typename traits::to_expr<Term>::type
+      	>
+      >;
       
-    template<typename Term1, typename Term2>
-    struct Subtract : boost::enable_if
+      
+    template <class Term1, class Term2>
+    using Subtract = boost::enable_if
       < 
-	typename traits::is_valid_arg2<Term1, Term2>::type,
-	expressions::Subtract
-	<
-	  typename traits::to_expr<Term1>::type, 
-	  typename traits::to_expr<Term2>::type
-	>
-      > {};
+      	typename traits::is_valid_arg2<Term1, Term2>::type,
+      	expressions::Subtract
+      	<
+      	  typename traits::to_expr<Term1>::type, 
+      	  typename traits::to_expr<Term2>::type
+      	>
+      >;
   }
 
 
@@ -154,8 +150,7 @@ namespace AMDiS
   {
     typedef typename traits::to_expr<Term1>::to Expr1;
     typedef typename traits::to_expr<Term2>::to Expr2;
-    return expressions::Add< typename Expr1::type, typename Expr2::type >
-	    (Expr1::get(t1), Expr2::get(t2));
+    return {Expr1::get(t1), Expr2::get(t2)};
   }
 
 
@@ -166,7 +161,7 @@ namespace AMDiS
   operator-(const Term& t)
   {
     typedef typename traits::to_expr<Term>::to Expr;
-    return expressions::Negative< typename Expr::type >(Expr::get(t));
+    return {Expr::get(t)};
   }
 
 
@@ -178,10 +173,7 @@ namespace AMDiS
   {
     typedef typename traits::to_expr<Term1>::to Expr1;
     typedef typename traits::to_expr<Term2>::to Expr2;
-    return expressions::Subtract< typename Expr1::type, typename Expr2::type >
-	    (Expr1::get(t1), Expr2::get(t2));
+    return {Expr1::get(t1), Expr2::get(t2)};
   }
 
 } // end namespace AMDiS
-
-#endif // AMDIS_ADD_EXPRESSION_HPP

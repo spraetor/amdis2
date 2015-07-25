@@ -28,10 +28,10 @@ namespace AMDiS
     TraverseStack stack;
     ElInfo *elInfo = stack.traverseFirst(mesh, -1, traverseFlag);
     while (elInfo) {
-      expr.initElement(&ot, elInfo, NULL, quad);
+      expr.initElement(elInfo, NULL, quad);
       TOut tmp; nullify(tmp);
       for (int iq = 0; iq < quad->getNumPoints(); iq++) {
-	tmp += quad->getWeight(iq) * expr(iq);
+        tmp += quad->getWeight(iq) * expr(iq);
       }
       value += tmp * elInfo->getDet();
 
@@ -71,14 +71,14 @@ namespace AMDiS
 					  Mesh::FILL_COORDS | Mesh::FILL_GRD_LAMBDA);
     
     while (elInfo) {
-      expr.initElement(&ot, elInfo, NULL, NULL, basisFcts);
+      expr.initElement(elInfo, NULL, NULL, basisFcts);
       basisFcts->getLocalIndices(elInfo->getElement(), feSpace0->getAdmin(), localIndices);	
       
       for (int i = 0; i < nBasisFcts; i++) {
-	if (!assigned[localIndices[i]]) {
-	  value0 = f(value0, expr(i));
-	  assigned[localIndices[i]] = true;
-	}
+      	if (!assigned[localIndices[i]]) {
+      	  value0 = f(value0, expr(i));
+      	  assigned[localIndices[i]] = true;
+      	}
       }
       elInfo = stack.traverseNext(elInfo);
     }
@@ -91,7 +91,7 @@ namespace AMDiS
   template <class T, class Expr>
   inline typename boost::enable_if<
     and_<traits::is_expr<Expr>, 
-	traits::is_convertible<typename Expr::value_type, T> >
+      traits::is_convertible<typename Expr::value_type, T> >
     >::type
   transformDOF(Expr expr, DOFVector<T>* result)
   {
@@ -116,7 +116,7 @@ namespace AMDiS
     ElInfo *elInfo = stack.traverseFirst(mesh, -1,
 					  Mesh::CALL_LEAF_EL | 
 					  Mesh::FILL_COORDS | Mesh::FILL_GRD_LAMBDA);
-    expr.initElement(&ot, elInfo, NULL, NULL, basisFcts);
+    expr.initElement(elInfo, NULL, NULL, basisFcts);
     
     
     TOut tmp(expr(0)); nullify(tmp);
@@ -124,12 +124,12 @@ namespace AMDiS
     temp.set(tmp);
     
     while (elInfo) {
-      expr.initElement(&ot, elInfo, NULL, NULL, basisFcts);
+      expr.initElement(elInfo, NULL, NULL, basisFcts);
       basisFcts->getLocalIndices(elInfo->getElement(), resultFeSpace->getAdmin(), localIndices);	
       
       for (int i = 0; i < nBasisFcts; i++) {
-	temp[localIndices[i]] += expr(i);
-	assigned[localIndices[i]]++;
+      	temp[localIndices[i]] += expr(i);
+      	assigned[localIndices[i]]++;
       }
       elInfo = stack.traverseNext(elInfo);
     }
@@ -156,7 +156,7 @@ namespace AMDiS
   template <class T, class Expr>
   inline typename boost::enable_if<
     and_<traits::is_expr<Expr>, 
-	 traits::is_convertible<typename Expr::value_type, T> >
+      traits::is_convertible<typename Expr::value_type, T> >
     >::type
   transformDOF_mm(Expr expr, DOFVector<T>* result)
   {
@@ -188,27 +188,27 @@ namespace AMDiS
     Flag assembleFlag = Mesh::CALL_LEAF_EL | Mesh::FILL_COORDS | Mesh::FILL_GRD_LAMBDA;
     bool cont = dualTraverse.traverseFirst(mesh1, mesh2, -1, -1, 
 					    assembleFlag, assembleFlag, dualElInfo);
-    expr.initElement(&ot, dualElInfo.colElInfo, NULL, NULL, basisFcts);
+    expr.initElement(dualElInfo.colElInfo, NULL, NULL, basisFcts);
     
     TOut tmp(expr(0)); nullify(tmp);
     assigned.set(0);
     temp.set(tmp);
     
     while (cont) {
-      expr.initElement(&ot, dualElInfo.colElInfo, NULL, NULL, basisFcts);
+      expr.initElement(dualElInfo.colElInfo, NULL, NULL, basisFcts);
       basisFcts->getLocalIndices(dualElInfo.rowElInfo->getElement(), resultFeSpace->getAdmin(), localIndices);
       
       for (int i = 0; i < nBasisFcts; i++)
-	vecLocalCoeffs[i] = expr(i);
+        vecLocalCoeffs[i] = expr(i);
       
       for (int i = 0; i < nBasisFcts; i++) {
-	lambda = basisFcts->getCoords(i);
-	dualElInfo.rowElInfo->coordToWorld(*lambda, coords);
-	int inside = dualElInfo.colElInfo->worldToCoord(coords, lambda_1);
-	if (inside < 0) {
-	  temp[localIndices[i]] += basisFcts->evalUh(*lambda_1, vecLocalCoeffs);
-	  assigned[localIndices[i]]++;
-	}
+      	lambda = basisFcts->getCoords(i);
+      	dualElInfo.rowElInfo->coordToWorld(*lambda, coords);
+      	int inside = dualElInfo.colElInfo->worldToCoord(coords, lambda_1);
+      	if (inside < 0) {
+      	  temp[localIndices[i]] += basisFcts->evalUh(*lambda_1, vecLocalCoeffs);
+      	  assigned[localIndices[i]]++;
+      	}
       }
       cont = dualTraverse.traverseNext(dualElInfo);
     }

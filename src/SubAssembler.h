@@ -109,24 +109,24 @@ namespace AMDiS
     /// of \ref quadrature on the element of elInfo. 
     /// Used by \ref OperatorTerm::initElement().
     void getCoordsAtQPs(const ElInfo* elInfo, 
-			Quadrature *quad,
-			DenseVector<WorldVector<double> >& coordsAtQPs);
+                  			Quadrature *quad,
+                  			DenseVector<WorldVector<double> >& coordsAtQPs);
 
     /// DOFVector dv evaluated at quadrature points.
     /// Used by \ref OperatorTerm::initElement().
     template <class T>
     void getVectorAtQPs(DOFVectorBase<T>* dv, 
-			const ElInfo* elInfo,
-			Quadrature *quad,
-			DenseVector<T>& vecAtQPs);
+                  			const ElInfo* elInfo,
+                  			Quadrature *quad,
+                  			DenseVector<T>& vecAtQPs);
     
     /// Gradients of DOFVector dv evaluated at quadrature points.
     /// Used by \ref OperatorTerm::initElement().
     template <class T>
     void getGradientsAtQPs(DOFVectorBase<T>* dv,
-			   const ElInfo* elInfo,
-			   Quadrature *quad,
-			   DenseVector<typename GradientType<T>::type>& grdAtQPs);
+                  			   const ElInfo* elInfo,
+                  			   Quadrature *quad,
+                  			   DenseVector<typename GradientType<T>::type>& grdAtQPs);
 
     /// The comp'th component of the derivative of DOFVector dv evaluated at
     /// quadrature points. Used by \ref OperatorTerm::initElement().
@@ -134,31 +134,31 @@ namespace AMDiS
     /// but not for write.
     template <class T>
     void getDerivativeAtQPs(DOFVectorBase<T>* dv,
-			    const ElInfo* elInfo,
-			    Quadrature *quad,
-			    int comp,
-			    DenseVector<T>& grdAtQPs);
+                  			    const ElInfo* elInfo,
+                  			    Quadrature *quad,
+                  			    int comp,
+                  			    DenseVector<T>& grdAtQPs);
     
   private:
     // must be implemented by derived class
     virtual void calculateElementMatrixImpl(const ElInfo *elInfo,
-					    ElementMatrix& mat) = 0;
+				                                    ElementMatrix& mat) = 0;
 
     // must be implemented by derived class.
     virtual void calculateElementVectorImpl(const ElInfo *elInfo,
-					    ElementVector& vec) = 0;
+					                                  ElementVector& vec) = 0;
 
     // calls initElement for all OperatorTerms
     virtual void initImpl(const ElInfo *smallElInfo, 
-			  const ElInfo *largeElInfo,
-			  Quadrature *quad);
+                  			  const ElInfo *largeElInfo,
+                  			  Quadrature *quad);
     
     
   protected:
     /// Updates \ref psiFast and \ref phiFast.
     FastQuadrature *updateFastQuadrature(FastQuadrature *quadFast,
-					 const BasisFunction *psi,
-					 Flag updateFlag);
+                              					 const BasisFunction *psi,
+                              					 Flag updateFlag);
   
   protected:
     /// Problem dimension

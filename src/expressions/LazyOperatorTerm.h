@@ -8,9 +8,9 @@
 namespace AMDiS 
 {
   class SubAssembler;
-  class Quadrature;
-  class BasisFunction;
-  class ElInfo;
+  // class Quadrature;
+  // class BasisFunction;
+  // class ElInfo;
   
   struct LazyOperatorTermBase
   {
@@ -20,8 +20,7 @@ namespace AMDiS
     int getDegree() const { return 0; }
       
     // TODO: remove OT-template and implement class with variadic templates
-    template <class OT>
-    void initElement(OT* ot, const ElInfo* elInfo,
+    void initElement(const ElInfo* elInfo,
           		       SubAssembler* subAssembler, Quadrature *quad, 
           		       const BasisFunction *basisFct = NULL) {}
   };
@@ -39,12 +38,11 @@ namespace AMDiS
       term.insertFeSpaces(feSpaces);
     }
 
-    template <class OT>
-    void initElement(OT* ot, const ElInfo* elInfo,
+    void initElement(const ElInfo* elInfo,
             		     SubAssembler* subAssembler, Quadrature *quad, 
             		     const BasisFunction *basisFct = NULL)
     {
-      term.initElement(ot, elInfo, subAssembler, quad, basisFct);
+      term.initElement(elInfo, subAssembler, quad, basisFct);
     }
     
     double operator()(const int& iq) const;
@@ -67,13 +65,12 @@ namespace AMDiS
       term2.insertFeSpaces(feSpaces);
     }
 
-    template <class OT>
-    void initElement(OT* ot, const ElInfo* elInfo,
+    void initElement(const ElInfo* elInfo,
             		     SubAssembler* subAssembler, Quadrature *quad, 
             		     const BasisFunction *basisFct = NULL)
     {
-      term1.initElement(ot, elInfo, subAssembler, quad, basisFct);
-      term2.initElement(ot, elInfo, subAssembler, quad, basisFct);
+      term1.initElement(elInfo, subAssembler, quad, basisFct);
+      term2.initElement(elInfo, subAssembler, quad, basisFct);
     }
     
     double operator()(const int& iq) const;
@@ -98,14 +95,13 @@ namespace AMDiS
       term3.insertFeSpaces(feSpaces);
     }
 
-    template <class OT>
-    void initElement(OT* ot, const ElInfo* elInfo,
+    void initElement(const ElInfo* elInfo,
           			     SubAssembler* subAssembler, Quadrature *quad, 
           			     const BasisFunction *basisFct = NULL)
     {
-      term1.initElement(ot, elInfo, subAssembler, quad, basisFct);
-      term2.initElement(ot, elInfo, subAssembler, quad, basisFct);
-      term3.initElement(ot, elInfo, subAssembler, quad, basisFct);
+      term1.initElement(elInfo, subAssembler, quad, basisFct);
+      term2.initElement(elInfo, subAssembler, quad, basisFct);
+      term3.initElement(elInfo, subAssembler, quad, basisFct);
     }
     
     double operator()(const int& iq) const;
@@ -132,15 +128,14 @@ namespace AMDiS
       term4.insertFeSpaces(feSpaces);
     }
 
-    template <class OT>
-    void initElement(OT* ot, const ElInfo* elInfo,
+    void initElement(const ElInfo* elInfo,
 		    SubAssembler* subAssembler, Quadrature *quad, 
 		    const BasisFunction *basisFct = NULL)
     {
-      term1.initElement(ot, elInfo, subAssembler, quad, basisFct);
-      term2.initElement(ot, elInfo, subAssembler, quad, basisFct);
-      term3.initElement(ot, elInfo, subAssembler, quad, basisFct);
-      term4.initElement(ot, elInfo, subAssembler, quad, basisFct);
+      term1.initElement(elInfo, subAssembler, quad, basisFct);
+      term2.initElement(elInfo, subAssembler, quad, basisFct);
+      term3.initElement(elInfo, subAssembler, quad, basisFct);
+      term4.initElement(elInfo, subAssembler, quad, basisFct);
     }
     
     double operator()(const int& iq) const;
@@ -174,11 +169,11 @@ namespace AMDiS
 		    SubAssembler* subAssembler, Quadrature *quad, 
 		    const BasisFunction *basisFct = NULL)
     {
-      term1.initElement(ot, elInfo, subAssembler, quad, basisFct);
-      term2.initElement(ot, elInfo, subAssembler, quad, basisFct);
-      term3.initElement(ot, elInfo, subAssembler, quad, basisFct);
-      term4.initElement(ot, elInfo, subAssembler, quad, basisFct);
-      term5.initElement(ot, elInfo, subAssembler, quad, basisFct);
+      term1.initElement(elInfo, subAssembler, quad, basisFct);
+      term2.initElement(elInfo, subAssembler, quad, basisFct);
+      term3.initElement(elInfo, subAssembler, quad, basisFct);
+      term4.initElement(elInfo, subAssembler, quad, basisFct);
+      term5.initElement(elInfo, subAssembler, quad, basisFct);
     }
     
     inline double operator()(const int& iq) const;
@@ -204,22 +199,20 @@ namespace AMDiS
     };
     
     /// Functor that is called on each term to initialize it on an element
-    template <class OT>
     struct InitElement 
     {
-      OT* ot;
       const ElInfo *elInfo;
       SubAssembler* subAssembler;
       Quadrature *quad;
       const BasisFunction *basisFct;
       
-      InitElement(OT* ot_, const ElInfo* elInfo_, SubAssembler* subAssembler_, Quadrature *quad_, const BasisFunction *basisFct_)
-      	: ot(ot_), elInfo(elInfo_), subAssembler(subAssembler_),
+      InitElement(const ElInfo* elInfo_, SubAssembler* subAssembler_, Quadrature *quad_, const BasisFunction *basisFct_)
+      	: elInfo(elInfo_), subAssembler(subAssembler_),
       	  quad(quad_), basisFct(basisFct_) {}
 	  
-      template<typename Term>
+      template <class Term>
       void operator()(Term& term) {
-    	  term.initElement(ot, elInfo, subAssembler, quad, basisFct);
+    	  term.initElement(elInfo, subAssembler, quad, basisFct);
       }
     };
     
@@ -230,27 +223,61 @@ namespace AMDiS
   template <class... Terms>
   struct LazyOperatorTerms : public LazyOperatorTermBase
   {
-    std::tuple<Terms...> term_tuple;
+    using Self = LazyOperatorTerms;
+    std::tuple<Terms...> terms;
     
     template <class... Terms_>
     LazyOperatorTerms(Terms_&&... terms_)
-      : term_tuple(std::forward<Terms_>(terms_)...) {}
+      : terms(std::forward<Terms_>(terms_)...) {}
     
     template <class List>
     void insertFeSpaces(List& feSpaces)
     {
-      for_each(term_tuple, detail::InsertFeSpaces<List>(feSpaces));
+      for_each(terms, detail::InsertFeSpaces<List>(feSpaces));
     }
 
-    template <class OT>
-    void initElement(OT* ot, const ElInfo* elInfo,
+    void initElement(const ElInfo* elInfo,
 		    SubAssembler* subAssembler, Quadrature *quad, 
 		    const BasisFunction *basisFct = NULL)
     {
-      for_each(term_tuple, detail::InitElement<OT>(ot, elInfo, subAssembler, quad, basisFct));
+      for_each(terms, detail::InitElement(elInfo, subAssembler, quad, basisFct));
     }
+    
+    template <int N>
+    int getDegree(int_<N>) const
+    {
+      return std::get<N>(terms).getDegree();
+    } 
+    
+    template <int N>
+    typename std::tuple_element<N, decltype(Self::terms)>::type &
+    getTerm(int_<N>)
+    {
+      return std::get<N>(Self::terms);
+    } 
+    
+    template <int N>
+    typename std::tuple_element<N, decltype(Self::terms)>::type const&
+    getTerm(int_<N>) const
+    {
+      return std::get<N>(Self::terms);
+    } 
     
     double operator()(const int& iq) const;
   };
+  
+  template <int N, class... Terms>
+  inline auto term(LazyOperatorTerms<Terms...>&& op)
+    -> decltype(op.getTerm(int_<N>()))
+  {
+    return op.getTerm(int_<N>());
+  } 
+  
+  template <int N, class... Terms>
+  inline int degree(LazyOperatorTerms<Terms...>&& op)
+  {
+    return op.getDegree(int_<N>());
+  } 
+  
   
 } // end namespace AMDiS
