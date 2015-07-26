@@ -277,7 +277,7 @@ namespace AMDiS
       e1[1] * (e2[0] * e3[2] - e2[2] * e3[0]) +
       e1[2] * (e2[0] * e3[1] - e2[1] * e3[0]);
 
-    double adet = abs(det);
+    double adet = math::abs(det);
 
     if (adet < 1.0E-25) {
       MSG("abs(det) = %f\n",adet);
@@ -363,7 +363,7 @@ namespace AMDiS
       - edge[0][0] * edge[1][2] *       x[1]
       - edge[0][1] * edge[1][0] *       x[2];
   
-    if (abs(det) < DBL_TOL) {
+    if (math::abs(det) < DBL_TOL) {
       ERROR("det = %le; abort\n", det);
 
       for (int i = 0; i <= dim; i++)

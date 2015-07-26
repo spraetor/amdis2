@@ -72,8 +72,9 @@ namespace AMDiS
   template <class Expr>
   struct GenericFirstOrderTerm_1 : public GenericOperatorTerm<Expr, 1>
   {
-    GenericFirstOrderTerm_1(const Expr& expr_)
-      : GenericOperatorTerm<Expr, 1>(expr_) 
+    template <class Expr_>
+    GenericFirstOrderTerm_1(Expr_&& expr_)
+      : GenericOperatorTerm<Expr, 1>(std::forward<Expr_>(expr_)) 
     { }
 
   private:
@@ -87,18 +88,20 @@ namespace AMDiS
   template <int I, class Expr>
   struct GenericFirstOrderTerm_i : public GenericOperatorTerm<Expr, 1>
   {
-    GenericFirstOrderTerm_i(const Expr& expr_)
-      : GenericOperatorTerm<Expr, 1>(expr_) 
+    template <class Expr_>
+    GenericFirstOrderTerm_i(Expr_&& expr_)
+      : GenericOperatorTerm<Expr, 1>(std::forward<Expr_>(expr_)) 
     {
       this->FirstOrderTerm::bOne = I;
     }
     
-    GenericFirstOrderTerm_i(const Expr& expr_, int I0)
-      : GenericOperatorTerm<Expr, 1>(expr_)  
+    template <class Expr_>
+    GenericFirstOrderTerm_i(Expr_&& expr_, int I0)
+      : GenericOperatorTerm<Expr, 1>(std::forward<Expr_>(expr_))  
     {
       this->FirstOrderTerm::bOne = I0;
       TEST_EXIT_DBG( I < 0 && I0 >= 0 )
-	("You should specify eather template<int I>, or constructor(expr, int I0)\n");
+        ("You should specify eather template<int I>, or constructor(expr, int I0)\n");
     }
 
   private:
@@ -112,8 +115,9 @@ namespace AMDiS
   template <class Expr>
   struct GenericFirstOrderTerm_b : public GenericOperatorTerm<Expr, 1>
   {
-    GenericFirstOrderTerm_b(const Expr& expr_)
-      : GenericOperatorTerm<Expr, 1>(expr_)
+    template <class Expr_>
+    GenericFirstOrderTerm_b(Expr_&& expr_)
+      : GenericOperatorTerm<Expr, 1>(std::forward<Expr_>(expr_))
     { }
 
   private:

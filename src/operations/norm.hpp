@@ -1,29 +1,6 @@
-/******************************************************************************
- *
- * AMDiS - Adaptive multidimensional simulations
- *
- * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
- * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
- *
- * Authors: 
- * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
- *
- * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
- * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
- *
- *
- * This file is part of AMDiS
- *
- * See also license.opensource.txt in the distribution.
- * 
- ******************************************************************************/
-
-
-
 /** \file norm.hpp */
 
-#ifndef AMDIS_OPERATIONS_NORM_HPP
-#define AMDIS_OPERATIONS_NORM_HPP
+#pragma once
 
 #include "AMDiS_fwd.h"
 #include "Traits.h"
@@ -126,7 +103,7 @@ namespace AMDiS
     for (size_type j = 0; j < num_cols(m); ++j) {
       value_type asum; nullify(asum);
       for (size_type i = 0; i < num_rows(m); ++i)
-	asum += std::abs(at(m,i,j));
+        asum += std::abs(at(m,i,j));
       result = std::max(result, asum);
     }
     return result;
@@ -211,5 +188,3 @@ namespace AMDiS
   }
 
 } // end namespace AMDiS
-
-#endif // AMDIS_OPERATIONS_NORM_HPP

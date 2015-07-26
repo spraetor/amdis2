@@ -84,15 +84,15 @@ namespace AMDiS
   
     template <class A, class B>
     struct is_multiplicable : not_< 
-	boost::is_same< typename mtl::Multiplicable<A,B>::result_type, 
-		        no_valid_type > > {};
+      std::is_same< typename mtl::Multiplicable<A,B>::result_type, 
+		                no_valid_type > > {};
   
     template <class A, class B>
     struct is_addable : not_< 
-	boost::is_same< typename mtl::Addable<A,B>::result_type, 
-			no_valid_type > > {};
+      std::is_same< typename mtl::Addable<A,B>::result_type, 
+			              no_valid_type > > {};
       
-    template <typename T>
+    template <class T>
     struct is_trivially_copyable : std::is_trivially_copyable<T> {};
 
   } // end namespace AMDiS

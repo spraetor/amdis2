@@ -39,8 +39,9 @@ namespace AMDiS {
   template <class Expr>
   struct GenericZeroOrderTerm : public GenericOperatorTerm<Expr, 0>
   {
-    GenericZeroOrderTerm(const Expr& expr_)
-      : GenericOperatorTerm<Expr, 0>(expr_)
+    template <class Expr_>
+    GenericZeroOrderTerm(Expr_&& expr_)
+      : GenericOperatorTerm<Expr, 0>(std::forward<Expr_>(expr_))
     { }
 
   private:
@@ -48,7 +49,7 @@ namespace AMDiS {
     virtual void getCImpl(const ElInfo *elInfo, int nPoints, ElementVector& C) const override
     {
       for (int iq = 0; iq < nPoints; iq++)
-	C[iq] += this->expr(iq);
+        C[iq] += this->expr(iq);
     }
 
     /// Implemetation of OperatorTerm::eval().

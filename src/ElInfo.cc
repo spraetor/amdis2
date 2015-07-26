@@ -97,51 +97,51 @@ namespace AMDiS
       break;
     case 2:
       if (dim == 1) {
-
-	WorldVector<double> e1;
-
-	e1[0] = coords[1][0] - coords[0][0];
-	e1[1] = coords[1][1] - coords[0][1];
-	det = norm(&e1);
+      
+      	WorldVector<double> e1;
+      
+      	e1[0] = coords[1][0] - coords[0][0];
+      	e1[1] = coords[1][1] - coords[0][1];
+      	det = norm(&e1);
 
       } else {
-	det = (coords[1][0] - coords[0][0]) * (coords[2][1] - coords[0][1]) - 
-	  (coords[1][1] - coords[0][1]) * (coords[2][0] - coords[0][0]);
+      	det = (coords[1][0] - coords[0][0]) * (coords[2][1] - coords[0][1]) - 
+      	  (coords[1][1] - coords[0][1]) * (coords[2][0] - coords[0][0]);
       }
       break;
     case 3: 
       {
-	WorldVector<double> e1, e2, e3, n;
-	
-	for (int i = 0; i < dow; i++) {
-	  e1[i] = coords[1][i] - coords[0][i];
-	  if (dim > 1)
-	    e2[i] = coords[2][i] - coords[0][i];
-	  if (dim > 2)
-	    e3[i] = coords[3][i] - coords[0][i];
-	}
-  
-	if (dim > 1) {
-	  n[0] = e1[1] * e2[2] - e1[2] * e2[1];
-	  n[1] = e1[2] * e2[0] - e1[0] * e2[2];
-	  n[2] = e1[0] * e2[1] - e1[1] * e2[0];
-	}
-	
-	if (dim == 1) {
-	  det = norm(&e1);
-	} else if (dim == 2) {
-	  det = norm(&n);
-	} else if (dim == 3) {
-	  det = n[0] * e3[0] + n[1] * e3[1] + n[2] * e3[2];
-	} else
-	  ERROR_EXIT("not yet for problem dimension = %d", dim);
-	break;
+      	WorldVector<double> e1, e2, e3, n;
+      	
+      	for (int i = 0; i < dow; i++) {
+      	  e1[i] = coords[1][i] - coords[0][i];
+      	  if (dim > 1)
+      	    e2[i] = coords[2][i] - coords[0][i];
+      	  if (dim > 2)
+      	    e3[i] = coords[3][i] - coords[0][i];
+      	}
+        
+      	if (dim > 1) {
+      	  n[0] = e1[1] * e2[2] - e1[2] * e2[1];
+      	  n[1] = e1[2] * e2[0] - e1[0] * e2[2];
+      	  n[2] = e1[0] * e2[1] - e1[1] * e2[0];
+      	}
+      	
+      	if (dim == 1) {
+      	  det = norm(&e1);
+      	} else if (dim == 2) {
+      	  det = norm(&n);
+      	} else if (dim == 3) {
+      	  det = n[0] * e3[0] + n[1] * e3[1] + n[2] * e3[2];
+      	} else
+      	  ERROR_EXIT("not yet for problem dimension = %d", dim);
+      	break;
       } 
     default:
       ERROR_EXIT("not yet for Global::getGeo(WORLD) = %d", dow);
     }
     
-    return abs(det);
+    return math::abs(det);
   }
 
 

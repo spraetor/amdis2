@@ -15,7 +15,7 @@ namespace AMDiS
     // ___________________________________________________________________________  
 	  
     template <class T>
-    struct is_constant : is_numeric<T>::type {};
+    struct is_constant : std::is_arithmetic<T>::type {};
     
     template <class T>
     struct is_constant<WorldVector<T> > : bool_<true> {};

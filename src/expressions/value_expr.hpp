@@ -9,7 +9,7 @@ namespace AMDiS
   namespace expressions
   {  
     /// Expression that encapsulates a runtime value
-    template<typename T>
+    template <class T>
     struct RValue : public LazyOperatorTermBase
     {
       typedef T value_type;
@@ -23,7 +23,7 @@ namespace AMDiS
   
   
     /// Expression that encapsulates a compiletime value
-    template<int V>
+    template <int V>
     struct CValue : public LazyOperatorTermBase
     {
       typedef int value_type;
@@ -34,7 +34,7 @@ namespace AMDiS
     
     
     /// Expression that encapsulates a compiletime vector
-    template<int Size, int V0 = 0, int V1 = 0, int V2 = 0>
+    template <int Size, int V0 = 0, int V1 = 0, int V2 = 0>
     struct CVector : public LazyOperatorTermBase
     {
       typedef Vector<int> value_type;
@@ -52,7 +52,7 @@ namespace AMDiS
     
     
     /// Expression that encapsulates a compiletime vector
-    template<int V0 = 0, int V1 = 0, int V2 = 0>
+    template <int V0 = 0, int V1 = 0, int V2 = 0>
     struct WVector : public LazyOperatorTermBase
     {
       typedef WorldVector<int> value_type;
@@ -69,7 +69,7 @@ namespace AMDiS
       std::string str() const { return std::string("[V(") + std::to_string(size(V)) + ")]"; }
     };
     
-    template<int I = -1> 
+    template <int I = -1> 
     struct E : public LazyOperatorTermBase
     {
       typedef WorldVector<int> value_type;
@@ -91,9 +91,9 @@ namespace AMDiS
     
     
     /// Expression that encapsulates a compiletime matrix
-    template<int Rows, int Cols, int V0 = 0, int V1 = 0, int V2 = 0,
-				int V3 = 0, int V4 = 0, int V5 = 0,
-				int V6 = 0, int V7 = 0, int V8 = 0>
+    template <int Rows, int Cols, int V0 = 0, int V1 = 0, int V2 = 0,
+                          				int V3 = 0, int V4 = 0, int V5 = 0,
+                          				int V6 = 0, int V7 = 0, int V8 = 0>
     struct CMatrix : public LazyOperatorTermBase
     {
       typedef Matrix<int> value_type;
@@ -112,8 +112,8 @@ namespace AMDiS
     
     /// Expression that encapsulates a compiletime matrix
     template<int V0 = 0, int V1 = 0, int V2 = 0,
-	     int V3 = 0, int V4 = 0, int V5 = 0,
-	     int V6 = 0, int V7 = 0, int V8 = 0>
+      	     int V3 = 0, int V4 = 0, int V5 = 0,
+      	     int V6 = 0, int V7 = 0, int V8 = 0>
     struct WMatrix : public LazyOperatorTermBase
     {
       typedef WorldMatrix<int> value_type;
@@ -137,7 +137,7 @@ namespace AMDiS
     };
     
     
-    template<int N = -1> 
+    template <int N = -1> 
     struct Eye : public LazyOperatorTermBase
     {
       typedef Matrix<int> value_type;
@@ -155,7 +155,7 @@ namespace AMDiS
       std::string str() const { return std::string("[M(") + std::to_string(n) + ","+ std::to_string(n) + ")]"; }
     };
     
-    template<> 
+    template <> 
     struct Eye<-2> : public LazyOperatorTermBase
     {
       typedef WorldMatrix<int> value_type;
@@ -181,7 +181,7 @@ namespace AMDiS
   
   namespace traits 
   {
-    template<typename T>
+    template <class T>
     struct remove_all_qualifiers
     {
       typedef typename boost::remove_cv
@@ -191,25 +191,25 @@ namespace AMDiS
     };
 	  
 	
-    template<typename T>
+    template <class T>
     struct pure_value { 
       typedef typename remove_all_qualifiers<T>::type type;
       static type eval(const T& t) { return t; }
     };
     
-    template<typename T>
+    template <class T>
     struct pure_value<T&> { 
       typedef typename remove_all_qualifiers<T>::type type;
       static type eval(T& t) { return t; }
     };
     
-    template<typename T>
+    template <class T>
     struct pure_value<T*> { 
       typedef typename remove_all_qualifiers<T>::type type;
       static type eval(T* t) { return pure_value<T>::eval(*t); }
     };
     
-    template<typename T>
+    template <class T>
     struct pure_value<const T> { 
       typedef typename remove_all_qualifiers<T>::type type;
       static type eval(const T& t) { return pure_value<T>::eval(t); }
@@ -220,7 +220,7 @@ namespace AMDiS
   namespace expressions
   {    
     /// Expression that points to a value given by reference
-    template<typename T>
+    template <class T>
     struct Reference : public LazyOperatorTermBase
     {
       typedef typename traits::pure_value<T>::type value_type;
@@ -228,7 +228,7 @@ namespace AMDiS
       Reference(const T& value_) : value(value_) {}
       Reference(const T* value_) : value(*value_) {}
 
-      template<typename List>
+      template <class List>
       void insertFeSpaces(List& feSpaces) const {}
       
       int getDegree() const
@@ -251,19 +251,19 @@ namespace AMDiS
   // generator functions
   // _____________________________________________________________________________
 
-  template<typename T>
+  template <class T>
   inline expressions::RValue<T> 
   constant(T value) { return {value}; }
 
-  template<int I>
+  template <int I>
   inline expressions::CValue<I> 
   constant() { return {}; }
 
-  template<typename T>
+  template <class T>
   inline expressions::Reference<T> 
   ref_(T& value) { return {value}; }
 
-  template<typename T>
+  template <class T>
   inline expressions::Reference<T> 
   ref_(T* value) { return {value}; }
 

@@ -162,7 +162,8 @@ namespace AMDiS
     
     /// constructor
     /// adds all feSpaces provided by the expression term to auxFeSpaces liste
-    GenericOperatorTerm(const Expr& expr_)
+    template <class Expr_>
+    GenericOperatorTerm(Expr_&& expr_)
       : Super(expr_.getDegree()), expr(expr_) 
     {
       expr.insertFeSpaces(this->auxFeSpaces);
@@ -202,7 +203,9 @@ namespace AMDiS
   struct GenericOperatorTerm<Expr, -1> : public GenericOperatorTerm<Expr, -2>
   {
     typedef GenericOperatorTerm<Expr, -2> Super;
-    GenericOperatorTerm(const Expr& expr_) : Super(expr_) { }
+    template <class Expr_>
+    GenericOperatorTerm(Expr_&& expr_) 
+      : Super(std::forward<Expr_>(expr_)) { }
     
   private:
     // Implements OperatorTerm::eval().

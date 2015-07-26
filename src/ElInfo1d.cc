@@ -148,7 +148,7 @@ namespace AMDiS
     TEST_EXIT_DBG(dim == 1)("dim!=1\n");
     TEST_EXIT_DBG(dimOfWorld == dim)("not yet for DIM != DIM_OF_WORLD\n");
 
-    if (std::abs(length) < DBL_TOL) {
+    if (math::abs(length) < DBL_TOL) {
       ERROR_EXIT("length = %le; abort\n", length);
       return 0;
     }

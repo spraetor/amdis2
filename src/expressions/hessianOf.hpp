@@ -1,29 +1,6 @@
-/******************************************************************************
- *
- * AMDiS - Adaptive multidimensional simulations
- *
- * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
- * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
- *
- * Authors: 
- * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
- *
- * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
- * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
- *
- *
- * This file is part of AMDiS
- *
- * See also license.opensource.txt in the distribution.
- * 
- ******************************************************************************/
-
-
-
 /** \file hessianOf.hpp */
 
-#ifndef AMDIS_HESSIAN_OF_HPP
-#define AMDIS_HESSIAN_OF_HPP
+#pragma once
 
 #include "AMDiS_fwd.h"
 #include "LazyOperatorTerm.h"
@@ -38,9 +15,9 @@ namespace AMDiS
     template <class Vector, class Name>
     struct HessianOf : public LazyOperatorTermBase
     {
-      typedef typename traits::category<Vector>::value_type  T;
-      typedef typename D2Type<T>::type                       value_type;
-      typedef Name                                           id;
+      using T = Value_t<traits::category<Vector> >;
+      using value_type = typename D2Type<T>::type;
+      using id = Name;
 
       DOFVector<T>*                          vecDV;
       mutable mtl::dense_vector<value_type>  vec;
@@ -67,7 +44,8 @@ namespace AMDiS
       
       	if (subAssembler) {
       	  ERROR_EXIT("Hessian expression not yet implemented for operator-terms!\n");
-      	} else if (quad)
+      	} 
+        else if (quad)
       	  vecDV->getD2AtQPs(elInfo, quad, NULL, vec);
       	else if (basisFct) {
       	  const BasisFunction *localBasisFct = vecDV->getFeSpace()->getBasisFcts();
@@ -96,9 +74,9 @@ namespace AMDiS
     template <class Vector, class Name>
     struct LaplacianOf : public LazyOperatorTermBase
     {
-      typedef typename traits::category<Vector>::value_type   T;
-      typedef T                                               value_type;
-      typedef Name                                            id;
+      using T = Value_t<traits::category<Vector> >;
+      using value_type = T;
+      using id = Name;
 
       DOFVector<T>*                                        vecDV;
       mutable mtl::dense_vector<typename D2Type<T>::type>  vec_tmp;
@@ -189,6 +167,3 @@ namespace AMDiS
   laplacianOf(DOFVector<T>* vector) { return {vector}; }
 
 } // end namespace AMDiS
-
-
-#endif // AMDIS_HESSIAN_OF_HPP

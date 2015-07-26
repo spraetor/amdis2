@@ -8,6 +8,7 @@
 #include "MatrixVector.h"
 #include "AMDiS_fwd.h"
 
+#include "traits/meta_basic.hpp"
 #include "traits/tag.hpp"
 #include "traits/types.hpp"
 #include "traits/category.hpp"
@@ -19,6 +20,7 @@
 #include <boost/numeric/mtl/concept/std_concept.hpp> // for return_type deduction
 
 // TODO: move to traits directory
+// TODO: use only one type of mult_type deduction
 
 namespace AMDiS 
 {
@@ -32,7 +34,7 @@ namespace AMDiS
     template<typename T1, typename T2>
     struct larger_type
     {
-      typedef typename boost::mpl::if_c< (sizeof(T1) > sizeof(T2)), T1, T2 >::type type;
+      typedef typename if_then_else< (sizeof(T1) > sizeof(T2)), T1, T2 >::type type;
     };
     
     // TODO: improve this implementation!!
@@ -74,9 +76,9 @@ namespace AMDiS
     template<typename T1, typename T2>
     struct mult_type : mult_type_dispatch
       <
-	T1, T2,
-	typename category<T1>::tag, 
-	typename category<T2>::tag
+      	T1, T2,
+      	typename category<T1>::tag, 
+      	typename category<T2>::tag
       > {};
     
     /// Scalar*Scalar => Scalar
@@ -92,8 +94,8 @@ namespace AMDiS
     {
       typedef typename mult_type
       <
-	typename category<T1>::value_type,
-	typename category<T2>::value_type
+      	typename category<T1>::value_type,
+      	typename category<T2>::value_type
       >::type type;
     };
     
@@ -160,9 +162,9 @@ namespace AMDiS
     template<typename T1, typename T2>
     struct add_type : add_type_dispatch
       <
-	T1, T2,
-	typename category<T1>::tag, 
-	typename category<T2>::tag
+      	T1, T2,
+      	typename category<T1>::tag, 
+      	typename category<T2>::tag
       > {};
     
     /// Scalar+Scalar => Scalar

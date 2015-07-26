@@ -428,7 +428,8 @@ namespace AMDiS
         return result; 
       }
     };
-  }
+    
+  } // end namespace expressions
 
   template<typename Term>
   typename result_of::UnaryExpr<expressions::MatTranspose, Term, traits::is_matrix>::type
@@ -436,4 +437,5 @@ namespace AMDiS
   {
     return function_(expressions::MatTranspose<Value_t<Term>>(), std::forward<Term>(t)); 
   }
-}
+  
+} // end namespace AMDiS

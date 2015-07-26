@@ -23,9 +23,10 @@ namespace AMDiS {
     /// begin value for sequentiell measurement
     std::chrono::time_point<std::chrono::system_clock> first_seq;
 
+#ifdef HAVE_PARALLEL_DOMAIN_AMDIS
     /// begin value for parallel measurement
     double first_mpi;
-
+#endif
   };
   
 }  // end namespace AMDiS

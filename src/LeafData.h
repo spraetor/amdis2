@@ -25,7 +25,7 @@ namespace AMDiS
 			                        public LeafDataEstimatableInterface
   {
   public:
-    bool isOfType(int type) const 
+    virtual bool isOfType(int type) const override 
     {
       if (type == ESTIMATABLE)
         return true;
@@ -35,7 +35,7 @@ namespace AMDiS
 
     struct Creator : public CreatorInterface<ElementData>
     {
-      ElementData* create() 
+      virtual ElementData* create() override 
       {
         return new LeafDataEstimatable;
       }
@@ -49,15 +49,15 @@ namespace AMDiS
 
     /// Refinement of parent to child1 and child2.
     /// @return true: must this ElementData, else not allowed to delete it
-    bool refineElementData(Element* parent, 
+    virtual bool refineElementData(Element* parent, 
                   			   Element* child1,
                   			   Element* child2,
-                  			   int elType);
+                  			   int elType) override;
 
-    void coarsenElementData(Element* parent, 
+    virtual void coarsenElementData(Element* parent, 
                   			    Element* thisChild,
                   			    Element* otherChild,
-                  			    int elTypeParent);
+                  			    int elTypeParent) override;
 
     /// Sets \ref errorEstimate
     virtual void setErrorEstimate(int, double est) override 
@@ -72,7 +72,7 @@ namespace AMDiS
     }
 
     /// Implements ElementData::clone().
-    virtual ElementData *clone() const 
+    virtual ElementData *clone() const override
     {
       // create new estimatable leaf data
       LeafDataEstimatable *newObj = new LeafDataEstimatable(NULL);
@@ -92,7 +92,7 @@ namespace AMDiS
       return "LeafDataEstimatable"; 
     }
 
-    int getTypeID() const 
+    virtual int getTypeID() const override 
     { 
       return ESTIMATABLE; 
     }
@@ -108,13 +108,13 @@ namespace AMDiS
   public:
     struct Creator : public CreatorInterface<ElementData>
     {
-      ElementData* create() 
+      virtual ElementData* create() override 
       {
         return new LeafDataEstimatableVec;
       }
     };
 
-    bool isOfType(int type) const 
+    virtual bool isOfType(int type) const override 
     {
       if (type == ESTIMATABLE) 
         return true;
@@ -127,15 +127,15 @@ namespace AMDiS
     {}
 
     /// Refinement of parent to child1 and child2.
-    bool refineElementData(Element* parent, 
+    virtual bool refineElementData(Element* parent, 
                   			   Element* child1,
                   			   Element* child2,
-                  			   int elType);
+                  			   int elType) override;
 
-    void coarsenElementData(Element* parent, 
+    virtual void coarsenElementData(Element* parent, 
                   			    Element* thisChild,
                   			    Element* otherChild,
-                  			    int elTypeParent);
+                  			    int elTypeParent) override;
 
     /// Sets \ref errorEstimate
     virtual void setErrorEstimate(int index, double est) override
@@ -150,7 +150,7 @@ namespace AMDiS
     }
 
     /// Implements ElementData::clone().
-    virtual ElementData *clone() const 
+    virtual ElementData *clone() const override
     {
       // create new estimatable leaf data
       LeafDataEstimatableVec *newObj = 
@@ -170,7 +170,7 @@ namespace AMDiS
       return "LeafDataEstimatableVec";
     }
   
-    int getTypeID() const 
+    virtual int getTypeID() const override 
     { 
       return ESTIMATABLE; 
     }
@@ -199,13 +199,13 @@ namespace AMDiS
   public:
     struct Creator : public CreatorInterface<ElementData>
     {
-      ElementData* create() 
+      virtual ElementData* create() override 
       {
         return new LeafDataCoarsenable;
       }
     };
 
-    bool isOfType(int type) const 
+    virtual bool isOfType(int type) const override 
     {
       if(type == COARSENABLE) 
         return true;
@@ -219,19 +219,19 @@ namespace AMDiS
     {}
 
     /// Refinement of parent to child1 and child2.
-    bool refineElementData(Element* parent, 
+    virtual bool refineElementData(Element* parent, 
                   			   Element* child1,
                   			   Element* child2,
-                  			   int elType);
+                  			   int elType) override;
 
     /// Refinement of parent to child1 and child2.
-    void coarsenElementData(Element* parent, 
+    virtual void coarsenElementData(Element* parent, 
                   			    Element* thisChild,
                   			    Element* otherChild,
-                  			    int elTypeParent);
+                  			    int elTypeParent) override;
 
     /// Implements ElementData::clone().
-    ElementData *clone() const 
+    virtual ElementData *clone() const override 
     {
       // create new estimatable leaf data
       LeafDataCoarsenable *newObj = new LeafDataCoarsenable(NULL);
@@ -260,7 +260,7 @@ namespace AMDiS
       return "LeafDataCoarsenable";
     }
   
-    int getTypeID() const 
+    virtual int getTypeID() const override 
     { 
       return COARSENABLE; 
     }
@@ -276,13 +276,13 @@ namespace AMDiS
   public:
     struct Creator : public CreatorInterface<ElementData>
     {
-      ElementData* create() 
+      virtual ElementData* create() override 
       {
         return new LeafDataCoarsenableVec;
       }
     };
 
-    bool isOfType(int type) const 
+    virtual bool isOfType(int type) const override 
     {
       if (type == COARSENABLE) 
         return true;
@@ -295,7 +295,7 @@ namespace AMDiS
     {}
 
     /// Implements ElementData::clone().
-    inline ElementData *clone() const 
+    virtual ElementData *clone() const override 
     {
       // create new estimatable leaf data
       LeafDataCoarsenableVec *newObj = 
@@ -311,16 +311,16 @@ namespace AMDiS
     }
 
     /// Refinement of parent to child1 and child2.
-    bool refineElementData(Element* parent, 
+    virtual bool refineElementData(Element* parent, 
                   			   Element* child1,
                   			   Element* child2,
-                  			   int elType);
+                  			   int elType) override;
 
     /// Refinement of parent to child1 and child2.
-    void coarsenElementData(Element* parent, 
+    virtual void coarsenElementData(Element* parent, 
                   			    Element* thisChild,
                   			    Element* otherChild,
-                  			    int elTypeParent);
+                  			    int elTypeParent) override;
 
     /// Sets \ref coarseningError
     virtual void setCoarseningErrorEstimate(int index, double est) override
@@ -339,7 +339,7 @@ namespace AMDiS
       return "LeafDataCoarsenableVec";
     }
   
-    int getTypeID() const 
+    virtual int getTypeID() const override 
     { 
       return COARSENABLE; 
     }
@@ -354,13 +354,13 @@ namespace AMDiS
   public:
     struct Creator : public CreatorInterface<ElementData>
     {
-      ElementData* create() 
+      virtual ElementData* create() override 
       {
         return new LeafDataPeriodic;
       }
     };
 
-    bool isOfType(int type) const 
+    virtual bool isOfType(int type) const override 
     {
       if (type == PERIODIC) 
         return true;
@@ -405,7 +405,7 @@ namespace AMDiS
     {}
 
     /// Implements LeafData::clone().
-    ElementData *clone() const 
+    virtual ElementData *clone() const override 
     {
       LeafDataPeriodic *newObj = new LeafDataPeriodic;
       newObj->decorated = ElementData::clone();
@@ -431,13 +431,13 @@ namespace AMDiS
       return "LeafDataPeriodic";
     }
   
-    int getTypeID() const 
+    virtual int getTypeID() const override 
     { 
       return PERIODIC; 
     }
 
-    bool refineElementData(Element* parent, Element* child1, Element* child2, 
-                           int elType);
+    virtual bool refineElementData(Element* parent, Element* child1, Element* child2, 
+                           int elType) override;
 
   private:
     std::list<PeriodicInfo> periodicInfoList;

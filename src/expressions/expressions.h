@@ -34,7 +34,7 @@
 
 #include "add_expr.hpp"		// add two expressions
 #include "mult_expr.hpp"	// multiply two expressions
-#include "functor_expr.hpp"	// apply a functor with 1/2/3 arguments to expressions
+#include "functorN_expr.hpp"	// apply a functor with 1/2/3 arguments to expressions
 #include "cmath_expr.hpp"	// apply a cmath function to expressions
 #include "vec_functors.hpp"	// apply a vector function to expressions
 

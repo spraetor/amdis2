@@ -29,7 +29,10 @@ namespace AMDiS
         return Super::getDegree(_0) + Super::getDegree(_1);
       }
 
-      inline value_type operator()(const int& iq) const { return Super::getTerm(_0)(iq) * Super::getTerm(_1)(iq); }
+      value_type operator()(const int& iq) const 
+      { 
+        return Super::getTerm(_0)(iq) * Super::getTerm(_1)(iq);
+      }
       
       std::string str() const { return std::string("(") + Super::getTerm(_0).str() + " * " + Super::getTerm(_1).str() + ")"; }
     };
@@ -53,9 +56,34 @@ namespace AMDiS
 
       // works only for scalar types
       // TODO: extend implementation to inverse of matrices
-      inline value_type operator()(const int& iq) const { return 1.0 / Super::getTerm()(iq); } 
+      value_type operator()(const int& iq) const { return 1.0 / Super::getTerm(_0)(iq); } 
       
-      std::string str() const { return std::string("(") + Super::getTerm().str() + ")^(-1)"; }
+      std::string str() const { return std::string("(") + Super::getTerm(_0).str() + ")^(-1)"; }
+    };
+    
+    
+    /// Expressions that represents the division of two expressions: E1/E2
+    template <class Term0, class Term1>
+    struct Divide : public LazyOperatorTerms<Term0, Term1>
+    {
+      using Super = LazyOperatorTerms<Term0, Term1>;
+      using value_type = typename traits::mult_type< Value_t<Term0>, Value_t<Term1> >::type;
+      
+      template <class Term0_, class Term1_>
+      Divide(Term0_&& term0_, Term1_&& term1_)
+        : Super(std::forward<Term0_>(term0_), std::forward<Term1_>(term1_)) {}
+      
+      int getDegree() const
+      {
+        return Super::getDegree(_0) + Super::getDegree(_1);
+      }
+
+      value_type operator()(const int& iq) const 
+      { 
+        return Super::getTerm(_0)(iq) / Super::getTerm(_1)(iq); 
+      } 
+      
+      std::string str() const { return std::string("(") + Super::getTerm(_0).str() + "/" + Super::getTerm(_1).str() + ")"; }
     };
     
   } // end namespace expressions
@@ -79,10 +107,10 @@ namespace AMDiS
     using Divide = enable_if
       < 
       	traits::is_valid_arg2<Term0, Term1>,
-      	expressions::Mult
+      	expressions::Divide
       	<
       	  typename traits::to_expr<Term0>::type, 
-      	  expressions::MultInverse< typename traits::to_expr<Term1>::type >
+      	  typename traits::to_expr<Term1>::type
       	>
       >;
       
@@ -107,8 +135,9 @@ namespace AMDiS
   inline typename result_of::Divide<Term0, Term1>::type
   operator/(const Term0& t0, const Term1& t1)
   {
+    using Expr0 = traits::to_expr<Term0>;
     using Expr1 = traits::to_expr<Term1>;
-    return t0 * expressions::MultInverse< typename Expr1::type >(Expr1::get(t1));
+    return {Expr0::get(t0), Expr1::get(t1)};
   }
 
 } // end namespace AMDiS

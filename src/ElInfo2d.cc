@@ -604,7 +604,7 @@ namespace AMDiS
 
     if (dimOfWorld == 2) {
       double sdet = e1[0] * e2[1] - e1[1] * e2[0];
-      adet = abs(sdet);
+      adet = math::abs(sdet);
 
       if (adet < 1.0E-25) {
 	MSG("abs(det) = %f\n", adet);
@@ -675,7 +675,7 @@ namespace AMDiS
     double det0 =       x[0] * edge[1][1] -       x[1] * edge[1][0]; 
     double det1 = edge[0][0] * x[1]       - edge[0][1] * x[0]; 
 
-    if (abs(det) < DBL_TOL) {
+    if (math::abs(det) < DBL_TOL) {
       ERROR("det = %le; abort\n", det);
       for (int i = 0; i <= dim; i++) 
 	(*lambda)[i] = 1.0 / dim;

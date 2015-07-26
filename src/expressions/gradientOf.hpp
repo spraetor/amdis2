@@ -6,6 +6,7 @@
 #include "LazyOperatorTerm.h"
 #include "DOFVector.h"
 #include "traits/category.hpp"
+#include "traits/meta_basic.hpp"
 
 namespace AMDiS 
 {  
@@ -38,8 +39,8 @@ namespace AMDiS
       }
 
       void initElement(const ElInfo* elInfo,
-		      SubAssembler* subAssembler, Quadrature *quad, 
-		      const BasisFunction *basisFct = NULL)
+            		       SubAssembler* subAssembler, Quadrature *quad, 
+            		       const BasisFunction *basisFct = NULL)
       {      
       	if (subAssembler)
       	  subAssembler->getGradientsAtQPs(vecDV, elInfo, quad, vec);
@@ -170,8 +171,8 @@ namespace AMDiS
       }
 
       void initElement(const ElInfo* elInfo,
-		      SubAssembler* subAssembler, Quadrature *quad, 
-		      const BasisFunction *basisFct = NULL)
+              		     SubAssembler* subAssembler, Quadrature *quad, 
+              		     const BasisFunction *basisFct = NULL)
       {      
       	// if (ot && subAssembler)
       	  // ot->getGradientsAtQPs(vecDV, elInfo, subAssembler, quad, vec);
@@ -243,7 +244,6 @@ namespace mtl
 {
   namespace traits 
   {
-  
     typedef AMDiS::WorldVector<AMDiS::WorldVector<double> > WWMatrix;
   
     template <class Op1, class IsMatrix>

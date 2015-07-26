@@ -1,29 +1,6 @@
-/******************************************************************************
- *
- * AMDiS - Adaptive multidimensional simulations
- *
- * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
- * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
- *
- * Authors: 
- * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
- *
- * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
- * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
- *
- *
- * This file is part of AMDiS
- *
- * See also license.opensource.txt in the distribution.
- * 
- ******************************************************************************/
-
-
-
 /** \file diff_expr.hpp */
 
-#ifndef AMDIS_DIFF_EXPRESSION_HPP
-#define AMDIS_DIFF_EXPRESSION_HPP
+#pragma once
 
 #include "AMDiS_fwd.h"
 #include "LazyOperatorTerm.h"
@@ -34,29 +11,36 @@ namespace AMDiS
   // by default the derivative is zero
   namespace expressions 
   {    
-    struct DummyType {
+    struct DummyType 
+    {
       typedef _unknown id;
       typedef double value_type;
     };
     
-    template<typename Identifier, typename Term, typename Direction = DummyType>
+    template <class Identifier, class Term, class Direction = DummyType>
     struct Diff
     {
       typedef CValue<0> type;
       typedef CValue<0> dir_type;
-      static type eval(Term const& t) { return CValue<0>(); }
-      static dir_type eval(Term const& t, Direction const& d) { return CValue<0>(); }
+      
+      template <class Term_>
+      static type eval(Term_&&) { return {}; }
+      
+      template <class Term_, class Direction_>
+      static dir_type eval(Term_&&, Direction_&&) { return {}; }
     };
     
   } // end namespace expressions
     
-  template<typename Id, typename Term>
+  template <class Id, class Term>
   inline typename expressions::Diff<Id,Term>::type 
-  diff(const Term& t) { return expressions::Diff<Id,Term>::eval(t); }
+  diff(Term&& t) { return expressions::Diff<Id,Term>::eval(std::forward<Term>(t)); }
     
-  template<typename Id, typename Term, typename Direction>
+  template <class Id, class Term, class Direction>
   inline typename expressions::Diff<Id,Term,Direction>::dir_type 
-  diff(const Term& t, const Direction& d) { return expressions::Diff<Id,Term,Direction>::eval(t,d); }
+  diff(Term&& t, Direction&& d) { 
+    return expressions::Diff<Id,Term,Direction>::eval(std::forward<Term>(t), std::forward<Direction>(d)); 
+  }
   
   
   // _____________________________________________________________________________
@@ -64,74 +48,92 @@ namespace AMDiS
   namespace expressions 
   {      
     // ValueOf
-    template<typename Id, typename Vector, typename Name, typename Direction>
+    template <class Id, class Vector, class Name, class Direction>
     struct Diff< Id, ValueOf<Vector, Name>, Direction >
     {
       typedef ValueOf<Vector, Name> Term;
       typedef CValue<0> type;
       typedef CValue<0> dir_type;
       
-      static type eval(Term const& t) { return CValue<0>(); }    
-      static dir_type eval(Term const& t, Direction const& d) { return CValue<0>(); }
+      template <class Term_>
+      static type eval(Term_&&) { return {}; }   
+      
+      template <class Term_, class Direction_> 
+      static dir_type eval(Term_&&, Direction_&&) { return {}; }
     };
     
-    template<typename Id, typename Vector, typename Direction>
+    template <class Id, class Vector, class Direction>
     struct Diff< Id, ValueOf<Vector, Id>, Direction >
     {
       typedef expressions::ValueOf<Vector, Id> Term;
       typedef CValue<1> type;
       typedef Direction dir_type;
       
-      static type eval(Term const& t) { return CValue<1>(); }    
-      static dir_type eval(Term const& t, Direction const& d) { return d; }
+      template <class Term_>
+      static type eval(Term_&&) { return {}; } 
+      
+      template <class Term_, class Direction_>   
+      static dir_type eval(Term_&&, Direction_&& d) { return d; }
     };
     
       
     // GradientOf
-    template<typename Id, typename Vector, typename Name, typename Direction>
+    template <class Id, class Vector, class Name, class Direction>
     struct Diff< Id, GradientOf<Vector, Name>, Direction >
     {
       typedef GradientOf<Vector, Name> Term;
       typedef CValue<0> type;
       typedef CValue<0> dir_type;
       
-      static type eval(Term const& t) { return CValue<0>(); }    
-      static dir_type eval(Term const& t, Direction const& d) { return CValue<0>(); }
+      template <class Term_>
+      static type eval(Term_&&) { return {}; } 
+      
+      template <class Term_, class Direction_>    
+      static dir_type eval(Term_&& t, Direction_&& d) { return {}; }
     };
     
-    template<typename Id, typename Vector, typename Direction>
+    template <class Id, class Vector, class Direction>
     struct Diff< Id, GradientOf<Vector, Id>, Direction >
     {
       typedef GradientOf<Vector, Id> Term;
       typedef CValue<0> type;
       typedef GradientOf<Vector, typename Direction::id> dir_type;
       
-      static type eval(Term const& t) { return CValue<0>(); }    
-      static dir_type eval(Term const& t, Direction const& d) { return gradientOf<typename Direction::id>(d.vecDV); }
+      template <class Term_>
+      static type eval(Term_&&) { return {}; }  
+      
+      template <class Term_, class Direction_>   
+      static dir_type eval(Term_&&, Direction_&& d) { return gradientOf<typename Direction::id>(d.vecDV); }
     };
     
       
     // DerivativeOf
-    template<typename Id, int I, typename Vector, typename Name, typename Direction>
+    template <class Id, int I, class Vector, class Name, class Direction>
     struct Diff< Id, DerivativeOf<I, Vector, Name>, Direction >
     {
       typedef DerivativeOf<I, Vector, Name> Term;
       typedef CValue<0> type;
       typedef CValue<0> dir_type;
       
-      static type eval(Term const& t) { return CValue<0>(); }
-      static dir_type eval(Term const& t, Direction const& d) { return CValue<0>(); }
+      template <class Term_>
+      static type eval(Term_&&) { return {}; } 
+      
+      template <class Term_, class Direction_>    
+      static dir_type eval(Term_&& t, Direction_&& d) { return {}; }
     };
     
-    template<typename Id, int I, typename Vector, typename Direction>
+    template <class Id, int I, class Vector, class Direction>
     struct Diff< Id, DerivativeOf<I, Vector, Id>, Direction >
     {
       typedef DerivativeOf<I, Vector, Id>                      original_type;
       typedef CValue<0>                                        type;
       typedef DerivativeOf<I, Vector, typename Direction::id>  dir_type;
       
-      static type eval(original_type const& t) { return CValue<0>(); }
-      static dir_type eval(original_type const& t, Direction const& d) { return derivativeOf<typename Direction::id, I>(d.vecDV); }
+      template <class Term_>
+      static type eval(Term_&&) { return {}; } 
+      
+      template <class Term_, class Direction_>   
+      static dir_type eval(Term_&&, Direction_&& d) { return derivativeOf<typename Direction::id, I>(d.vecDV); }
     };
     
   } // end namespace expressions
@@ -141,8 +143,7 @@ namespace AMDiS
   // multiplication expressions
   namespace expressions 
   {
-      
-    template<typename Id, typename Term1, typename Term2, typename Direction>
+    template<class Id, class Term1, class Term2, class Direction>
     class Diff< Id, Mult<Term1, Term2>, Direction >
     {
       typedef typename Simplify< typename Diff<Id, Term1>::type >::type D1;
@@ -153,18 +154,18 @@ namespace AMDiS
     public:
       typedef Mult<Term1, Term2> original_type;
       typedef typename Simplify< Add< Mult< D1, Term2 >, 
-				      Mult< Term1, D2 > > >::type type;
+		                                  Mult< Term1, D2 > > >::type type;
       typedef typename Simplify< Add< Mult< D1_, Term2 >, 
-				      Mult< Term1, D2_> > >::type dir_type;
+				                              Mult< Term1, D2_> > >::type dir_type;
 				      
       static type eval(original_type const& t)
       {
-	return simplify(simplify(diff<Id>(t.term1)) * t.term2 + t.term1 * simplify(diff<Id>(t.term2)));
+        return simplify(simplify(diff<Id>(t.getTerm(_0))) * t.getTerm(_1) + t.getTerm(_0) * simplify(diff<Id>(t.getTerm(_1))));
       }  
       
       static dir_type eval(original_type const& t, Direction const& d)
       {
-	return simplify(simplify(diff<Id>(t.term1,d)) * t.term2 + t.term1 * simplify(diff<Id>(t.term2,d)));
+        return simplify(simplify(diff<Id>(t.getTerm(_0),d)) * t.getTerm(_1) + t.getTerm(_0) * simplify(diff<Id>(t.getTerm(_1),d)));
       }
     };
     
@@ -183,12 +184,12 @@ namespace AMDiS
 				      
       static type eval(original_type const& t)
       {
-	return simplify((-simplify(diff<Id>(t.term))) / pow<2>(t.term));
+        return simplify((-simplify(diff<Id>(t.getTerm(_0)))) / pow<2>(t.getTerm(_0)));
       }  
       
       static dir_type eval(original_type const& t, Direction const& d)
       {
-	return simplify((-simplify(diff<Id>(t.term,d))) / pow<2>(t.term));
+        return simplify((-simplify(diff<Id>(t.getTerm(_0),d))) / pow<2>(t.getTerm(_0)));
       }
     };
     
@@ -215,12 +216,12 @@ namespace AMDiS
 				      
       static type eval(original_type const& t)
       {
-	return simplify(simplify(diff<Id>(t.term1)) + simplify(diff<Id>(t.term2)));
+        return simplify(simplify(diff<Id>(t.getTerm(_0))) + simplify(diff<Id>(t.getTerm(_1))));
       }  
       
       static dir_type eval(original_type const& t, Direction const& d)
       {
-	return simplify(simplify(diff<Id>(t.term1,d)) + simplify(diff<Id>(t.term2,d)));
+        return simplify(simplify(diff<Id>(t.getTerm(_0),d)) + simplify(diff<Id>(t.getTerm(_1),d)));
       }
     };
     
@@ -233,12 +234,12 @@ namespace AMDiS
 				      
       static type eval(original_type const& t)
       {
-	return simplify(-diff<Id>(t.term));
+        return simplify(-diff<Id>(t.getTerm(_0)));
       }  
       
       static dir_type eval(original_type const& t, Direction const& d)
       {
-	return simplify(-diff<Id>(t.term,d));
+        return simplify(-diff<Id>(t.getTerm(_0),d));
       }
     };
     
@@ -272,12 +273,12 @@ namespace AMDiS
 				      
       static type eval(original_type const& t)
       {
-	return simplify(simplify(diff<Id>(t.term)) * CValue<I>() * pow<I-1>(t.term));
+        return simplify(simplify(diff<Id>(t.getTerm(_0))) * CValue<I>() * pow<I-1>(t.getTerm(_0)));
       }  
       
       static dir_type eval(original_type const& t, Direction const& d)
       {
-	return simplify(simplify(diff<Id>(t.term, d)) * CValue<I>() * pow<I-1>(t.term));
+        return simplify(simplify(diff<Id>(t.getTerm(_0), d)) * CValue<I>() * pow<I-1>(t.getTerm(_0)));
       }
     };
     
@@ -294,12 +295,12 @@ namespace AMDiS
 				      
       static type eval(original_type const& t)
       {
-	return simplify(diff<Id>(t.term));
+        return simplify(diff<Id>(t.getTerm(_0)));
       }  
       
       static dir_type eval(original_type const& t, Direction const& d)
       {
-	return simplify(diff<Id>(t.term, d));
+        return simplify(diff<Id>(t.getTerm(_0), d));
       }
     };
     
@@ -316,12 +317,12 @@ namespace AMDiS
 				      
       static type eval(original_type const& t)
       {
-	return simplify(simplify(diff<Id>(t.term)) / (CValue<2>() * sqrt(t.term)));
+        return simplify(simplify(diff<Id>(t.getTerm(_0))) / (CValue<2>() * sqrt(t.getTerm(_0))));
       }  
       
       static dir_type eval(original_type const& t, Direction const& d)
       {
-	return simplify(simplify(diff<Id>(t.term, d)) / (CValue<2>() * sqrt(t.term)));
+        return simplify(simplify(diff<Id>(t.getTerm(_0), d)) / (CValue<2>() * sqrt(t.getTerm(_0))));
       }
     };
     
@@ -345,12 +346,12 @@ namespace AMDiS
 				      
       static type eval(Exp<Term> const& t)
       {
-	return simplify(simplify(diff<Id>(t.term)) * exp(t.term));
+        return simplify(simplify(diff<Id>(t.getTerm(_0))) * exp(t.getTerm(_0)));
       }  
       
       static dir_type eval(original_type const& t, Direction const& d)
       {
-	return simplify(simplify(diff<Id>(t.term, d)) * exp(t.term));
+        return simplify(simplify(diff<Id>(t.getTerm(_0), d)) * exp(t.getTerm(_0)));
       }
     };
       
@@ -367,12 +368,12 @@ namespace AMDiS
 				      
       static type eval(original_type const& t)
       {
-	return simplify(simplify(diff<Id>(t.term)) / t.term);
+        return simplify(simplify(diff<Id>(t.getTerm(_0))) / t.getTerm(_0));
       }  
       
       static dir_type eval(original_type const& t, Direction const& d)
       {
-	return simplify(simplify(diff<Id>(t.term, d)) / t.term);
+        return simplify(simplify(diff<Id>(t.getTerm(_0), d)) / t.getTerm(_0));
       }
     };
     
@@ -395,12 +396,12 @@ namespace AMDiS
 				      
       static type eval(original_type const& t)
       {
-	return simplify(-(simplify(diff<Id>(t.term)) * sin(t.term)));
+        return simplify(-(simplify(diff<Id>(t.getTerm(_0))) * sin(t.getTerm(_0))));
       }  
       
       static dir_type eval(original_type const& t, Direction const& d)
       {
-	return simplify(-(simplify(diff<Id>(t.term, d)) * sin(t.term)));
+        return simplify(-(simplify(diff<Id>(t.getTerm(_0), d)) * sin(t.getTerm(_0))));
       }
     };
       
@@ -417,12 +418,12 @@ namespace AMDiS
 				      
       static type eval(original_type const& t)
       {
-	return simplify(simplify(diff<Id>(t.term)) * cos(t.term));
+        return simplify(simplify(diff<Id>(t.getTerm(_0))) * cos(t.getTerm(_0)));
       }  
       
       static dir_type eval(original_type const& t, Direction const& d)
       {
-	return simplify(simplify(diff<Id>(t.term, d)) * cos(t.term));
+        return simplify(simplify(diff<Id>(t.getTerm(_0), d)) * cos(t.getTerm(_0)));
       }
     };
       
@@ -439,12 +440,12 @@ namespace AMDiS
 				      
       static type eval(original_type const& t)
       {
-	return simplify(simplify(diff<Id>(t.term)) * (CValue<1>() - pow<2>(tan(t.term))));
+        return simplify(simplify(diff<Id>(t.getTerm(_0))) * (CValue<1>() - pow<2>(tan(t.getTerm(_0)))));
       }  
       
       static dir_type eval(original_type const& t, Direction const& d)
       {
-	return simplify(simplify(diff<Id>(t.term, d)) * (CValue<1>() - pow<2>(tan(t.term))));
+        return simplify(simplify(diff<Id>(t.getTerm(_0), d)) * (CValue<1>() - pow<2>(tan(t.getTerm(_0)))));
       }
     };
     
@@ -467,12 +468,12 @@ namespace AMDiS
 				      
       static type eval(original_type const& t)
       {
-	return simplify(-(simplify(diff<Id>(t.term)) / (CValue<1>() - pow<2>(t.term))));
+        return simplify(-(simplify(diff<Id>(t.getTerm(_0))) / (CValue<1>() - pow<2>(t.getTerm(_0)))));
       }  
       
       static dir_type eval(original_type const& t, Direction const& d)
       {
-	return simplify(-(simplify(diff<Id>(t.term, d)) / (CValue<1>() - pow<2>(t.term))));
+        return simplify(-(simplify(diff<Id>(t.getTerm(_0), d)) / (CValue<1>() - pow<2>(t.getTerm(_0)))));
       }
     };
       
@@ -489,12 +490,12 @@ namespace AMDiS
 				      
       static type eval(original_type const& t)
       {
-	return simplify(simplify(diff<Id>(t.term)) / sqrt(CValue<1>() - pow<2>(t.term)));
+        return simplify(simplify(diff<Id>(t.getTerm(_0))) / sqrt(CValue<1>() - pow<2>(t.getTerm(_0))));
       }  
       
       static dir_type eval(original_type const& t, Direction const& d)
       {
-	return simplify(simplify(diff<Id>(t.term, d)) / sqrt(CValue<1>() - pow<2>(t.term)));
+        return simplify(simplify(diff<Id>(t.getTerm(_0), d)) / sqrt(CValue<1>() - pow<2>(t.getTerm(_0))));
       }
     };
       
@@ -511,12 +512,12 @@ namespace AMDiS
 				      
       static type eval(original_type const& t)
       {
-	return simplify(simplify(diff<Id>(t.term)) / (CValue<1>() + pow<2>(t.term)));
+        return simplify(simplify(diff<Id>(t.getTerm(_0))) / (CValue<1>() + pow<2>(t.getTerm(_0))));
       }  
       
       static dir_type eval(original_type const& t, Direction const& d)
       {
-	return simplify(simplify(diff<Id>(t.term, d)) / (CValue<1>() + pow<2>(t.term)));
+        return simplify(simplify(diff<Id>(t.getTerm(_0), d)) / (CValue<1>() + pow<2>(t.getTerm(_0))));
       }
     };
       
@@ -542,12 +543,12 @@ namespace AMDiS
 				      
       static type eval(Cosh<Term> const& t)
       {
-	return simplify(simplify(diff<Id>(t.term)) * sinh(t.term));
+        return simplify(simplify(diff<Id>(t.getTerm(_0))) * sinh(t.getTerm(_0)));
       }
       
       static dir_type eval(original_type const& t, Direction const& d)
       {
-	return simplify(simplify(diff<Id>(t.term, d)) * sinh(t.term));
+        return simplify(simplify(diff<Id>(t.getTerm(_0), d)) * sinh(t.getTerm(_0)));
       }
     };
       
@@ -564,12 +565,12 @@ namespace AMDiS
 				      
       static type eval(Sinh<Term> const& t)
       {
-	return simplify(simplify(diff<Id>(t.term)) * cosh(t.term));
+        return simplify(simplify(diff<Id>(t.getTerm(_0))) * cosh(t.getTerm(_0)));
       }
       
       static dir_type eval(original_type const& t, Direction const& d)
       {
-	return simplify(simplify(diff<Id>(t.term, d)) * cosh(t.term));
+        return simplify(simplify(diff<Id>(t.getTerm(_0), d)) * cosh(t.getTerm(_0)));
       }
     };
       
@@ -586,19 +587,19 @@ namespace AMDiS
 				      
       static type eval(Tanh<Term> const& t)
       {
-	return simplify(simplify(diff<Id>(t.term)) * (CValue<1>() - pow<2>(tanh(t.term))));
+        return simplify(simplify(diff<Id>(t.getTerm(_0))) * (CValue<1>() - pow<2>(tanh(t.getTerm(_0)))));
       }
       
       static dir_type eval(original_type const& t, Direction const& d)
       {
-	return simplify(simplify(diff<Id>(t.term, d)) * (CValue<1>() - pow<2>(tanh(t.term))));
+        return simplify(simplify(diff<Id>(t.getTerm(_0), d)) * (CValue<1>() - pow<2>(tanh(t.getTerm(_0)))));
       }
     };
     
   } // end namespace expressions
 
 
-  #if 0
+#if 0
   // _____________________________________________________________________________
   // arcus-(cosine, sine, tangence)-hyperbolicus
   namespace expressions {
@@ -626,7 +627,7 @@ namespace AMDiS
     struct Diff< Id, Min<Term1, Term2> > {};  // not yet implemented
       
   } // end namespace expressions
-  #endif   
+#endif   
 
   // =============================================================================
   // higher order derivatives
@@ -639,40 +640,44 @@ namespace AMDiS
   } // end namespace expressions
 
   template<int N, typename Id, typename Term>
-  inline typename expressions::DiffN<N,Id,Term>::type diff(const Term& t) { return expressions::DiffN<N,Id,Term>::eval(t); }
+  inline typename expressions::DiffN<N,Id,Term>::type 
+  diff(Term&& t) { return expressions::DiffN<N,Id,Term>::eval(std::forward<Term>(t)); }
 
   namespace expressions 
   {    
-    template<int N, class Id, class Term>
+    template <int N, class Id, class Term>
     struct DiffN
     {
       typedef typename DiffN<N-1, Id, typename Diff<Id, Term>::type>::type type;
 			      
-      static type eval(Term const& t)
+      template <class Term_>
+      static type eval(Term_&& t)
       {
-	return diff<N-1, Id>(diff<Id>(t));
+        return diff<N-1, Id>(diff<Id>(std::forward<Term_>(t)));
       }
     };
     
-    template<class Id, class Term>
+    template <class Id, class Term>
     struct DiffN<1, Id, Term>
     {
       typedef typename Diff<Id, Term>::type type;
 			      
-      static type eval(Term const& t)
+      template <class Term_>
+      static type eval(Term_&& t)
       {
-	return diff<Id>(t);
+        return diff<Id>(std::forward<Term_>(t));
       }
     };
     
-    template<class Id, class Term>
+    template <class Id, class Term>
     struct DiffN<0, Id, Term>
     {
       typedef Term type;
 			      
-      static type eval(Term const& t)
+      template <class Term_>
+      static type eval(Term_&& t)
       {
-	return t;
+        return t;
       }
     };
       

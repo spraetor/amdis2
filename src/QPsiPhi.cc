@@ -93,7 +93,7 @@ namespace AMDiS
 
 	      val += quadrature->getWeight(iq)*grdi*grdj;
 	    }
-	    if (abs(val) > TOO_SMALL)
+	    if (math::abs(val) > TOO_SMALL)
 	      all_entries++;
 	  }
 	}
@@ -127,7 +127,7 @@ namespace AMDiS
 
 	      val += quadrature->getWeight(iq)*grdi*grdj;
 	    }
-	    if (abs(val) > TOO_SMALL) {
+	    if (math::abs(val) > TOO_SMALL) {
 	      TEST_EXIT_DBG(all_entries > 0)("now more entries found than counted before\n");
 	      all_entries--;		
 	      n++;
@@ -266,7 +266,7 @@ namespace AMDiS
 
 	    val += quadrature->getWeight(iq)*psij*grdi;
 	  }
-	  if (abs(val) > TOO_SMALL)
+	  if (math::abs(val) > TOO_SMALL)
 	    all_entries++;
 	}
       }
@@ -295,7 +295,7 @@ namespace AMDiS
 
 	    val += quadrature->getWeight(iq)*psij*grdi;
 	  }
-	  if (abs(val) > TOO_SMALL) {
+	  if (math::abs(val) > TOO_SMALL) {
 	    TEST_EXIT_DBG(all_entries > 0)("now more entries found than counted before\n");
 	    all_entries--;
 	    n++;
@@ -426,7 +426,7 @@ namespace AMDiS
 
 	    val += quadrature->getWeight(iq)*grdj*psii;
 	  }
-	  if(abs(val) > TOO_SMALL)
+	  if(math::abs(val) > TOO_SMALL)
 	    all_entries++;
 	}
       }
@@ -455,7 +455,7 @@ namespace AMDiS
 
 	    val += quadrature->getWeight(iq)*grdj*psii;
 	  }
-	  if (abs(val) > TOO_SMALL) {
+	  if (math::abs(val) > TOO_SMALL) {
 	    TEST_EXIT_DBG(all_entries > 0)("now more entries found than counted before\n");
 	    all_entries--;
 	    n++;
@@ -578,7 +578,7 @@ namespace AMDiS
 	for(val = iq = 0; iq < numPoints; iq++)
 	  val += quadrature->getWeight(iq)*q_psi->getPhi(iq,i)*q_phi->getPhi(iq,j);
 		
-	if (abs(val) < TOO_SMALL)
+	if (math::abs(val) < TOO_SMALL)
 	  values[i][j]=0.0;
 	else
 	  values[i][j]=val;
@@ -656,7 +656,7 @@ namespace AMDiS
 	val += quadrature->getWeight(iq)*psii;
       }
 		
-      if (abs(val) < TOO_SMALL)
+      if (math::abs(val) < TOO_SMALL)
 	values[i]=0.0;
       else
 	values[i]=val;
@@ -730,7 +730,7 @@ namespace AMDiS
 	  //psii = q_psi->getPhi(iq, i);
 	  val += quadrature->getWeight(iq)*grdi;
 	}
-	if (abs(val) > TOO_SMALL)
+	if (math::abs(val) > TOO_SMALL)
 	  all_entries++;
       }
     }
@@ -759,7 +759,7 @@ namespace AMDiS
 	  //psii = q_psi->getPhi(iq, i);
 	  val += quadrature->getWeight(iq)*grdi;
 	}
-	if (abs(val) > TOO_SMALL) {
+	if (math::abs(val) > TOO_SMALL) {
 	  TEST_EXIT_DBG(all_entries > 0)("now more entries found than counted before\n");
 	  all_entries--;
 	  n++;

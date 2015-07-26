@@ -82,8 +82,9 @@ namespace AMDiS
   template <class Term>
   struct GenericSecondOrderTerm_1 : public GenericOperatorTerm<Term, 2>
   {
-    GenericSecondOrderTerm_1(const Term& term_)
-      : GenericOperatorTerm<Term, 2>(term_) 
+    template <class Term_>
+    GenericSecondOrderTerm_1(Term_&& term_)
+      : GenericOperatorTerm<Term, 2>(std::forward<Term_>(term_)) 
     {
       this->setSymmetric(true);
     }
@@ -111,8 +112,9 @@ namespace AMDiS
   template <class Term, bool symmetric = false>
   struct GenericSecondOrderTerm_A : public GenericOperatorTerm<Term, 2>
   {  
-    GenericSecondOrderTerm_A(const Term& term_)
-      : GenericOperatorTerm<Term, 2>(term_) 
+    template <class Term_>
+    GenericSecondOrderTerm_A(Term_&& term_)
+      : GenericOperatorTerm<Term, 2>(std::forward<Term_>(term_)) 
     {
       this->setSymmetric(symmetric);
     }
@@ -143,14 +145,16 @@ namespace AMDiS
   {
     int row, col;
     
-    GenericSecondOrderTerm_ij(const Term& term_)
-      : GenericOperatorTerm<Term, 2>(term_), row(I), col(J)
+    template <class Term_>
+    GenericSecondOrderTerm_ij(Term_&& term_)
+      : GenericOperatorTerm<Term, 2>(std::forward<Term_>(term_)), row(I), col(J)
     {
       this->setSymmetric(row == col);
     }
     
-    GenericSecondOrderTerm_ij(const Term& term_, int I0, int J0)
-      : GenericOperatorTerm<Term, 2>(term_), row(I0), col(J0)
+    template <class Term_>
+    GenericSecondOrderTerm_ij(Term_&& term_, int I0, int J0)
+      : GenericOperatorTerm<Term, 2>(std::forward<Term_>(term_)), row(I0), col(J0)
     {
       this->setSymmetric(row == col);
       TEST_EXIT_DBG( I < 0 && I0 >= 0 && J < 0 && J0 >= 0 ) 

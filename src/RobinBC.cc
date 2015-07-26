@@ -129,7 +129,7 @@ namespace AMDiS
 	val = 0.0;
 	for (int iq = 0; iq < nPoints; iq++) {
 	  n_A_grdUh = (normal * A_grdUh[iq]) - f[iq]; 
-	  val += quadrature->getWeight(iq) * sqr(n_A_grdUh);
+	  val += quadrature->getWeight(iq) * math::sqr(n_A_grdUh);
 	}
       }
     }

@@ -434,6 +434,7 @@ namespace AMDiS
   template <class T>
   double DOFVector<T>::L2NormSquare(Quadrature* q) const
   {
+    using math::sqr;
     Mesh* mesh = this->feSpace->getMesh();
 
     if (!q) {
@@ -474,6 +475,7 @@ namespace AMDiS
   template <class T>  
   double DOFVector<T>::H1NormSquare(Quadrature *q) const
   {
+    using math::sqr;
     Mesh* mesh = this->feSpace->getMesh();
 
     if (!q) {
@@ -831,6 +833,7 @@ namespace AMDiS
   template <class T>
   double DOFVector<T>::DoubleWell(Quadrature* q) const
   {
+    using math::sqr;
     Mesh* mesh = this->feSpace->getMesh();
 
     if (!q) {
