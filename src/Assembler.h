@@ -34,11 +34,11 @@ namespace AMDiS {
   public:
     /// Constructor
     Assembler(Operator *op,
-	      const FiniteElemSpace *rowFeSpace,
-	      const FiniteElemSpace *colFeSpace = NULL);
+      	      const FiniteElemSpace *rowFeSpace,
+      	      const FiniteElemSpace *colFeSpace = NULL);
 
     /// Destructor
-    virtual ~Assembler();
+    virtual ~Assembler() {};
 
     /// Assembles the element matrix for the given ElInfo
     void calculateElementMatrix(const ElInfo *elInfo, 

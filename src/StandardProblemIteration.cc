@@ -1,5 +1,6 @@
 #include "StandardProblemIteration.h"
 #include "AdaptInfo.h"
+#include "Initfile.h"
 #include "ProblemStatBase.h"
 #include "Global.h"
 #include "Timer.h"
@@ -8,6 +9,18 @@ namespace AMDiS
 {
   int StandardProblemIteration::info = 10;
 
+    
+  ProblemStatBase* StandardProblemIteration::getProblem(int number)
+  { FUNCNAME_DBG("StandardProblemIteration::getProblem");
+    TEST_EXIT_DBG(number == 0)("Problem number out of range!\n");
+    return problem;
+  }
+  
+  ProblemStatBase* StandardProblemIteration::getProblem(std::string name)
+  { FUNCNAME_DBG("StandardProblemIteration::getProblem");
+    TEST_EXIT_DBG(name == problem.getName())("Problem name does not match!\n");
+    return problem;
+  }
 
   void StandardProblemIteration::beginIteration(AdaptInfo *adaptInfo) 
   {

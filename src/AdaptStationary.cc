@@ -1,7 +1,8 @@
 #include "AdaptStationary.h"
 #include "Initfile.h"
-// #include "est/Estimator.h"
 #include "ProblemIterationInterface.h"
+#include "Flag.h"
+#include "AdaptInfo.h"
 
 #if HAVE_PARALLEL_DOMAIN_AMDIS
 #include "parallel/MeshDistributor.h"
@@ -11,8 +12,8 @@
 namespace AMDiS {
 
   AdaptStationary::AdaptStationary(std::string name,
-				   ProblemIterationInterface& prob,
-				   AdaptInfo& adaptInfo) 
+                        				   ProblemIterationInterface& prob,
+                        				   AdaptInfo& adaptInfo) 
     : AdaptBase(name, &prob, &adaptInfo)
   {
     Parameters::get(name + "->info", info);
@@ -47,7 +48,7 @@ namespace AMDiS {
       Parallel::mpi::globalAdd(isAdapted);
 #endif
       if (isAdapted == 0)
-	break;
+        break;
       
       adaptInfo->incSpaceIteration();
     }

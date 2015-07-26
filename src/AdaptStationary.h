@@ -11,10 +11,8 @@
 
 #include <string>
 
-#include "Flag.h"
-#include "AdaptInfo.h"
-#include "AdaptBase.h"
 #include "AMDiS_fwd.h"
+#include "AdaptBase.h"
 
 namespace AMDiS {
 
@@ -28,11 +26,8 @@ namespace AMDiS {
   public:
     /// Creates a AdaptStationary object with given name.
     AdaptStationary(std::string name,
-		    ProblemIterationInterface &prob,
-		    AdaptInfo &info);
-
-    /// Destructor
-    virtual ~AdaptStationary() {}
+            		    ProblemIterationInterface &prob,
+            		    AdaptInfo &info);
 
     /// Implementation of AdaptBase::adapt()
     virtual int adapt() override;

@@ -16,8 +16,6 @@ namespace AMDiS
       : problem(prob)
     {}
 
-    virtual ~StandardProblemIteration() {}
-
     /// Implementation of \ref ProblemIterationIterface::beginIteration()
     virtual void beginIteration(AdaptInfo *adaptInfo) override;
 
@@ -35,17 +33,11 @@ namespace AMDiS
       return 1;
     }
     
-    virtual ProblemStatBase *getProblem(int number = 0) override
-    { FUNCNAME_DBG("StandardProblemIteration::getProblem");
-      TEST_EXIT_DBG(number == 0)("Problem number out of range!\n");
-      return problem;
-    }
+    /// Return the managed ProblemStat \ref problem, by number
+    virtual ProblemStatBase *getProblem(int number = 0) override;
     
-    virtual ProblemStatBase *getProblem(std::string name) override
-    { FUNCNAME_DBG("StandardProblemIteration::getProblem");
-      TEST_EXIT_DBG(name == problem.getName())("Problem name does not match!\n");
-      return problem;
-    }
+    /// Return the managed ProblemStat \ref problem, by name
+    virtual ProblemStatBase *getProblem(std::string name) override;
 
     /// Nested assemblage and mesh adaption. TODO: make this prortected
     Flag buildAndAdapt(AdaptInfo *adaptInfo, Flag toDo);

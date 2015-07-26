@@ -9,6 +9,7 @@
 #include "AdaptInfo.h"
 #include "Traverse.h"
 #include "MatrixVector.h"
+#include "Initfile.h"
 
 namespace AMDiS 
 {
@@ -28,12 +29,12 @@ namespace AMDiS
     /// Constructor.
     Marker(std::string name_, int row_)
       : name(name_), 
-	row(row_),
-	maximumMarking(false),
-	p(2),
-	info(10),
-	maxRefineLevel(-1),
-	minRefineLevel(-1)
+      	row(row_),
+      	maximumMarking(false),
+      	p(2),
+      	info(10),
+      	maxRefineLevel(-1),
+      	minRefineLevel(-1)
     {
       Parameters::get(name + "->p", p);
       Parameters::get(name + "->info", info);
@@ -53,21 +54,21 @@ namespace AMDiS
       char oldMark = el->getMark();
 
       if (!maximumMarking || (newMark > oldMark)) {
-	el->setMark(newMark);
-
-	if (oldMark > 0) {
-	  elMarkRefine--; 
-	} else {
-	  if (oldMark < 0) 
-	    elMarkCoarsen--;
-	}
-
-	if (newMark > 0) {
-	  elMarkRefine++; 
-	} else { 
-	  if (newMark < 0) 
-	    elMarkCoarsen++;
-	}
+      	el->setMark(newMark);
+      
+      	if (oldMark > 0) {
+      	  elMarkRefine--; 
+      	} else {
+      	  if (oldMark < 0) 
+      	    elMarkCoarsen--;
+      	}
+      
+      	if (newMark > 0) {
+      	  elMarkRefine++; 
+      	} else { 
+      	  if (newMark < 0) 
+      	    elMarkCoarsen++;
+      	}
       }
     }
 
@@ -173,7 +174,7 @@ namespace AMDiS
     {
       Element *el = elInfo->getElement();
       if (adaptInfo->isRefinementAllowed(row == -1 ? 0 : row))
-	setMark(el, adaptInfo->getRefineBisections(row == -1 ? 0 : row));
+        setMark(el, adaptInfo->getRefineBisections(row == -1 ? 0 : row));
     }
   };
 
@@ -190,8 +191,8 @@ namespace AMDiS
     /// Constructor.
     MSMarker(std::string name_, int row_) 
       : Marker(name_, row_),
-	MSGamma(0.5),
-	MSGammaC(0.1)
+      	MSGamma(0.5),
+      	MSGammaC(0.1)
     {
       Parameters::get(name + "->MSGamma", MSGamma);
       Parameters::get(name + "->MSGammaC", MSGammaC);
@@ -221,8 +222,8 @@ namespace AMDiS
     /// Constructor.
     ESMarker(std::string name_, int row_) 
       : Marker(name_, row_),
-	ESTheta(0.9),
-	ESThetaC(0.2)
+      	ESTheta(0.9),
+      	ESThetaC(0.2)
     {
       Parameters::get(name + "->ESTheta", ESTheta);
       Parameters::get(name + "->ESThetaC", ESThetaC);
@@ -252,10 +253,10 @@ namespace AMDiS
     /// Constructor.
     GERSMarker(std::string name_, int row_) 
       : Marker(name_, row_),
-	oldErrSum(0.0),
-	GERSThetaStar(0.6),
-	GERSNu(0.1),
-	GERSThetaC(0.1)
+      	oldErrSum(0.0),
+      	GERSThetaStar(0.6),
+      	GERSNu(0.1),
+      	GERSThetaC(0.1)
     {
       Parameters::get(name + "->GERSThetaStar", GERSThetaStar);
       Parameters::get(name + "->GERSNu", GERSNu);

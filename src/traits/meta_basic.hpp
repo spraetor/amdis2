@@ -14,6 +14,11 @@ namespace AMDiS
   template <int I> 
   using int_ = std::integral_constant<int, I>;
   
+  static constexpr int_<0> _0 {};
+  static constexpr int_<1> _1 {};
+  static constexpr int_<2> _2 {};
+  static constexpr int_<3> _3 {};
+  
   template <bool B> 
   using bool_ = std::integral_constant<bool, B>;
   

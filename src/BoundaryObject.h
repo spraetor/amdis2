@@ -4,29 +4,29 @@
 
 #include <vector>
 
-#include "MacroElement.h"
-#include "Element.h"
+#include "AMDiS_fwd.h"
 #include "Boundary.h"
+#include "GeoIndex.h"
 
-namespace AMDiS {
-
+namespace AMDiS 
+{
   typedef std::vector<std::pair<GeoIndex, int> > ExcludeList;
 
   /// Defines the geometrical objects that forms the boundary;
-  struct BoundaryObject {
-
+  struct BoundaryObject 
+  {
     BoundaryObject();
 
     BoundaryObject(Element *e, 
-		   int eType, 
-		   GeoIndex sObj, 
-		   int iObj, 
-		   bool rMode = false);
+            		   int eType, 
+            		   GeoIndex sObj, 
+            		   int iObj, 
+            		   bool rMode = false);
 
     static bool computeReverseMode(BoundaryObject &obj0,
-				   BoundaryObject &obj1,
-				   const FiniteElemSpace *feSpace,
-				   BoundaryType boundary);
+                        				   BoundaryObject &obj1,
+                        				   const FiniteElemSpace *feSpace,
+                        				   BoundaryType boundary);
     
     bool operator==(const BoundaryObject& other) const;
     
@@ -79,11 +79,12 @@ namespace AMDiS {
    * Defines one atomic part of the boundary, i.e., two boundary objects where
    * the boundary goes through.
    */
-  struct AtomicBoundary {
+  struct AtomicBoundary 
+  {
     AtomicBoundary()
-    : type(INTERIOR),
-      maxLevel(0)
-    {}
+      : type(INTERIOR),
+        maxLevel(0)
+    { }
 
     bool operator==(const AtomicBoundary& other) const;
 

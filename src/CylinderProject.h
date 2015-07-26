@@ -2,6 +2,8 @@
 
 #pragma once
 
+#include <cmath>
+#include "Log.h"
 #include "MatrixVectorOperations.h"
 
 namespace AMDiS {
@@ -15,21 +17,18 @@ namespace AMDiS {
   public:
     /// Constructor.
     CylinderProject(int id,
-		    ProjectionType type,
-		    WorldVector<double> &c,
-		    WorldVector<double> &d,
-		    double r) 
+            		    ProjectionType type,
+            		    WorldVector<double> &c,
+            		    WorldVector<double> &d,
+            		    double r) 
       : Projection(id, type),
-	center_(c),
-	direction_(d),
-	radius_(r)
+      	center_(c),
+      	direction_(d),
+      	radius_(r)
     {
-      double norm = sqrt(direction_*direction_);
+      double norm = std::sqrt(direction_*direction_);
       direction_ *= 1.0 / norm;
     }
-
-    /// Destructor.
-    virtual ~CylinderProject() {}
 
     /// Implementation of Projection::project();
     void project(WorldVector<double> &x) 
@@ -37,7 +36,7 @@ namespace AMDiS {
       x -= center_;
       WorldVector<double> v1 = direction_; v1 *= (x*direction_);
       WorldVector<double> v2 = x; v2 -= v1;
-      double norm = sqrt(v2 * v2);
+      double norm = std::sqrt(v2 * v2);
       TEST_EXIT(norm != 0.0)("can't project vector x\n");
       v2 *= 1.0 / norm;
       x = v2; x *= radius_; x += v1;

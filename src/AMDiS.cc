@@ -12,7 +12,9 @@
 #include <petsc.h>
 #endif
 
-#include "AMDiS.h"
+#include "Initfile.h"
+#include "Global.h"
+#include "Log.h"
 
 namespace AMDiS 
 {

@@ -30,10 +30,6 @@ namespace AMDiS {
       lastTraverseId(-1)
   {}
 
-
-  Assembler::~Assembler()
-  {}
-
   
   void Assembler::calculateElementMatrix(const ElInfo *elInfo, 
 					 ElementMatrix& userMat,

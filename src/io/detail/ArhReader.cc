@@ -7,6 +7,7 @@
 #include "MeshStructure.h"
 #include "Traverse.h"
 #include "DOFVector.h"
+#include "MacroElement.h"
 
 namespace AMDiS { namespace io {
 

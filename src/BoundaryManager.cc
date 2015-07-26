@@ -6,7 +6,8 @@
 #include "BasisFunction.h"
 #include "ElInfo.h"
 
-namespace AMDiS {
+namespace AMDiS 
+{
 
   std::map<BoundaryType, std::vector<BoundaryCondition*> > 
   BoundaryManager::globalBoundaryMap;

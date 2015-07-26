@@ -9,8 +9,8 @@
 #include "Boundary.h"
 #include "BoundaryCondition.h"
 
-namespace AMDiS {
-
+namespace AMDiS 
+{
   typedef std::map<BoundaryType, BoundaryCondition*> BoundaryIndexMap;
 
   /**
@@ -28,7 +28,7 @@ namespace AMDiS {
 
     BoundaryManager(BoundaryManager &bm);
 
-    ~BoundaryManager();
+    virtual ~BoundaryManager();
 
     /// Adds a local boundary condition to the list of managed conditions.
     void addBoundaryCondition(BoundaryCondition *localBC);
@@ -52,7 +52,7 @@ namespace AMDiS {
     /// Calls BoundaryCondition::boundResidual() for each boundary condition in 
     /// \ref localBCs.
     double boundResidual(ElInfo *elInfo, DOFMatrix *matrix, 
-			 const DOFVectorBase<double> *dv);
+			                   const DOFVectorBase<double> *dv);
 
     BoundaryCondition *getBoundaryCondition(BoundaryType type)
     {
@@ -74,8 +74,8 @@ namespace AMDiS {
     static bool isBoundaryPeriodic(BoundaryType b)
     {
       for (BoundaryCondition* boundary_map : globalBoundaryMap[b])
-	if (boundary_map->isPeriodic())
-	  return true;
+      	if (boundary_map->isPeriodic())
+      	  return true;
 
       return false;
     }

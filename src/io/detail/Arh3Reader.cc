@@ -7,6 +7,7 @@
 #include "Debug.h"
 #include "../Arh3Reader.h"
 #include "Arh3Writer.h"
+#include "MacroElement.h"
 
 #include <boost/filesystem.hpp>
 #include <boost/iostreams/filtering_streambuf.hpp>

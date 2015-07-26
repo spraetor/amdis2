@@ -22,23 +22,24 @@ namespace AMDiS
       static_assert( !(std::is_same<value_type, traits::no_valid_type>::value), 
                      "********** ERROR: Can not add terms **********" );
       
-      Add(Term1&& term1, Term2&& term2)
-        : Super(std::forward<Term1>(term1), std::forward<Term2>(term2)) 
+      template <class Term0_, class Term1_>
+      Add(Term0_&& term0_, Term1_&& term1_)
+        : Super(std::forward<Term1>(term0_), std::forward<Term2>(term1_)) 
       { }
       
       int getDegree() const
       {
-        return std::max(degree<0>(*this), degree<1>(*this));
+        return std::max(Super::getDegree(_0), Super::getDegree(_1));
       }
 
       value_type operator()(const int& iq) const 
       { 
-        return term<0>(*this)(iq) + term<1>(*this)(iq); 
+        return Super::getTerm(_0)(iq) + Super::getTerm(_1)(iq); 
       }
       
       std::string str() const 
       { 
-        return std::string("(") + term<0>(*this).str() + " + " + term<1>(*this).str() + ")"; 
+        return std::string("(") + Super::getTerm(_0).str() + " + " + Super::getTerm(_1).str() + ")"; 
       }
     };
     
@@ -53,23 +54,24 @@ namespace AMDiS
       static_assert( !(std::is_same<value_type, traits::no_valid_type>::value), 
                      "********** ERROR: Can not subtract terms **********" );
       
-      Subtract(Term1&& term1_, Term2&& term2_)
-        : Super(std::forward<Term1>(term1_), std::forward<Term2>(term2_))
+      template <class Term0_, class Term1_>
+      Subtract(Term0_&& term0_, Term1_&& term1_)
+        : Super(std::forward<Term1>(term0_), std::forward<Term2>(term1_))
       { }
       
       int getDegree() const
       {
-        return std::max(degree<0>(*this), degree<1>(*this));
+        return std::max(Super::getDegree(_0), Super::getDegree(_1));
       }
 
       value_type operator()(const int& iq) const 
       {
-        return term<0>(*this)(iq) - term<1>(*this)(iq); 
+        return Super::getTerm(_0)(iq) - Super::getTerm(_1)(iq); 
       }
       
       std::string str() const 
       { 
-        return std::string("(") + term<0>(*this).str() + " - " + term<1>(*this).str() + ")"; 
+        return std::string("(") + Super::getTerm(_0).str() + " - " + Super::getTerm(_1).str() + ")"; 
       }
     };
     
@@ -81,23 +83,24 @@ namespace AMDiS
       using Super = LazyOperatorTerms<Term>;
       using value_type = Value_t<Term>;
       
-      Negative(Term&& term_)
+      template <class Term_>
+      Negative(Term_&& term_)
         : Super(std::forward<Term>(term_)) 
       { }
       
       int getDegree() const
       {
-        return degree<0>(*this);
+        return Super::getDegree(_0);
       }
 
       value_type operator()(const int& iq) const 
       { 
-        return -term<0>(*this)(iq); 
+        return -Super::getTerm(_0)(iq); 
       }
       
       std::string str() const 
       { 
-        return std::string("-(") + term<0>(*this).str() + ")"; 
+        return std::string("-(") + Super::getTerm(_0).str() + ")"; 
       }
     };
     

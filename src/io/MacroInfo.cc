@@ -18,6 +18,7 @@
  * 
  ******************************************************************************/
 
+#include <cstring>
 
 #include "MacroInfo.h"
 #include "Mesh.h"
@@ -25,10 +26,10 @@
 #include "FixVecConvert.h"
 #include "SurfaceRegion_ED.h"
 #include "ElementRegion_ED.h"
+#include "MacroElement.h"
 
-#include <cstring>
-namespace AMDiS {
-
+namespace AMDiS 
+{
   void MacroInfo::fill(Mesh *pmesh, int nelements, int nvertices)
   {
     FUNCNAME("MacroInfo::fill()");

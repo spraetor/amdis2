@@ -2,10 +2,12 @@
 
 #pragma once
 
+#include <cmath>
+#include "Log.h"
 #include "MatrixVectorOperations.h"
 
-namespace AMDiS {
-
+namespace AMDiS 
+{
   /** \brief
    * Projects world coordinates to the surface of a ball with given center and 
    * radius. Can be used as boundary or volume projection.
@@ -15,22 +17,19 @@ namespace AMDiS {
   public:
     /// Constructor.
     BallProject(int id, 
-		ProjectionType type,
-		WorldVector<double> &center,
-		double radius) 
+            		ProjectionType type,
+            		WorldVector<double> &center,
+            		double radius) 
       : Projection(id, type),
-	center_(center),
-	radius_(radius)
+      	center_(center),
+      	radius_(radius)
     {}
-
-    /// Destructor.
-    virtual ~BallProject() {}
 
     /// Implementation of Projection::project();
     void project(WorldVector<double> &x) 
     {
       x -= center_;
-      double norm = sqrt(x*x);
+      double norm = std::sqrt(x*x);
       TEST_EXIT(norm != 0.0)("can't project vector x\n");
       x *= radius_ / norm;
       x += center_;

@@ -1,6 +1,7 @@
 #include "LeafData.h"
 #include "Element.h"
 #include "Mesh.h"
+#include "MatrixVectorOperations.h"
 
 namespace AMDiS 
 {

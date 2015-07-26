@@ -17,57 +17,56 @@ namespace AMDiS
   public:
     virtual ~LeafDataEstimatableInterface() {};
     virtual void setErrorEstimate(int, double) = 0;
-    virtual double getErrorEstimate(int) = 0;
+    virtual double getErrorEstimate(int) const = 0;
   };
 
   
   class LeafDataEstimatable : public ElementData,
-			      public LeafDataEstimatableInterface
+			                        public LeafDataEstimatableInterface
   {
   public:
-    inline bool isOfType(int type) const 
+    bool isOfType(int type) const 
     {
       if (type == ESTIMATABLE)
-	return true;
+        return true;
       
       return false;
     }
 
-    class Creator : public CreatorInterface<ElementData>
+    struct Creator : public CreatorInterface<ElementData>
     {
-    public:
       ElementData* create() 
       {
-	return new LeafDataEstimatable;
+        return new LeafDataEstimatable;
       }
     };
 
     /// constructor
     LeafDataEstimatable(ElementData *decorated = NULL)
       : ElementData(decorated), 
-	errorEstimate(0.0)
+        errorEstimate(0.0)
     {}
 
     /// Refinement of parent to child1 and child2.
     /// @return true: must this ElementData, else not allowed to delete it
     bool refineElementData(Element* parent, 
-			   Element* child1,
-			   Element* child2,
-			   int elType);
+                  			   Element* child1,
+                  			   Element* child2,
+                  			   int elType);
 
     void coarsenElementData(Element* parent, 
-			    Element* thisChild,
-			    Element* otherChild,
-			    int elTypeParent);
+                  			    Element* thisChild,
+                  			    Element* otherChild,
+                  			    int elTypeParent);
 
     /// Sets \ref errorEstimate
-    void setErrorEstimate(int, double est) 
+    virtual void setErrorEstimate(int, double est) override 
     { 
       errorEstimate = est; 
     }
 
     /// Returns \ref errorEstimate
-    double getErrorEstimate(int) 
+    virtual double getErrorEstimate(int) const override
     { 
       return errorEstimate; 
     }
@@ -104,22 +103,21 @@ namespace AMDiS
 
   
   class LeafDataEstimatableVec : public ElementData,
-				 public LeafDataEstimatableInterface
+				                         public LeafDataEstimatableInterface
   {
   public:
-    class Creator : public CreatorInterface<ElementData>
+    struct Creator : public CreatorInterface<ElementData>
     {
-    public:
       ElementData* create() 
       {
-	return new LeafDataEstimatableVec;
+        return new LeafDataEstimatableVec;
       }
     };
 
     bool isOfType(int type) const 
     {
       if (type == ESTIMATABLE) 
-	return true;
+        return true;
       return false;
     }
 
@@ -130,25 +128,25 @@ namespace AMDiS
 
     /// Refinement of parent to child1 and child2.
     bool refineElementData(Element* parent, 
-			   Element* child1,
-			   Element* child2,
-			   int elType);
+                  			   Element* child1,
+                  			   Element* child2,
+                  			   int elType);
 
     void coarsenElementData(Element* parent, 
-			    Element* thisChild,
-			    Element* otherChild,
-			    int elTypeParent);
+                  			    Element* thisChild,
+                  			    Element* otherChild,
+                  			    int elTypeParent);
 
     /// Sets \ref errorEstimate
-    void setErrorEstimate(int index, double est) 
+    virtual void setErrorEstimate(int index, double est) override
     { 
       errorEstimate[index] = est; 
     }
 
     /// Returns \ref errorEstimate
-    double getErrorEstimate(int index) 
+    virtual double getErrorEstimate(int index) const override 
     { 
-      return errorEstimate[index];
+      return errorEstimate.at(index);
     }
 
     /// Implements ElementData::clone().
@@ -156,7 +154,7 @@ namespace AMDiS
     {
       // create new estimatable leaf data
       LeafDataEstimatableVec *newObj = 
-	new LeafDataEstimatableVec(NULL);
+        new LeafDataEstimatableVec(NULL);
 
       newObj->errorEstimate = errorEstimate;
 
@@ -191,50 +189,46 @@ namespace AMDiS
     virtual void setCoarseningErrorEstimate(int index, double est) = 0;
 
     /// Returns \ref coarseningError
-    virtual double getCoarseningErrorEstimate(int index) = 0;
+    virtual double getCoarseningErrorEstimate(int index) const = 0;
   };
   
 
   class LeafDataCoarsenable : public ElementData,
-			      public LeafDataCoarsenableInterface
+		                          public LeafDataCoarsenableInterface
   {
   public:
-    class Creator : public CreatorInterface<ElementData>
+    struct Creator : public CreatorInterface<ElementData>
     {
-    public:
       ElementData* create() 
       {
-	return new LeafDataCoarsenable;
+        return new LeafDataCoarsenable;
       }
     };
 
     bool isOfType(int type) const 
     {
       if(type == COARSENABLE) 
-	return true;
+        return true;
       return false;
     }
 
     /// constructor
     LeafDataCoarsenable(ElementData *decorated = NULL)
       : ElementData(decorated), 
-	coarseningError(0.00)
-    {}
-
-    ~LeafDataCoarsenable()
+        coarseningError(0.00)
     {}
 
     /// Refinement of parent to child1 and child2.
     bool refineElementData(Element* parent, 
-			   Element* child1,
-			   Element* child2,
-			   int elType);
+                  			   Element* child1,
+                  			   Element* child2,
+                  			   int elType);
 
     /// Refinement of parent to child1 and child2.
     void coarsenElementData(Element* parent, 
-			    Element* thisChild,
-			    Element* otherChild,
-			    int elTypeParent);
+                  			    Element* thisChild,
+                  			    Element* otherChild,
+                  			    int elTypeParent);
 
     /// Implements ElementData::clone().
     ElementData *clone() const 
@@ -250,13 +244,13 @@ namespace AMDiS
     }
 
     /// Sets \ref coarseningError
-    virtual void setCoarseningErrorEstimate(int , double est) 
+    virtual void setCoarseningErrorEstimate(int , double est) override
     { 
       coarseningError = est; 
     }
 
     /// Returns \ref coarseningError
-    virtual double getCoarseningErrorEstimate(int) 
+    virtual double getCoarseningErrorEstimate(int) const override
     { 
       return coarseningError; 
     }
@@ -277,22 +271,21 @@ namespace AMDiS
 
 
   class LeafDataCoarsenableVec : public ElementData,
-				 public LeafDataCoarsenableInterface
+				                         public LeafDataCoarsenableInterface
   {
   public:
-    class Creator : public CreatorInterface<ElementData>
+    struct Creator : public CreatorInterface<ElementData>
     {
-    public:
       ElementData* create() 
       {
-	return new LeafDataCoarsenableVec;
+        return new LeafDataCoarsenableVec;
       }
     };
 
     bool isOfType(int type) const 
     {
       if (type == COARSENABLE) 
-	return true;
+        return true;
       return false;
     }
 
@@ -306,7 +299,7 @@ namespace AMDiS
     {
       // create new estimatable leaf data
       LeafDataCoarsenableVec *newObj = 
-	new LeafDataCoarsenableVec(NULL);
+        new LeafDataCoarsenableVec(NULL);
 
       newObj->coarseningError = coarseningError; 
 
@@ -319,26 +312,26 @@ namespace AMDiS
 
     /// Refinement of parent to child1 and child2.
     bool refineElementData(Element* parent, 
-			   Element* child1,
-			   Element* child2,
-			   int elType);
+                  			   Element* child1,
+                  			   Element* child2,
+                  			   int elType);
 
     /// Refinement of parent to child1 and child2.
     void coarsenElementData(Element* parent, 
-			    Element* thisChild,
-			    Element* otherChild,
-			    int elTypeParent);
+                  			    Element* thisChild,
+                  			    Element* otherChild,
+                  			    int elTypeParent);
 
     /// Sets \ref coarseningError
-    virtual void setCoarseningErrorEstimate(int index, double est) 
+    virtual void setCoarseningErrorEstimate(int index, double est) override
     { 
       coarseningError[index] = est; 
     }
 
     /// Returns \ref coarseningError
-    virtual double getCoarseningErrorEstimate(int index) 
+    virtual double getCoarseningErrorEstimate(int index) const override
     { 
-      return coarseningError[index]; 
+      return coarseningError.at(index); 
     }
 
     std::string getTypeName() const 
@@ -359,19 +352,18 @@ namespace AMDiS
   class LeafDataPeriodic : public ElementData
   {
   public:
-    class Creator : public CreatorInterface<ElementData>
+    struct Creator : public CreatorInterface<ElementData>
     {
-    public:
       ElementData* create() 
       {
-	return new LeafDataPeriodic;
+        return new LeafDataPeriodic;
       }
     };
 
     bool isOfType(int type) const 
     {
       if (type == PERIODIC) 
-	return true;
+        return true;
       
       return false;
     }
@@ -381,18 +373,18 @@ namespace AMDiS
     {
     public:
       PeriodicInfo() 
-	: periodicCoords(NULL)
-      {}
+        : periodicCoords(NULL)
+      { }
 
       PeriodicInfo(int mode,
-		   BoundaryType t,
-		   int side,
-		   const DimVec<WorldVector<double> > *coords);
+            		   BoundaryType t,
+            		   int side,
+            		   const DimVec<WorldVector<double> > *coords);
 
       virtual ~PeriodicInfo() 
       {
-	if (periodicCoords) 
-	  delete periodicCoords;
+        if (periodicCoords) 
+          delete periodicCoords;
       }
 
       PeriodicInfo(const PeriodicInfo &rhs);
@@ -403,7 +395,7 @@ namespace AMDiS
 
       int elementSide;
 
-      DimVec<WorldVector<double> > *periodicCoords;
+      DimVec<WorldVector<double> >* periodicCoords;
     };
 
   public:
@@ -411,9 +403,6 @@ namespace AMDiS
     LeafDataPeriodic(ElementData *decorated = NULL)
       : ElementData(decorated)
     {}
-
-    /// Destructor.
-    ~LeafDataPeriodic() {}
 
     /// Implements LeafData::clone().
     ElementData *clone() const 
@@ -424,9 +413,9 @@ namespace AMDiS
     }
 
     void addPeriodicInfo(int mode,
-				BoundaryType type,
-				int side,
-				const DimVec<WorldVector<double> > *coords)
+                				 BoundaryType type,
+                				 int side,
+                				 const DimVec<WorldVector<double> > *coords)
     {
       PeriodicInfo periodicInfo(mode, type, side, coords);
       periodicInfoList.push_back(periodicInfo);
@@ -448,7 +437,7 @@ namespace AMDiS
     }
 
     bool refineElementData(Element* parent, Element* child1, Element* child2, 
-			   int elType);
+                           int elType);
 
   private:
     std::list<PeriodicInfo> periodicInfoList;

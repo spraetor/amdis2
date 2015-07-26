@@ -2,8 +2,6 @@
 
 #pragma once
 
-#include "Global.h"
-
 namespace AMDiS 
 {
 
@@ -44,7 +42,7 @@ namespace AMDiS
     Flag& operator=(const Flag& f) 
     {
       if (this != &f) 
-	flags = f.flags; 
+        flags = f.flags; 
       return *this;
     }
 
@@ -146,7 +144,7 @@ namespace AMDiS
     Flag& operator|=(const Flag& f) 
     {
       if (this != &f)
-	flags |= f.flags;
+        flags |= f.flags;
       return *this;
     }
 

@@ -6,10 +6,8 @@
 #include <ctime>
 #include <queue>
 
-#include "Flag.h"
-#include "AdaptInfo.h"
-#include "AdaptBase.h"
 #include "AMDiS_fwd.h"
+#include "AdaptBase.h"
 
 namespace AMDiS {
 
@@ -25,14 +23,11 @@ namespace AMDiS {
     /// Creates a AdaptInstationary object with the given name for the time 
     /// dependent problem problemInstat.
     AdaptInstationary(std::string name, 
-		      ProblemIterationInterface &problemStat,
-		      AdaptInfo &info,
-		      ProblemTimeInterface &problemInstat,
-		      AdaptInfo &initialInfo,
+            		      ProblemIterationInterface &problemStat,
+            		      AdaptInfo &info,
+            		      ProblemTimeInterface &problemInstat,
+            		      AdaptInfo &initialInfo,
                       std::time_t initialTimestampSet = 0);
-
-    /// Destructor
-    virtual ~AdaptInstationary() {}
 
     /// Sets \ref strategy to aStrategy
     void setStrategy(int aStrategy) 

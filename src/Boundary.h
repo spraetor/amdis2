@@ -2,8 +2,6 @@
 
 #pragma once
 
-#include "Global.h"
-
 namespace AMDiS {
 
   /// Flag to denote interior boundaryies.

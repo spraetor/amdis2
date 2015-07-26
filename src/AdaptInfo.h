@@ -2,8 +2,12 @@
 
 #pragma once
 
-#include "MatrixVector.h"
-#include "Initfile.h"
+#include <vector>
+#include <string>
+#include <cmath>
+
+#include "Log.h"
+#include "Math.h"
 
 namespace AMDiS {
 
@@ -84,22 +88,6 @@ namespace AMDiS {
       for (size_t i = 0;  i < scalContents.size(); i++)
         delete scalContents[i];
     }
-
-    /// Sets initial values to time/timestep variables
-    // inline void init()
-    // {
-    //   Parameters::get(name + "->start time", startTime);
-    //   time = startTime;
-    //   Parameters::get(name + "->timestep", timestep);
-    //   Parameters::get(name + "->end time", endTime);
-    //   Parameters::get(name + "->max iteration", maxSpaceIteration);
-    //   Parameters::get(name + "->max timestep iteration", maxTimestepIteration);
-    //   Parameters::get(name + "->max time iteration", maxTimeIteration);
-    //   Parameters::get(name + "->min timestep", minTimestep);
-    //   Parameters::get(name + "->max timestep", maxTimestep);
-    //   Parameters::get(name + "->number of timesteps", nTimesteps);
-    //   Parameters::get(name + "->time tolerance", globalTimeTolerance);
-    // }
 
     /// Resets all variables to zero (or something equivalent)
     void reset();

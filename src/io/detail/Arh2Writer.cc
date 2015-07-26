@@ -8,6 +8,7 @@
 #include "Traverse.h"
 #include "DOFVector.h"
 #include "../Arh2Writer.h"
+#include "MacroElement.h"
 
 #include <boost/iostreams/filtering_streambuf.hpp>
 #include <boost/iostreams/copy.hpp>

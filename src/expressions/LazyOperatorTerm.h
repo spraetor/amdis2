@@ -263,21 +263,19 @@ namespace AMDiS
       return std::get<N>(Self::terms);
     } 
     
+    typename std::tuple_element<0, decltype(Self::terms)>::type &
+    getTerm()
+    {
+      return std::get<0>(Self::terms);
+    } 
+    
+    typename std::tuple_element<0, decltype(Self::terms)>::type const&
+    getTerm() const
+    {
+      return std::get<0>(Self::terms);
+    } 
+    
     double operator()(const int& iq) const;
-  };
-  
-  template <int N, class... Terms>
-  inline auto term(LazyOperatorTerms<Terms...>&& op)
-    -> decltype(op.getTerm(int_<N>()))
-  {
-    return op.getTerm(int_<N>());
-  } 
-  
-  template <int N, class... Terms>
-  inline int degree(LazyOperatorTerms<Terms...>&& op)
-  {
-    return op.getDegree(int_<N>());
-  } 
-  
+  };  
   
 } // end namespace AMDiS

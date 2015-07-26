@@ -1,6 +1,8 @@
 #include <string>
+#include <iostream>
 
 #include "AdaptInfo.h"
+#include "Initfile.h"
 
 namespace AMDiS 
 {
@@ -90,7 +92,7 @@ namespace AMDiS
       scalContents.resize(newSize);
 
       for (int i = oldSize; i < newSize; i++)
-	scalContents[i] = 
+        scalContents[i] = 
 	  new ScalContent(name + "[" + std::to_string(i) + "]"); 
     }
   }
@@ -100,15 +102,15 @@ namespace AMDiS
   {
     for (size_t i = 0; i < scalContents.size(); i++){
       std::cout << "    Time error estimate     ["<<i<<"] = " 
-	  << getTimeEstCombined(i) << "\n"
-	  << "    Time error estimate sum ["<<i<<"] = " 
-	  << scalContents[i]->est_t_sum << "\n" 
-	  << "    Time error estimate max ["<<i<<"] = " 
-	  << scalContents[i]->est_t_max << "\n"
-	  << "    Time error low bound    ["<<i<<"] = " 
-	  << scalContents[i]->timeErrLow << "\n"
-	  << "    Time error high bound   ["<<i<<"] = " 
-	  << scalContents[i]->timeTolerance << "\n";
+            	  << getTimeEstCombined(i) << "\n"
+            	  << "    Time error estimate sum ["<<i<<"] = " 
+            	  << scalContents[i]->est_t_sum << "\n" 
+            	  << "    Time error estimate max ["<<i<<"] = " 
+            	  << scalContents[i]->est_t_max << "\n"
+            	  << "    Time error low bound    ["<<i<<"] = " 
+            	  << scalContents[i]->timeErrLow << "\n"
+            	  << "    Time error high bound   ["<<i<<"] = " 
+            	  << scalContents[i]->timeTolerance << "\n";
     }
   }
   

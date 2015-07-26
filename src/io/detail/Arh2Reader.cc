@@ -6,6 +6,7 @@
 #include "SystemVector.h"
 #include "Debug.h"
 #include "../Arh2Reader.h"
+#include "MacroElement.h"
 
 #include <boost/filesystem.hpp>
 #include <boost/iostreams/filtering_streambuf.hpp>

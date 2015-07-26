@@ -8,7 +8,7 @@
 #include "Mesh.h"
 #include "RefinementManager.h"
 #include "Traverse.h"
-
+#include "MacroElement.h"
 
 using namespace std;
 

@@ -1,8 +1,9 @@
 #include "AdaptInstationary.h"
+#include "AdaptInfo.h"
 #include "Initfile.h"
-#include "est/Estimator.h"
 #include "ProblemIterationInterface.h"
 #include "ProblemTimeInterface.h"
+#include "Flag.h"
 
 #if HAVE_PARALLEL_DOMAIN_AMDIS
 #include "parallel/MeshDistributor.h"
@@ -16,11 +17,11 @@ using namespace std;
 namespace AMDiS {
 
   AdaptInstationary::AdaptInstationary(std::string name,
-				       ProblemIterationInterface &problemStat,  
-				       AdaptInfo &adaptInfo,
-				       ProblemTimeInterface &problemInstat,
-				       AdaptInfo &initialInfo,
-				       time_t initialTimestampSet)
+                        				       ProblemIterationInterface &problemStat,  
+                        				       AdaptInfo &adaptInfo,
+                        				       ProblemTimeInterface &problemInstat,
+                        				       AdaptInfo &initialInfo,
+                        				       time_t initialTimestampSet)
     : AdaptBase(name, &problemStat, &adaptInfo, &problemInstat, &initialInfo),
       breakWhenStable(0)
   {
@@ -81,13 +82,13 @@ namespace AMDiS {
       adaptInfo->incTimestepIteration();
 
       if (!fixedTimestep && 
-	  !adaptInfo->timeToleranceReached() &&
-	  adaptInfo->getTimestepIteration() <= adaptInfo->getMaxTimestepIteration() &&
-	  !(adaptInfo->getTimestep() <= adaptInfo->getMinTimestep())) {
-  
-	adaptInfo->setTime(adaptInfo->getTime() - adaptInfo->getTimestep());
-	adaptInfo->setTimestep(adaptInfo->getTimestep() * timeDelta1);
-	continue;
+      	  !adaptInfo->timeToleranceReached() &&
+      	  adaptInfo->getTimestepIteration() <= adaptInfo->getMaxTimestepIteration() &&
+      	  !(adaptInfo->getTimestep() <= adaptInfo->getMinTimestep())) 
+      {
+      	adaptInfo->setTime(adaptInfo->getTime() - adaptInfo->getTimestep());
+      	adaptInfo->setTimestep(adaptInfo->getTimestep() * timeDelta1);
+      	continue;
       }
 
 
@@ -109,8 +110,9 @@ namespace AMDiS {
 #endif
 	  if (isAdapted == 0) {
 	    if (!fixedTimestep && 
-		!adaptInfo->timeToleranceReached() &&
-		!(adaptInfo->getTimestep() <= adaptInfo->getMinTimestep())) {
+      		!adaptInfo->timeToleranceReached() &&
+      		!(adaptInfo->getTimestep() <= adaptInfo->getMinTimestep())) 
+      {
 	      adaptInfo->setTime(adaptInfo->getTime() - adaptInfo->getTimestep());
 	      adaptInfo->setTimestep(adaptInfo->getTimestep() * timeDelta2);
 	      problemIteration->endIteration(adaptInfo);
@@ -126,7 +128,7 @@ namespace AMDiS {
 		 adaptInfo->getSpaceIteration() <= adaptInfo->getMaxSpaceIteration());
 
       } else {
-	problemIteration->endIteration(adaptInfo);
+        problemIteration->endIteration(adaptInfo);
       }
 
 
@@ -144,9 +146,9 @@ namespace AMDiS {
 
     // Second, check for decrease of timestep
     if (!fixedTimestep &&
-	!adaptInfo->timeToleranceReached() &&
-	!(adaptInfo->getTimestep() <= adaptInfo->getMinTimestep()))
-	adaptInfo->setTimestep(adaptInfo->getTimestep() * timeDelta1);    
+      	!adaptInfo->timeToleranceReached() &&
+      	!(adaptInfo->getTimestep() <= adaptInfo->getMinTimestep()))
+      adaptInfo->setTimestep(adaptInfo->getTimestep() * timeDelta1);    
   }
 
 
@@ -174,8 +176,8 @@ namespace AMDiS {
     
     // Second, check for decrease of timestep
     if (!fixedTimestep &&
-	!adaptInfo->timeToleranceReached() &&
-	!(adaptInfo->getTimestep() <= adaptInfo->getMinTimestep()))
+      	!adaptInfo->timeToleranceReached() &&
+      	!(adaptInfo->getTimestep() <= adaptInfo->getMinTimestep()))
       adaptInfo->setTimestep(adaptInfo->getTimestep() * timeDelta1);    
   }
 
