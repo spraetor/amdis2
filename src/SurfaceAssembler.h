@@ -18,9 +18,9 @@ namespace AMDiS
   public:
     /// Creates a SurfaceAssembler conforming to operate for the given \ref coords.
     SurfaceAssembler(Operator *operat,
-		     const FiniteElemSpace *rowFeSpace,
-		     const FiniteElemSpace *colFeSpace,
-		     VectorOfFixVecs<DimVec<double> > &coords);
+            		     const FiniteElemSpace *rowFeSpace,
+            		     const FiniteElemSpace *colFeSpace,
+            		     VectorOfFixVecs<DimVec<double> > &coords);
 
     /// Destructor
     ~SurfaceAssembler();
