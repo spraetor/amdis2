@@ -9,8 +9,6 @@
 
 #pragma once
 
-#include "Config.h"
-
 #include <string>
 #include <vector>
 #include <set>
@@ -27,10 +25,9 @@
 #endif
 
 #include "AMDiS_fwd.h"
+#include "Config.h"
 #include "GeoIndex.h"
-#include "OpenMP.h"
 #include "Log.h"
-#include "Math.h"
 #include "traits/meta_basic.hpp"
 
 namespace AMDiS 

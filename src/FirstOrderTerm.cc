@@ -10,11 +10,11 @@ namespace AMDiS
   
   /// Implenetation of FirstOrderTerm::evalImpl().
   void FirstOrderTerm::evalImpl(int nPoints,
-				const mtl::dense_vector<double>& uhAtQP,
-				const mtl::dense_vector<WorldVector<double> >& grdUhAtQP,
-				const mtl::dense_vector<WorldMatrix<double> >& D2UhAtQP,
-				mtl::dense_vector<double>& result,
-				double factor)  const
+                        				const DenseVector<double>& uhAtQP,
+                        				const DenseVector<WorldVector<double> >& grdUhAtQP,
+                        				const DenseVector<WorldMatrix<double> >& D2UhAtQP,
+                        				DenseVector<double>& result,
+                        				double factor)  const
   {
     int dow = Global::getGeo(WORLD);
 
@@ -32,7 +32,7 @@ namespace AMDiS
 
 
   void FirstOrderTerm::l1(const DimVec<WorldVector<double> >& Lambda,
-			  mtl::dense_vector<double>& Lb,
+			  DenseVector<double>& Lb,
 			  double factor) const
   {
     const int dim = size(Lambda);
@@ -50,7 +50,7 @@ namespace AMDiS
   
   void FirstOrderTerm::lb(const DimVec<WorldVector<double> >& Lambda,
 			  const WorldVector<double>& b,
-			  mtl::dense_vector<double>& Lb,
+			  DenseVector<double>& Lb,
 			  double factor) const
   {
     const int dim = size(Lambda);
@@ -61,7 +61,7 @@ namespace AMDiS
   
   
   void FirstOrderTerm::lb_one(const DimVec<WorldVector<double> >& Lambda,
-			      mtl::dense_vector<double>& Lb,
+			      DenseVector<double>& Lb,
 			      double factor) const
   {
     const int dim = size(Lambda);

@@ -2,7 +2,8 @@
 
 #pragma once
 
-namespace AMDiS {
+namespace AMDiS 
+{
 
   /** \ingroup Adaption
    * \brief
@@ -15,9 +16,6 @@ namespace AMDiS {
     RefinementManager1d()
       : RefinementManager()
     {}
-
-    /// destructor 
-    virtual ~RefinementManager1d() {}
 
     /// Implements RefinementManager::refineMesh.
     Flag refineMesh(Mesh *aMesh);

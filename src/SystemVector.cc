@@ -1,7 +1,33 @@
 #include "SystemVector.h"
+#include "MatrixVector.h"
+#include "DOFVector.h"
 
 namespace AMDiS 
 {
+  SystemVector::SystemVector(std::string name_,
+                        		 std::vector<const FiniteElemSpace*> feSpace_, 
+                        		 int size,
+                        		 bool createVec_)
+      : name(name_),
+      	componentSpaces(feSpace_),
+      	vectors(size),
+      	createVec(createVec_)
+  {
+    if (createVec_)
+      for (int i = 0; i < size; i++)
+        vectors[i] = new DOFVector<double>(componentSpaces[i], "tmp");
+  }
+
+
+  SystemVector::SystemVector(const SystemVector& rhs)
+      : name(rhs.getName()),
+      	componentSpaces(rhs.getFeSpaces()),
+      	vectors(rhs.getSize())
+  {
+    for (size_t i = 0; i < vectors.size(); i++)
+      vectors[i] = new DOFVector<double>(*rhs.getDOFVector(i));
+  }
+
 
   int SystemVector::getUsedSize() const 
   {
@@ -105,6 +131,99 @@ namespace AMDiS
     result += sizeof(SystemVector);
 
     return result;
+  }
+  
+  
+  
+  
+  const SystemVector& operator*=(SystemVector& x, double d) 
+  {
+    for (int i = 0; i < x.getSize(); i++)
+      *(x.getDOFVector(i)) *= d;
+    return x;
+  }
+
+
+  double operator*(SystemVector& x, SystemVector& y) 
+  {
+    TEST_EXIT_DBG(x.getSize() == y.getSize())("invalid size\n");
+    double result = 0.0;
+    for (int i = 0; i < x.getSize(); i++)
+      result += (*x.getDOFVector(i)) * (*y.getDOFVector(i));
+    return result;
+  }
+
+
+  const SystemVector& operator+=(SystemVector& x, const SystemVector& y) 
+  {
+    TEST_EXIT_DBG(x.getSize() == y.getSize())("invalid size\n");
+    for (int i = 0; i < x.getSize(); i++)
+      (*(x.getDOFVector(i))) += (*(y.getDOFVector(i)));
+    return x;
+  }
+
+
+  const SystemVector& operator-=(SystemVector& x, SystemVector& y) 
+  {
+    TEST_EXIT_DBG(x.getSize() == y.getSize())("invalid size\n");
+    for (int i = 0; i < x.getSize(); i++)
+      (*(x.getDOFVector(i))) -= (*(y.getDOFVector(i)));
+    return x;
+  }
+
+
+  SystemVector operator*(SystemVector& x, double d) 
+  {
+    SystemVector result = x;
+    for (int i = 0; i < x.getSize(); i++)
+      (*(result.getDOFVector(i))) *= d;
+    return result;
+  }
+
+  
+  SystemVector operator*(double d, SystemVector& x) 
+  {
+    SystemVector result = x;
+    for (int i = 0; i < x.getSize(); i++)
+      (*(result.getDOFVector(i))) *= d;
+    return result;
+  }
+
+
+  SystemVector operator+(const SystemVector& x, const SystemVector& y)
+  {
+    TEST_EXIT_DBG(x.getSize() == y.getSize())("invalid size\n");
+    SystemVector result = x;
+    for (int i = 0; i < x.getSize(); i++)
+      (*(result.getDOFVector(i))) += (*(y.getDOFVector(i)));
+    return result;
+  }
+  
+  
+  double norm(SystemVector* x) 
+  {
+    double result = 0.0;
+    for (int i = 0; i < x->getSize(); i++)
+      result += x->getDOFVector(i)->squareNrm2();
+    return std::sqrt(result);
+  }
+
+
+  double L2Norm(SystemVector* x) 
+  {
+    double result = 0.0;
+    for (int i = 0; i < x->getSize(); i++)
+      result += x->getDOFVector(i)->L2NormSquare();
+    return std::sqrt(result);
+  }
+
+
+  double H1Norm(SystemVector* x) 
+  {
+    double result = 0.0;
+    for (int i = 0; i < x->getSize(); i++)
+      result += x->getDOFVector(i)->H1NormSquare();
+    return std::sqrt(result);
   }
   
 } // end namespace AMDiS

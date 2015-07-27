@@ -52,19 +52,19 @@ namespace AMDiS
     double getOldLambda(int a, int b) const 
     {
       if (oldLambda) 
-	return (*oldLambda)[a][b]; 
+        return (*oldLambda)[a][b]; 
       else 
-	return 0.0;
+        return 0.0;
     }
 
     /// Get the a-th original quadrature point.
     DimVec<double>* getOldLambda(int a) const 
     {
       if (oldLambda) {
-	return &((*oldLambda)[a]);
+        return &((*oldLambda)[a]);
       } else {
-	ERROR_EXIT("Should not happen!\n");
-	return NULL;
+      	ERROR_EXIT("OldLambda not initialiized!\n");
+      	return NULL;
       }
     }
 

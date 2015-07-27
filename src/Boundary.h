@@ -10,7 +10,7 @@ namespace AMDiS {
   } BoundaryConstants;
 
   /// Type specifier for the different boundary types 
-  typedef signed int BoundaryType;
+  using BoundaryType = signed int;
 
   BoundaryType newBound(BoundaryType oldBound, BoundaryType newBound);
   

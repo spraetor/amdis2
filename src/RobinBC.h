@@ -3,12 +3,12 @@
 #pragma once
 
 #include "BoundaryCondition.h"
-#include "DOFMatrix.h"
-
 #include "expressions/expr_traits.hpp"
 
 namespace AMDiS 
 {
+  class DOFMatrix;
+  
   /** 
    * \ingroup Assembler
    *
@@ -23,51 +23,49 @@ namespace AMDiS
   public:
     /// Constructor. \f$ j \f$ and \f$ alpha \f$ are given as AbstractFunction objects.
     template <class JExpr, class AlphaExpr>
-    RobinBC(BoundaryType type,
-      	    JExpr const& j,
-      	    AlphaExpr const& alpha,
+    RobinBC(BoundaryType type, JExpr&& j_expr, AlphaExpr&& a_expr,
       	    const FiniteElemSpace *rowFeSpace,
       	    const FiniteElemSpace *colFeSpace = NULL)
       : BoundaryCondition(type, rowFeSpace, colFeSpace), 
       	neumannOperators(NULL), 
       	robinOperators(NULL)
     {
-      using JExprType = typename traits::to_expr<JExpr>::to;
-      using AlphaExprType = typename traits::to_expr<AlphaExpr>::to;
+      using JExprType = traits::to_expr<JExpr>;
+      using AlphaExprType = traits::to_expr<AlphaExpr>;
       
-      if (std::is_same<AlphaExpr, tag::dummy>::value)
-        init(JExprType::get(j), tag::dummy());
+      if (traits::is_valid_arg<AlphaExpr>::value)
+        init(JExprType::get(j_expr), AlphaExprType::get(a_expr));
       else
-        init(JExprType::get(j), AlphaExprType::get(alpha));
+        init(JExprType::get(j_expr));
     }
     
     // TODO: move to private section:
     
     /// Implements BoundaryCondition::fillBoundaryCondition();
     virtual void fillBoundaryCondition(DOFMatrix* matrix,
-				       ElInfo* elInfo,
-				       const DegreeOfFreedom* dofIndices,
-				       const BoundaryType* localBound,
-				       int nBasFcts);
+                        				       ElInfo* elInfo,
+                        				       const DegreeOfFreedom* dofIndices,
+                        				       const BoundaryType* localBound,
+                        				       int nBasFcts) override;
   
     /// Implements BoundaryCondition::fillBoundaryCondition();
     virtual void fillBoundaryCondition(DOFVectorBase<double>* vector, 
-				       ElInfo* elInfo,
-				       const DegreeOfFreedom* dofIndices,
-				       const BoundaryType* localBound,
-				       int nBasFcts);
+                        				       ElInfo* elInfo,
+                        				       const DegreeOfFreedom* dofIndices,
+                        				       const BoundaryType* localBound,
+                        				       int nBasFcts) override;
 
     /// Implements BoundaryCondition::boundResidual();
     virtual double boundResidual(ElInfo *elInfo, 
-				 DOFMatrix *matrix,
-				 const DOFVectorBase<double> *dv);
+                        				 DOFMatrix *matrix,
+                        				 const DOFVectorBase<double> *dv) override;
 
   protected:
     template <class JExpr, class AlphaExpr>
-    void init(JExpr const& j, AlphaExpr const& alpha);
+    void init(JExpr&& j_expr, AlphaExpr&& a_expr);
     
     template <class JExpr>
-    void init(JExpr const& j, tag::dummy);
+    void init(JExpr&& j_expr);
     
   protected:
     /// Surface operators for each element side for the Neumann part.
@@ -84,11 +82,11 @@ namespace AMDiS
   {
     template <class JExpr>
     NeumannBC(BoundaryType type,
-	      JExpr const& j,
-	      const FiniteElemSpace *rowFeSpace,
-	      const FiniteElemSpace *colFeSpace = NULL)
-      : RobinBC(type, j, tag::dummy(), rowFeSpace, colFeSpace)
-    { }
+      	      JExpr&& j_expr,
+      	      const FiniteElemSpace *rowFeSpace,
+      	      const FiniteElemSpace *colFeSpace = NULL)
+      : RobinBC(type, j_expr, tag::dummy(), rowFeSpace, colFeSpace)
+    {}
   };
 
 } // end namespace AMDiS

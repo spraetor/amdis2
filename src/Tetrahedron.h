@@ -37,16 +37,16 @@ namespace AMDiS
 
     /// implements Element::getVertexOfPosition
     virtual int getVertexOfPosition(GeoIndex position,
-				    int positionIndex,
-				    int vertexIndex) const override;
+                        				    int positionIndex,
+                        				    int vertexIndex) const override;
 
 
     virtual int getPositionOfVertex(int side, int vertex) const override
     {
-      static const int positionOfVertex[4][4] = {{-1, 0, 1, 2},
-					   {0, -1, 1, 2},
-					   {0, 1, -1, 2},
-					   {0, 1, 2, -1}};
+      static constexpr int positionOfVertex[4][4] = {{-1, 0, 1, 2},
+                                        					   {0, -1, 1, 2},
+                                        					   {0, 1, -1, 2},
+                                        					   {0, 1, 2, -1}};
       return positionOfVertex[side][vertex];
     }
 
@@ -55,27 +55,27 @@ namespace AMDiS
     {
       switch (i) {
       case VERTEX: case PARTS: case NEIGH:
-	return 4;
-	break;
+      	return 4;
+      	break;
       case EDGE:
-	return 6;
+      	return 6;
       case FACE:
-	return 4;
+	     return 4;
       case CENTER:
-	return 1;
-	break;
+	     return 1;
+	     break;
       case DIMEN:
-	return 3;
-	break;
+      	return 3;
+      	break;
       case BOUNDARY:
-	return 14;
-	break;
+      	return 14;
+      	break;
       case PROJECTION:
-	return 10;
-	break;
+      	return 10;
+      	break;
       default:
-	ERROR_EXIT("invalid geo-index\n");
-	return 0;
+      	ERROR_EXIT("invalid geo-index\n");
+      	return 0;
       }
     }
 
@@ -110,28 +110,28 @@ namespace AMDiS
     }
 
     virtual void getNodeDofs(const FiniteElemSpace* feSpace, 
-			    BoundaryObject bound,
-			    DofContainer& dofs,
-			    bool baseDofPtr = false) const override;
+                    			   BoundaryObject bound,
+                    			   DofContainer& dofs,
+                    			   bool baseDofPtr = false) const override;
 
     virtual void getNodeDofsAtFace(const FiniteElemSpace* feSpace, 
-				  BoundaryObject bound,
-				  DofContainer& dofs,
-				  bool baseDofPtr) const;
+                          				  BoundaryObject bound,
+                          				  DofContainer& dofs,
+                          				  bool baseDofPtr) const;
 
     virtual void getNodeDofsAtEdge(const FiniteElemSpace* feSpace, 
-				  BoundaryObject bound,
-				  DofContainer& dofs,
-				  bool baseDofPtr) const;
+                          				  BoundaryObject bound,
+                          				  DofContainer& dofs,
+                          				  bool baseDofPtr) const;
 
     virtual void getHigherOrderDofs(const FiniteElemSpace* feSpace,
-				    BoundaryObject bound,
-				    DofContainer& dofs,
-				    bool baseDofPtr = false,
-				    std::vector<GeoIndex>* dofGeoIndex = NULL) const override;
+                        				    BoundaryObject bound,
+                        				    DofContainer& dofs,
+                        				    bool baseDofPtr = false,
+                        				    std::vector<GeoIndex>* dofGeoIndex = NULL) const override;
 
     virtual void getSubBoundary(BoundaryObject bound, 
-				std::vector<BoundaryObject> &subBound) const override;
+				                        std::vector<BoundaryObject> &subBound) const override;
 
 
     /// implements Element::getSideOfChild()
@@ -141,7 +141,7 @@ namespace AMDiS
       TEST_EXIT_DBG(child == 0 || child == 1)("Child must be in (0,1)!\n");
       TEST_EXIT_DBG(side >= 0 && side <= 3)("Side must be between 0 and 3!\n");
       TEST_EXIT_DBG(elType >= 0 && elType <= 2)
-	("ElType must be between 0 and 2!\n");
+        ("ElType must be between 0 and 2!\n");
 
       return sideOfChild[elType][child][side];
     }
@@ -152,10 +152,9 @@ namespace AMDiS
       FUNCNAME_DBG("Tetrahedron::getSubObjOfChild()");
       TEST_EXIT_DBG(subObj == EDGE || subObj == FACE)("Not yet implemented!\n");
 
-      if (subObj == FACE)
-	return getSideOfChild(childnr, ithObj, elType);
-      else
-	return getEdgeOfChild(childnr, ithObj, elType);
+      return subObj == FACE
+               ? getSideOfChild(childnr, ithObj, elType);
+               : getEdgeOfChild(childnr, ithObj, elType);
     }
 
     /// implements Element::getVertexOfParent()
@@ -165,7 +164,7 @@ namespace AMDiS
       TEST_EXIT_DBG(child == 0 || child == 1)("Child must be in (0,1)!\n");
       TEST_EXIT_DBG(side >= 0 && side <= 3)("Side must be between 0 and 3!\n");
       TEST_EXIT_DBG(elType >= 0 && elType <= 2)
-	("ElType must be between 0 and 2!\n");
+        ("ElType must be between 0 and 2!\n");
 
       return vertexOfParent[elType][child][side];
     }
@@ -186,9 +185,7 @@ namespace AMDiS
 
       DegreeOfFreedom dof0 = dof[vertexOfEdge[localEdgeIndex][0]][0];
       DegreeOfFreedom dof1 = dof[vertexOfEdge[localEdgeIndex][1]][0];
-#if 0
-      DofEdge edge = std::make_pair(std::min(dof0, dof1), std::max(dof0, dof1));
-#endif
+
       return std::minmax({dof0, dof1});
     }
 
@@ -205,18 +202,18 @@ namespace AMDiS
       // Sort the three DOFs of the face with respect to their values.
       DegreeOfFreedom dofMin0, dofMin1, dofMin2;
       if (dof0 < dof1 && dof0 < dof2) {
-	dofMin0 = dof0;
-	dofMin1 = std::min(dof1, dof2);
-	dofMin2 = std::max(dof1, dof2);
+      	dofMin0 = dof0;
+      	dofMin1 = math::min(dof1, dof2);
+      	dofMin2 = math::max(dof1, dof2);
       } else if (dof1 < dof0 && dof1 < dof2) {
-	dofMin0 = dof1;
-	dofMin1 = std::min(dof0, dof2);
-	dofMin2 = std::max(dof0, dof2);
+      	dofMin0 = dof1;
+      	dofMin1 = math::min(dof0, dof2);
+      	dofMin2 = math::max(dof0, dof2);
       } else {
-	TEST_EXIT_DBG(dof2 < dof0 && dof2 < dof1)("Should not happen!\n");
-	dofMin0 = dof2;
-	dofMin1 = std::min(dof0, dof1);
-	dofMin2 = std::max(dof0, dof1);
+      	TEST_EXIT_DBG(dof2 < dof0 && dof2 < dof1)("Should not happen!\n");
+      	dofMin0 = dof2;
+      	dofMin1 = math::min(dof0, dof1);
+      	dofMin2 = math::max(dof0, dof1);
       }
       
       return {{dofMin0, dofMin1, dofMin2}};
@@ -230,7 +227,7 @@ namespace AMDiS
       TEST_EXIT_DBG(child == 0 || child == 1)("Child must be in (0,1)!\n");
       TEST_EXIT_DBG(edge >= 0 && edge <= 5)("Side must be between 0 and 3!\n");
       TEST_EXIT_DBG(elType >= 0 && elType <= 2)
-	("ElType must be between 0 and 2!\n");
+        ("ElType must be between 0 and 2!\n");
 
       return edgeOfChild[elType][child][edge];
     }

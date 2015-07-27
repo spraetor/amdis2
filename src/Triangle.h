@@ -22,8 +22,6 @@ namespace AMDiS
       : Element(aMesh) 
     {}
 
-    ~Triangle() {}
-
     /// implements Element::clone
     virtual Element *clone() const override
     { 
@@ -38,35 +36,35 @@ namespace AMDiS
 
     /// implements Element::getVertexOfPosition
     virtual int getVertexOfPosition(GeoIndex position,
-				    int positionIndex,
-				    int vertexIndex) const override;
+                        				    int positionIndex,
+                        				    int vertexIndex) const override;
 
     /// implements Element::getGeo
     virtual int getGeo(GeoIndex i) const override
     {
       switch (i) {
       case VERTEX: case PARTS: case NEIGH:
-	return 3;
-	break;
+      	return 3;
+      	break;
       case EDGE:
-	return 3;
-      case FACE:
-	return 0;
+      	return 3;
+      case FACE:  
+      	return 0;
       case CENTER:
-	return 1;
-	break;
-      case DIMEN:
-	return 2;
-	break;
+      	return 1;
+      	break;
+      case DIMEN: 
+      	return 2;
+      	break;
       case BOUNDARY:
-	return 6;
-	break;
+      	return 6;
+      	break;
       case PROJECTION:
-	return 3;
-	break;
+      	return 3;
+      	break;
       default:
-	ERROR_EXIT("invalid geo-index\n");
-	return 0;
+      	ERROR_EXIT("invalid geo-index\n");
+      	return 0;
       }
     }
 
@@ -111,7 +109,7 @@ namespace AMDiS
     }
 
     virtual int getSubObjOfChild(int childnr, GeoIndex subObj, 
-				 int ithObj, int elType) const override
+		                             int ithObj, int elType) const override
     {
       FUNCNAME_DBG("Triangle::getSubObjOfChild()");
       TEST_EXIT_DBG(subObj == EDGE)("Not yet implemented!\n");
@@ -166,18 +164,18 @@ namespace AMDiS
     }
 
     virtual void getNodeDofs(const FiniteElemSpace* feSpace, 
-			     BoundaryObject bound,
-			     DofContainer& dofs,
-			     bool baseDofPtr = false) const override;
+                  			     BoundaryObject bound,
+                  			     DofContainer& dofs,
+                  			     bool baseDofPtr = false) const override;
     
     virtual void getHigherOrderDofs(const FiniteElemSpace* feSpace, 
-				    BoundaryObject bound,
-				    DofContainer& dofs,
-				    bool baseDofPtr = false,
-				    std::vector<GeoIndex>* dofGeoIndex = NULL) const override;
+                        				    BoundaryObject bound,
+                        				    DofContainer& dofs,
+                        				    bool baseDofPtr = false,
+                        				    std::vector<GeoIndex>* dofGeoIndex = NULL) const override;
 
     virtual void getSubBoundary(BoundaryObject bound, 
-				std::vector<BoundaryObject> &subBound) const override;
+				                        std::vector<BoundaryObject> &subBound) const override;
 				
 
     std::string getTypeName() const
@@ -190,11 +188,11 @@ namespace AMDiS
   protected:
     /// vertexOfEdge[i][j] is the local number of the j-th vertex of the i-th 
     /// edge of this element.
-    static const int vertexOfEdge[3][2];
+    static constexpr int vertexOfEdge[3][2] = {{1, 2}, {2, 0}, {0, 1}};
 
-    static const int sideOfChild[2][3];
+    static constexpr int sideOfChild[2][3] = {{-1, 2, 0}, {2, -1, 1}};
 
-    static const int vertexOfParent[2][3];
+    static constexpr int vertexOfParent[2][3] = {{2, 0, -1}, {1, 2, -1}};
   };
 
 } // end namespace AMDiS

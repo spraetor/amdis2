@@ -17,10 +17,9 @@
 #include "ZeroOrderAssembler.h"
 #include "FirstOrderAssembler.h"
 #include "SecondOrderAssembler.h"
-#include "ElInfo.h"
 
-namespace AMDiS {
-
+namespace AMDiS 
+{
   /**
    * \ingroup Assembler
    * 
@@ -42,13 +41,13 @@ namespace AMDiS {
 
     /// Assembles the element matrix for the given ElInfo
     void calculateElementMatrix(const ElInfo *elInfo, 
-				ElementMatrix& userMat, 
-				double factor = 1.0);
+                        				ElementMatrix& userMat, 
+                        				double factor = 1.0);
 
     /// Assembles the element vector for the given ElInfo
     void calculateElementVector(const ElInfo *elInfo, 
-				ElementVector& userVec, 
-				double factor = 1.0);
+                        				ElementVector& userVec, 
+                        				double factor = 1.0);
 
     /// Returns \ref rowFeSpace.
     const FiniteElemSpace* getRowFeSpace() const
@@ -99,8 +98,8 @@ namespace AMDiS {
     FirstOrderAssembler* getFirstOrderAssembler(FirstOrderType type = GRD_PSI) const
     {
       return (type == GRD_PSI)
-	? firstOrderAssemblerGrdPsi
-	: firstOrderAssemblerGrdPhi;
+      	? firstOrderAssemblerGrdPsi
+      	: firstOrderAssemblerGrdPhi;
     }
 
     /// Returns \ref secondOrderAssembler.
@@ -117,34 +116,34 @@ namespace AMDiS {
 
     /// Initialisation for the given ElInfo. The call is deligated to the sub assemblers.
     void initElement(const ElInfo *smallElInfo,
-		     const ElInfo *largeElInfo = NULL,
-		     Quadrature *quad = NULL);
+            		     const ElInfo *largeElInfo = NULL,
+            		     Quadrature *quad = NULL);
 
     /// Sets quadratures of all sub assemblers.
     void setQuadratures(Quadrature *quad2,
-			Quadrature *quad1GrdPsi,
-			Quadrature *quad1GrdPhi,
-			Quadrature *quad0) 
+                  			Quadrature *quad1GrdPsi,
+                  			Quadrature *quad1GrdPhi,
+                  			Quadrature *quad0) 
     {
       if (secondOrderAssembler) {
-	TEST_EXIT(!secondOrderAssembler->getQuadrature())
-	  ("quadrature already existing\n");
-	secondOrderAssembler->setQuadrature(quad2);
+      	TEST_EXIT(!secondOrderAssembler->getQuadrature())
+      	  ("quadrature already existing\n");
+      	secondOrderAssembler->setQuadrature(quad2);
       }
       if (firstOrderAssemblerGrdPsi) {
-	TEST_EXIT(!firstOrderAssemblerGrdPsi->getQuadrature())
-	  ("quadrature already existing\n");
-	firstOrderAssemblerGrdPsi->setQuadrature(quad1GrdPsi);
+      	TEST_EXIT(!firstOrderAssemblerGrdPsi->getQuadrature())
+      	  ("quadrature already existing\n");
+      	firstOrderAssemblerGrdPsi->setQuadrature(quad1GrdPsi);
       }
       if (firstOrderAssemblerGrdPhi) {
-	TEST_EXIT(!firstOrderAssemblerGrdPhi->getQuadrature())
-	  ("quadrature already existing\n");
-	firstOrderAssemblerGrdPhi->setQuadrature(quad1GrdPhi);
+      	TEST_EXIT(!firstOrderAssemblerGrdPhi->getQuadrature())
+      	  ("quadrature already existing\n");
+      	firstOrderAssemblerGrdPhi->setQuadrature(quad1GrdPhi);
       }
       if (zeroOrderAssembler) {
-	TEST_EXIT(!zeroOrderAssembler->getQuadrature())
-	  ("quadrature already existing\n");
-	zeroOrderAssembler->setQuadrature(quad0);
+      	TEST_EXIT(!zeroOrderAssembler->getQuadrature())
+      	  ("quadrature already existing\n");
+      	zeroOrderAssembler->setQuadrature(quad0);
       }
     }
 
@@ -238,12 +237,12 @@ namespace AMDiS {
   public:
     /// Constructor
     StandardAssembler(Operator *op,
-		      Quadrature *quad2,
-		      Quadrature *quad1GrdPsi,
-		      Quadrature *quad1GrdPhi,
-		      Quadrature *quad0,
-		      const FiniteElemSpace *rowFeSpace,
-		      const FiniteElemSpace *colFeSpace = NULL);
+            		      Quadrature *quad2,
+            		      Quadrature *quad1GrdPsi,
+            		      Quadrature *quad1GrdPhi,
+            		      Quadrature *quad0,
+            		      const FiniteElemSpace *rowFeSpace,
+            		      const FiniteElemSpace *colFeSpace = NULL);
   };
 
   /**
@@ -257,12 +256,12 @@ namespace AMDiS {
   public:
     /// Constructor
     OptimizedAssembler(Operator *op,
-		       Quadrature *quad2,
-		       Quadrature *quad1GrdPsi,
-		       Quadrature *quad1GrdPhi,
-		       Quadrature *quad0,
-		       const FiniteElemSpace *rowFeSpace,
-		       const FiniteElemSpace *colFeSpace = NULL);
+            		       Quadrature *quad2,
+            		       Quadrature *quad1GrdPsi,
+            		       Quadrature *quad1GrdPhi,
+            		       Quadrature *quad0,
+            		       const FiniteElemSpace *rowFeSpace,
+            		       const FiniteElemSpace *colFeSpace = NULL);
   };
 
 } // end namespace AMDiS

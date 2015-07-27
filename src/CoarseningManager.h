@@ -2,13 +2,11 @@
 
 #pragma once
 
-#include "Global.h"
-#include "Mesh.h"
-#include "ProblemStatBase.h"
 #include "AMDiS_fwd.h"
+#include "Flag.h"
 
-namespace AMDiS {
-
+namespace AMDiS 
+{
   /** \ingroup Adaption
    * \brief
    * Base class of CoarseningManager1d, CoarseningManager2d, CoarseningManager3d.
@@ -21,8 +19,8 @@ namespace AMDiS {
     /// Constructs a CoarseningManager which belongs to aMesh 
     CoarseningManager() 
       : mesh(NULL), 
-	stack(NULL), 
-	doMore(0) 
+      	stack(NULL), 
+      	doMore(0) 
     {}
 
     /// destructor

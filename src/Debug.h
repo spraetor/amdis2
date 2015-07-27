@@ -8,14 +8,15 @@
 #include "Global.h"
 #include "FixVec.h"
 
-namespace AMDiS {
-  
-  namespace debug {
-
-    struct DofPtrSortFct {
-      bool operator() (const DegreeOfFreedom *dof0, const DegreeOfFreedom *dof1) 
+namespace AMDiS 
+{
+  namespace debug 
+  {
+    struct DofPtrSortFct 
+    {
+      bool operator()(const DegreeOfFreedom *dof0, const DegreeOfFreedom *dof1) const
       {
-	return (*dof0 < *dof1);
+      	return (*dof0 < *dof1);
       }
     };
 
@@ -24,12 +25,12 @@ namespace AMDiS {
 
 #ifdef HAVE_PARALLEL_DOMAIN_AMDIS
     void writeLocalElementDofs(int rank, 
-			       int elIdx, 
-			       const FiniteElemSpace *feSpace);
+                  			       int elIdx, 
+                  			       const FiniteElemSpace *feSpace);
     
     void writeMesh(const FiniteElemSpace *feSpace, 
-		   int rank, 
-		   std::string filename);
+            		   int rank, 
+            		   std::string filename);
     
     /** \brief
      * Writes a vtu file with the mesh, where all DOFs are set to zero, and only
@@ -42,8 +43,8 @@ namespace AMDiS {
      * \param[in]  feSpace  The FE space to be used.
      */
     void writeDofMesh(int rank, 
-		      DegreeOfFreedom dof, 
-		      const FiniteElemSpace *feSpace);
+            		      DegreeOfFreedom dof, 
+            		      const FiniteElemSpace *feSpace);
 #endif
 
     /** \brief

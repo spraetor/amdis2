@@ -10,9 +10,9 @@ using namespace std;
 namespace AMDiS 
 {
 
-  const int Triangle::vertexOfEdge[3][2] = {{1, 2}, {2, 0}, {0, 1}};
-  const int Triangle::sideOfChild[2][3] = {{-1, 2, 0}, {2, -1, 1}};
-  const int Triangle::vertexOfParent[2][3] = {{2, 0, -1}, {1, 2, -1}};
+  constexpr int Triangle::vertexOfEdge[3][2];
+  constexpr int Triangle::sideOfChild[2][3];
+  constexpr int Triangle::vertexOfParent[2][3];
 
   bool Triangle::hasSide(Element* sideElem) const
   {
@@ -23,7 +23,7 @@ namespace AMDiS
   }
 
   int Triangle::getVertexOfPosition(GeoIndex position, int positionIndex,
-				    int vertexIndex) const 
+			                              int vertexIndex) const 
   {
     FUNCNAME("Triangle::getVertexOfPosition");
     switch(position) {
@@ -51,11 +51,11 @@ namespace AMDiS
       sorted_2d = new MatrixOfFixVecs<FixVec<int, WORLD> >(2, 3, 2, NO_INIT);
 
       (*sorted_2d)[1][0][1] = (*sorted_2d)[1][1][0] =
-	(*sorted_2d)[2][0][0] = (*sorted_2d)[2][1][1] = 0;
+        (*sorted_2d)[2][0][0] = (*sorted_2d)[2][1][1] = 0;
       (*sorted_2d)[0][0][0] = (*sorted_2d)[0][1][1] =
-	(*sorted_2d)[2][0][1] = (*sorted_2d)[2][1][0] = 1;
+        (*sorted_2d)[2][0][1] = (*sorted_2d)[2][1][0] = 1;
       (*sorted_2d)[0][0][1] = (*sorted_2d)[0][1][0] =
-	(*sorted_2d)[1][0][0] = (*sorted_2d)[1][1][1] = 2;
+        (*sorted_2d)[1][0][0] = (*sorted_2d)[1][1][1] = 2;
     }
 
     const int *vof = vertexOfEdge[face];
@@ -65,9 +65,9 @@ namespace AMDiS
 
 
   void Triangle::getNodeDofs(const FiniteElemSpace* feSpace, 
-			     BoundaryObject bound,
-			     DofContainer& dofs, 
-			     bool baseDofPtr) const
+                  			     BoundaryObject bound,
+                  			     DofContainer& dofs, 
+                  			     bool baseDofPtr) const
   {
     FUNCNAME("Triangle::getNodeDofs()");
 
@@ -76,7 +76,6 @@ namespace AMDiS
 
     if (bound.subObj == VERTEX) {
       dofs.push_back(&(dof[bound.ithObj][n0]));
-
       return;
     }
 
@@ -87,71 +86,71 @@ namespace AMDiS
     switch (bound.ithObj) {
     case 0: 
       {
-	if (child[1] && child[1]->getFirstChild()) {
-	  const DegreeOfFreedom** elDofs = child[1]->getFirstChild()->getDof();
-
- 	  if (bound.reverseMode) {
- 	    nextBound.ithObj = 1;
- 	    child[1]->getSecondChild()->getNodeDofs(feSpace, nextBound, dofs, 
-						    baseDofPtr);
-	    dofs.push_back(&(elDofs[2][n0]));
- 	    nextBound.ithObj = 0;
- 	    child[1]->getFirstChild()->getNodeDofs(feSpace, nextBound, dofs, 
-						   baseDofPtr);
- 	  } else {
-	    nextBound.ithObj = 0;
-	    child[1]->getFirstChild()->getNodeDofs(feSpace, nextBound, dofs, 
-						   baseDofPtr);
-	    dofs.push_back(&(elDofs[2][n0]));
-	    nextBound.ithObj = 1;
-	    child[1]->getSecondChild()->getNodeDofs(feSpace, nextBound, dofs, 
-						    baseDofPtr);
-	  }
-	}
+      	if (child[1] && child[1]->getFirstChild()) {
+      	  const DegreeOfFreedom** elDofs = child[1]->getFirstChild()->getDof();
+      
+       	  if (bound.reverseMode) {
+       	    nextBound.ithObj = 1;
+       	    child[1]->getSecondChild()->getNodeDofs(feSpace, nextBound, dofs, 
+      						    baseDofPtr);
+      	    dofs.push_back(&(elDofs[2][n0]));
+       	    nextBound.ithObj = 0;
+       	    child[1]->getFirstChild()->getNodeDofs(feSpace, nextBound, dofs, 
+      						   baseDofPtr);
+       	  } else {
+      	    nextBound.ithObj = 0;
+      	    child[1]->getFirstChild()->getNodeDofs(feSpace, nextBound, dofs, 
+      						   baseDofPtr);
+      	    dofs.push_back(&(elDofs[2][n0]));
+      	    nextBound.ithObj = 1;
+      	    child[1]->getSecondChild()->getNodeDofs(feSpace, nextBound, dofs, 
+      						    baseDofPtr);
+      	  }
+      	}
       }
       break;
     case 1:
       {
-	if (child[0] && child[0]->getFirstChild()) {
-	  const DegreeOfFreedom** elDofs = child[0]->getFirstChild()->getDof();
-
-	  if (bound.reverseMode) {
-	    nextBound.ithObj = 1;
-	    child[0]->getSecondChild()->getNodeDofs(feSpace, nextBound, dofs, 
-						    baseDofPtr);
-	    dofs.push_back(&(elDofs[2][n0]));
-	    nextBound.ithObj = 0;
-	    child[0]->getFirstChild()->getNodeDofs(feSpace, nextBound, dofs, 
-						   baseDofPtr);
-	  } else {
-	    nextBound.ithObj = 0;
-	    child[0]->getFirstChild()->getNodeDofs(feSpace, nextBound, dofs, 
-						   baseDofPtr);
-	    dofs.push_back(&(elDofs[2][n0]));
-	    nextBound.ithObj = 1;
-	    child[0]->getSecondChild()->getNodeDofs(feSpace, nextBound, dofs, 
-						    baseDofPtr);
-	  }
-	}
+      	if (child[0] && child[0]->getFirstChild()) {
+      	  const DegreeOfFreedom** elDofs = child[0]->getFirstChild()->getDof();
+      
+      	  if (bound.reverseMode) {
+      	    nextBound.ithObj = 1;
+      	    child[0]->getSecondChild()->getNodeDofs(feSpace, nextBound, dofs, 
+      						    baseDofPtr);
+      	    dofs.push_back(&(elDofs[2][n0]));
+      	    nextBound.ithObj = 0;
+      	    child[0]->getFirstChild()->getNodeDofs(feSpace, nextBound, dofs, 
+      						   baseDofPtr);
+      	  } else {
+      	    nextBound.ithObj = 0;
+      	    child[0]->getFirstChild()->getNodeDofs(feSpace, nextBound, dofs, 
+      						   baseDofPtr);
+      	    dofs.push_back(&(elDofs[2][n0]));
+      	    nextBound.ithObj = 1;
+      	    child[0]->getSecondChild()->getNodeDofs(feSpace, nextBound, dofs, 
+      						    baseDofPtr);
+      	  }
+      	}
       }
       break;
     case 2:      
       if (child[0]) {
-	  const DegreeOfFreedom** elDofs = child[0]->getDof();
-
-	if (bound.reverseMode) {
-	  nextBound.ithObj = 1;
-	  child[1]->getNodeDofs(feSpace, nextBound, dofs, baseDofPtr);
-	  dofs.push_back(&(elDofs[2][n0]));
-	  nextBound.ithObj = 0;
-	  child[0]->getNodeDofs(feSpace, nextBound, dofs, baseDofPtr);
-	} else {
-	  nextBound.ithObj = 0;
-	  child[0]->getNodeDofs(feSpace, nextBound, dofs, baseDofPtr);
-	  dofs.push_back(&(elDofs[2][n0]));
-	  nextBound.ithObj = 1;
-	  child[1]->getNodeDofs(feSpace, nextBound, dofs, baseDofPtr);
-	}
+    	  const DegreeOfFreedom** elDofs = child[0]->getDof();
+      
+      	if (bound.reverseMode) {
+      	  nextBound.ithObj = 1;
+      	  child[1]->getNodeDofs(feSpace, nextBound, dofs, baseDofPtr);
+      	  dofs.push_back(&(elDofs[2][n0]));
+      	  nextBound.ithObj = 0;
+      	  child[0]->getNodeDofs(feSpace, nextBound, dofs, baseDofPtr);
+      	} else {
+      	  nextBound.ithObj = 0;
+      	  child[0]->getNodeDofs(feSpace, nextBound, dofs, baseDofPtr);
+      	  dofs.push_back(&(elDofs[2][n0]));
+      	  nextBound.ithObj = 1;
+      	  child[1]->getNodeDofs(feSpace, nextBound, dofs, baseDofPtr);
+      	}
       }
       break;      
     default:
@@ -161,10 +160,10 @@ namespace AMDiS
 
 
   void Triangle::getHigherOrderDofs(const FiniteElemSpace* feSpace,
-				    BoundaryObject bound,
-				    DofContainer& dofs,
-				    bool baseDofPtr,
-				    vector<GeoIndex>* dofGeoIndex) const
+                        				    BoundaryObject bound,
+                        				    DofContainer& dofs,
+                        				    bool baseDofPtr,
+                        				    vector<GeoIndex>* dofGeoIndex) const
   {
     FUNCNAME("Triange::getHigherOrderDofs()");
 
@@ -179,43 +178,43 @@ namespace AMDiS
     switch (bound.ithObj) {
     case 0:
       if (child[1]) {
-	nextBound.ithObj = 2;
-	child[1]->getHigherOrderDofs(feSpace, nextBound, dofs, 
-				     baseDofPtr, dofGeoIndex);
+      	nextBound.ithObj = 2;
+      	child[1]->getHigherOrderDofs(feSpace, nextBound, dofs, 
+      				     baseDofPtr, dofGeoIndex);
       } else {
-	addThisEdge = true;
+        addThisEdge = true;
       }
 
       break;
     case 1:
       if (child[0]) {
-	nextBound.ithObj = 2;
-	child[0]->getHigherOrderDofs(feSpace, nextBound, dofs,
-				     baseDofPtr, dofGeoIndex);
+      	nextBound.ithObj = 2;
+      	child[0]->getHigherOrderDofs(feSpace, nextBound, dofs,
+      				     baseDofPtr, dofGeoIndex);
       } else {
-	addThisEdge = true;
+        addThisEdge = true;
       }
 
       break;
     case 2:
       if (child[0]) {
-	if (bound.reverseMode) {
-	  nextBound.ithObj = 1;
-	  child[1]->getHigherOrderDofs(feSpace, nextBound, dofs,
-				       baseDofPtr, dofGeoIndex);
-	  nextBound.ithObj = 0;
-	  child[0]->getHigherOrderDofs(feSpace, nextBound, dofs,
-				       baseDofPtr, dofGeoIndex);
-	} else {
-	  nextBound.ithObj = 0;
-	  child[0]->getHigherOrderDofs(feSpace, nextBound, dofs,
-				       baseDofPtr, dofGeoIndex);
-	  nextBound.ithObj = 1;
-	  child[1]->getHigherOrderDofs(feSpace, nextBound, dofs,
-				       baseDofPtr, dofGeoIndex);
-	}
+      	if (bound.reverseMode) {
+      	  nextBound.ithObj = 1;
+      	  child[1]->getHigherOrderDofs(feSpace, nextBound, dofs,
+      				       baseDofPtr, dofGeoIndex);
+      	  nextBound.ithObj = 0;
+      	  child[0]->getHigherOrderDofs(feSpace, nextBound, dofs,
+      				       baseDofPtr, dofGeoIndex);
+      	} else {
+      	  nextBound.ithObj = 0;
+      	  child[0]->getHigherOrderDofs(feSpace, nextBound, dofs,
+      				       baseDofPtr, dofGeoIndex);
+      	  nextBound.ithObj = 1;
+      	  child[1]->getHigherOrderDofs(feSpace, nextBound, dofs,
+      				       baseDofPtr, dofGeoIndex);
+      	}
       } else {
-	addThisEdge = true;
+        addThisEdge = true;
       } 
 
       break;
@@ -229,31 +228,31 @@ namespace AMDiS
       elDofIter.reset(this);
 
       if (baseDofPtr) {	
-	do {
-	  if (elDofIter.getPosIndex() == EDGE && 
-	      elDofIter.getCurrentElementPos() == bound.ithObj)
-	    addDofs.push_back(elDofIter.getBaseDof());	
-	} while (elDofIter.nextStrict());      
+      	do {
+      	  if (elDofIter.getPosIndex() == EDGE && 
+      	      elDofIter.getCurrentElementPos() == bound.ithObj)
+      	    addDofs.push_back(elDofIter.getBaseDof());	
+      	} while (elDofIter.nextStrict());      
       } else {
-	do {
-	  if (elDofIter.getPosIndex() == EDGE && 
-	      elDofIter.getCurrentElementPos() == bound.ithObj)
-	    addDofs.push_back(elDofIter.getDofPtr());
-	} while (elDofIter.next());
+      	do {
+      	  if (elDofIter.getPosIndex() == EDGE && 
+      	      elDofIter.getCurrentElementPos() == bound.ithObj)
+      	    addDofs.push_back(elDofIter.getDofPtr());
+      	} while (elDofIter.next());
       }
 
       if (bound.reverseMode) {
- 	for (int i = addDofs.size() - 1; i >= 0; i--) {
- 	  dofs.push_back(addDofs[i]);
-	  if (dofGeoIndex != NULL)
-	    dofGeoIndex->push_back(EDGE);
-	}
+       	for (int i = addDofs.size() - 1; i >= 0; i--) {
+       	  dofs.push_back(addDofs[i]);
+      	  if (dofGeoIndex != NULL)
+      	    dofGeoIndex->push_back(EDGE);
+      	}
       } else {
- 	for (unsigned int i = 0; i < addDofs.size(); i++) {
- 	  dofs.push_back(addDofs[i]);
-	  if (dofGeoIndex != NULL)
-	    dofGeoIndex->push_back(EDGE);
-	}
+       	for (unsigned int i = 0; i < addDofs.size(); i++) {
+       	  dofs.push_back(addDofs[i]);
+      	  if (dofGeoIndex != NULL)
+      	    dofGeoIndex->push_back(EDGE);
+      	}
       }
     }
   }
@@ -276,18 +275,18 @@ namespace AMDiS
 
     if (nextBound0.ithObj >= 0 && nextBound1.ithObj >= 0) {
       if (bound.reverseMode) {
-	child[1]->getSubBoundary(nextBound1, subBound);
-	child[0]->getSubBoundary(nextBound0, subBound);
+        child[1]->getSubBoundary(nextBound1, subBound);
+        child[0]->getSubBoundary(nextBound0, subBound);
       } else {
-	child[0]->getSubBoundary(nextBound0, subBound); // TODO: check this!
-	child[1]->getSubBoundary(nextBound1, subBound);
+      	child[0]->getSubBoundary(nextBound0, subBound); // TODO: check this!
+      	child[1]->getSubBoundary(nextBound1, subBound);
       }
     } else {
       if (nextBound0.ithObj >= 0)
-	child[0]->getSubBoundary(nextBound0, subBound);
+        child[0]->getSubBoundary(nextBound0, subBound);
 
       if (nextBound1.ithObj >= 0)
-	child[1]->getSubBoundary(nextBound1, subBound);
+        child[1]->getSubBoundary(nextBound1, subBound);
     }
   }
 

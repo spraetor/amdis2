@@ -28,40 +28,40 @@ namespace AMDiS
     
     /// Evaluation of \f$ \Lambda b \f$.
     void getLb(const ElInfo *elInfo,
-	       std::vector<mtl::dense_vector<double> >& result) const
+      	       std::vector<DenseVector<double> >& result) const
     {
       getLbImpl(elInfo, result);
     }
     
   private:
     virtual void getLbImpl(const ElInfo *elInfo,
-			   std::vector<mtl::dense_vector<double> >& result) const = 0;
+                  			   std::vector<DenseVector<double> >& result) const = 0;
 
     /// Implemetation of OperatorTerm::eval().
     virtual void evalImpl(int nPoints,
-			  const mtl::dense_vector<double>& uhAtQP,
-			  const mtl::dense_vector<WorldVector<double> >& grdUhAtQP,
-			  const mtl::dense_vector<WorldMatrix<double> >& D2UhAtQP,
-			  mtl::dense_vector<double>& result,
-			  double factor) const override;
+                  			  const DenseVector<double>& uhAtQP,
+                  			  const DenseVector<WorldVector<double> >& grdUhAtQP,
+                  			  const DenseVector<WorldMatrix<double> >& D2UhAtQP,
+                  			  DenseVector<double>& result,
+                  			  double factor) const override;
 
   protected:
     /// Evaluation of \f$ \Lambda \cdot b\f$ if b contains the value 1.0
     /// in each component.
     void l1(const DimVec<WorldVector<double> >& Lambda,
-	    mtl::dense_vector<double>& Lb,
-	    double factor) const;
+      	    DenseVector<double>& Lb,
+      	    double factor) const;
 
     /// Evaluation of \f$ \Lambda \cdot b\f$.
     void lb(const DimVec<WorldVector<double> >& Lambda,
-	    const WorldVector<double>& b,
-	    mtl::dense_vector<double>& Lb,
-	    double factor) const;
+      	    const WorldVector<double>& b,
+      	    DenseVector<double>& Lb,
+      	    double factor) const;
 
     /// Evaluation of \f$ \Lambda \cdot b\f$.
     void lb_one(const DimVec<WorldVector<double> >& Lambda,
-		mtl::dense_vector<double>& Lb,
-		double factor) const;
+            		DenseVector<double>& Lb,
+            		double factor) const;
   };
   
   
@@ -80,7 +80,7 @@ namespace AMDiS
   private:
     /// Implements FirstOrderTerm::getLb().
     virtual void getLbImpl(const ElInfo *elInfo,
-			   std::vector<mtl::dense_vector<double> >& Lb) const override;
+			   std::vector<DenseVector<double> >& Lb) const override;
   };
 
 
@@ -107,7 +107,7 @@ namespace AMDiS
   private:
     /// Implements FirstOrderTerm::getLb().
     virtual void getLbImpl(const ElInfo *elInfo, 
-			   std::vector<mtl::dense_vector<double> >& Lb) const override;
+			   std::vector<DenseVector<double> >& Lb) const override;
   };
 
 
@@ -123,7 +123,7 @@ namespace AMDiS
   private:
     /// Implements FirstOrderTerm::getLb().
     virtual void getLbImpl(const ElInfo *elInfo, 
-			   std::vector<mtl::dense_vector<double> >& Lb) const override;
+                  			   std::vector<DenseVector<double> >& Lb) const override;
   };
   
   
@@ -132,8 +132,8 @@ namespace AMDiS
   
   template <class Expr>
   void GenericFirstOrderTerm_1<Expr>::getLbImpl(
-	  const ElInfo *elInfo,
-	  std::vector<mtl::dense_vector<double> >& Lb) const
+      	  const ElInfo *elInfo,
+      	  std::vector<DenseVector<double> >& Lb) const
   {
     const DimVec<WorldVector<double> > &grdLambda = elInfo->getGrdLambda();
     const int nPoints = static_cast<int>(Lb.size());
@@ -145,8 +145,8 @@ namespace AMDiS
 
   template <int I, class Expr>
   void GenericFirstOrderTerm_i<I, Expr>::getLbImpl(
-	  const ElInfo *elInfo,
-	  std::vector<mtl::dense_vector<double> >& Lb) const
+      	  const ElInfo *elInfo,
+      	  std::vector<DenseVector<double> >& Lb) const
   {
     const DimVec<WorldVector<double> > &grdLambda = elInfo->getGrdLambda();
     const int nPoints = static_cast<int>(Lb.size());
@@ -158,8 +158,8 @@ namespace AMDiS
     
   template <class Expr>
   void GenericFirstOrderTerm_b<Expr>::getLbImpl(
-	  const ElInfo *elInfo,
-	  std::vector<mtl::dense_vector<double> >& Lb) const
+      	  const ElInfo *elInfo,
+      	  std::vector<DenseVector<double> >& Lb) const
   {
     const DimVec<WorldVector<double> > &grdLambda = elInfo->getGrdLambda();
     const int nPoints = static_cast<int>(Lb.size());

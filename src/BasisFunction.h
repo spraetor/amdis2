@@ -6,13 +6,11 @@
 
 #include "AMDiS_fwd.h"
 #include "CreatorInterface.h"
-#include "Global.h"
 #include "Boundary.h"
-#include "MatrixVector.h"
 #include "FixVec.h"
 
-namespace AMDiS {
-
+namespace AMDiS 
+{
   /// Function interface for evaluating basis functions.
   struct BasFctType
   {
@@ -26,7 +24,7 @@ namespace AMDiS {
   {
     virtual ~GrdBasFctType() {}
     virtual void operator()(const DimVec<double>&, 
-			    mtl::dense_vector<double>&) const = 0;
+                  			    DenseVector<double>&) const = 0;
   };
   
 
@@ -76,7 +74,7 @@ namespace AMDiS {
 
     /// Used by \ref getDOFIndices and \ref getVec
     virtual int* orderOfPositionIndices(const Element* el, GeoIndex position, 
-					int positionIndex) const = 0;
+					                              int positionIndex) const = 0;
 
     /** \brief
      * The second argument 'bound' has to be a pointer to a vector which has 
@@ -147,17 +145,17 @@ namespace AMDiS {
      * Must be implemented by sub classes.
      */
     virtual void interpol(const ElInfo *el_info, 
-			  int n, 
-			  const int *indices, 
-			  std::function<double(WorldVector<double>)> f,
-			  mtl::dense_vector<double> &coeff) const = 0;
+                  			  int n, 
+                  			  const int *indices, 
+                  			  std::function<double(WorldVector<double>)> f,
+                  			  DenseVector<double> &coeff) const = 0;
 
     /// WorldVector<double> valued interpol function.
     virtual void interpol(const ElInfo *el_info, 
-			  int no, 
-			  const int *b_no,
-			  std::function<WorldVector<double>(WorldVector<double>)> f, 
-			  mtl::dense_vector<WorldVector<double> >& coeff) const = 0;
+                  			  int no, 
+                  			  const int *b_no,
+                  			  std::function<WorldVector<double>(WorldVector<double>)> f, 
+                  			  DenseVector<WorldVector<double> >& coeff) const = 0;
 
     /// Returns the i-th local basis function
     inline BasFctType *getPhi(int i) const 
@@ -199,14 +197,14 @@ namespace AMDiS {
      */
     // TODO: add template function and move virtual function to private section
     virtual void l2ScpFctBas(Quadrature*,
-			     std::function<double(WorldVector<double>)> /*f*/,
-			     DOFVector<double>* /*fh*/)
+                  			     std::function<double(WorldVector<double>)> /*f*/,
+                  			     DOFVector<double>* /*fh*/)
     {}
 
     /// WorldVector<double> valued l2ScpFctBas function
     virtual void l2ScpFctBas(Quadrature* ,
-			     std::function<WorldVector<double>(WorldVector<double>)> /*f*/,
-			     DOFVector<WorldVector<double> >* /*fh*/) 
+                  			     std::function<WorldVector<double>(WorldVector<double>)> /*f*/,
+                  			     DOFVector<WorldVector<double> >* /*fh*/) 
     {}
 
 
@@ -236,21 +234,21 @@ namespace AMDiS {
 
     /// Returns local dof indices of the element for the given fe space.
     virtual void getLocalIndices(const Element *el,
-				 const DOFAdmin *admin,
-				 std::vector<DegreeOfFreedom> &indices) const
+                        				 const DOFAdmin *admin,
+                        				 std::vector<DegreeOfFreedom> &indices) const
     {}
 
     ///
     virtual void getLocalDofPtrVec(const Element *el, 
-				   const DOFAdmin *admin,
-				   std::vector<const DegreeOfFreedom*>& vec) const
+                        				   const DOFAdmin *admin,
+                        				   std::vector<const DegreeOfFreedom*>& vec) const
     {}
 
 
     /// Evaluates elements value at barycentric coordinates lambda with local 
     /// coefficient vector uh.
     template <class T>
-    T evalUh(const DimVec<double>& lambda, const mtl::dense_vector<T>& uh) const;
+    T evalUh(const DimVec<double>& lambda, const DenseVector<T>& uh) const;
 
 
     /** \brief
@@ -263,9 +261,9 @@ namespace AMDiS {
     template <class T>
     typename GradientType<T>::type& 
     evalGrdUh(const DimVec<double>& lambda,
-	      const DimVec<WorldVector<double> >& Lambda,
-	      const mtl::dense_vector<T>& uh,
-	      typename GradientType<T>::type& val) const;
+      	      const DimVec<WorldVector<double> >& Lambda,
+      	      const DenseVector<T>& uh,
+      	      typename GradientType<T>::type& val) const;
 
 
     /** \brief
@@ -277,9 +275,9 @@ namespace AMDiS {
      */
     const WorldMatrix<double>& 
     evalD2Uh(const DimVec<double>& lambda,
-	     const DimVec<WorldVector<double> >& Lambda,
-	     const ElementVector& uh,
-	     WorldMatrix<double>* val) const;
+      	     const DimVec<WorldVector<double> >& Lambda,
+      	     const ElementVector& uh,
+      	     WorldMatrix<double>* val) const;
 
     /**
     * override this method, if the base of your finite element space is not

@@ -11,12 +11,9 @@
 
 #include <vector>
 #include <deque>
-#include <stack>
 
 #include "Flag.h"
 #include "Global.h"
-#include "ElInfo.h"
-#include "ElInfoStack.h"
 #include "AMDiS_fwd.h"
 
 namespace AMDiS 
@@ -37,22 +34,22 @@ namespace AMDiS
     /// Creates an empty TraverseStack
     TraverseStack() 
       : limitedToMacroElement(-1),
-	traverse_mel(NULL),
+        traverse_mel(NULL),
         stack_size(0),
         stack_used(0),
         save_stack_used(0),
         myThreadId(0),
-	maxThreads(1)
+        maxThreads(1)
     {}
 
     /// Destructor
     ~TraverseStack() 
     {
       for (size_t i = 0; i < elinfo_stack.size(); i++)
-	delete elinfo_stack[i];
+        delete elinfo_stack[i];
 
       for (size_t i = 0; i < save_elinfo_stack.size(); i++) 
-	delete save_elinfo_stack[i];
+        delete save_elinfo_stack[i];
     }
 
   public:
@@ -65,7 +62,7 @@ namespace AMDiS
     /// Works in the same way as \ref traverseFirst defined above, but limits the
     /// traversal to one macro mesh only.
     ElInfo* traverseFirstOneMacro(Mesh *mesh, int macroIndex, int level, 
-				  Flag fill_flag);
+				                          Flag fill_flag);
 
     /// Returns the next ElInfo in a traversal initiated by \ref traverseFirst()
     ///  If NULL is returned, the traversal is finished.
@@ -123,10 +120,10 @@ namespace AMDiS
       FUNCNAME_DBG("TraverseStack::getElInfo()");
 
       if (stack_used < 0)
-	return NULL;
+        return NULL;
 
       TEST_EXIT_DBG(elinfo_stack.size() > static_cast<size_t>(stack_used))
-	("Should not happen!\n");
+        ("Should not happen!\n");
 
       return elinfo_stack[stack_used];
     }

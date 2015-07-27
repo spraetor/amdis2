@@ -1,5 +1,3 @@
-#include <math.h>
-
 #include "RobinBC.h"
 #include "Assembler.h"
 #include "DOFVector.h"
@@ -11,10 +9,10 @@ namespace AMDiS
 {
 
   void RobinBC::fillBoundaryCondition(DOFVectorBase<double>* vector, 
-				      ElInfo* elInfo,
-				      const DegreeOfFreedom* dofIndices,
-				      const BoundaryType* localBound,
-				      int nBasFcts)
+                        				      ElInfo* elInfo,
+                        				      const DegreeOfFreedom* dofIndices,
+                        				      const BoundaryType* localBound,
+                        				      int nBasFcts)
   {
     FUNCNAME_DBG("RobinBC::fillBoundaryCondition()");
     TEST_EXIT_DBG(vector->getFeSpace() == rowFeSpace)("invalid row fe space\n");
@@ -23,31 +21,31 @@ namespace AMDiS
 
     if (neumannOperators) {
       for (int i = 0; i < dim + 1; i++)
-	if (elInfo->getBoundary(i) == boundaryType)
-	  vector->assemble(1.0, elInfo, localBound, (*neumannOperators)[i]);
+      	if (elInfo->getBoundary(i) == boundaryType)
+      	  vector->assemble(1.0, elInfo, localBound, (*neumannOperators)[i]);
     }
   }
 
 
   void RobinBC::fillBoundaryCondition(DOFMatrix* matrix,
-				      ElInfo* elInfo,
-				      const DegreeOfFreedom* dofIndices,
-				      const BoundaryType* localBound,
-				      int nBasFcts) 
+                        				      ElInfo* elInfo,
+                        				      const DegreeOfFreedom* dofIndices,
+                        				      const BoundaryType* localBound,
+                        				      int nBasFcts) 
   {
     if (robinOperators) {
       int dim = elInfo->getMesh()->getDim();
 
       for (int i = 0; i < dim + 1; i++)
-	if (elInfo->getBoundary(i) == boundaryType)
-	  matrix->assemble(1.0, elInfo, localBound, (*robinOperators)[i]);
+      	if (elInfo->getBoundary(i) == boundaryType)
+      	  matrix->assemble(1.0, elInfo, localBound, (*robinOperators)[i]);
     }
   }
   
 
   double RobinBC::boundResidual(ElInfo *elInfo,
-				DOFMatrix *matrix,
-				const DOFVectorBase<double> *dv)
+                        				DOFMatrix *matrix,
+                        				const DOFVectorBase<double> *dv)
   {
     FUNCNAME("RobinBC::fillBoundaryCondition()");
     TEST_EXIT(matrix->getRowFeSpace() == rowFeSpace)("invalid row fe space\n");
@@ -70,15 +68,15 @@ namespace AMDiS
     TEST_EXIT(neumannOperators || robinOperators)
       ("neither neumann nor robin operators set!\n");
 
-    if (!robinOperators) {
+    if (!robinOperators)
       neumannQuad = true;
-    } else {
+    else {
       if (neumannOperators) {
-	if ((*neumannOperators)[0]->getAssembler()->
-	    getZeroOrderAssembler()->getQuadrature()->getNumPoints() > 
-	    (*robinOperators)[0]->getAssembler()->
-	    getZeroOrderAssembler()->getQuadrature()->getNumPoints()) 
-	  neumannQuad = true;
+      	if ((*neumannOperators)[0]->getAssembler()->
+      	    getZeroOrderAssembler()->getQuadrature()->getNumPoints() > 
+      	    (*robinOperators)[0]->getAssembler()->
+      	    getZeroOrderAssembler()->getQuadrature()->getNumPoints()) 
+      	  neumannQuad = true;
       }
     }
 
@@ -89,48 +87,48 @@ namespace AMDiS
     for (int face = 0; face < dim + 1; face++) {
       elInfo->getNormal(face, normal);
 
-      Quadrature *quadrature = 
-	neumannQuad ? 
-	(*neumannOperators)[face]->getAssembler()->
-	getZeroOrderAssembler()->getQuadrature() :
-	(*robinOperators)[face]->getAssembler()->
-	getZeroOrderAssembler()->getQuadrature();
-
+      Quadrature *quadrature = neumannQuad ? 
+      	(*neumannOperators)[face]->getAssembler()->
+      	   getZeroOrderAssembler()->getQuadrature() :
+      	(*robinOperators)[face]->getAssembler()->
+      	   getZeroOrderAssembler()->getQuadrature();
+      
       if (elInfo->getBoundary(face) == boundaryType) {
-	(*neumannOperators)[face]->getAssembler()->
-	  getZeroOrderAssembler()->initElement(elInfo);
-
-	int nPoints = quadrature->getNumPoints();
-	mtl::dense_vector<double> uhAtQp(nPoints);
-	mtl::dense_vector<WorldVector<double> > grdUhAtQp;
-	mtl::dense_vector<WorldMatrix<double> > D2UhAtQp;
-	dv->getVecAtQPs(elInfo, quadrature, NULL, uhAtQp);
-	ElementVector f(nPoints);
-	f = 0.0;
-
-	if (robinOperators)
-	  (*robinOperators)[face]->evalZeroOrder(nPoints, uhAtQp, grdUhAtQp,  D2UhAtQp, f, -1.0);
-	
-	std::vector<WorldVector<double> > grdUh(nPoints);
-	std::vector<WorldVector<double> > A_grdUh(nPoints);
-
-	for (int iq = 0; iq < nPoints; iq++) {
-	  A_grdUh[iq].set(0.0);	
-	  lambda = quadrature->getLambda(iq);
-	  basFcts->evalGrdUh(lambda, Lambda, uhEl, grdUh[iq]);
-	}
-	
-	for (op = matrix->getOperatorsBegin(); op != matrix->getOperatorsEnd(); ++op)
-	  (*op)->weakEvalSecondOrder(grdUh, A_grdUh);		
-
-	if (neumannOperators)
-	  (*neumannOperators)[face]->getC(elInfo, nPoints, f);
-
-	val = 0.0;
-	for (int iq = 0; iq < nPoints; iq++) {
-	  n_A_grdUh = (normal * A_grdUh[iq]) - f[iq]; 
-	  val += quadrature->getWeight(iq) * math::sqr(n_A_grdUh);
-	}
+      	(*neumannOperators)[face]->getAssembler()->
+      	  getZeroOrderAssembler()->initElement(elInfo);
+      
+      	int nPoints = quadrature->getNumPoints();
+      	DenseVector<double> uhAtQp(nPoints);
+      	DenseVector<WorldVector<double> > grdUhAtQp;
+      	DenseVector<WorldMatrix<double> > D2UhAtQp;
+      	dv->getVecAtQPs(elInfo, quadrature, NULL, uhAtQp);
+        
+      	ElementVector f(nPoints);
+      	set_to_zero(f);
+      
+      	if (robinOperators)
+      	  (*robinOperators)[face]->evalZeroOrder(nPoints, uhAtQp, grdUhAtQp,  D2UhAtQp, f, -1.0);
+      	
+      	std::vector<WorldVector<double> > grdUh(nPoints);
+      	std::vector<WorldVector<double> > A_grdUh(nPoints);
+      
+      	for (int iq = 0; iq < nPoints; iq++) {
+      	  A_grdUh[iq].set(0.0);	
+      	  lambda = quadrature->getLambda(iq);
+      	  basFcts->evalGrdUh(lambda, Lambda, uhEl, grdUh[iq]);
+      	}
+      	
+      	for (op = matrix->getOperatorsBegin(); op != matrix->getOperatorsEnd(); ++op)
+      	  (*op)->weakEvalSecondOrder(grdUh, A_grdUh);		
+      
+      	if (neumannOperators)
+      	  (*neumannOperators)[face]->getC(elInfo, nPoints, f);
+      
+      	val = 0.0;
+      	for (int iq = 0; iq < nPoints; iq++) {
+      	  n_A_grdUh = (normal * A_grdUh[iq]) - f[iq]; 
+      	  val += quadrature->getWeight(iq) * math::sqr(n_A_grdUh);
+      	}
       }
     }
 

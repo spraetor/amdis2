@@ -7,8 +7,8 @@
 #include "Global.h"
 #include "CreatorInterface.h"
 
-namespace AMDiS {
-
+namespace AMDiS 
+{
   /** \ingroup Common
    * \brief
    * A CreatorMap is used to construct objects, which types depends on key words
@@ -22,7 +22,7 @@ namespace AMDiS {
   class CreatorMap
   {
   public:
-    typedef std::map< std::string, CreatorInterface<BaseClass>* > CreatorMapType;
+    using CreatorMapType = std::map< std::string, CreatorInterface<BaseClass>* >;
     
   public:
     /// Adds a new creator together with the given key to the map.
@@ -31,7 +31,7 @@ namespace AMDiS {
       FUNCNAME("CreatorMap::addCreator()");
       init();
       TEST_EXIT(creatorMap[key] == NULL)
-	("there is already a creator for key %s\n",key.c_str());
+        ("there is already a creator for key %s\n",key.c_str());
       creatorMap[key] = creator;
     }
     
@@ -42,7 +42,7 @@ namespace AMDiS {
 
     /// Creates a object of the type corresponding to key.
     static CreatorInterface<BaseClass>* getCreator(std::string key,
-						   std::string initFileStr) 
+			                                             std::string initFileStr) 
     {
       FUNCNAME("CreatorMap::getCreator()");
       init();

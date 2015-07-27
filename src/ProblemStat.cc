@@ -30,7 +30,7 @@ namespace AMDiS
   using namespace std;
 
   ProblemStatSeq::ProblemStatSeq(string nameStr,
-				 ProblemIterationInterface *problemIteration)
+			                           ProblemIterationInterface *problemIteration)
     : name(nameStr),
       nComponents(-1),
       nAddComponents(0),
@@ -64,8 +64,8 @@ namespace AMDiS
       assembleMatrixOnlyOnce[i].resize(nComponents);
       assembledMatrix[i].resize(nComponents);
       for (int j = 0; j < nComponents; j++) {
-	assembleMatrixOnlyOnce[i][j] = false;
-	assembledMatrix[i][j] = false;
+      	assembleMatrixOnlyOnce[i][j] = false;
+      	assembledMatrix[i][j] = false;
       }
     }
 
@@ -102,11 +102,11 @@ namespace AMDiS
 
     if (systemMatrix) {    
       for (int i = 0; i < nComponents; i++)
-	for (int j = 0; j < nComponents; j++)
-	  if ((*systemMatrix)[i][j]) {
-	    delete (*systemMatrix)[i][j];
-	    (*systemMatrix)[i][j] = NULL;
-	  }
+      	for (int j = 0; j < nComponents; j++)
+      	  if ((*systemMatrix)[i][j]) {
+      	    delete (*systemMatrix)[i][j];
+      	    (*systemMatrix)[i][j] = NULL;
+      	  }
 
       delete systemMatrix;
       systemMatrix = NULL;
@@ -120,14 +120,14 @@ namespace AMDiS
     
     for (unsigned int i = 0; i < estimator.size(); i++)
       if (estimator[i]) {
-	delete estimator[i];
-	estimator[i] = NULL;
+      	delete estimator[i];
+      	estimator[i] = NULL;
       }
 
     for (unsigned int i = 0; i < marker.size(); i++)
       if (marker[i]) {
-	delete marker[i];
-	marker[i] = NULL;
+      	delete marker[i];
+      	marker[i] = NULL;
       }
   }
   
@@ -142,31 +142,31 @@ namespace AMDiS
       WARNING("meshes already created\n");
     } else {
       if (initFlag.isSet(CREATE_MESH) || 
-	  (!adoptFlag.isSet(INIT_MESH) &&
-	   (initFlag.isSet(INIT_SYSTEM) || initFlag.isSet(INIT_FE_SPACE))))
-	createMesh();      
+      	  (!adoptFlag.isSet(INIT_MESH) &&
+      	   (initFlag.isSet(INIT_SYSTEM) || initFlag.isSet(INIT_FE_SPACE))))
+      	createMesh();      
 
       if (adoptProblem && 
-	  (adoptFlag.isSet(INIT_MESH) ||
-	   adoptFlag.isSet(INIT_SYSTEM) ||
-	   adoptFlag.isSet(INIT_FE_SPACE))) 
+      	  (adoptFlag.isSet(INIT_MESH) ||
+      	   adoptFlag.isSet(INIT_SYSTEM) ||
+      	   adoptFlag.isSet(INIT_FE_SPACE))) 
       {
-	meshes = adoptProblem->getMeshes();
-	if (meshes.size() == 1)
-	  componentMeshes.resize(nComponents, meshes[0]);
-	else if (adoptProblem->getNumComponents() >= nComponents) {
-	  componentMeshes.resize(nComponents);
-	  std::copy(adoptProblem->componentMeshes.begin(), 
-		    adoptProblem->componentMeshes.begin() + nComponents, 
-		    componentMeshes.begin());
-	} else {
-	  componentMeshes.resize(nComponents, meshes[0]);
-	  WARNING("componentMeshes may not be derived correctly from the adoptProblem. You have to do this manually!\n");
-	}
-	
-	if (nAddComponents > 0) {
-	  WARNING("Additional meshed can not be adopted from adoptProblem. You have to initialize these meshes manually!\n");
-	}
+      	meshes = adoptProblem->getMeshes();
+      	if (meshes.size() == 1)
+      	  componentMeshes.resize(nComponents, meshes[0]);
+      	else if (adoptProblem->getNumComponents() >= nComponents) {
+      	  componentMeshes.resize(nComponents);
+      	  std::copy(adoptProblem->componentMeshes.begin(), 
+      		    adoptProblem->componentMeshes.begin() + nComponents, 
+      		    componentMeshes.begin());
+      	} else {
+      	  componentMeshes.resize(nComponents, meshes[0]);
+      	  WARNING("componentMeshes may not be derived correctly from the adoptProblem. You have to do this manually!\n");
+      	}
+      	
+      	if (nAddComponents > 0) {
+      	  WARNING("Additional meshed can not be adopted from adoptProblem. You have to initialize these meshes manually!\n");
+      	}
       }
     }
 

@@ -7,11 +7,10 @@
 
 #include "AMDiS_fwd.h"
 #include "Boundary.h"
-#include "BoundaryCondition.h"
 
 namespace AMDiS 
 {
-  typedef std::map<BoundaryType, BoundaryCondition*> BoundaryIndexMap;
+  using BoundaryIndexMap = std::map<BoundaryType, BoundaryCondition*>;
 
   /**
    * \ingroup Assembler
@@ -71,14 +70,7 @@ namespace AMDiS
     
     /// Returns true, if there is at least one boundary object with the given
     /// boundary id, which implements a periodic boundary.
-    static bool isBoundaryPeriodic(BoundaryType b)
-    {
-      for (BoundaryCondition* boundary_map : globalBoundaryMap[b])
-      	if (boundary_map->isPeriodic())
-      	  return true;
-
-      return false;
-    }
+    static bool isBoundaryPeriodic(BoundaryType b);
 
   protected:
     /// Map of managed local boundary conditions.

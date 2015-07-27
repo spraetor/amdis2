@@ -10,9 +10,9 @@ namespace AMDiS
 {
   /// Creates a SurfaceAssembler conforming to operate for the given \ref coords.
   SurfaceAssembler::SurfaceAssembler(Operator *operat,
-				    const FiniteElemSpace *rowFeSpace,
-				    const FiniteElemSpace *colFeSpace,
-				    VectorOfFixVecs<DimVec<double> > &coords) 
+                        				     const FiniteElemSpace *rowFeSpace,
+                        				     const FiniteElemSpace *colFeSpace,
+                        				     VectorOfFixVecs<DimVec<double> > &coords) 
     : Assembler(operat, rowFeSpace, colFeSpace, -1), 
       coords_(coords)
   {
@@ -81,7 +81,7 @@ namespace AMDiS
 
       // transform barycentric coords to world coords
       for (int i = 0; i < rowDim_; i++)
-	elInfo->coordToWorld(coords_[i], &worldCoords[i]);
+        elInfo->coordToWorld(coords_[i], &worldCoords[i]);
 
       // set determinant for world coords of the side
       det_ = elInfo->calcDet(worldCoords);

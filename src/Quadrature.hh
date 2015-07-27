@@ -7,7 +7,7 @@ namespace AMDiS
 
   template <class T> 
   const T *uhAtQp(const FastQuadrature *quadFast,
-		  const T *uhLoc, T *vec)
+		              const T *uhLoc, T *vec)
   {
     FUNCNAME("uhAtQp()");
     static T *quadVec = NULL;
@@ -26,10 +26,10 @@ namespace AMDiS
       val = vec;
     } else {
       if (size < nPoints)  {
-	int newSize = std::max(Quadrature::maxNQuadPoints[dim], nPoints);
-	if(quadVec) delete [] quadVec;
-	quadVec = new T[size](vecSize);
-	size = newSize;
+      	int newSize = std::max(Quadrature::maxNQuadPoints[dim], nPoints);
+      	if(quadVec) delete [] quadVec;
+      	quadVec = new T[size](vecSize);
+      	size = newSize;
       }
       val = quadVec;
     }
@@ -37,9 +37,9 @@ namespace AMDiS
     for (i = 0; i < nPoints; i++) {
       phi = quadFast->getPhi(i);
       for(k = 0; k < vecSize; k++) {
-	for (val[i][k] = j = 0; j < nBasFcts; j++) {
-	  val[i][k] += uhLoc[j][k] * phi[j];
-	}
+      	for (val[i][k] = j = 0; j < nBasFcts; j++) {
+      	  val[i][k] += uhLoc[j][k] * phi[j];
+      	}
       }
     }
     return(const_cast<const T*>(val));
@@ -52,8 +52,6 @@ namespace AMDiS
 			const T *uhLoc, GrdT *vec)
   {
     FUNCNAME("grdUhAtQp()");
-
-    int i, j, k, l, m;
 
     int dim = quadFast->getDim();
     int dow = Global::getGeo(WORLD);
@@ -70,33 +68,34 @@ namespace AMDiS
 
     int vecSize = uhLoc[0].size();
 
-    if (vec) {
+    if (vec)
       val = vec;
-    } else {
-      if(size < nPoints) {
-	int newSize = std::max(Quadrature::maxNQuadPoints[dim], nPoints);
-	if(quadVec) delete [] quadVec; 
-	quadVec = new GrdT[newSize](vecSize);
-	size = newSize;
+    else {
+      if (size < nPoints) {
+      	int newSize = std::max(Quadrature::maxNQuadPoints[dim], nPoints);
+      	if(quadVec) delete [] quadVec; 
+      	quadVec = new GrdT[newSize](vecSize);
+      	size = newSize;
       }
       val = quadVec;
     }
 
-    for (i = 0; i < nPoints; i++) {
+    for (int i = 0; i < nPoints; i++) {
       gradPhi = quadFast->getGradient(i);
-      for(m = 0; m < vecSize; m++) {
-	grd1 = 0.0;
-	for (j = 0; j < nBasFcts; j++) {
-	  for (k = 0; k < parts; k++) {
-	    grd1[k] += (*gradPhi)[j][k] * uhLoc[j][m];
-	  }
-	}
-
-	for(l=0; l < dow; l++) {
-	  for (val[i][m][l] = k = 0; k < parts; k++) {
-	    val[i][m][l] += grdLambda[k][l] * grd1[k];
-	  }
-	}
+      for (int m = 0; m < vecSize; m++) {
+      	grd1 = 0.0;
+      	for (int j = 0; j < nBasFcts; j++) {
+      	  for (int k = 0; k < parts; k++) {
+      	    grd1[k] += (*gradPhi)[j][k] * uhLoc[j][m];
+      	  }
+      	}
+      
+      	for (int l = 0; l < dow; l++) {
+          int k;
+      	  for (val[i][m][l] = k = 0; k < parts; k++) {
+      	    val[i][m][l] += grdLambda[k][l] * grd1[k];
+      	  }
+      	}
       }
     }
 
@@ -106,12 +105,10 @@ namespace AMDiS
   
   template <class T, class D2T> 
   const D2T* D2UhAtQp(const FastQuadrature *quadFast,
-		      const DimVec<WorldVector<double> >& grdLambda,
-		      const T *uhLoc, D2T *vec)
+            		      const DimVec<WorldVector<double> >& grdLambda,
+            		      const T *uhLoc, D2T *vec)
   {
     FUNCNAME("D2UhAtQp()");
-
-    int i, j, k, l, m, iq;
 
     int nPoints = quadFast->getQuadrature()->getNumPoints();
     int nBasFcts = quadFast->getBasisFunctions()->getNumber();
@@ -128,39 +125,39 @@ namespace AMDiS
 
     int vecSize = uhLoc[0].size();
 
-    if (vec) {
+    if (vec)
       val = vec;
-    } else {
-      if(size < nPoints)  {
-	int newSize = std::max(Quadrature::maxNQuadPoints[dim], nPoints);
-	if(quadVec) delete [] quadVec;
-	quadVec = new D2T[newSize](vecSize);
-	size = newSize;
+    else {
+      if (size < nPoints)  {
+      	int newSize = std::max(Quadrature::maxNQuadPoints[dim], nPoints);
+      	if (quadVec) delete [] quadVec;
+      	quadVec = new D2T[newSize](vecSize);
+      	size = newSize;
       }
       val = quadVec;
     }
 
-    for (iq = 0; iq < nPoints; iq++) {
-      for(m = 0; m < vecSize; m++) {
-	D2Tmp = 0.0;
-	//for (k = 0; k < parts; k++)
-	//  for (l = 0; l < parts; l++)
-	//    D2Tmp[k][l] = 0.0;
-
-	D2Phil = quadFast->getSecDer(iq);
-	for (i = 0; i < nBasFcts; i++) {
-	  for (k = 0; k < parts; k++)
-	    for (l = 0; l < parts; l++)
-	      D2Tmp[k][l] += uhLoc[i][m]*(*D2Phil)[i][k][l];
-	}
-
-	for (i = 0; i < dow; i++)
-	  for (j = 0; j < dow; j++) {
-	    val[iq][m][i][j] = 0.0;
-	    for (k = 0; k < parts; k++)
-	      for (l = 0; l < parts; l++)
-		val[iq][m][i][j] += grdLambda[k][i]*grdLambda[l][j]*D2Tmp[k][l];
-	  }
+    for (int iq = 0; iq < nPoints; iq++) {
+      for (int m = 0; m < vecSize; m++) {
+      	D2Tmp = 0.0;
+      	//for (k = 0; k < parts; k++)
+      	//  for (l = 0; l < parts; l++)
+      	//    D2Tmp[k][l] = 0.0;
+      
+      	D2Phil = quadFast->getSecDer(iq);
+      	for (int i = 0; i < nBasFcts; i++) {
+      	  for (int k = 0; k < parts; k++)
+      	    for (int l = 0; l < parts; l++)
+      	      D2Tmp[k][l] += uhLoc[i][m] * (*D2Phil)[i][k][l];
+      	}
+      
+      	for (int i = 0; i < dow; i++)
+      	  for (int j = 0; j < dow; j++) {
+      	    val[iq][m][i][j] = 0.0;
+      	    for (int k = 0; k < parts; k++)
+      	      for (int l = 0; l < parts; l++)
+      		      val[iq][m][i][j] += grdLambda[k][i] * grdLambda[l][j] * D2Tmp[k][l];
+      	  }
       }
     }
 

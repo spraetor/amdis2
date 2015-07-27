@@ -6,9 +6,9 @@ namespace AMDiS
 {
   template <class T>
   void SubAssembler::getVectorAtQPs(DOFVectorBase<T>* vec, 
-				    const ElInfo* elInfo,
-				    Quadrature *quad,
-				    DenseVector<T>& vecAtQPs)
+                        				    const ElInfo* elInfo,
+                        				    Quadrature *quad,
+                        				    DenseVector<T>& vecAtQPs)
   {
     FUNCNAME_DBG("SubAssembler::getVectorAtQPs()");
 
@@ -39,9 +39,9 @@ namespace AMDiS
       const BasisFunction *psi = rowFeSpace->getBasisFcts();
       const BasisFunction *phi = colFeSpace->getBasisFcts();
       if (vec->getFeSpace()->getBasisFcts() == psi)
-	psiFast = updateFastQuadrature(psiFast, psi, INIT_PHI);
+        psiFast = updateFastQuadrature(psiFast, psi, INIT_PHI);
       else if(vec->getFeSpace()->getBasisFcts() == phi)
-	phiFast = updateFastQuadrature(phiFast, phi, INIT_PHI);      
+        phiFast = updateFastQuadrature(phiFast, phi, INIT_PHI);      
     }
 
     // calculate new values
@@ -49,11 +49,11 @@ namespace AMDiS
 
     if (opt && !quad && sameFeSpaces) {
       if (psiFast->getBasisFunctions() == basFcts) {
-	vec->getVecAtQPs(elInfo, NULL, psiFast, values);
+        vec->getVecAtQPs(elInfo, NULL, psiFast, values);
       } else if (phiFast->getBasisFunctions() == basFcts) {
-	vec->getVecAtQPs(elInfo, NULL, phiFast, values);
+        vec->getVecAtQPs(elInfo, NULL, phiFast, values);
       } else {
-	vec->getVecAtQPs(elInfo, localQuad, NULL, values);
+        vec->getVecAtQPs(elInfo, localQuad, NULL, values);
       }
     } else {
       vec->getVecAtQPs(elInfo, localQuad, NULL, values);
@@ -67,9 +67,9 @@ namespace AMDiS
 
   template <class T>
   void SubAssembler::getGradientsAtQPs(DOFVectorBase<T>* vec,
-				       const ElInfo* elInfo,
-				       Quadrature *quad,
-				       DenseVector<typename GradientType<T>::type>& grdAtQPs)
+                        				       const ElInfo* elInfo,
+                        				       Quadrature *quad,
+                        				       DenseVector<typename GradientType<T>::type>& grdAtQPs)
   {
     FUNCNAME_DBG("SubAssembler::getGradientsAtQPs()");
 
@@ -79,7 +79,7 @@ namespace AMDiS
 
     if (cachedGradientsAtQPs[vec] && cachedGradientsAtQPs[vec]->valid) {
       grdAtQPs = 
-	boost::any_cast<DenseVector<typename GradientType<T>::type>& >(cachedGradientsAtQPs[vec]->values);
+        boost::any_cast<DenseVector<typename GradientType<T>::type>& >(cachedGradientsAtQPs[vec]->values);
       return;
     }
 
@@ -102,9 +102,9 @@ namespace AMDiS
 
     if (opt && !quad && sameFeSpaces) {
       if (vec->getFeSpace()->getBasisFcts() == psi)
-	psiFast = updateFastQuadrature(psiFast, psi, INIT_GRD_PHI);
+        psiFast = updateFastQuadrature(psiFast, psi, INIT_GRD_PHI);
       else if(vec->getFeSpace()->getBasisFcts() == phi)
-	phiFast = updateFastQuadrature(phiFast, phi, INIT_GRD_PHI);
+        phiFast = updateFastQuadrature(phiFast, phi, INIT_GRD_PHI);
     }
 
     // calculate new values
@@ -112,11 +112,11 @@ namespace AMDiS
 
     if (opt && !quad && sameFeSpaces) {
       if (psiFast->getBasisFunctions() == basFcts)
-	vec->getGrdAtQPs(elInfo, NULL, psiFast, values);
+        vec->getGrdAtQPs(elInfo, NULL, psiFast, values);
       else if (phiFast->getBasisFunctions() == basFcts)
-	vec->getGrdAtQPs(elInfo, NULL, phiFast, values);
+        vec->getGrdAtQPs(elInfo, NULL, phiFast, values);
       else
-	vec->getGrdAtQPs(elInfo, NULL, phiFast, values);
+        vec->getGrdAtQPs(elInfo, NULL, phiFast, values);
     } else {
       vec->getGrdAtQPs(elInfo, localQuad, NULL, values);
     }
@@ -140,9 +140,10 @@ namespace AMDiS
     grdAtQPs.change_dim(localQuad->getNumPoints());
 
     if (cachedGradientsAtQPs[vec] && cachedGradientsAtQPs[vec]->valid) {      
-      DenseVector<typename GradientType<T>::type> tmp = boost::any_cast<DenseVector<typename GradientType<T>::type>& >(cachedGradientsAtQPs[vec]->values);
+      DenseVector<typename GradientType<T>::type> tmp 
+        = boost::any_cast<DenseVector<typename GradientType<T>::type>& >(cachedGradientsAtQPs[vec]->values);
       for (size_t iq = 0; iq < num_rows(tmp); iq++)
-	grdAtQPs[iq] = tmp[iq][comp];
+        grdAtQPs[iq] = tmp[iq][comp];
       return;
     }
 
@@ -154,9 +155,9 @@ namespace AMDiS
 
     if (opt && !quad && sameFeSpaces) {
       if (vec->getFeSpace()->getBasisFcts() == psi)
-	psiFast = updateFastQuadrature(psiFast, psi, INIT_GRD_PHI);
+        psiFast = updateFastQuadrature(psiFast, psi, INIT_GRD_PHI);
       else if(vec->getFeSpace()->getBasisFcts() == phi)
-	phiFast = updateFastQuadrature(phiFast, phi, INIT_GRD_PHI);
+        phiFast = updateFastQuadrature(phiFast, phi, INIT_GRD_PHI);
     }
 
     // calculate new values
@@ -164,11 +165,11 @@ namespace AMDiS
 
     if (opt && !quad && sameFeSpaces) {
       if (psiFast->getBasisFunctions() == basFcts)
-	vec->getDerivativeAtQPs(elInfo, NULL, psiFast, comp, grdAtQPs);
+        vec->getDerivativeAtQPs(elInfo, NULL, psiFast, comp, grdAtQPs);
       else if (phiFast->getBasisFunctions() == basFcts)
-	vec->getDerivativeAtQPs(elInfo, NULL, phiFast, comp, grdAtQPs);
+        vec->getDerivativeAtQPs(elInfo, NULL, phiFast, comp, grdAtQPs);
       else
-	vec->getDerivativeAtQPs(elInfo, NULL, phiFast, comp, grdAtQPs);
+        vec->getDerivativeAtQPs(elInfo, NULL, phiFast, comp, grdAtQPs);
     } else {
       vec->getDerivativeAtQPs(elInfo, localQuad, NULL, comp, grdAtQPs);
     }

@@ -59,13 +59,13 @@ namespace AMDiS
     /// Implements BasisFunction::interpol
     void interpol(const ElInfo *, int, const int *, 
 		  std::function<double(WorldVector<double>)>, 
-		  mtl::dense_vector<double>&) const;
+		  DenseVector<double>&) const;
 
     /// Implements BasisFunction::interpol
     void interpol(const ElInfo *, int, 
 		  const int *b_no,
 		  std::function<WorldVector<double>(WorldVector<double>)>, 
-		  mtl::dense_vector<WorldVector<double> >&) const;
+		  DenseVector<WorldVector<double> >&) const;
 
     /// Returns the barycentric coordinates of the i-th basis function.
     DimVec<double> *getCoords(int i) const;
@@ -405,10 +405,10 @@ namespace AMDiS
 
       void (*func)(const DimVec<double>& lambda, 
 		   int* vertices_, 
-		   mtl::dense_vector<double>& result);
+		   DenseVector<double>& result);
 
       void operator()(const DimVec<double>& lambda, 
-			     mtl::dense_vector<double>& result) const 
+			     DenseVector<double>& result) const 
       {
 	func(lambda, vertices, result);
       }
@@ -417,7 +417,7 @@ namespace AMDiS
       // center
       static void grdPhi0c(const DimVec<double>&, 
 				  int*, 
-				  mtl::dense_vector<double>& result) 
+				  DenseVector<double>& result) 
       {
 	result = 0.0;
       }
@@ -426,7 +426,7 @@ namespace AMDiS
       // vertex
       static void grdPhi1v(const DimVec<double>&, 
 				  int* vertices, 
-				  mtl::dense_vector<double>& result) 
+				  DenseVector<double>& result) 
       {
 	result = 0.0;
 	result[vertices[0]] = 1.0;
@@ -436,7 +436,7 @@ namespace AMDiS
       // vertex
       static void grdPhi2v(const DimVec<double>& lambda, 
 				  int* vertices, 
-				  mtl::dense_vector<double>& result) 
+				  DenseVector<double>& result) 
       {
 	result = 0.0;
 	result[vertices[0]] = 4.0 * lambda[vertices[0]] - 1.0;
@@ -445,7 +445,7 @@ namespace AMDiS
       // edge
       static void grdPhi2e(const DimVec<double>& lambda, 
 				  int* vertices, 
-				  mtl::dense_vector<double>& result) 
+				  DenseVector<double>& result) 
       {
 	result = 0.0;
 	result[vertices[0]] = 4.0 * lambda[vertices[1]];
@@ -456,7 +456,7 @@ namespace AMDiS
       // vertex
       static void grdPhi3v(const DimVec<double>& lambda,
 				  int* vertices,
-				  mtl::dense_vector<double>& result) 
+				  DenseVector<double>& result) 
       {
 	result = 0.0;
 	result[vertices[0]] = (13.5 * lambda[vertices[0]] - 9.0) * 
@@ -466,7 +466,7 @@ namespace AMDiS
       // edge
       static void grdPhi3e(const DimVec<double>& lambda,
 				  int* vertices, 
-				  mtl::dense_vector<double>& result)
+				  DenseVector<double>& result)
       {
 	result = 0.0;
 	result[vertices[0]] = (27.0 * lambda[vertices[0]] - 4.5) * 
@@ -478,7 +478,7 @@ namespace AMDiS
       // face
       static void grdPhi3f(const DimVec<double>& lambda, 
 				  int* vertices, 
-				  mtl::dense_vector<double>& result) 
+				  DenseVector<double>& result) 
       {
 	result = 0.0;
 	result[vertices[0]] = 27.0 * lambda[vertices[1]] * lambda[vertices[2]];
@@ -491,7 +491,7 @@ namespace AMDiS
       // vertex
       static void grdPhi4v(const DimVec<double>& lambda, 
 				  int* vertices, 
-				  mtl::dense_vector<double>& result) 
+				  DenseVector<double>& result) 
       {
 	result = 0.0;
 	result[vertices[0]] = 
@@ -502,7 +502,7 @@ namespace AMDiS
       // edge
       static void grdPhi4e0(const DimVec<double>& lambda,
 				   int* vertices, 
-				   mtl::dense_vector<double>& result)
+				   DenseVector<double>& result)
       {
 	result = 0.0;
 	result[vertices[0]] = ((128.0 * lambda[vertices[0]] - 64.0) * 
@@ -513,7 +513,7 @@ namespace AMDiS
 
       static void grdPhi4e1(const DimVec<double>& lambda,
 				   int* vertices,
-				   mtl::dense_vector<double>& result)
+				   DenseVector<double>& result)
       {
 	result = 0.0;
 	result[vertices[0]] = 4.0 * (8.0 * lambda[vertices[0]] - 1.0) * 
@@ -525,7 +525,7 @@ namespace AMDiS
       // face
       static void grdPhi4f(const DimVec<double>& lambda, 
 				  int* vertices, 
-				  mtl::dense_vector<double>& result)
+				  DenseVector<double>& result)
       {
 	result = 0.0;
 	result[vertices[0]] = 32.0 * (8.0 * lambda[vertices[0]] - 1.0) * 
@@ -539,7 +539,7 @@ namespace AMDiS
       // center
       static void grdPhi4c(const DimVec<double>& lambda, 
 				  int* vertices,
-				  mtl::dense_vector<double>& result) 
+				  DenseVector<double>& result) 
       {
 	result = 0.0;
 	result[0] = 

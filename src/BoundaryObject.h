@@ -10,7 +10,7 @@
 
 namespace AMDiS 
 {
-  typedef std::vector<std::pair<GeoIndex, int> > ExcludeList;
+  using ExcludeList = std::vector<std::pair<GeoIndex, int> >;
 
   /// Defines the geometrical objects that forms the boundary;
   struct BoundaryObject 

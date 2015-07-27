@@ -2,9 +2,12 @@
 
 #pragma once
 
-#include "MatrixVector.h"
-#include "DOFVector.h"
-#include "CreatorInterface.h"
+#include <vector>
+#include <string>
+
+#include "AMDiS_fwd.h"
+#include "AMDiS_base.h"
+#include "Log.h"
 
 namespace AMDiS 
 {
@@ -17,26 +20,10 @@ namespace AMDiS
     SystemVector(std::string name_,
             		 std::vector<const FiniteElemSpace*> feSpace_, 
             		 int size,
-            		 bool createVec_ = false)
-      : name(name_),
-      	componentSpaces(feSpace_),
-      	vectors(size),
-      	createVec(createVec_)
-    {
-      if (createVec_)
-        for (int i = 0; i < size; i++)
-          vectors[i] = new DOFVector<double>(componentSpaces[i], "tmp");
-    }
+            		 bool createVec_ = false);
 
     /// Copy Constructor.
-    SystemVector(const SystemVector& rhs)
-      : name(rhs.getName()),
-      	componentSpaces(rhs.getFeSpaces()),
-      	vectors(rhs.getSize())
-    {
-      for (size_t i = 0; i < vectors.size(); i++)
-        vectors[i] = new DOFVector<double>(*rhs.getDOFVector(i));
-    }
+    SystemVector(const SystemVector& rhs);
 
     /// Destructor, deletes all DOFVectors
     ~SystemVector() 
@@ -56,7 +43,7 @@ namespace AMDiS
     }
 
     /// Returns \ref vectors[index].
-    DOFVector<double> *getDOFVector(int index) 
+    DOFVector<double>* getDOFVector(int index) 
     {
       TEST_EXIT_DBG(index < getSize())
         ("Invalid index %d!\n", index);
@@ -64,7 +51,7 @@ namespace AMDiS
     }
 
     /// Returns \ref vectors[index].
-    const DOFVector<double> *getDOFVector(int index) const 
+    const DOFVector<double>* getDOFVector(int index) const 
     {
       TEST_EXIT_DBG(index < getSize())
         ("Invalid index %d!\n", index);
@@ -86,7 +73,7 @@ namespace AMDiS
     }
 
     /// Returns the fe space for a given component.
-    const FiniteElemSpace *getFeSpace(int i) const 
+    const FiniteElemSpace* getFeSpace(int i) const 
     { 
       return componentSpaces[i]; 
     }
@@ -145,68 +132,35 @@ namespace AMDiS
 
 
   /// multiplication with scalar
-  inline const SystemVector& operator*=(SystemVector& x, double d) 
-  {
-    for (int i = 0; i < x.getSize(); i++)
-      *(x.getDOFVector(i)) *= d;
-    return x;
-  }
+  const SystemVector& operator*=(SystemVector& x, double d);
 
   /// scalar product
-  inline double operator*(SystemVector& x, SystemVector& y) 
-  {
-    TEST_EXIT_DBG(x.getSize() == y.getSize())("invalid size\n");
-    double result = 0.0;
-    for (int i = 0; i < x.getSize(); i++)
-      result += (*x.getDOFVector(i)) * (*y.getDOFVector(i));
-    return result;
-  }
+  double operator*(SystemVector& x, SystemVector& y);
 
   /// addition of two system vectors
-  inline const SystemVector& operator+=(SystemVector& x, const SystemVector& y) 
-  {
-    TEST_EXIT_DBG(x.getSize() == y.getSize())("invalid size\n");
-    for (int i = 0; i < x.getSize(); i++)
-      (*(x.getDOFVector(i))) += (*(y.getDOFVector(i)));
-    return x;
-  }
+  const SystemVector& operator+=(SystemVector& x, const SystemVector& y);
 
   /// subtraction of two system vectors.
-  inline const SystemVector& operator-=(SystemVector& x, SystemVector& y) 
-  {
-    TEST_EXIT_DBG(x.getSize() == y.getSize())("invalid size\n");
-    for (int i = 0; i < x.getSize(); i++)
-      (*(x.getDOFVector(i))) -= (*(y.getDOFVector(i)));
-    return x;
-  }
+  const SystemVector& operator-=(SystemVector& x, SystemVector& y);
 
   /// multiplication with a scalar
-  inline SystemVector operator*(SystemVector& x, double d) 
-  {
-    SystemVector result = x;
-    for (int i = 0; i < x.getSize(); i++)
-      (*(result.getDOFVector(i))) *= d;
-    return result;
-  }
+  SystemVector operator*(SystemVector& x, double d);
 
   /// multiplication with a scalar
-  inline SystemVector operator*(double d, SystemVector& x) 
-  {
-    SystemVector result = x;
-    for (int i = 0; i < x.getSize(); i++)
-      (*(result.getDOFVector(i))) *= d;
-    return result;
-  }
+  SystemVector operator*(double d, SystemVector& x);
 
   /// addition of two system vectors
-  inline SystemVector operator+(const SystemVector& x, const SystemVector& y)
-  {
-    TEST_EXIT_DBG(x.getSize() == y.getSize())("invalid size\n");
-    SystemVector result = x;
-    for (int i = 0; i < x.getSize(); i++)
-      (*(result.getDOFVector(i))) += (*(y.getDOFVector(i)));
-    return result;
-  }
+  SystemVector operator+(const SystemVector& x, const SystemVector& y);
+
+  /// Norm of system vector.
+  inline double norm(SystemVector* x);
+
+  /// L2 norm of system vector.
+  double L2Norm(SystemVector* x);
+
+  /// H1 norm of system vector.
+  double H1Norm(SystemVector* x);
+
 
   /// Calls SystemVector::set(). Used for solving.
   inline void set(SystemVector& x, double value) 
@@ -219,34 +173,7 @@ namespace AMDiS
   {
     x.set(value);
   }
-
-  /// Norm of system vector.
-  inline double norm(SystemVector* x) 
-  {
-    double result = 0.0;
-    for (int i = 0; i < x->getSize(); i++)
-      result += x->getDOFVector(i)->squareNrm2();
-    return std::sqrt(result);
-  }
-
-  /// L2 norm of system vector.
-  inline double L2Norm(SystemVector* x) 
-  {
-    double result = 0.0;
-    for (int i = 0; i < x->getSize(); i++)
-      result += x->getDOFVector(i)->L2NormSquare();
-    return std::sqrt(result);
-  }
-
-  /// H1 norm of system vector.
-  inline double H1Norm(SystemVector* x) 
-  {
-    double result = 0.0;
-    for (int i = 0; i < x->getSize(); i++)
-      result += x->getDOFVector(i)->H1NormSquare();
-    return std::sqrt(result);
-  }
-
+  
   /// Returns SystemVector::getUsedSize().
   inline int size(SystemVector* vec) 
   {

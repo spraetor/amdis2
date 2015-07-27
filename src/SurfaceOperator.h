@@ -2,10 +2,9 @@
 
 #pragma once
 
-#include "FiniteElemSpace.h"
-#include "Mesh.h"
+#include "AMDiS_fwd.h"
 #include "Operator.h"
-#include "SurfaceQuadrature.h"
+#include "FixVec.h"
 
 namespace AMDiS 
 {
@@ -27,7 +26,7 @@ namespace AMDiS
   public:
     /// Creates a SurfaceOperator conforming to operat for the given \ref coords.
     SurfaceOperator(Operator *operat, 
-		    VectorOfFixVecs<DimVec<double> > &coords);
+		                VectorOfFixVecs<DimVec<double> > &coords);
 
     /// Adapt surface quadratures to \ref coords.
     void adaptSurfaceOperator(VectorOfFixVecs<DimVec<double> > &coords);
@@ -38,8 +37,8 @@ namespace AMDiS
      * the base class function.
      */
     virtual void getElementMatrix(const ElInfo *elInfo, 
-				  ElementMatrix& userMat, 
-				  double factor = 1.0) override;
+                        				  ElementMatrix& userMat, 
+                        				  double factor = 1.0) override;
   
     /** \brief
      * Implementation of \ref Operator::getElementVector(). Repalces the 
@@ -47,8 +46,8 @@ namespace AMDiS
      * the base class function.
      */
     virtual void getElementVector(const ElInfo *elInfo, 
-				  ElementVector& userVec, 
-				  double factor = 1.0) override;
+                        				  ElementVector& userVec, 
+                        				  double factor = 1.0) override;
 
   protected:
     VectorOfFixVecs<DimVec<double> > coords_;

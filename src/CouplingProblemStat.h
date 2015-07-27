@@ -10,11 +10,10 @@
 #include "ProblemStat.h"
 #include "Initfile.h"
 
-namespace AMDiS {
-
+namespace AMDiS 
+{
   namespace detail
   {
-
     /** \brief
     * This class defines a coupled stationary problem definition in sequential
     * computations. 
@@ -55,7 +54,8 @@ namespace AMDiS {
 
       	super::initialize(initFlag - INIT_MESH);
       	
-      	const Flag DEFAULT_INIT = (INIT_FE_SPACE | INIT_MESH | CREATE_MESH | INIT_SYSTEM | INIT_SOLVER | INIT_ESTIMATOR | INIT_MARKER | INIT_FILEWRITER);
+      	const Flag DEFAULT_INIT = (INIT_FE_SPACE | INIT_MESH | CREATE_MESH | INIT_SYSTEM | 
+                                   INIT_SOLVER | INIT_ESTIMATOR | INIT_MARKER | INIT_FILEWRITER);
       	for (size_t p = 0; p < problems.size(); ++p) {
       	  problems[p]->initialize(initFlag - DEFAULT_INIT);
       	}
@@ -311,7 +311,7 @@ namespace AMDiS {
 
 
       /// Returns number of managed problems
-      virtual int getNumProblems() 
+      virtual int getNumProblems() const
       { 
 	       return problems.size(); 
       }

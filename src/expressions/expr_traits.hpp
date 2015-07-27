@@ -32,15 +32,13 @@ namespace AMDiS
     
     // type-traits for arguments, filter terms and constants
     // ___________________________________________________________________________
-    template <class T>
-    using is_valid_arg = typename or_< is_expr<T>, is_constant<T> >::type;
+    template <class T, class S = typename std::decay<T>::type>
+    using is_valid_arg = or_< is_expr<S>, 
+                              is_constant<S> >;
     
     template <class... Args>
-    using is_valid_args = typename and_
-      <
-        and_<is_valid_arg<Args>...>,
-        or_<is_expr<Args>...> // one of the args must be an expression
-      >::type;
+    using is_valid_args = and_< and_< is_valid_arg<Args>... >,
+                                or_< is_expr<Args>... > >; // one of the args must be an expression
     
     template <class T1, class T2>
     using is_valid_arg2 = is_valid_args<T1, T2>;
@@ -62,43 +60,33 @@ namespace AMDiS
     // ___________________________________________________________________________
     
     template <class T, bool IsValid, bool IsConstant>
-    struct to_expr_aux {
-      typedef to_expr_aux to;
-      typedef void type;
+    struct to_expr_aux 
+    {
+      using to = to_expr_aux;
+      using type = void;
     };
       
     template <class T>
     struct to_expr_aux<T, /*IsValid: */true, /*IsConstant: */false> 
     {
-      typedef to_expr_aux to;
-      typedef T type;
-      static const type& get(const T& t)
-      {
-        return t;
-      }
+      using to = to_expr_aux;
+      using tpye = T;
+      
+      static const type& get(const T& t) const { return t; }
     };
     
     template <class T> // T is numeric constant
     struct to_expr_aux<T, /*IsValid: */true, /*IsConstant: */true> 
     {
-      typedef to_expr_aux to;
-      typedef ::AMDiS::expressions::RValue<T> type;
-      static type get(const T& t)
-      {
-        return {t};
-      }
+      using to = to_expr_aux;
+      using type = ::AMDiS::expressions::RValue<T>;
+      
+      template <class T_>
+      static type get(T_&& t) const { return {t}; }
     };
     
     template <class T>
     using to_expr = to_expr_aux<T, is_valid_arg<T>::value, is_constant<T>::value>;
-      
-    // TODO: use 'using' declartion instead of subtype
-    // template <class T>
-    // struct to_expr 
-    // {
-    //   typedef to_expr_aux<T, is_valid_arg<T>::value, is_constant<T>::value> to;
-    //   typedef typename to::type type;
-    // };
     
   } // end namespace traits
 

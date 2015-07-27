@@ -47,9 +47,9 @@ namespace AMDiS
       break;
     case 1:
       if (type == GRD_PHI)
-	terms = op->firstOrderGrdPhi;
+        terms = op->firstOrderGrdPhi;
       else 
-	terms = op->firstOrderGrdPsi;
+        terms = op->firstOrderGrdPsi;
       break;
     case 2:
       terms = op->secondOrder;
@@ -63,10 +63,10 @@ namespace AMDiS
     if (nRow == nCol) {
       symmetric = true;
       for (size_t i = 0; i < terms.size(); i++) {
-	if (!(terms[i])->isSymmetric()) {
-	  symmetric = false;
-	  break;
-	}
+      	if (!(terms[i])->isSymmetric()) {
+      	  symmetric = false;
+      	  break;
+      	}
       }  
     } else {
       symmetric = false;
@@ -85,8 +85,8 @@ namespace AMDiS
     } else {
 // #pragma omp critical 
       {
-	if (!quadFast->initialized(updateFlag))
-	  quadFast->init(updateFlag);
+      	if (!quadFast->initialized(updateFlag))
+      	  quadFast->init(updateFlag);
       }
     }
 
@@ -116,8 +116,8 @@ namespace AMDiS
 
 
   void SubAssembler::getCoordsAtQPs(const ElInfo* elInfo, 
-				    Quadrature *quad,
-				    mtl::dense_vector<WorldVector<double> > &coordsAtQPs)
+                        				    Quadrature *quad,
+                        				    DenseVector<WorldVector<double> > &coordsAtQPs)
   {
     // already calculated for this element ?
     if (coordsValid) {

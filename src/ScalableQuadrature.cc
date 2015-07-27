@@ -14,9 +14,8 @@ namespace AMDiS
 
     // First assume all quadrature points to be valid.
     valid.resize(n_points);
-    for (int i = 0; i < n_points; i++) {
+    for (int i = 0; i < n_points; i++)
       valid[i] = true;
-    }
   }
   
 
@@ -40,23 +39,20 @@ namespace AMDiS
      */
     for (int iq = 0; iq < n_points; iq++) {
       for (int i = 0; i <= dim; i++) {
-
-	/** 
-	 * Calculate the i-th component of the iq-th new quadrature point.
-	 */
-	double l = 0.0;
-
-	for (int j = 0; j <= dim; j++) {
-	  l +=  getOldLambda(iq, j) * subElInfo.getLambda(j, i);
-	}
-
-	(*lambda)[iq][i] = l;
-
-	// If one component is less than zero, the scaled quadrature point
-	// is not inside the target element and is therefore set to be invalid.	
-	if (l < 0.0) {
-	  valid[iq] = false;
-	}
+      	/** 
+      	 * Calculate the i-th component of the iq-th new quadrature point.
+      	 */
+      	double l = 0.0;
+      
+      	for (int j = 0; j <= dim; j++)
+      	  l +=  getOldLambda(iq, j) * subElInfo.getLambda(j, i);
+      
+      	(*lambda)[iq][i] = l;
+      
+      	// If one component is less than zero, the scaled quadrature point
+      	// is not inside the target element and is therefore set to be invalid.	
+      	if (l < 0.0)
+      	  valid[iq] = false;
       }
     }
   }
@@ -68,12 +64,12 @@ namespace AMDiS
       (*lambda)[iq].multMatrixVec(*scalMat, *getOldLambda(iq));
 
       for (int i = 0; i <= dim; i++) {
-	// If one component is less than zero, the scaled quadrature point
-	// is not inside the target element and is therefore set to be invalid.
-	if ((*lambda)[iq][i] < 0.0) {
-	  valid[iq] = false;
-	  break;
-	}
+      	// If one component is less than zero, the scaled quadrature point
+      	// is not inside the target element and is therefore set to be invalid.
+      	if ((*lambda)[iq][i] < 0.0) {
+      	  valid[iq] = false;
+      	  break;
+      	}
       }
     }
   }

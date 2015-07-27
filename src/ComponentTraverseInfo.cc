@@ -1,7 +1,8 @@
 #include "ComponentTraverseInfo.h"
+#include "FiniteElemSpace.h"
 
-namespace AMDiS {
-
+namespace AMDiS 
+{
   void SingleComponentInfo::updateStatus()
   {
     if (rowFeSpace == NULL) {

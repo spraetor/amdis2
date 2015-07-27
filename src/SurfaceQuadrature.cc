@@ -8,11 +8,11 @@ namespace AMDiS
   SurfaceQuadrature::SurfaceQuadrature(Quadrature *q,
 				       VectorOfFixVecs<DimVec<double> > &c)
     : Quadrature((q->getName() + " surface").c_str(),
-		 q->getDegree(),
-		 q->getDim() + 1,
-		 q->getNumPoints(),
-		 NULL,
-		 q->getWeight()), 
+      q->getDegree(),
+      q->getDim() + 1,
+      q->getNumPoints(),
+      NULL,
+      q->getWeight()), 
       quad(q),
       coords(c)
   {
@@ -24,11 +24,11 @@ namespace AMDiS
       DimVec<double> const& origin = quad->getLambda(i);
 
       for (int j = 0; j < dim + 1; j++)
-	(*lambda)[i][j] = 0.0;
+        (*lambda)[i][j] = 0.0;
 
       for (int j = 0; j < dim; j++)
-	for (int k = 0; k < dim + 1; k++)
-	  (*lambda)[i][k] += origin[j] * coords[j][k];
+        for (int k = 0; k < dim + 1; k++)
+          (*lambda)[i][k] += origin[j] * coords[j][k];
     }
   }
 
@@ -44,11 +44,11 @@ namespace AMDiS
       DimVec<double> const& origin = quad->getLambda(i);
 
       for (int j = 0; j < dim + 1; j++)
-	(*lambda)[i][j] = 0.0;
+        (*lambda)[i][j] = 0.0;
 
       for (int j = 0; j < dim; j++)
-	for (int k = 0; k < dim+1; k++)
-	  (*lambda)[i][k] += origin[j] * coords[j][k];
+      	for (int k = 0; k < dim+1; k++)
+      	  (*lambda)[i][k] += origin[j] * coords[j][k];
     }
   }
 

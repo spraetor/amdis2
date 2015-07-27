@@ -4,8 +4,8 @@
 
 #include "CoarseningManager.h"
 
-namespace AMDiS {
-
+namespace AMDiS 
+{
   /** \ingroup Adaption 
    * \brief
    * Implements a CoarseningManager for 1-dimensional meshes.
@@ -17,9 +17,6 @@ namespace AMDiS {
     CoarseningManager1d() 
       : CoarseningManager() 
     {}
-
-    /// destructor
-    virtual ~CoarseningManager1d() {}
 
     /** \brief
      * Overloads CoarseningManager::coarsenMesh. In 1d a simple recursive

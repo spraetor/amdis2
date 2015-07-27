@@ -11,41 +11,40 @@ namespace AMDiS
   class SurfaceRegion_ED : public ElementData
   {
   public:
-    bool isOfType(int typeID) const 
+    virtual bool isOfType(int typeID) const override 
     {
       if (typeID == SURFACE_REGION) 
-	return true;
+        return true;
       return false;
     }
 
-    class Creator : public CreatorInterface<ElementData>
+    struct Creator : public CreatorInterface<ElementData>
     {
-    public:
-      ElementData* create() 
+      virtual ElementData* create() override 
       {
-	return new SurfaceRegion_ED;
+        return new SurfaceRegion_ED;
       }
     };
 
     SurfaceRegion_ED(ElementData *decorated = NULL)
       : ElementData(decorated),
-	side(-1),
-	region(-1)
+      	side(-1),
+      	region(-1)
     {}
 
-    bool refineElementData(Element* parent, 
-			   Element* child1,
-			   Element* child2,
-			   int elType);
+    virtual bool refineElementData(Element* parent, 
+                          			   Element* child1,
+                          			   Element* child2,
+                          			   int elType) override;
 
-    ElementData *clone() const ;
+    virtual ElementData *clone() const override;
 
     std::string getTypeName() const 
     { 
       return "SurfaceRegion_ED"; 
     }
 
-    int getTypeID() const 
+    virtual int getTypeID() const override 
     { 
       return SURFACE_REGION; 
     }

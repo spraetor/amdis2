@@ -79,28 +79,29 @@ namespace AMDiS
   class DirichletBC : public detail::DirichletBC
   {
     using Super = detail::DirichletBC;
-    using ToExpr = typename traits::to_expr<Expr>::to;
+    using ToExpr = traits::to_expr<Expr>;
     using ExprType = typename ToExpr::type;
     
   public:
     /// Constructor.
+    template <class Expr_>
     DirichletBC(BoundaryType type,
-		Expr fct_,
-		const FiniteElemSpace *rowFeSpace,
-		const FiniteElemSpace *colFeSpace = NULL,
-		bool apply = true)
+            		Expr_&& fct_,
+            		const FiniteElemSpace *rowFeSpace,
+            		const FiniteElemSpace *colFeSpace = NULL,
+            		bool apply = true)
       : Super(type, rowFeSpace, colFeSpace, apply),
-	fct(ToExpr::get(fct_)),
-	term(fct)
-    { }
+      	fct(ToExpr::get(fct_)),
+      	term(fct)
+    {}
     
   
     /// Implementation of BoundaryCondition::fillBoundaryCondition().
     virtual void fillBoundaryCondition(DOFVectorBase<double>* vector, 
-					ElInfo* elInfo,
-					const DegreeOfFreedom* dofIndices,
-					const BoundaryType* localBound,
-					int nBasFcts) override
+                            					 ElInfo* elInfo,
+                            					 const DegreeOfFreedom* dofIndices,
+                            					 const BoundaryType* localBound,
+                            				   int nBasFcts) override
     {
       const BasisFunction *basFcts = rowFeSpace->getBasisFcts();
       // initialize expression on ElInfo

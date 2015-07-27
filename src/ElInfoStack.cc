@@ -1,4 +1,5 @@
 #include "ElInfoStack.h"
+#include "ElInfo.h"
 #include "Mesh.h"
 
 namespace AMDiS 

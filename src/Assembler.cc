@@ -8,12 +8,13 @@
 #include "Element.h"
 #include "QPsiPhi.h"
 #include "DOFVector.h"
+#include "ElInfo.h"
 
-namespace AMDiS {
-
+namespace AMDiS 
+{
   Assembler::Assembler(Operator *op,
-		       const FiniteElemSpace *row,
-		       const FiniteElemSpace *col) 
+            		       const FiniteElemSpace *row,
+            		       const FiniteElemSpace *col) 
     : operat(op),
       rowFeSpace(row),
       colFeSpace(col ? col : row),
@@ -32,8 +33,8 @@ namespace AMDiS {
 
   
   void Assembler::calculateElementMatrix(const ElInfo *elInfo, 
-					 ElementMatrix& userMat,
-					 double factor)
+                              					 ElementMatrix& userMat,
+                              					 double factor)
   {
     if (remember && (factor != 1.0 || operat->uhOld))
       rememberElMat = true;
@@ -74,8 +75,8 @@ namespace AMDiS {
   
 
   void Assembler::calculateElementVector(const ElInfo *elInfo, 
-					 ElementVector& userVec,
-					 double factor)
+                              					 ElementVector& userVec,
+                              					 double factor)
   {
     if (remember && factor != 1.0)
       rememberElVec = true;
@@ -87,15 +88,15 @@ namespace AMDiS {
     
     if (el != lastVecEl || !operat->isOptimized()) {
       if (rememberElVec)
-	set_to_zero(elementVector);
+      	set_to_zero(elementVector);
 	
       lastVecEl = el;
     } else {
       // Only possible in single mesh case when one operator 
       // is used more than twice at dof vector?
       if (rememberElVec) {
-	userVec += factor * elementVector;
-	return;
+      	userVec += factor * elementVector;
+      	return;
       }
     }
 
@@ -104,7 +105,7 @@ namespace AMDiS {
     if (operat->uhOld && remember) {
       matVecAssemble(elInfo, vec);
       if (rememberElVec)
-	userVec += factor * elementVector;      
+      	userVec += factor * elementVector;      
 
       return;
     } 
@@ -138,8 +139,8 @@ namespace AMDiS {
 
   
   void Assembler::initElement(const ElInfo *smallElInfo, 
-			      const ElInfo *largeElInfo,
-			      Quadrature *quad)
+                  			      const ElInfo *largeElInfo,
+                  			      Quadrature *quad)
   {
     if (secondOrderAssembler) 
       secondOrderAssembler->initElement(smallElInfo, largeElInfo, quad);
@@ -157,37 +158,37 @@ namespace AMDiS {
     if (secondOrderAssembler) {
       // create quadrature
       if (!secondOrderAssembler->getQuadrature()) {
-	int dim = rowFeSpace->getMesh()->getDim();
-	int degree = operat->getQuadratureDegree(2);
-	Quadrature *quadrature = Quadrature::provideQuadrature(dim, degree);
-	secondOrderAssembler->setQuadrature(quadrature);
+      	int dim = rowFeSpace->getMesh()->getDim();
+      	int degree = operat->getQuadratureDegree(2);
+      	Quadrature *quadrature = Quadrature::provideQuadrature(dim, degree);
+      	secondOrderAssembler->setQuadrature(quadrature);
       }
     }
     if (firstOrderAssemblerGrdPsi) {
       // create quadrature
       if (!firstOrderAssemblerGrdPsi->getQuadrature()) {
-	int dim = rowFeSpace->getMesh()->getDim();
-	int degree = operat->getQuadratureDegree(1, GRD_PSI);
-	Quadrature *quadrature = Quadrature::provideQuadrature(dim, degree);
-	firstOrderAssemblerGrdPsi->setQuadrature(quadrature);
+      	int dim = rowFeSpace->getMesh()->getDim();
+      	int degree = operat->getQuadratureDegree(1, GRD_PSI);
+      	Quadrature *quadrature = Quadrature::provideQuadrature(dim, degree);
+      	firstOrderAssemblerGrdPsi->setQuadrature(quadrature);
       }
     }
     if (firstOrderAssemblerGrdPhi) {
       // create quadrature
       if (!firstOrderAssemblerGrdPhi->getQuadrature()) {
-	int dim = rowFeSpace->getMesh()->getDim();
-	int degree = operat->getQuadratureDegree(1, GRD_PHI);
-	Quadrature *quadrature = Quadrature::provideQuadrature(dim, degree);
-	firstOrderAssemblerGrdPhi->setQuadrature(quadrature);
+      	int dim = rowFeSpace->getMesh()->getDim();
+      	int degree = operat->getQuadratureDegree(1, GRD_PHI);
+      	Quadrature *quadrature = Quadrature::provideQuadrature(dim, degree);
+      	firstOrderAssemblerGrdPhi->setQuadrature(quadrature);
       }
     }
     if (zeroOrderAssembler) {
       // create quadrature
       if (!zeroOrderAssembler->getQuadrature()) {
-	int dim = rowFeSpace->getMesh()->getDim();
-	int degree = operat->getQuadratureDegree(0);
-	Quadrature *quadrature = Quadrature::provideQuadrature(dim, degree);
-	zeroOrderAssembler->setQuadrature(quadrature);
+      	int dim = rowFeSpace->getMesh()->getDim();
+      	int degree = operat->getQuadratureDegree(0);
+      	Quadrature *quadrature = Quadrature::provideQuadrature(dim, degree);
+      	zeroOrderAssembler->setQuadrature(quadrature);
       }
     }
   }
@@ -201,12 +202,12 @@ namespace AMDiS {
 
 
   OptimizedAssembler::OptimizedAssembler(Operator  *op,
-					 Quadrature *quad2,
-					 Quadrature *quad1GrdPsi,
-					 Quadrature *quad1GrdPhi,
-					 Quadrature *quad0,
-					 const FiniteElemSpace *rowFeSpace,
-					 const FiniteElemSpace *colFeSpace) 
+                              					 Quadrature *quad2,
+                              					 Quadrature *quad1GrdPsi,
+                              					 Quadrature *quad1GrdPhi,
+                              					 Quadrature *quad0,
+                              					 const FiniteElemSpace *rowFeSpace,
+                              					 const FiniteElemSpace *colFeSpace) 
     : Assembler(op, rowFeSpace, colFeSpace)
   {
     bool opt = (rowFeSpace->getBasisFcts() == colFeSpace->getBasisFcts());
@@ -226,12 +227,12 @@ namespace AMDiS {
 
 
   StandardAssembler::StandardAssembler(Operator *op,
-				       Quadrature *quad2,
-				       Quadrature *quad1GrdPsi,
-				       Quadrature *quad1GrdPhi,
-				       Quadrature *quad0,
-				       const FiniteElemSpace *rowFeSpace,
-				       const FiniteElemSpace *colFeSpace) 
+                        				       Quadrature *quad2,
+                        				       Quadrature *quad1GrdPsi,
+                        				       Quadrature *quad1GrdPhi,
+                        				       Quadrature *quad0,
+                        				       const FiniteElemSpace *rowFeSpace,
+                        				       const FiniteElemSpace *colFeSpace) 
     : Assembler(op, rowFeSpace, colFeSpace)
   {
     remember = false;

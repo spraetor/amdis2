@@ -1,7 +1,7 @@
 #pragma once
 
-namespace AMDiS {
-
+namespace AMDiS 
+{
   /// internal used indices to represent the different geometrical objects.
   /// Used as parameter for getGeo() and as template parameter for FixVec. 
   enum GeoIndex
@@ -49,4 +49,4 @@ namespace AMDiS {
   /// Returns the dimension of GeoIndex ind for dimension dim
 #define DIM_OF_INDEX(ind, dim) ((static_cast<int>(ind) == 0) ? dim : static_cast<int>(ind) - 1)
 
-}
+} // end namespace AMDiS

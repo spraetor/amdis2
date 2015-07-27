@@ -4,7 +4,6 @@
 
 #include <vector>
 
-#include "ElInfo.h"
 #include "AMDiS_fwd.h"
 
 namespace AMDiS 

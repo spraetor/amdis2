@@ -16,7 +16,7 @@ namespace AMDiS
       	: DOFIterator<DegreeOfFreedom>(const_cast<DOFAdmin*>(c->getAdmin()), 
                         				       dynamic_cast<DOFIndexed<DegreeOfFreedom>*>(c), 
                         				       type)
-      { }   
+      {}   
     };
 
     /// Constructor

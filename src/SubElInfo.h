@@ -29,16 +29,16 @@ namespace AMDiS
     ~SubElInfo() 
     {
       if (lambda)
-	delete lambda;
+        delete lambda;
     }
 
     /// Get b-th coordinate of the a-th vertex of subelement (barycentriccoordinates). 
     double getLambda(int a, int b) const 
     {
       if (lambda) 
-	return (*lambda)[a][b]; 
+        return (*lambda)[a][b]; 
       else 
-	return 0.0;
+        return 0.0;
     }
 
     /// Get coordinates of a-th vertex of subelement (barycentric coordinates).
@@ -48,7 +48,7 @@ namespace AMDiS
     }
 
     /// Get coordinates of all vertices of subelement (barycentric coordinates).
-    VectorOfFixVecs<DimVec<double> > *getLambda() const 
+    VectorOfFixVecs<DimVec<double> >* getLambda() const 
     { 
       return lambda; 
     }

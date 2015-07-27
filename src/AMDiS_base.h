@@ -18,17 +18,17 @@
 
 namespace AMDiS 
 {
-  const int amdisRevisionNumber = 1700; // TODO: how to update this value
+  static constexpr int amdisRevisionNumber = 1700; // TODO: how to update this value
 
   /// Used by matrix vector multiplication
   typedef enum { NoTranspose,
-		 Transpose,
-		 ConjugateTranspose } MatrixTranspose;
+            		 Transpose,
+            		 ConjugateTranspose } MatrixTranspose;
 
   /// Speciefies the norm used by Estimator.
   typedef enum { NO_NORM = 0, 
-		 H1_NORM = 1, 
-		 L2_NORM = 2 } Norm;
+            		 H1_NORM = 1, 
+            		 L2_NORM = 2 } Norm;
 		 
 
   /// Specifies the type of a FirstOrderTerm 
@@ -39,26 +39,26 @@ namespace AMDiS
   
   struct DofIndex 
   {
-    typedef signed long size_type;
+    using size_type = signed long;
   };
   
 //   std::ostream& operator<<(std::ostream& os, const DofIndex& di);  
 //   std::istream& operator>>(std::istream& is, DofIndex& di);
 
   /// Datatype for degrees of freedom 
-  typedef DofIndex::size_type DegreeOfFreedom;
+  using DegreeOfFreedom = DofIndex::size_type;
 
   /// Defines type for a vector of DOF pointers.
-  typedef std::vector<const DegreeOfFreedom*> DofContainer;
+  using DofContainer = std::vector<const DegreeOfFreedom*>;
 
-  typedef std::set<const DegreeOfFreedom*> DofContainerSet;
+  using DofContainerSet = std::set<const DegreeOfFreedom*>;
 
   /// Defines a type for global edge identification via its DOFs. 
   // TODO: replace by std::array<DegreeOfFreedom, 2>
-  typedef std::pair<DegreeOfFreedom, DegreeOfFreedom> DofEdge;
+  using DofEdge = std::pair<DegreeOfFreedom, DegreeOfFreedom>;
 
   /// Defines a tzpe for global face identiication via its DOFs.
-  typedef std::array<DegreeOfFreedom, 3> DofFace;
+  using DofFace = std::array<DegreeOfFreedom, 3>;
 
   // ===== some simple template functions ====================================== 
   

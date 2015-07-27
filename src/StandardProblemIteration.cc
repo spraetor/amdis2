@@ -104,7 +104,7 @@ namespace AMDiS
   }
 
 
-  std::string StandardProblemIteration::getName()
+  std::string StandardProblemIteration::getName() const
   {
     return problem->getName();
   }

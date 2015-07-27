@@ -123,6 +123,15 @@ namespace AMDiS
 	(*it).second->fillBoundaryCondition(mat, elInfo, &dofVec[0], 
 					    localBound, nBasFcts);
   }
+  
+  bool BoundaryManager::isBoundaryPeriodic(BoundaryType b)
+  {
+    for (BoundaryCondition* boundary_map : globalBoundaryMap[b])
+    	if (boundary_map->isPeriodic())
+    	  return true;
+
+    return false;
+  }
 
 
   void BoundaryManager::initMatrix(DOFMatrix *matrix)

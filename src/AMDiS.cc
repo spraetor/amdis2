@@ -41,7 +41,7 @@ namespace AMDiS
 #endif    
     
 #ifdef HAVE_ZOLTAN
-    float zoltanVersion = 0.0;
+    float zoltanVersion = 0.0f;
     Zoltan_Initialize(argc, argv, &zoltanVersion);
 #endif
     

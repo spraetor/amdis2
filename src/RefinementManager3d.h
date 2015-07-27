@@ -2,6 +2,8 @@
 
 #pragma once
 
+//#include "RefinementManager.h"
+
 namespace AMDiS 
 {
   /** \ingroup Adaption 
@@ -15,9 +17,6 @@ namespace AMDiS
     RefinementManager3d() 
       : RefinementManager()
     {}
-
-    /// destructor 
-    virtual ~RefinementManager3d() {}
 
   protected:
     /// Used by \ref setNewCoords
@@ -36,21 +35,21 @@ namespace AMDiS
      *  
      */
     bool getRefinePatch(ElInfo **el_info, 
-			DegreeOfFreedom *edge[2], 
-			int direction,
-			RCNeighbourList &refineList, 
-			int *n_neigh);
+                  			DegreeOfFreedom *edge[2], 
+                  			int direction,
+                  			RCNeighbourList &refineList, 
+                  			int *n_neigh);
 
     /// Refines all elements in the patch.
     DegreeOfFreedom refinePatch(DegreeOfFreedom *edge[2], RCNeighbourList &refineList,
-				int n_neigh, bool bound);
+				                        int n_neigh, bool bound);
 
     /// Implements RefinementManager::refineFunction.
     ElInfo* refineFunction(ElInfo* el_info);
 
     /// Refines one Tetrahedron.
     void bisectTetrahedron(RCNeighbourList &refineList, int index,
-			   DegreeOfFreedom *dof[3], DegreeOfFreedom *edge[2]);
+			                     DegreeOfFreedom *dof[3], DegreeOfFreedom *edge[2]);
 
     /// Used by \ref bisectTetrahedron
     void fillPatchConnectivity(RCNeighbourList &refineList, int index);
@@ -68,7 +67,7 @@ namespace AMDiS
 
     static void getOtherEl(Mesh* mesh,
                            TraverseStack *stack, 
-			   std::vector<EdgeInEl> &refineEdges);
+		                       std::vector<EdgeInEl> &refineEdges);
   };
 
 } // end namespace AMDiS

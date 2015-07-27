@@ -31,12 +31,12 @@ namespace AMDiS
 
     /// implements Element::getVertexOfPosition
     virtual int getVertexOfPosition(GeoIndex position,
-				    int positionIndex,
-				    int vertexIndex) const;
+                        				    int positionIndex,
+                        				    int vertexIndex) const;
 
     virtual int getPositionOfVertex(int side, int vertex) const 
     {
-      static int positionOfVertex[2][2] = {{0, -1}, {-1, 0}};
+      static constexpr int positionOfVertex[2][2] = {{0, -1}, {-1, 0}};
       return positionOfVertex[side][vertex];
     }
 
@@ -176,11 +176,11 @@ namespace AMDiS
   protected:
     /// vertexOfEdge[i][j] is the local number of the j-th vertex of the i-th 
     /// edge of this element.
-    static const int vertexOfEdge[1][2];
+    static constexpr int vertexOfEdge[1][2] = {{0, 1}};
 
-    static const int sideOfChild[2][2];
+    static constexpr int sideOfChild[2][2] = {{ 0,-1}, {-1, 1}};
 
-    static const int vertexOfParent[2][2];
+    static constexpr int vertexOfParent[2][2] = {{ 0,-1}, {-1, 1}};
   };
 
 } // end namespace AMDiS

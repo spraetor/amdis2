@@ -16,9 +16,6 @@ namespace AMDiS
       : RefinementManager()
     {}
 
-    /// Destructor 
-    virtual ~RefinementManager2d() {}
-
   protected:
     /// Used by \ref setNewCoords
     void newCoordsFct(ElInfo *elInfo);
@@ -35,12 +32,12 @@ namespace AMDiS
      *  looping around the refinement edge, otherwise  0
      */
     void getRefinePatch(ElInfo **elInfo, DegreeOfFreedom *edge[2], int dir,
-			RCNeighbourList &refineList, int *n_neigh);
+                        RCNeighbourList &refineList, int *n_neigh);
 
     /// Refines all elements in the patch.
     DegreeOfFreedom refinePatch(DegreeOfFreedom *edge[2], 
-				RCNeighbourList &refineList,
-				int n_neigh, bool bound);
+                        				RCNeighbourList &refineList,
+                        				int n_neigh, bool bound);
 
     /// Implements RefinementManager::refineFunction.
     ElInfo* refineFunction(ElInfo* elInfo);

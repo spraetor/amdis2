@@ -4,8 +4,8 @@
 
 #include "CoarseningManager.h"
 
-namespace AMDiS {
-
+namespace AMDiS 
+{
   /** \ingroup Adaption 
    * \brief
    * Implements a CoarseningManager for 3-dimensional meshes.
@@ -17,9 +17,6 @@ namespace AMDiS {
     CoarseningManager3d() 
       : CoarseningManager() 
     {}
-
-    /// destructor
-    virtual ~CoarseningManager3d() {}
 
   protected:
     /// Implements \ref CoarseningManager::coarsenFunction

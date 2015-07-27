@@ -5,7 +5,6 @@
 #include <vector>
 
 #include "AMDiS_fwd.h"
-#include "QPsiPhi.h"
 #include "SubAssembler.h"
 
 namespace AMDiS 
@@ -27,19 +26,16 @@ namespace AMDiS
      * be returned.
      */
     static SecondOrderAssembler* getSubAssembler(Operator *op,
-						 Assembler *assembler,
-						 Quadrature *quadrat,
-						 bool optimized);
-
-    /// Destructor.
-    virtual ~SecondOrderAssembler() {}
+                                    						 Assembler *assembler,
+                                    						 Quadrature *quadrat,
+                                    						 bool optimized);
 
   protected:
     /// Constructor.
     SecondOrderAssembler(Operator *op,
-			 Assembler *assembler,
-			 Quadrature *quadrat,
-			 bool optimized);
+                  			 Assembler *assembler,
+                  			 Quadrature *quadrat,
+                  			 bool optimized);
 
   protected:
     /// List of all yet created optimized second order assemblers.
@@ -97,9 +93,9 @@ namespace AMDiS
     }
 
   protected:
-    mtl::dense_vector<double> dimVec;
+    DenseVector<double> dimVec;
 
-    std::vector<mtl::dense2D<double> > LALt;
+    std::vector<DenseMatrix<double> > LALt;
   };
 
   
@@ -129,7 +125,7 @@ namespace AMDiS
     /// Integral of the product of the derivative of psi and the derivative of phi.
     const Q11PsiPhi *q11;
 
-    std::vector<mtl::dense2D<double> > LALt;
+    std::vector<DenseVector<double> > LALt;
 
 #if 0
     friend class SecondOrderAssembler;

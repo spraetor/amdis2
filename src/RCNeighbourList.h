@@ -75,7 +75,7 @@ namespace AMDiS
     Element* getElement(int i) const 
     {
       if (static_cast<int>(rclist.size()) <= i) 
-	return NULL;
+        return NULL;
 
       return rclist[i]->el;
     }
@@ -154,10 +154,10 @@ namespace AMDiS
 
     ///
     void periodicSplit(DegreeOfFreedom *edge[2],
-		       DegreeOfFreedom *nextEdge[2],
-		       int *n_neigh,
-		       int *n_neigh_periodic,
-		       RCNeighbourList &periodicList);
+            		       DegreeOfFreedom *nextEdge[2],
+            		       int *n_neigh,
+            		       int *n_neigh_periodic,
+            		       RCNeighbourList &periodicList);
 
     ///
     void clearList();

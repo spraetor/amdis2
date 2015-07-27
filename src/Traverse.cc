@@ -74,7 +74,7 @@ namespace AMDiS
 
     if (stack_used) {
       if (parametric) 
-	elinfo_old = parametric->removeParametricInfo(elinfo_old);
+        elinfo_old = parametric->removeParametricInfo(elinfo_old);
 
       TEST_EXIT_DBG(elinfo_old == elinfo_stack[stack_used])("invalid old elinfo\n");
     } else {
@@ -85,25 +85,26 @@ namespace AMDiS
       elinfo = traverseLeafElement();
     } else {
       if (traverse_fill_flag.isSet(Mesh::CALL_LEAF_EL_LEVEL))
-	elinfo = traverseLeafElementLevel();
+        elinfo = traverseLeafElementLevel();
       else if (traverse_fill_flag.isSet(Mesh::CALL_EL_LEVEL))
-	elinfo = traverseElementLevel();
+        elinfo = traverseElementLevel();
       else if (traverse_fill_flag.isSet(Mesh::CALL_MG_LEVEL))
-	elinfo = traverseMultiGridLevel();
-      else
-	if (traverse_fill_flag.isSet(Mesh::CALL_EVERY_EL_PREORDER)) {
-	  elinfo = traverseEveryElementPreorder();
-	} else if (traverse_fill_flag.isSet(Mesh::CALL_EVERY_EL_INORDER))
-	  elinfo = traverseEveryElementInorder();
-	else if (traverse_fill_flag.isSet(Mesh::CALL_EVERY_EL_POSTORDER))
-	  elinfo = traverseEveryElementPostorder();
-	else
-	  ERROR_EXIT("invalid traverse_flag\n");
+        elinfo = traverseMultiGridLevel();
+      else {
+      	if (traverse_fill_flag.isSet(Mesh::CALL_EVERY_EL_PREORDER)) {
+      	  elinfo = traverseEveryElementPreorder();
+      	} else if (traverse_fill_flag.isSet(Mesh::CALL_EVERY_EL_INORDER))
+      	  elinfo = traverseEveryElementInorder();
+      	else if (traverse_fill_flag.isSet(Mesh::CALL_EVERY_EL_POSTORDER))
+      	  elinfo = traverseEveryElementPostorder();
+      	else
+      	  ERROR_EXIT("invalid traverse_flag\n");
+      }
     }
 
     if (elinfo) {
       if (parametric)
-	elinfo = parametric->addParametricInfo(elinfo);
+        elinfo = parametric->addParametricInfo(elinfo);
       elinfo->fillDetGrdLambda();
     }
 
@@ -125,7 +126,7 @@ namespace AMDiS
 
     if (stack_size > 0)
       for (int i = stack_size; i < new_stack_size; i++)
-	elinfo_stack[i]->setFillFlag(elinfo_stack[0]->getFillFlag());
+        elinfo_stack[i]->setFillFlag(elinfo_stack[0]->getFillFlag());
 
     info_stack.resize(new_stack_size);
     save_elinfo_stack.resize(new_stack_size, NULL);
@@ -151,21 +152,21 @@ namespace AMDiS
       currentMacro = traverse_mesh->firstMacroElement();
 
       if (limitedToMacroElement >= 0) {
-	while ((*currentMacro)->getIndex() != limitedToMacroElement &&
-	       currentMacro != traverse_mesh->endOfMacroElements())
-	  currentMacro++;
-
-	TEST_EXIT_DBG(currentMacro != traverse_mesh->endOfMacroElements())
-	  ("Coult not find macro element with index %d!\n", limitedToMacroElement);
+      	while ((*currentMacro)->getIndex() != limitedToMacroElement &&
+      	       currentMacro != traverse_mesh->endOfMacroElements())
+      	  currentMacro++;
+      
+      	TEST_EXIT_DBG(currentMacro != traverse_mesh->endOfMacroElements())
+      	  ("Coult not find macro element with index %d!\n", limitedToMacroElement);
 
       } else {
-	while (((*currentMacro)->getIndex() % maxThreads != myThreadId) &&
-	       currentMacro != traverse_mesh->endOfMacroElements())
-	  currentMacro++;      
+      	while (((*currentMacro)->getIndex() % maxThreads != myThreadId) &&
+      	       currentMacro != traverse_mesh->endOfMacroElements())
+      	  currentMacro++;      
       }
 
       if (currentMacro == traverse_mesh->endOfMacroElements())
-	return NULL;
+        return NULL;
 
       traverse_mel = *currentMacro;
       stack_used = 1;
@@ -174,45 +175,45 @@ namespace AMDiS
 
       el = elinfo_stack[stack_used]->getElement();
       if (el == NULL || el->getFirstChild() == NULL)
-	return elinfo_stack[stack_used];
+        return elinfo_stack[stack_used];
     } else {
       el = elinfo_stack[stack_used]->getElement();
       
       /* go up in tree until we can go down again */
       while ((stack_used > 0) && 
 	     ((info_stack[stack_used] >= 2) || (el->getFirstChild() == NULL))) {
-	stack_used--;
-	el = elinfo_stack[stack_used]->getElement();
+      	stack_used--;
+      	el = elinfo_stack[stack_used]->getElement();
       }
       
       /* goto next macro element */
       if (stack_used < 1) {
-	if (limitedToMacroElement >= 0)
-	  return NULL;
-
-	do {	
-	  currentMacro++;
-	} while ((currentMacro != traverse_mesh->endOfMacroElements()) && 
-		 ((*currentMacro)->getIndex() % maxThreads != myThreadId));
-
-	if (currentMacro == traverse_mesh->endOfMacroElements())
-	  return NULL;
-
-	traverse_mel = *currentMacro;	
-	stack_used = 1;
-	elinfo_stack[stack_used]->fillMacroInfo(traverse_mel);
-	info_stack[stack_used] = 0;	
-	el = elinfo_stack[stack_used]->getElement();
-
-	if (el == NULL || el->getFirstChild() == NULL)
-	  return elinfo_stack[stack_used];
+      	if (limitedToMacroElement >= 0)
+      	  return NULL;
+      
+      	do {	
+      	  currentMacro++;
+      	} while ((currentMacro != traverse_mesh->endOfMacroElements()) && 
+      		 ((*currentMacro)->getIndex() % maxThreads != myThreadId));
+      
+      	if (currentMacro == traverse_mesh->endOfMacroElements())
+      	  return NULL;
+      
+      	traverse_mel = *currentMacro;	
+      	stack_used = 1;
+      	elinfo_stack[stack_used]->fillMacroInfo(traverse_mel);
+      	info_stack[stack_used] = 0;	
+      	el = elinfo_stack[stack_used]->getElement();
+      
+      	if (el == NULL || el->getFirstChild() == NULL)
+      	  return elinfo_stack[stack_used];
       }
     }
    
     /* go down tree until leaf */
     while (el->getFirstChild()) {
       if (stack_used >= stack_size - 1) 
-	enlargeTraverseStack();
+        enlargeTraverseStack();
       
       int i = info_stack[stack_used];
       el = const_cast<Element*>(((i == 0) ? el->getFirstChild() : el->getSecondChild()));
@@ -221,8 +222,8 @@ namespace AMDiS
       stack_used++;
 
       TEST_EXIT_DBG(stack_used < stack_size)
-	("stack_size = %d too small, level = (%d, %d)\n",
-	 stack_size, elinfo_stack[stack_used]->getLevel());
+      	("stack_size = %d too small, level = (%d, %d)\n",
+      	 stack_size, elinfo_stack[stack_used]->getLevel());
       
       info_stack[stack_used] = 0;
     }
@@ -260,16 +261,16 @@ namespace AMDiS
       currentMacro = traverse_mesh->firstMacroElement();
       traverse_mel = *currentMacro;
       if (traverse_mel == NULL)  
-	return NULL;
+        return NULL;
       
       stack_used = 1;
       elinfo_stack[stack_used]->fillMacroInfo(traverse_mel);
       info_stack[stack_used] = 0;
       
       if ((elinfo_stack[stack_used]->getLevel() == traverse_level) ||
-	  (elinfo_stack[stack_used]->getLevel() < traverse_level && 
-	   elinfo_stack[stack_used]->getElement()->isLeaf()))
-	return elinfo_stack[stack_used];
+      	  (elinfo_stack[stack_used]->getLevel() < traverse_level && 
+      	   elinfo_stack[stack_used]->getElement()->isLeaf()))
+      	return elinfo_stack[stack_used];
     }
   
     Element *el = elinfo_stack[stack_used]->getElement();
@@ -286,7 +287,7 @@ namespace AMDiS
     if (stack_used < 1) {
       currentMacro++;
       if (currentMacro == traverse_mesh->endOfMacroElements()) 
-	return NULL;
+        return NULL;
 
       traverse_mel = *currentMacro;
       stack_used = 1;
@@ -294,9 +295,9 @@ namespace AMDiS
       info_stack[stack_used] = 0;
 
       if ((elinfo_stack[stack_used]->getLevel() == traverse_level) ||
-	  (elinfo_stack[stack_used]->getLevel() < traverse_level && 
-	   elinfo_stack[stack_used]->getElement()->isLeaf()))
-	return elinfo_stack[stack_used];
+      	  (elinfo_stack[stack_used]->getLevel() < traverse_level && 
+      	   elinfo_stack[stack_used]->getElement()->isLeaf()))
+      	return elinfo_stack[stack_used];
     }
 
 
@@ -318,8 +319,8 @@ namespace AMDiS
     info_stack[stack_used] = 0;
   
     if ((elinfo_stack[stack_used]->getLevel() == traverse_level) ||
-	(elinfo_stack[stack_used]->getLevel() < traverse_level && 
-	 elinfo_stack[stack_used]->getElement()->isLeaf()))
+        (elinfo_stack[stack_used]->getLevel() < traverse_level && 
+         elinfo_stack[stack_used]->getElement()->isLeaf()))
       return elinfo_stack[stack_used];
 
     return traverseMultiGridLevel();
@@ -334,17 +335,17 @@ namespace AMDiS
       currentMacro = traverse_mesh->firstMacroElement();
 
       if (limitedToMacroElement >= 0) {
-	while ((*currentMacro)->getIndex() != limitedToMacroElement &&
-	       currentMacro != traverse_mesh->endOfMacroElements())
-	  currentMacro++;
-
-	TEST_EXIT_DBG(currentMacro != traverse_mesh->endOfMacroElements())
-	  ("Coult not find macro element with index %d!\n", limitedToMacroElement);
+      	while ((*currentMacro)->getIndex() != limitedToMacroElement &&
+      	       currentMacro != traverse_mesh->endOfMacroElements())
+      	  currentMacro++;
+      
+      	TEST_EXIT_DBG(currentMacro != traverse_mesh->endOfMacroElements())
+      	  ("Coult not find macro element with index %d!\n", limitedToMacroElement);
       }
 
       traverse_mel = *currentMacro;
       if (traverse_mel == NULL)  
-	return NULL;
+        return NULL;
       
       stack_used = 1;
       elinfo_stack[stack_used]->fillMacroInfo(traverse_mel);
@@ -366,11 +367,11 @@ namespace AMDiS
     /* goto next macro element */
     if (stack_used < 1) {
       if (limitedToMacroElement >= 0)
-	return NULL;
+        return NULL;
 
       currentMacro++;
       if (currentMacro == traverse_mesh->endOfMacroElements()) 
-	return NULL;
+        return NULL;
       traverse_mel = *currentMacro;
 
       stack_used = 1;
@@ -430,7 +431,7 @@ namespace AMDiS
       }
 
       if (currentMacro == traverse_mesh->endOfMacroElements()) 
-	return NULL;
+        return NULL;
       traverse_mel = *currentMacro;
       
       stack_used = 1;
@@ -444,24 +445,24 @@ namespace AMDiS
       /* go up in tree until we can go down again */          /* postorder!!! */
       while (stack_used > 0 && 
 	     (info_stack[stack_used] >= 3 || el->getFirstChild() == NULL)) {
-	stack_used--;
-	el = elinfo_stack[stack_used]->getElement();
+      	stack_used--;
+      	el = elinfo_stack[stack_used]->getElement();
       }
 
 
       /* goto next macro element */
       if (stack_used < 1) {
-	if (limitedToMacroElement >= 0)
-	  return NULL;
-
-	currentMacro++;
-	if (currentMacro == traverse_mesh->endOfMacroElements()) 
-	  return NULL;
-	traverse_mel = *currentMacro;
-
-	stack_used = 1;
-	elinfo_stack[stack_used]->fillMacroInfo(traverse_mel);
-	info_stack[stack_used] = 0;
+      	if (limitedToMacroElement >= 0)
+      	  return NULL;
+      
+      	currentMacro++;
+      	if (currentMacro == traverse_mesh->endOfMacroElements()) 
+      	  return NULL;
+      	traverse_mel = *currentMacro;
+      
+      	stack_used = 1;
+      	elinfo_stack[stack_used]->fillMacroInfo(traverse_mel);
+      	info_stack[stack_used] = 0;
 
 	/*    return(elinfo_stack+stack_used); */
       }
@@ -516,8 +517,8 @@ namespace AMDiS
     int sav_neighbour = neighbour;
 
     // father.neigh[coarse_nb[i][j]] == child[i - 1].neigh[j]
-    // TODO: REMOVE STATIC
-    static int coarse_nb[3][3][4] = {{{-2, -2, -2, -2}, {-1, 2, 3, 1}, {-1, 3, 2, 0}},
+    static constexpr int coarse_nb[3][3][4] = 
+            {{{-2, -2, -2, -2}, {-1, 2, 3, 1}, {-1, 3, 2, 0}},
 				     {{-2, -2, -2, -2}, {-1, 2, 3, 1}, {-1, 2, 3, 0}},
 				     {{-2, -2, -2, -2}, {-1, 2, 3, 1}, {-1, 2, 3, 0}}};
 
@@ -537,18 +538,18 @@ namespace AMDiS
     // First, goto to leaf level, if necessary ...
     if ((traverse_fill_flag & Mesh::CALL_LEAF_EL).isAnySet()) {
       if (el->getChild(0) && neighbour < 2) {
-	if (stack_used >= stack_size - 1)
-	  enlargeTraverseStack();
-	int i = 1 - neighbour;
-
-	elinfo_stack[stack_used + 1]->fillElInfo(i, elinfo_stack[stack_used]);
- 	if (traverse_fill_flag.isSet(Mesh::CALL_REVERSE_MODE))
- 	  info_stack[stack_used] = (i == 0 ? 2 : 1);
- 	else
-	  info_stack[stack_used] = i + 1;
-	stack_used++;
-	info_stack[stack_used] = 0;
-	neighbour = 3;
+      	if (stack_used >= stack_size - 1)
+      	  enlargeTraverseStack();
+      	int i = 1 - neighbour;
+      
+      	elinfo_stack[stack_used + 1]->fillElInfo(i, elinfo_stack[stack_used]);
+       	if (traverse_fill_flag.isSet(Mesh::CALL_REVERSE_MODE))
+       	  info_stack[stack_used] = (i == 0 ? 2 : 1);
+       	else
+      	  info_stack[stack_used] = i + 1;
+      	stack_used++;
+      	info_stack[stack_used] = 0;
+      	neighbour = 3;
       }
     }
 
@@ -565,17 +566,17 @@ namespace AMDiS
       int typ = elinfo_stack[stack_used]->getType();
       int elIsIthChild = info_stack[stack_used];
       if (traverse_fill_flag.isSet(Mesh::CALL_REVERSE_MODE) && elIsIthChild != 0) 
-	elIsIthChild = (elIsIthChild == 1 ? 2 : 1);
+        elIsIthChild = (elIsIthChild == 1 ? 2 : 1);
 
       TEST_EXIT_DBG(!elinfo_stack[stack_used + 1]->getParent() ||
-	  elinfo_stack[stack_used + 1]->getParent()->getChild(elIsIthChild - 1) == 
-	  elinfo_stack[stack_used + 1]->getElement())
-	("Should not happen!\n");
+          elinfo_stack[stack_used + 1]->getParent()->getChild(elIsIthChild - 1) == 
+          elinfo_stack[stack_used + 1]->getElement())
+        ("Should not happen!\n");
 
       nb = coarse_nb[typ][elIsIthChild][nb];
 
       if (nb == -1) 
-	break;
+        break;
 
       TEST_EXIT_DBG(nb >= 0)("Invalid coarse_nb %d!\n", nb);
     }

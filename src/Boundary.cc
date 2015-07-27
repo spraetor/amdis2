@@ -1,9 +1,7 @@
 #include "Boundary.h"
-#include "FixVec.h"
-#include "Initfile.h"
 
-namespace AMDiS {
-
+namespace AMDiS 
+{
   BoundaryType newBound(BoundaryType oldBound, BoundaryType newBound)
   {
     if (newBound <= INTERIOR) {
@@ -14,9 +12,9 @@ namespace AMDiS {
       // Node is already node on the DIRICHLET boundary.
 
       if (oldBound > newBound)
-	return oldBound;
+        return oldBound;
       else
-	return newBound;
+        return newBound;
     }
 
     // New face is interior face; node type is always stronger.

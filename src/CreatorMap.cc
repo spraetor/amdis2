@@ -33,8 +33,8 @@
   #include "solver/PetscTypes.h"
 #endif
 
-namespace AMDiS {
-
+namespace AMDiS 
+{
   template<>
   void CreatorMap<LinearSolverInterface>::addDefaultCreators()
   {
@@ -171,7 +171,7 @@ namespace AMDiS {
   template<>
   void CreatorMap<ITL_PreconditionerBase< MTLTypes::MTLMatrix, MTLTypes::MTLVector > >::addDefaultCreators()
   {
-    typedef CreatorInterfaceName<ITL_PreconditionerBase< MTLTypes::MTLMatrix, MTLTypes::MTLVector > > PreconditionCreator;
+    using PreconditionCreator = CreatorInterfaceName<ITL_PreconditionerBase< MTLTypes::MTLMatrix, MTLTypes::MTLVector > >;
     PreconditionCreator *creator;
 
     creator =  new DiagonalPreconditioner::Creator;

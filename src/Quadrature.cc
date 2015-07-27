@@ -9,7 +9,7 @@ using namespace std;
 
 namespace AMDiS 
 {
-  const int Quadrature::maxNQuadPoints[4] = {0, 10, 61, 64};
+  constexpr int Quadrature::maxNQuadPoints[4];
 
   list<FastQuadrature*> FastQuadrature::fastQuadList;
   int FastQuadrature::max_points = 0;
@@ -38,7 +38,7 @@ namespace AMDiS
 
   const WorldVector<double>
   *Quadrature::grdFAtQp(const std::function<WorldVector<double>(DimVec<double>)>& f, 
-			WorldVector<double>* vec) const
+	                      WorldVector<double>* vec) const
   {
     static WorldVector<double> *quad_vec_d = NULL;
     static int size = 0;
@@ -49,11 +49,11 @@ namespace AMDiS
       val = vec;
     } else {
       if (size < n_points) {
-	int new_size = std::max(maxNQuadPoints[dim], n_points);
-	if (quad_vec_d)
-	  delete [] quad_vec_d;
-	quad_vec_d = new WorldVector<double>[new_size];
-	size = new_size;
+      	int new_size = std::max(maxNQuadPoints[dim], n_points);
+      	if (quad_vec_d)
+      	  delete [] quad_vec_d;
+      	quad_vec_d = new WorldVector<double>[new_size];
+      	size = new_size;
       }
       val = quad_vec_d;
     }
@@ -63,7 +63,7 @@ namespace AMDiS
     for (int i = 0; i < n_points; i++) {
       grd = f((*lambda)[i]);
       for (int j = 0; j < dow; j++)
-	val[i][j] = grd[j];
+        val[i][j] = grd[j];
     }
     
     return val;
@@ -80,11 +80,11 @@ namespace AMDiS
       val = vec;
     } else {
       if (size < n_points) {
-	int new_size = std::max(maxNQuadPoints[dim], n_points);
-	if (quad_vec)
-	  delete [] quad_vec;
-	quad_vec = new double[new_size];
-	size = new_size;
+        int new_size = std::max(maxNQuadPoints[dim], n_points);
+        if (quad_vec)
+          delete [] quad_vec;
+        quad_vec = new double[new_size];
+        size = new_size;
       }
       val = quad_vec;
     }

@@ -21,15 +21,15 @@ namespace AMDiS
   public:
     /// Constructor.
     compareQPsiPhi(const BasisFunction* psi_, 
-		   const BasisFunction* phi_, 
-		   const Quadrature* quad_) 
+            		   const BasisFunction* phi_, 
+            		   const Quadrature* quad_) 
       : psi(psi_), 
-	phi(phi_), 
-	quadrature(quad_)
+      	phi(phi_), 
+      	quadrature(quad_)
     {}
 
     /// Returns true, if *q is equivalent to *this.
-    bool operator()(T* q) 
+    bool operator()(T* q) const
     {
       return (q->psi == psi) && (q->phi == phi) && (q->quadrature == quadrature);
     }
@@ -55,13 +55,13 @@ namespace AMDiS
   public:
     /// Constructor.
     compareQPsi(const BasisFunction* psi_, 
-		const Quadrature* quad_) 
+            		const Quadrature* quad_) 
       : psi(psi_), 
-	quadrature(quad_)
+        quadrature(quad_)
     {}
 
     /// Returns true, if *q is equivalent to *this.
-    bool operator()(T* q) 
+    bool operator()(T* q) const
     {
       return (q->psi == psi) && (q->quadrature == quadrature);
     }
@@ -86,8 +86,8 @@ namespace AMDiS
   protected:
     /// Constructor
     Q11PsiPhi(const BasisFunction *psi,
-	      const BasisFunction *phi, 
-	      const Quadrature *q);
+      	      const BasisFunction *phi, 
+      	      const Quadrature *q);
 
   public:
     /// Destructor
@@ -95,8 +95,8 @@ namespace AMDiS
 
     /// Returns a Q11PsiPhi object.
     static const Q11PsiPhi* provideQ11PsiPhi(const BasisFunction *,
-					     const BasisFunction *, 
-					     const Quadrature*);
+                              					     const BasisFunction *, 
+                              					     const Quadrature*);
     
     /// Compares two Q11PsiPhi objects.
     bool operator==(const Q11PsiPhi&) const;
@@ -109,12 +109,12 @@ namespace AMDiS
     
     /// Returns \ref values[i][j][k]
     double getValue(unsigned int i,
-		    unsigned int j,
-		    unsigned int v) const 
+            		    unsigned int j,
+            		    unsigned int v) const 
     {
       if (values && values[i] && values[i][j] && 
-	  (static_cast<int>(v) < nrEntries[i][j]))
-	return values[i][j][v];
+      	  (static_cast<int>(v) < nrEntries[i][j]))
+      	return values[i][j][v];
 
       return 0.0;
     }
@@ -123,7 +123,7 @@ namespace AMDiS
     int getNumberEntries(unsigned int i, unsigned int j) const
     {
       if (nrEntries && nrEntries[i]) 
-	return nrEntries[i][j];
+        return nrEntries[i][j];
 
       return 0;
     }
@@ -136,11 +136,11 @@ namespace AMDiS
 
     /// Returns \ref k[i1][i2][i3]
     int getK(unsigned int i1, 
-	     unsigned int i2, 
-	     unsigned int i3) const
+      	     unsigned int i2, 
+      	     unsigned int i3) const
     {
       if (k && k[i1] && k[i1][i2] && (static_cast<int>(i3) < nrEntries[i1][i2])) 
-	return k[i1][i2][i3];
+        return k[i1][i2][i3];
 
       return 0;
     }
@@ -149,7 +149,7 @@ namespace AMDiS
     int getL(unsigned int i, unsigned int j, unsigned int v) const
     {
       if (l && l[i] && l[i][j] && (static_cast<int>(v) < nrEntries[i][j]))
-	return l[i][j][v];
+        return l[i][j][v];
 
       return 0;
     }
@@ -158,7 +158,7 @@ namespace AMDiS
     const double *getValVec(unsigned int i, unsigned int j) const 
     {
       if (values && values[i] && values[i][j]) 
-	return values[i][j];
+        return values[i][j];
 
       return NULL;
     }
@@ -167,7 +167,7 @@ namespace AMDiS
     const int *getKVec(unsigned int i, unsigned int j) const 
     {
       if (k && k[i] && k[i][j]) 
-	return k[i][j];
+        return k[i][j];
 
       return NULL;
     }
@@ -176,7 +176,7 @@ namespace AMDiS
     const int *getLVec(unsigned int i, unsigned int j) const 
     {
       if (l && l[i] && l[i][j]) 
-	return l[i][j];
+        return l[i][j];
 
       return NULL;
     }
@@ -243,8 +243,8 @@ namespace AMDiS
   protected:
     /// Constructor
     Q10PsiPhi(const BasisFunction *psi,
-	      const BasisFunction *phi, 
-	      const Quadrature *q);
+      	      const BasisFunction *phi, 
+      	      const Quadrature *q);
 
   public:
     /// Destructor
@@ -252,8 +252,8 @@ namespace AMDiS
 
     /// Returns a Q10PsiPhi object.
     static const Q10PsiPhi* provideQ10PsiPhi(const BasisFunction *,
-					     const BasisFunction *, 
-					     const Quadrature*);
+                              					     const BasisFunction *, 
+                              					     const Quadrature*);
     
     /// Compares two Q10PsiPhi objects.
     bool operator==(const Q10PsiPhi&) const;
@@ -266,12 +266,12 @@ namespace AMDiS
 
     /// Returns \ref values[i][j][k]
     double getValue(unsigned int i,
-				 unsigned int j,
-				 unsigned int v) const 
+          				  unsigned int j,
+          				  unsigned int v) const 
     {
       if (values && values[i] && values[i][j] && 
-	  (static_cast<int>(v) < nrEntries[i][j])) 
-	return values[i][j][v];
+      	  (static_cast<int>(v) < nrEntries[i][j])) 
+      	return values[i][j][v];
 
       return 0.0;
     }
@@ -280,7 +280,7 @@ namespace AMDiS
     int getNumberEntries(unsigned int i, unsigned int j) const 
     {
       if (nrEntries && nrEntries[i]) 
-	return nrEntries[i][j];
+        return nrEntries[i][j];
 
       return 0;
     }
@@ -293,11 +293,11 @@ namespace AMDiS
 
     /// Returns \ref k[i1][i2][i3]
     int getK(unsigned int i1, 
-			  unsigned int i2, 
-			  unsigned int i3) const 
+    			   unsigned int i2, 
+    			   unsigned int i3) const 
     {
       if (k && k[i1] && k[i1][i2] && (static_cast<int>(i3) < nrEntries[i1][i2]))
-	return k[i1][i2][i3];
+        return k[i1][i2][i3];
 
       return 0;
     }
@@ -306,7 +306,7 @@ namespace AMDiS
     const double *getValVec(unsigned int i, unsigned int j) const 
     {
       if (values && values[i] && values[i][j])
-	return values[i][j];
+        return values[i][j];
 
       return NULL;
     }
@@ -315,7 +315,7 @@ namespace AMDiS
     const int *getKVec(unsigned int i, unsigned int j) const 
     {
       if (k && k[i] && k[i][j]) 
-	return k[i][j];
+        return k[i][j];
 
       return NULL;
     }
@@ -376,8 +376,8 @@ namespace AMDiS
   protected:
     /// Constructor
     Q01PsiPhi(const BasisFunction *psi,
-	      const BasisFunction *phi, 
-	      const Quadrature *q);
+      	      const BasisFunction *phi, 
+      	      const Quadrature *q);
 
   public:
     /// Destructor
@@ -385,8 +385,8 @@ namespace AMDiS
 
     /// Returns a Q01PsiPhi object.
     static const Q01PsiPhi* provideQ01PsiPhi(const BasisFunction *,
-					     const BasisFunction *, 
-					     const Quadrature*);
+                              					     const BasisFunction *, 
+                              					     const Quadrature*);
     
     /// Compares two Q01PsiPhi objects.
     bool operator==(const Q01PsiPhi&) const;
@@ -399,12 +399,12 @@ namespace AMDiS
 
     /// Returns \ref values[i][j][k]
     double getValue(unsigned int i,
-				 unsigned int j,
-				 unsigned int v) const
+          				  unsigned int j,
+          				  unsigned int v) const
     {
       if (values && values[i] && values[i][j] && 
-	  (static_cast<int>(v) < nrEntries[i][j])) 
-	return values[i][j][v];
+      	  (static_cast<int>(v) < nrEntries[i][j])) 
+      	return values[i][j][v];
 
       return 0.0;
     }
@@ -413,7 +413,7 @@ namespace AMDiS
     int getNumberEntries(unsigned int i, unsigned int j) const
     {
       if (nrEntries && nrEntries[i]) 
-	return nrEntries[i][j];
+      	return nrEntries[i][j];
 
       return 0;
     }
@@ -426,14 +426,14 @@ namespace AMDiS
 
     /// Returns \ref k[i1][i2][i3]
     inline int getK(unsigned int i1, 
-			  unsigned int i2, 
-			  unsigned int i3) const;
+            			  unsigned int i2, 
+            			  unsigned int i3) const;
 
     /// Returns \values[i][j]
     const double *getValVec(unsigned int i, unsigned int j) const 
     {
       if (values && values[i] && values[i][j]) 
-	return values[i][j];
+      	return values[i][j];
 
       return NULL;
     }
@@ -442,18 +442,18 @@ namespace AMDiS
     const int *getLVec(unsigned int i, unsigned int j) const 
     {
       if (l && l[i] && l[i][j]) 
-	return l[i][j];
+      	return l[i][j];
 
       return NULL;
     }
 
     /// Returns \ref k[i][j][v]
     int getL(unsigned int i, 
-			  unsigned int j, 
-			  unsigned int v) const
+      			 unsigned int j, 
+      			 unsigned int v) const
     {
       if (l && l[i] && l[i][j] && (static_cast<int>(v) < nrEntries[i][j])) 
-	return l[i][j][v];
+      	return l[i][j][v];
 
       return 0;
     }
@@ -541,8 +541,8 @@ namespace AMDiS
 
     /// Returns a Q00PsiPhi object.
     static Q00PsiPhi* provideQ00PsiPhi(const BasisFunction *,
-				       const BasisFunction *, 
-				       const Quadrature*);
+                        				       const BasisFunction *, 
+                        				       const Quadrature*);
   
     /// Compares two Q00PsiPhi objects.
     bool operator==(const Q00PsiPhi& q00pp) const
@@ -655,7 +655,7 @@ namespace AMDiS
 
     /// Returns a Q1Psi object.
     static const Q1Psi* provideQ1Psi(const BasisFunction *,
-				     const Quadrature*);
+                        				     const Quadrature*);
     
     /// Compares two Q1Psi objects.
     bool operator==(const Q1Psi&) const;
@@ -671,7 +671,7 @@ namespace AMDiS
 				 unsigned int j) const 
     {
       if (values && values[i] && (static_cast<int>(j) < nrEntries[i]))
-	return values[i][j];
+      	return values[i][j];
 
       return 0.0;
     }
@@ -692,7 +692,7 @@ namespace AMDiS
     int getK(unsigned int i1, unsigned int i2) const
     {
       if (k && k[i1] && (static_cast<int>(i2) < nrEntries[i1])) 
-	return k[i1][i2];
+      	return k[i1][i2];
 
       return 0;
     }
@@ -701,7 +701,7 @@ namespace AMDiS
     const int *getKVec(unsigned int i) const 
     {
       if (k && k[i]) 
-	return k[i];
+      	return k[i];
 
       return NULL;
     }
@@ -710,7 +710,7 @@ namespace AMDiS
     const double *getValVec(unsigned int i) const 
     {
       if (values && values[i]) 
-	return values[i];
+      	return values[i];
 
       return NULL;
     }

@@ -66,7 +66,7 @@ namespace AMDiS
 
 
   /// Returns number of managed problems
-  int CouplingIterationInterface::getNumProblems()
+  int CouplingIterationInterface::getNumProblems() const
   {
     int num= 0;
     for (size_t i = 0; i < problems.size(); ++i)
@@ -100,7 +100,7 @@ namespace AMDiS
 
 
   /// Returns the name of the problem.
-  std::string CouplingIterationInterface::getName(int number)
+  std::string CouplingIterationInterface::getName(int number) const
   {
     TEST_EXIT(getNumIterationInterfaces() > number)("Problem number out of range.");
 

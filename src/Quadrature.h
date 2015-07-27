@@ -5,7 +5,7 @@
 #include <list>
 #include <vector>
 
-#include <boost/numeric/mtl/mtl.hpp>
+#include <boost/numeric/mtl/mtl_fwd.hpp>
 
 #include "AMDiS_fwd.h"
 #include "BasisFunction.h"
@@ -40,17 +40,17 @@ namespace AMDiS
      * access to a Quadrature should be done via \ref provideQuadrature.
      */
     Quadrature(const char* name_,
-	       int degree_,
-	       int dim_,
-	       int n_points_,
-	       VectorOfFixVecs<DimVec<double> > *lambda_,
-	       double* w_)
+      	       int degree_,
+      	       int dim_,
+      	       int n_points_,
+      	       VectorOfFixVecs<DimVec<double> > *lambda_,
+      	       double* w_)
       : name(name_),
-	degree(degree_),
-	dim(dim_),
-	n_points(n_points_),
-	lambda(lambda_),
-	w(w_) 
+      	degree(degree_),
+      	dim(dim_),
+      	n_points(n_points_),
+      	lambda(lambda_),
+      	w(w_) 
     {}
 
   public:
@@ -76,7 +76,7 @@ namespace AMDiS
     double integrateStdSimplex(std::function<double(DimVec<double>)> f);
   
     /// Returns \ref name
-    std::string getName() 
+    std::string getName() const
     { 
       return name; 
     }
@@ -119,7 +119,7 @@ namespace AMDiS
      * local vector, which is overwritten on the next call
      */
     const double *fAtQp(const std::function<double(DimVec<double>)>& f,
-			double *vec) const ;
+			                  double *vec) const ;
 
     /** \brief
      * Returns a pointer to a vector storing the gradient (with respect to world
@@ -131,7 +131,7 @@ namespace AMDiS
      * next call
      */
     const WorldVector<double> *grdFAtQp(const std::function<WorldVector<double>(DimVec<double>)>& grdF, 
-					WorldVector<double>* vec) const;
+					                              WorldVector<double>* vec) const;
   
 
 
@@ -158,7 +158,7 @@ namespace AMDiS
 
   public:
     /// Maximal number of quadrature points for the different dimensions
-    static const int maxNQuadPoints[4];
+    static constexpr int maxNQuadPoints[4] = {0, 10, 61, 64};
 
   protected:
     /// Name of this Quadrature
@@ -295,10 +295,10 @@ namespace AMDiS
     /// flag.
     FastQuadrature(BasisFunction* basFcts, Quadrature* quad, Flag flag)
       : init_flag(flag),
-	phi(0, 0),
-	D2Phi(NULL), 
-	quadrature(quad), 
-	basisFunctions(basFcts) 
+      	phi(0, 0),
+      	D2Phi(NULL), 
+      	quadrature(quad), 
+      	basisFunctions(basFcts) 
     {}
 
     /// Copy constructor
@@ -313,8 +313,8 @@ namespace AMDiS
   public:
     /// Returns a FastQuadrature for the given BasisFunction, Quadrature, and flags.
     static FastQuadrature* provideFastQuadrature(const BasisFunction*,
-						 const Quadrature&,
-						 Flag);
+                                    						 const Quadrature&,
+                                    						 Flag);
 
     /// inits FastQuadrature like speciefied in flag
     void init(Flag init_flag);
@@ -322,13 +322,13 @@ namespace AMDiS
     bool initialized(Flag flag) 
     {
       if (flag == INIT_PHI)
-	return (num_rows(phi) > 0);
+        return (num_rows(phi) > 0);
 
       if (flag == INIT_GRD_PHI)
-	return (!grdPhi.empty());
+        return (!grdPhi.empty());
 
       if (flag == INIT_D2_PHI)
-	return (D2Phi != NULL);
+        return (D2Phi != NULL);
 
       ERROR_EXIT("invalid flag\n");
       return false;
@@ -341,7 +341,7 @@ namespace AMDiS
     }
 
     /// Returns \ref max_points
-    int getMaxQuadPoints() 
+    int getMaxQuadPoints() const
     { 
       return max_points; 
     }
@@ -359,17 +359,17 @@ namespace AMDiS
     }
 
     /// Returns (*\ref grdPhi)[q]
-    const std::vector<mtl::dense_vector<double> >& getGradient(int q) const
+    const std::vector<DenseVector<double> >& getGradient(int q) const
     {
       return grdPhi[q];
     }
 
-    const mtl::dense_vector<double>& getGradient(int q, int i) const
+    const DenseVector<double>& getGradient(int q, int i) const
     {
       return grdPhi[q][i];
     }
 
-    const mtl::dense2D<double>& getPhi() const
+    const DenseMatrix<double>& getPhi() const
     {
       return phi;
     }
@@ -413,7 +413,7 @@ namespace AMDiS
     /// Returns \ref quadrature ->grdFAtQp(f, vec)
     const WorldVector<double> 
     *grdFAtQp(const std::function<WorldVector<double>(DimVec<double>)>& f,
-	      WorldVector<double>* vec) const 
+              WorldVector<double>* vec) const 
     { 
       return quadrature->grdFAtQp(f, vec);
     }
@@ -453,7 +453,7 @@ namespace AMDiS
      * (quadrature->lambda[i]), 0 <= j < basisFunctions->getNumber()  and 
      * 0 <= i < n_points
      */
-    mtl::dense2D<double> phi;
+    DenseMatrix<double> phi;
 
     /** \brief
      * Matrix storing all gradients (with respect to the barycentric coordinates)
@@ -462,7 +462,7 @@ namespace AMDiS
      * for 0 <= j < basisFunctions->getNumber(),
      * 0 <= i < . . . , n_points, and 0 <= k < DIM
      */
-    std::vector<std::vector<mtl::dense_vector<double> > > grdPhi; 
+    std::vector<std::vector<DenseVector<double> > > grdPhi; 
 
     /** \brief
      * Matrix storing all second derivatives (with respect to the barycentric

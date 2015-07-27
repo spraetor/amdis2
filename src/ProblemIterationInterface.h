@@ -46,7 +46,7 @@ namespace AMDiS
 
 
     /// Returns number of managed problems
-    virtual int getNumProblems() = 0;
+    virtual int getNumProblems() const = 0;
 
     /** \brief
      * Returns the problem with the given number. If only one problem
@@ -61,7 +61,7 @@ namespace AMDiS
     }
 
     /// Returns the name of the problem.
-    virtual std::string getName() = 0;
+    virtual std::string getName() const = 0;
   };
 
 } // end namespace AMDiS

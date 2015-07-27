@@ -23,25 +23,25 @@ namespace AMDiS
      * Returns vector values at quadrature points. If quadFast is set it will be 
      * used for a more efficient evaluation.
      */
-    mtl::dense_vector<double>& getVecAtQPs(const DOFVector<double>*, 
-					   int numPoints,
-					   const FastQuadrature *quadFast = NULL);
+    DenseVector<double>& getVecAtQPs(const DOFVector<double>*, 
+                        					   int numPoints,
+                        					   const FastQuadrature *quadFast = NULL);
 
     /** \brief
      * Returns gradient values at quadrature points. If quadFast is set it will be 
      * used for a more efficient evaluation.
      */
-    mtl::dense_vector<WorldVector<double> >& getGrdAtQPs(const DOFVector<double>*,
-				     int numPoints,
-				     const FastQuadrature *quadFast = NULL);
+    DenseVector<WorldVector<double> >& getGrdAtQPs(const DOFVector<double>*,
+                                      				     int numPoints,
+                                      				     const FastQuadrature *quadFast = NULL);
 
     /** \brief
      * Returns D2 values at quadrature points. If quadFast is set it will be 
      * used for a more efficient evaluation.
      */
-    mtl::dense_vector<WorldMatrix<double> >& getD2AtQPs(const DOFVector<double>*,
-				    int numPoints,
-				    const FastQuadrature *quadFast = NULL);
+    DenseVector<WorldMatrix<double> >& getD2AtQPs(const DOFVector<double>*,
+                                      				    int numPoints,
+                                      				    const FastQuadrature *quadFast = NULL);
 
 
     /// Returns element normals at quadrature points.
@@ -73,19 +73,19 @@ namespace AMDiS
     public:
       /// Constructor.
       VecQPInfo() 
-	: valNumPointsValid_(0),
-	  grdNumPointsValid_(0),
-	  D2NumPointsValid_(0)
+      	: valNumPointsValid_(0),
+      	  grdNumPointsValid_(0),
+      	  D2NumPointsValid_(0)
       {}
 
       /// Values at quadrature points.
-      mtl::dense_vector<double> valAtQPs;
+      DenseVector<double> valAtQPs;
 
       /// Gradients at quadrature points
-      mtl::dense_vector<WorldVector<double> > grdAtQPs_;
+      DenseVector<WorldVector<double> > grdAtQPs_;
     
       /// D2 at quadrature points
-      mtl::dense_vector<WorldMatrix<double> > D2AtQPs_;
+      DenseVector<WorldMatrix<double> > D2AtQPs_;
 
       /// valid flag for values
       int valNumPointsValid_;

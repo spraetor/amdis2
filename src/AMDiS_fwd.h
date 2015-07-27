@@ -128,7 +128,8 @@ namespace AMDiS {
   template<typename T>                                 class WorldMatrix;
   template<typename T>                                 class VectorOfFixVecs;
   
-  namespace detail {
+  namespace detail 
+  {
     template <class P> class CouplingProblemStat;
   }
 

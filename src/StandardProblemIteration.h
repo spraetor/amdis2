@@ -2,6 +2,8 @@
 
 #pragma once
 
+#include <string>
+
 #include "AMDiS_fwd.h"
 #include "ProblemIterationInterface.h"
 
@@ -25,10 +27,10 @@ namespace AMDiS
     /// Implementation of \ref ProblemIterationInterface::endIteration()
     virtual void endIteration(AdaptInfo *adaptInfo) override;
 
-    /// Returns the name of the problem. TODO: why is this virtual???
-    virtual std::string getName() override;
+    /// Returns the name of the problem.
+    virtual std::string getName() const override;
     
-    virtual int getNumProblems() override
+    virtual int getNumProblems() const override
     {
       return 1;
     }

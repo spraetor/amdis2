@@ -32,10 +32,10 @@ namespace AMDiS
     for (int i = 0; i < n_points; i++) {
       DimVec<double> const& origin = quad_->getLambda(i);
       for (int j = 0; j < dim + 1; j++)
-	(*lambda)[i][j] = 0.0;
+        (*lambda)[i][j] = 0.0;
       for (int j = 0; j < dim + 1; j++)
-	for (int k = 0; k < subDim_ + 1; k++)
-	  (*lambda)[i][j] += origin[k] * coords[k][j];
+      	for (int k = 0; k < subDim_ + 1; k++)
+      	  (*lambda)[i][j] += origin[k] * coords[k][j];
     }  
   }
   

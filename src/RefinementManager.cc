@@ -45,17 +45,17 @@ namespace AMDiS
     while (doMoreRecursiveRefine) {
       doMoreRecursiveRefine = false;
       ElInfo *elInfo = 
-	stack->traverseFirst(mesh, -1, 
+	     stack->traverseFirst(mesh, -1, 
 			     Mesh::CALL_LEAF_EL | Mesh::FILL_NEIGH | Mesh::FILL_BOUND);
 
       while (elInfo) {
-	if (elInfo->getElement()->getMark() > 0) {	  
-	  doMoreRecursiveRefine = 
-	    doMoreRecursiveRefine || (elInfo->getElement()->getMark() > 1);
-	  elInfo = refineFunction(elInfo);
-	}	
-
-	elInfo = stack->traverseNext(elInfo);
+      	if (elInfo->getElement()->getMark() > 0) {	  
+      	  doMoreRecursiveRefine = 
+      	    doMoreRecursiveRefine || (elInfo->getElement()->getMark() > 1);
+      	  elInfo = refineFunction(elInfo);
+      	}	
+      
+      	elInfo = stack->traverseNext(elInfo);
       }
     }
   
@@ -87,16 +87,16 @@ namespace AMDiS
       doMoreRecursiveRefine = false;
 
       ElInfo *elInfo = 
-	stack->traverseFirstOneMacro(mesh, macroElIndex, -1, 
+        stack->traverseFirstOneMacro(mesh, macroElIndex, -1, 
 				     Mesh::CALL_LEAF_EL | Mesh::FILL_NEIGH | Mesh::FILL_BOUND);
       
       while (elInfo) {
-	if (elInfo->getElement()->getMark() > 0) {	  
-	  doMoreRecursiveRefine = 
-	    doMoreRecursiveRefine || (elInfo->getElement()->getMark() > 1);
-	  elInfo = refineFunction(elInfo);
-	}	
-	elInfo = stack->traverseNext(elInfo);
+      	if (elInfo->getElement()->getMark() > 0) {	  
+      	  doMoreRecursiveRefine = 
+      	    doMoreRecursiveRefine || (elInfo->getElement()->getMark() > 1);
+      	  elInfo = refineFunction(elInfo);
+      	}	
+      	elInfo = stack->traverseNext(elInfo);
       }
     }
 

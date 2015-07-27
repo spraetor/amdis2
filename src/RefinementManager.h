@@ -21,8 +21,8 @@ namespace AMDiS
     /// Constructs a RefinementManager which belongs to aMesh 
     RefinementManager()
       : mesh(NULL), 
-	newCoords(false),
-	stack(NULL)
+      	newCoords(false),
+      	stack(NULL)
     {}
 
     /// Destructor
@@ -58,7 +58,7 @@ namespace AMDiS
       newCoords = nc; 
     }
 
-    bool newCoord() 
+    bool newCoord() const
     { 
       return newCoords; 
     }

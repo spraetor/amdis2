@@ -1,4 +1,7 @@
 #include "SurfaceOperator.h"
+#include "SurfaceQuadrature.h"
+#include "FiniteElemSpace.h"
+#include "Mesh.h"
 
 namespace AMDiS 
 {
@@ -20,25 +23,25 @@ namespace AMDiS
     if (secondOrder.size() > 0) {
       degree = getQuadratureDegree(2);
       quad2 = 
-	new SurfaceQuadrature(Quadrature::provideQuadrature(dim - 1, degree), coords);
+        new SurfaceQuadrature(Quadrature::provideQuadrature(dim - 1, degree), coords);
     }
 
     if (firstOrderGrdPsi.size() > 0) {
       degree = getQuadratureDegree(1, GRD_PSI);
       quad1GrdPsi = 
-	new SurfaceQuadrature(Quadrature::provideQuadrature(dim - 1, degree), coords);
+        new SurfaceQuadrature(Quadrature::provideQuadrature(dim - 1, degree), coords);
     }
 
     if (firstOrderGrdPhi.size() > 0) {
       degree = getQuadratureDegree(1, GRD_PHI);
       quad1GrdPhi = 
-	new SurfaceQuadrature(Quadrature::provideQuadrature(dim - 1, degree), coords);
+        new SurfaceQuadrature(Quadrature::provideQuadrature(dim - 1, degree), coords);
     }
 
     if (zeroOrder.size() > 0) {
       degree = getQuadratureDegree(0);
       quad0 = 
-	new SurfaceQuadrature(Quadrature::provideQuadrature(dim - 1, degree), coords);
+        new SurfaceQuadrature(Quadrature::provideQuadrature(dim - 1, degree), coords);
     }
 
     // initialize assembler with surface quadratures
@@ -63,8 +66,8 @@ namespace AMDiS
 
   
   void SurfaceOperator::getElementMatrix(const ElInfo *elInfo, 
-					ElementMatrix& userMat, 
-					double factor = 1.0)
+                              					 ElementMatrix& userMat, 
+                              					 double factor = 1.0)
   {
     int dim = rowFeSpace->getMesh()->getDim();
     double origDet = elInfo->getDet();
@@ -87,8 +90,8 @@ namespace AMDiS
 
   
   void SurfaceOperator::getElementVector(const ElInfo *elInfo, 
-					ElementVector& userVec, 
-					double factor = 1.0)
+                              					 ElementVector& userVec, 
+                              					 double factor = 1.0)
   {
     int dim = rowFeSpace->getMesh()->getDim();
     double origDet = elInfo->getDet();

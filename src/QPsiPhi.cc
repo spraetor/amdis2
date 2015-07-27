@@ -14,7 +14,7 @@
 
 namespace AMDiS 
 {
-  const double TOO_SMALL = 1.e-15;
+  constexpr double TOO_SMALL = 1.e-15;
   
   std::list<Q11PsiPhi*> Q11PsiPhi::preList;
   std::list<Q01PsiPhi*> Q01PsiPhi::preList;

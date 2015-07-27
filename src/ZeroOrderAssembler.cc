@@ -14,7 +14,6 @@ using namespace std;
 
 namespace AMDiS 
 {
-
   ThreadPrivate<vector<SubAssembler*> > 
   ZeroOrderAssembler::optimizedSubAssemblers;
   
@@ -23,17 +22,17 @@ namespace AMDiS
 
 
   ZeroOrderAssembler::ZeroOrderAssembler(Operator *op,
-					 Assembler *assembler,
-					 Quadrature *quad,
-					 bool optimized)
+                              					 Assembler *assembler,
+                              					 Quadrature *quad,
+                              					 bool optimized)
     : SubAssembler(op, assembler, quad, 0, optimized)
   {}
 
 
   ZeroOrderAssembler* ZeroOrderAssembler::getSubAssembler(Operator* op,
-							  Assembler *assembler,
-							  Quadrature *quad,
-							  bool optimized)
+                                          							  Assembler *assembler,
+                                          							  Quadrature *quad,
+                                          							  bool optimized)
   {
     // check if an assembler is needed at all
     if (op->zeroOrder.empty())
@@ -43,32 +42,30 @@ namespace AMDiS
       optimized ? optimizedSubAssemblers.get() : standardSubAssemblers.get();
 
     vector<OperatorTerm*> opTerms = op->zeroOrder;
-
     sort(opTerms.begin(), opTerms.end());
 
     // check if a new assembler is needed
     if (quad) {
       for (SubAssembler* subAssembler : subAssemblers) {
-	vector<OperatorTerm*> assTerms = *(subAssembler->getTerms());
-
-	sort(assTerms.begin(), assTerms.end());
-
-	if (opTerms == assTerms && subAssembler->getQuadrature() == quad)
-	  return dynamic_cast<ZeroOrderAssembler*>(subAssembler);
+      	vector<OperatorTerm*> assTerms = *(subAssembler->getTerms());
+      	sort(assTerms.begin(), assTerms.end());
+      
+      	if (opTerms == assTerms && subAssembler->getQuadrature() == quad)
+      	  return dynamic_cast<ZeroOrderAssembler*>(subAssembler);
       }
     }
  
     // check if all terms are pw_const
     bool pwConst = std::all_of(op->zeroOrder.begin(), op->zeroOrder.end(), 
-			       [](OperatorTerm* term){ return term->isPWConst(); });
+                               [](OperatorTerm* term){ return term->isPWConst(); });
 
     // create new assembler
     ZeroOrderAssembler *newAssembler;
-    if (!optimized) {
+    if (!optimized)
       newAssembler = new StandardZOA(op, assembler, quad);
-    } else {
+    else {
       if (pwConst)
-	newAssembler = new PrecalcZOA(op, assembler, quad);
+        newAssembler = new PrecalcZOA(op, assembler, quad);
       else
      	newAssembler = new FastQuadZOA(op, assembler, quad);      
     }
@@ -87,7 +84,7 @@ namespace AMDiS
 
 
   void StandardZOA::calculateElementMatrixImpl(const ElInfo *elInfo, 
-					       ElementMatrix& mat)
+				                                       ElementMatrix& mat)
   {
     const BasisFunction *psi = rowFeSpace->getBasisFcts();
     const BasisFunction *phi = colFeSpace->getBasisFcts();
@@ -104,35 +101,35 @@ namespace AMDiS
       TEST_EXIT_DBG(nCol == nRow)("nCol != nRow, but symmetric assembling!\n");
             
       for (int iq = 0; iq < nPoints; iq++) {
-	c[iq] *= elInfo->getDet();
-
-	// calculate phi at QPs only once!
-	for (int i = 0; i < nCol; i++)
-	  phival[i] = (*(phi->getPhi(i)))(quadrature->getLambda(iq));
-
-	for (int i = 0; i < nRow; i++) {
-	  double psival = (*(psi->getPhi(i)))(quadrature->getLambda(iq));
-	  mat[i][i] += quadrature->getWeight(iq) * c[iq] * psival * phival[i];
-	  for (int j = i + 1; j < nCol; j++) {
-	    double val = quadrature->getWeight(iq) * c[iq] * psival * phival[j];
-	    mat[i][j] += val;
-	    mat[j][i] += val;
-	  }
-	}
+      	c[iq] *= elInfo->getDet();
+      
+      	// calculate phi at QPs only once!
+      	for (int i = 0; i < nCol; i++)
+      	  phival[i] = (*(phi->getPhi(i)))(quadrature->getLambda(iq));
+      
+      	for (int i = 0; i < nRow; i++) {
+      	  double psival = (*(psi->getPhi(i)))(quadrature->getLambda(iq));
+      	  mat[i][i] += quadrature->getWeight(iq) * c[iq] * psival * phival[i];
+      	  for (int j = i + 1; j < nCol; j++) {
+      	    double val = quadrature->getWeight(iq) * c[iq] * psival * phival[j];
+      	    mat[i][j] += val;
+      	    mat[j][i] += val;
+      	  }
+      	}
       }
     } else {      //  non symmetric assembling 
       for (int iq = 0; iq < nPoints; iq++) {
-	c[iq] *= elInfo->getDet();
-
-	// calculate phi at QPs only once!
-	for (int i = 0; i < nCol; i++)
-	  phival[i] = (*(phi->getPhi(i)))(quadrature->getLambda(iq));
-
-	for (int i = 0; i < nRow; i++) {
-	  double psival = (*(psi->getPhi(i)))(quadrature->getLambda(iq));
-	  for (int j = 0; j < nCol; j++)
-	    mat[i][j] += quadrature->getWeight(iq) * c[iq] * psival * phival[j];	  
-	}
+      	c[iq] *= elInfo->getDet();
+      
+      	// calculate phi at QPs only once!
+      	for (int i = 0; i < nCol; i++)
+      	  phival[i] = (*(phi->getPhi(i)))(quadrature->getLambda(iq));
+      
+      	for (int i = 0; i < nRow; i++) {
+      	  double psival = (*(psi->getPhi(i)))(quadrature->getLambda(iq));
+      	  for (int j = 0; j < nCol; j++)
+      	    mat[i][j] += quadrature->getWeight(iq) * c[iq] * psival * phival[j];	  
+      	}
       }
     }
   }
@@ -150,9 +147,9 @@ namespace AMDiS
       c[iq] *= elInfo->getDet();
 
       for (int i = 0; i < nRow; i++) {
-	double psi = (*(rowFeSpace->getBasisFcts()->getPhi(i)))
-	  (quadrature->getLambda(iq));
-	vec[i] += quadrature->getWeight(iq) * c[iq] * psi;
+      	double psi = (*(rowFeSpace->getBasisFcts()->getPhi(i)))
+      	  (quadrature->getLambda(iq));
+      	vec[i] += quadrature->getWeight(iq) * c[iq] * psi;
       }
     }
   }
@@ -177,9 +174,9 @@ namespace AMDiS
       firstCall = false;      
     }
 
-    if (num_rows(c) < static_cast<unsigned int>(nPoints))
+    if (num_rows(c) < static_cast<size_t>(nPoints))
       c.change_dim(nPoints);
-    c = 0.0;
+    set_to_zero(c);
 
     for (auto& term : terms)
       (static_cast<ZeroOrderTerm*>(term))->getC(elInfo, nPoints, c);
@@ -191,28 +188,28 @@ namespace AMDiS
       TEST_EXIT_DBG(nCol == nRow)("nCol != nRow, but symmetric assembling!\n");
 
       for (int iq = 0; iq < nPoints; iq++) {
-	c[iq] *= elInfo->getDet() * quadrature->getWeight(iq);
-
-	for (int i = 0; i < nRow; i++) {
-	  mat[i][i] += c[iq] * psi[iq][i] * phi[iq][i];
-	  for (int j = i + 1; j < nCol; j++) {
-	    double val = c[iq] * psi[iq][i] * phi[iq][j];
-	    mat[i][j] += val;
-	    mat[j][i] += val;
-	  }
-	}
+      	c[iq] *= elInfo->getDet() * quadrature->getWeight(iq);
+      
+      	for (int i = 0; i < nRow; i++) {
+      	  mat[i][i] += c[iq] * psi[iq][i] * phi[iq][i];
+      	  for (int j = i + 1; j < nCol; j++) {
+      	    double val = c[iq] * psi[iq][i] * phi[iq][j];
+      	    mat[i][j] += val;
+      	    mat[j][i] += val;
+      	  }
+      	}
       }
     } else {      /*  non symmetric assembling   */
       for (int iq = 0; iq < nPoints; iq++)
-	c[iq] *= elInfo->getDet() * quadrature->getWeight(iq);
+        c[iq] *= elInfo->getDet() * quadrature->getWeight(iq);
 
       for (int i = 0; i < nRow; i++)
-	for (int j = 0; j < nCol; j++) {
-	  double v = 0.0;
-	  for (int iq = 0; iq < nPoints; iq++)
-	    v += c[iq] * psi[iq][i] * phi[iq][j];
-	  mat[i][j] += v;
-	}
+      	for (int j = 0; j < nCol; j++) {
+      	  double v = 0.0;
+      	  for (int iq = 0; iq < nPoints; iq++)
+      	    v += c[iq] * psi[iq][i] * phi[iq][j];
+      	  mat[i][j] += v;
+      	}
     }
   }
 
@@ -239,7 +236,7 @@ namespace AMDiS
       c[iq] *= elInfo->getDet();
 
       for (int i = 0; i < nRow; i++)
-	vec[i] += quadrature->getWeight(iq) * c[iq] * psi[iq][i];
+        vec[i] += quadrature->getWeight(iq) * c[iq] * psi[iq][i];
     }
   }
 
@@ -252,7 +249,7 @@ namespace AMDiS
 
 
   void PrecalcZOA::calculateElementMatrixImpl(const ElInfo *elInfo, 
-					  ElementMatrix& mat)
+					                                    ElementMatrix& mat)
   {
     if (firstCall) {
       q00 = Q00PsiPhi::provideQ00PsiPhi(rowFeSpace->getBasisFcts(), 
@@ -270,17 +267,17 @@ namespace AMDiS
     
     if (symmetric) {
       for (int i = 0; i < nRow; i++) {
-    	mat[i][i] += c[0] * q00->getValue(i,i);
-    	for (int j = i + 1; j < nCol; j++) {
-    	  double val = c[0] * q00->getValue(i, j);
-    	  mat[i][j] += val;
-    	  mat[j][i] += val;
-    	}
+      	mat[i][i] += c[0] * q00->getValue(i,i);
+      	for (int j = i + 1; j < nCol; j++) {
+      	  double val = c[0] * q00->getValue(i, j);
+      	  mat[i][j] += val;
+      	  mat[j][i] += val;
+      	}
       }
     } else {
       for (int i = 0; i < nRow; i++)
-	for (int j = 0; j < nCol; j++)
-	  mat[i][j] += c[0] * q00->getValue(i, j);
+      	for (int j = 0; j < nCol; j++)
+      	  mat[i][j] += c[0] * q00->getValue(i, j);
     }
   }
 

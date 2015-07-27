@@ -29,7 +29,7 @@ namespace AMDiS
 
     if (elementNormalAtQPs_) {
       for (int i = 0; i < numPoints_; i++)
-	delete elementNormalAtQPs_[i];
+      	delete elementNormalAtQPs_[i];
 
       delete [] elementNormalAtQPs_;
     }
@@ -39,7 +39,7 @@ namespace AMDiS
 
     if (grdLambdaAtQPs_) {
       for (int i = 0; i < numPoints_; i++) 
-	delete grdLambdaAtQPs_[i];
+      	delete grdLambdaAtQPs_[i];
 
       delete [] grdLambdaAtQPs_;
     }
@@ -76,12 +76,12 @@ namespace AMDiS
   {
     if (coordsNumPointsValid_ < numPoints) {
       if (!coordsAtQPs_)
-	coordsAtQPs_ = new WorldVector<double>[numPoints_];
+      	coordsAtQPs_ = new WorldVector<double>[numPoints_];
       
       for (int i = 0; i < numPoints; i++) {
-	const DimVec<double>& lambda = quadrature_->getLambda(i);
-	TEST_EXIT_DBG(currentElInfo_)("currentElInfo_ not set\n");
-	currentElInfo_->coordToWorld(lambda, coordsAtQPs_[i]);
+      	const DimVec<double>& lambda = quadrature_->getLambda(i);
+      	TEST_EXIT_DBG(currentElInfo_)("currentElInfo_ not set\n");
+      	currentElInfo_->coordToWorld(lambda, coordsAtQPs_[i]);
       }
       coordsNumPointsValid_ = numPoints;
     }
@@ -89,7 +89,7 @@ namespace AMDiS
   }
 
 
-  mtl::dense_vector<double>& QPInfo::getVecAtQPs(const DOFVector<double>* vec, 
+  DenseVector<double>& QPInfo::getVecAtQPs(const DOFVector<double>* vec, 
 						 int numPoints,
 						 const FastQuadrature *quadFast)
   {
@@ -125,7 +125,7 @@ namespace AMDiS
   }
 
 
-  mtl::dense_vector<WorldVector<double> >& QPInfo::getGrdAtQPs(const DOFVector<double>* vec,
+  DenseVector<WorldVector<double> >& QPInfo::getGrdAtQPs(const DOFVector<double>* vec,
 					   int numPoints,
 					   const FastQuadrature *quadFast)
   {
@@ -161,14 +161,14 @@ namespace AMDiS
   }
 
 
-  mtl::dense_vector<WorldMatrix<double> >& QPInfo::getD2AtQPs(const DOFVector<double>* vec,
-					  int numPoints,
-					  const FastQuadrature *quadFast)
+  DenseVector<WorldMatrix<double> >& QPInfo::getD2AtQPs(const DOFVector<double>* vec,
+                                            					  int numPoints,
+                                            					  const FastQuadrature *quadFast)
   {
     // check fast quadrature
     if (quadFast) {
       TEST_EXIT_DBG(quadrature_ == quadFast->getQuadrature())
-	("quadrature_ != quadFast->quadrature\n");
+      	("quadrature_ != quadFast->quadrature\n");
     }
   
     // create new info if necessary
@@ -203,31 +203,31 @@ namespace AMDiS
 
     if (currentElInfo_->getParametric()) {
       if (!elementNormalAtQPs_) {
-	elementNormalAtQPs_ = new WorldVector<double>*[numPoints_];
-	for (int i = 0; i < numPoints_; i++)
-	  elementNormalAtQPs_[i] = new WorldVector<double>;
+      	elementNormalAtQPs_ = new WorldVector<double>*[numPoints_];
+      	for (int i = 0; i < numPoints_; i++)
+      	  elementNormalAtQPs_[i] = new WorldVector<double>;
       }
 
       if (elementNormalNumPointsValid_ < numPoints) {
-	for (int i = 0; i < numPoints; i++) {
-	  ERROR_EXIT("This does not work in the current AMDiS version!\n");
-	  // Note on the following two lines of code:
-	  //   There is no AMDiS version with getElementNormal with these parameters.
-	  //   Maybe there were some AMDiS version before that implemented this
-	  //   functionality. Must be reimplemented, if we want to make it working.
-	  //      const DimVec<double>& lambda = quadrature_->getLambda(i);
-	  //	  currentElInfo_->getElementNormal(*(elementNormalAtQPs_[i]), &lambda);
-	}
-	elementNormalNumPointsValid_ = numPoints;
+      	for (int i = 0; i < numPoints; i++) {
+      	  ERROR_EXIT("This does not work in the current AMDiS version!\n");
+      	  // Note on the following two lines of code:
+      	  //   There is no AMDiS version with getElementNormal with these parameters.
+      	  //   Maybe there were some AMDiS version before that implemented this
+      	  //   functionality. Must be reimplemented, if we want to make it working.
+      	  //      const DimVec<double>& lambda = quadrature_->getLambda(i);
+      	  //	  currentElInfo_->getElementNormal(*(elementNormalAtQPs_[i]), &lambda);
+      	}
+      	elementNormalNumPointsValid_ = numPoints;
       }
       return elementNormalAtQPs_;
     } else {
       if (!elementNormalConst_) {
-	elementNormalConst_ = new WorldVector<double>*[numPoints_];
-	elementNormalConst_[0] = new WorldVector<double>;
-
-	for (int i = 1; i < numPoints_; i++)
-	  elementNormalConst_[i] = elementNormalConst_[0];
+      	elementNormalConst_ = new WorldVector<double>*[numPoints_];
+      	elementNormalConst_[0] = new WorldVector<double>;
+      
+      	for (int i = 1; i < numPoints_; i++)
+      	  elementNormalConst_[i] = elementNormalConst_[0];
       }
       currentElInfo_->getElementNormal(*(elementNormalConst_[0]));
       return elementNormalConst_;
@@ -241,31 +241,31 @@ namespace AMDiS
 
     if (currentElInfo_->getParametric()) {
       if (!grdLambdaAtQPs_) {
-	grdLambdaAtQPs_ = new DimVec<WorldVector<double> >*[numPoints_];
-	for (int i = 0; i < numPoints_; i++)
-	  grdLambdaAtQPs_[i] = new DimVec<WorldVector<double> >(quadrature_->getDim());
+      	grdLambdaAtQPs_ = new DimVec<WorldVector<double> >*[numPoints_];
+      	for (int i = 0; i < numPoints_; i++)
+      	  grdLambdaAtQPs_[i] = new DimVec<WorldVector<double> >(quadrature_->getDim());
       }
 
       if (grdLambdaNumPointsValid_ < numPoints) {
-	for (int i = 0; i < numPoints; i++) {
-	  ERROR_EXIT("This does not work in the current AMDiS version!\n");
-	  // Note on the following two lines of code:
-	  //   There is no AMDiS version with getElementNormal with these parameters.
-	  //   Maybe there were some AMDiS version before that implemented this
-	  //   functionality. Must be reimplemented, if we want to make it working.
-	  // 	  const DimVec<double>& lambda = quadrature_->getLambda(i);
-	  // 	  currentElInfo_->calcGrdLambda(*(grdLambdaAtQPs_[i]), &lambda);
-	}
-	grdLambdaNumPointsValid_ = numPoints;
+      	for (int i = 0; i < numPoints; i++) {
+      	  ERROR_EXIT("This does not work in the current AMDiS version!\n");
+      	  // Note on the following two lines of code:
+      	  //   There is no AMDiS version with getElementNormal with these parameters.
+      	  //   Maybe there were some AMDiS version before that implemented this
+      	  //   functionality. Must be reimplemented, if we want to make it working.
+      	  // 	  const DimVec<double>& lambda = quadrature_->getLambda(i);
+      	  // 	  currentElInfo_->calcGrdLambda(*(grdLambdaAtQPs_[i]), &lambda);
+      	}
+      	grdLambdaNumPointsValid_ = numPoints;
       }
       return grdLambdaAtQPs_;
     } else {
       if (!grdLambdaConst_) {
-	grdLambdaConst_ = new DimVec<WorldVector<double> >*[numPoints_];
-	grdLambdaConst_[0] = new DimVec<WorldVector<double> >(quadrature_->getDim());
-
-	for (int i = 1; i < numPoints_; i++)
-	  grdLambdaConst_[i] = grdLambdaConst_[0];
+      	grdLambdaConst_ = new DimVec<WorldVector<double> >*[numPoints_];
+      	grdLambdaConst_[0] = new DimVec<WorldVector<double> >(quadrature_->getDim());
+      
+      	for (int i = 1; i < numPoints_; i++)
+      	  grdLambdaConst_[i] = grdLambdaConst_[0];
       }
       const_cast<ElInfo*>(currentElInfo_)->calcGrdLambda(*(grdLambdaConst_[0]));
       return grdLambdaConst_;
@@ -278,14 +278,14 @@ namespace AMDiS
   {
     if (quadFast) {
       if (quad && (quad != quadFast->getQuadrature())) {
-	ERROR_EXIT("quad != quadFast->quadrature\n");
+      	ERROR_EXIT("quad != quadFast->quadrature\n");
       } else {
-	quad = quadFast->getQuadrature();
+      	quad = quadFast->getQuadrature();
       }    
     }
     if (quad) {
       if (qpInfos_[quad]) 
-	return qpInfos_[quad];
+      	return qpInfos_[quad];
       QPInfo *newQPInfo = new QPInfo(quad);
       qpInfos_[quad] = newQPInfo;
       return newQPInfo;
@@ -300,9 +300,9 @@ namespace AMDiS
   {
     if (quadFast) {
       if (quad && (quad != quadFast->getQuadrature())) {
-	ERROR_EXIT("quad != quadFast->quadrature\n");
+      	ERROR_EXIT("quad != quadFast->quadrature\n");
       } else {
-	quad = quadFast->getQuadrature();
+      	quad = quadFast->getQuadrature();
       }    
     }
     TEST_EXIT_DBG(quad)("no quadrature\n");

@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "Flag.h"
+#include <iosfwd>
 
 namespace AMDiS 
 {

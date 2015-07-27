@@ -6,17 +6,13 @@
 
 namespace AMDiS 
 {
-  const int Line::vertexOfEdge[1][2] = {{0, 1}};
-
-  const int Line::sideOfChild[2][2] = {{ 0,-1},
-				       {-1, 1}};
-
-  const int Line::vertexOfParent[2][2] = {{ 0,-1},
-					  {-1, 1}};
+  constexpr int Line::vertexOfEdge[1][2];
+  constexpr int Line::sideOfChild[2][2];
+  constexpr int Line::vertexOfParent[2][2];
 
   int Line::getVertexOfPosition(GeoIndex position, 
-				int positionIndex,
-				int vertexIndex) const
+                        				int positionIndex,
+                        				int vertexIndex) const
   {
     FUNCNAME("Line::getVertexOfPosition()");
 

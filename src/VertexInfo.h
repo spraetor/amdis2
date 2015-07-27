@@ -18,13 +18,13 @@ namespace AMDiS
     int outputIndex;
     
     /// Used to check, whether coords are already stored for a given dof.
-    bool operator==(const WorldVector<double>& c) 
+    bool operator==(const WorldVector<double>& c) const
     {
       return (c == coords);
     }
     
     /// Used to check, whether coords are already stored for a given dof.
-    bool operator!=(const WorldVector<double>& c) 
+    bool operator!=(const WorldVector<double>& c) const 
     {
       return (c != coords);
     }

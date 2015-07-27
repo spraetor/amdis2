@@ -18,9 +18,6 @@ namespace AMDiS {
   public:
     /// Constructor.
     ZeroOrderTerm(int deg) : OperatorTerm(deg) {}
-
-    /// Destructor.
-    virtual ~ZeroOrderTerm() {}
     
     /// Evaluates \f$ c \f$
     void getC(const ElInfo *elInfo, int nPoints, ElementVector& C) const
@@ -42,7 +39,7 @@ namespace AMDiS {
     template <class Expr_>
     GenericZeroOrderTerm(Expr_&& expr_)
       : GenericOperatorTerm<Expr, 0>(std::forward<Expr_>(expr_))
-    { }
+    {}
 
   private:
     /// Implemetation of ZeroOrderTerm::getC().
@@ -54,14 +51,14 @@ namespace AMDiS {
 
     /// Implemetation of OperatorTerm::eval().
     virtual void evalImpl(int nPoints,
-			  const DenseVector<double>& uhAtQP,
-			  const DenseVector<WorldVector<double> >& grdUhAtQP,
-			  const DenseVector<WorldMatrix<double> >& D2UhAtQP,
-			  DenseVector<double>& result,
-			  double fac) const override
+                  			  const DenseVector<double>& uhAtQP,
+                  			  const DenseVector<WorldVector<double> >& grdUhAtQP,
+                  			  const DenseVector<WorldMatrix<double> >& D2UhAtQP,
+                  			  DenseVector<double>& result,
+                  			  double fac) const override
     {
       for (int iq = 0; iq < nPoints; iq++)
-	result[iq] += fac * this->expr(iq) * uhAtQP[iq];
+        result[iq] += fac * this->expr(iq) * uhAtQP[iq];
     }
   };
   

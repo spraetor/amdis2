@@ -6,7 +6,8 @@
 #include "AdaptInfo.h"
 #include "ProblemIterationInterface.h"
 
-namespace AMDiS {
+namespace AMDiS 
+{
 
   /** \brief
    * Interface for master problems needed by the adaption loop. A master problem
@@ -38,10 +39,10 @@ namespace AMDiS {
     /// Called after each adaption loop iteration.
     virtual void endIteration(AdaptInfo *adaptInfo) override;
 
-    virtual int getNumProblems() override;
+    virtual int getNumProblems() const override;
 
     /// Returns number of managed problems
-    virtual int getNumIterationInterfaces() 
+    virtual int getNumIterationInterfaces() const
     { 
       return static_cast<int>(problems.size()); 
     }
@@ -58,8 +59,8 @@ namespace AMDiS {
     }
 
     /// Returns the name of the problem with the given number.
-    virtual std::string getName(int number);
-    virtual std::string getName() override { return "CouplingIterationInterface"; }
+    virtual std::string getName(int number) const;
+    virtual std::string getName() const override { return "CouplingIterationInterface"; }
 
     virtual void setSolveProblem(int number, bool flag = true) 
     { 

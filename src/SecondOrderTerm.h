@@ -23,10 +23,6 @@ namespace AMDiS
       : OperatorTerm(deg) 
     {}
 
-    /// Destructor.
-    virtual ~SecondOrderTerm() 
-    {}
-
     /// Evaluation of \f$ \Lambda A \Lambda^t \f$ at all quadrature points.
     void getLALt(const ElInfo *elInfo, 
 		             std::vector<mtl::dense2D<double> > &result) const
@@ -82,9 +78,11 @@ namespace AMDiS
   template <class Term>
   struct GenericSecondOrderTerm_1 : public GenericOperatorTerm<Term, 2>
   {
+    using Super = GenericOperatorTerm<Term, 2>;
+    
     template <class Term_>
     GenericSecondOrderTerm_1(Term_&& term_)
-      : GenericOperatorTerm<Term, 2>(std::forward<Term_>(term_)) 
+      : Super(std::forward<Term_>(term_)) 
     {
       this->setSymmetric(true);
     }
@@ -96,10 +94,10 @@ namespace AMDiS
 
     /// Implemetation of OperatorTerm::eval().
     virtual void evalImpl(int nPoints,
-                  			  const mtl::dense_vector<double>& uhAtQP,
-                  			  const mtl::dense_vector<WorldVector<double> >& grdUhAtQP,
-                  			  const mtl::dense_vector<WorldMatrix<double> >& D2UhAtQP,
-                  			  mtl::dense_vector<double>& result,
+                  			  const DenseVector<double>& uhAtQP,
+                  			  const DenseVector<WorldVector<double> >& grdUhAtQP,
+                  			  const DenseVector<WorldMatrix<double> >& D2UhAtQP,
+                  			  DenseVector<double>& result,
                   			  double f) const override;
 
     /// Implemetation of SecondOrderTerm::weakEval().
@@ -112,9 +110,11 @@ namespace AMDiS
   template <class Term, bool symmetric = false>
   struct GenericSecondOrderTerm_A : public GenericOperatorTerm<Term, 2>
   {  
+    using Super = GenericOperatorTerm<Term, 2>;
+    
     template <class Term_>
     GenericSecondOrderTerm_A(Term_&& term_)
-      : GenericOperatorTerm<Term, 2>(std::forward<Term_>(term_)) 
+      : Super(std::forward<Term_>(term_)) 
     {
       this->setSymmetric(symmetric);
     }
@@ -126,10 +126,10 @@ namespace AMDiS
 
     /// Implemetation of OperatorTerm::eval().
     virtual void evalImpl(int nPoints,
-                  			  const mtl::dense_vector<double>& uhAtQP,
-                  			  const mtl::dense_vector<WorldVector<double> >& grdUhAtQP,
-                  			  const mtl::dense_vector<WorldMatrix<double> >& D2UhAtQP,
-                  			  mtl::dense_vector<double>& result,
+                  			  const DenseVector<double>& uhAtQP,
+                  			  const DenseVector<WorldVector<double> >& grdUhAtQP,
+                  			  const DenseVector<WorldMatrix<double> >& D2UhAtQP,
+                  			  DenseVector<double>& result,
                   			  double factor) const override;
 
     /// Implemetation of SecondOrderTerm::weakEval().
@@ -143,22 +143,24 @@ namespace AMDiS
   template <int I, int J, class Term>
   struct GenericSecondOrderTerm_ij : public GenericOperatorTerm<Term, 2>
   {
+    using Super = GenericOperatorTerm<Term, 2>;
+    
     int row, col;
     
     template <class Term_>
     GenericSecondOrderTerm_ij(Term_&& term_)
-      : GenericOperatorTerm<Term, 2>(std::forward<Term_>(term_)), row(I), col(J)
+      : Super(std::forward<Term_>(term_)), row(I), col(J)
     {
       this->setSymmetric(row == col);
     }
     
     template <class Term_>
     GenericSecondOrderTerm_ij(Term_&& term_, int I0, int J0)
-      : GenericOperatorTerm<Term, 2>(std::forward<Term_>(term_)), row(I0), col(J0)
+      : Super(std::forward<Term_>(term_)), row(I0), col(J0)
     {
-      this->setSymmetric(row == col);
       TEST_EXIT_DBG( I < 0 && I0 >= 0 && J < 0 && J0 >= 0 ) 
         ("You yould specify eather template<int I, int J>, or constructor(int I0, int J0)\n");
+      this->setSymmetric(row == col);
     }
 
   private:
@@ -168,10 +170,10 @@ namespace AMDiS
 
     /// Implemetation of OperatorTerm::eval().
     virtual void evalImpl(int nPoints,
-                  			  const mtl::dense_vector<double>& uhAtQP,
-                  			  const mtl::dense_vector<WorldVector<double> >& grdUhAtQP,
-                  			  const mtl::dense_vector<WorldMatrix<double> >& D2UhAtQP,
-                  			  mtl::dense_vector<double>& result,
+                  			  const DenseVector<double>& uhAtQP,
+                  			  const DenseVector<WorldVector<double> >& grdUhAtQP,
+                  			  const DenseVector<WorldMatrix<double> >& D2UhAtQP,
+                  			  DenseVector<double>& result,
                   			  double fac) const override;
 
     /// Implemetation of SecondOrderTerm::weakEval().
@@ -199,10 +201,10 @@ namespace AMDiS
   template <class Term>
   void GenericSecondOrderTerm_1<Term>::evalImpl(
       	  int nPoints,
-      	  const mtl::dense_vector<double>& uhAtQP,
-      	  const mtl::dense_vector<WorldVector<double> >& grdUhAtQP,
-      	  const mtl::dense_vector<WorldMatrix<double> >& D2UhAtQP,
-      	  mtl::dense_vector<double>& result,
+      	  const DenseVector<double>& uhAtQP,
+      	  const DenseVector<WorldVector<double> >& grdUhAtQP,
+      	  const DenseVector<WorldMatrix<double> >& D2UhAtQP,
+      	  DenseVector<double>& result,
       	  double f) const
   {
     int dow = Global::getGeo(WORLD);
@@ -246,10 +248,10 @@ namespace AMDiS
   template <class Term, bool symmetric>
   void GenericSecondOrderTerm_A<Term, symmetric>::evalImpl(
       	  int nPoints,
-      	  const mtl::dense_vector<double>& uhAtQP,
-      	  const mtl::dense_vector<WorldVector<double> >& grdUhAtQP,
-      	  const mtl::dense_vector<WorldMatrix<double> >& D2UhAtQP,
-      	  mtl::dense_vector<double>& result,
+      	  const DenseVector<double>& uhAtQP,
+      	  const DenseVector<WorldVector<double> >& grdUhAtQP,
+      	  const DenseVector<WorldMatrix<double> >& D2UhAtQP,
+      	  DenseVector<double>& result,
       	  double factor) const
   {
     int dow = Global::getGeo(WORLD);
@@ -300,10 +302,10 @@ namespace AMDiS
   template <int I, int J, class Term>
   void GenericSecondOrderTerm_ij<I, J, Term>::evalImpl(
       	  int nPoints,
-      	  const mtl::dense_vector<double>& uhAtQP,
-      	  const mtl::dense_vector<WorldVector<double> >& grdUhAtQP,
-      	  const mtl::dense_vector<WorldMatrix<double> >& D2UhAtQP,
-      	  mtl::dense_vector<double>& result,
+      	  const DenseVector<double>& uhAtQP,
+      	  const DenseVector<WorldVector<double> >& grdUhAtQP,
+      	  const DenseVector<WorldMatrix<double> >& D2UhAtQP,
+      	  DenseVector<double>& result,
       	  double fac) const
   {
     if (num_rows(D2UhAtQP) > 0) {

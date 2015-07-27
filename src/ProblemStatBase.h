@@ -7,6 +7,8 @@
 
 #pragma once
 
+#include <string>
+
 #include "Flag.h"
 
 namespace AMDiS 
@@ -36,13 +38,14 @@ namespace AMDiS
   // Combined Flags
   const Flag INIT_NOTHING          = 0X00L;
   const Flag INIT_ALL        = INIT_FE_SPACE | INIT_MESH | CREATE_MESH | INIT_SYSTEM |
-    INIT_SOLVER | INIT_ESTIMATOR | INIT_MARKER |
-    INIT_ADAPT | INIT_FILEWRITER | INIT_INITIAL_PROBLEM |
-    INIT_UH_OLD | INIT_UPDATER | INIT_NONLIN_SOLVER ;
+                               INIT_SOLVER | INIT_ESTIMATOR | INIT_MARKER |
+                               INIT_ADAPT | INIT_FILEWRITER | INIT_INITIAL_PROBLEM |
+                               INIT_UH_OLD | INIT_UPDATER | INIT_NONLIN_SOLVER ;
 
   const Flag MESH_REFINED   = 1;
   const Flag MESH_COARSENED = 2;
 
+  // forward declaration
   class AdaptInfo;
 
   /**
@@ -75,7 +78,7 @@ namespace AMDiS
      * matrices or vectors only.
      */
     virtual void buildAfterCoarsen(AdaptInfo *adaptInfo, Flag flag, 
-				   bool assembleMatrix, bool assembleVector) = 0;
+				                           bool assembleMatrix, bool assembleVector) = 0;
   
     /// Refinement of the mesh.
     virtual Flag refineMesh(AdaptInfo *adaptInfo) = 0;
@@ -102,8 +105,8 @@ namespace AMDiS
      *                            system matrix.
      */
     virtual void solve(AdaptInfo *adaptInfo,
-		       bool createMatrixData = true,
-		       bool storeMatrixData = false) = 0;
+            		       bool createMatrixData = true,
+            		       bool storeMatrixData = false) = 0;
 
     /** \brief
      * A posteriori error estimation of the calculated solution. Should store
@@ -113,7 +116,7 @@ namespace AMDiS
     virtual void estimate(AdaptInfo *adaptInfo) = 0;
 
     /// Returns the name of the problem.
-    virtual std::string getName() = 0;
+    virtual std::string getName() const = 0;
   };
 
 } // end namespace AMDiS

@@ -22,9 +22,9 @@ namespace AMDiS
   map<Mesh*, FixRefinementPatch::ConnectedEdges> FixRefinementPatch::connectedEdges;
 
   void RefinementManager3d::bisectTetrahedron(RCNeighbourList& refineList, 
-					      int index,
-					      DegreeOfFreedom* dof[3],
-					      DegreeOfFreedom *edge[2])
+                              					      int index,
+                              					      DegreeOfFreedom* dof[3],
+                              					      DegreeOfFreedom *edge[2])
   {
     Tetrahedron *el = 
       dynamic_cast<Tetrahedron*>(const_cast<Element*>(refineList.getElement(index)));

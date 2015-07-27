@@ -34,19 +34,16 @@ namespace AMDiS
     /// of FirstOrderType are to assemble. During construction of a SubAssembler
     /// the needs and properties of the terms are considered.
     SubAssembler(Operator *op,
-		 Assembler *assembler,
-		 Quadrature *quadrat,
-		 int order, 
-		 bool optimized,
-		 FirstOrderType type = GRD_PHI);
-
-    /// Destructor
-    virtual ~SubAssembler() {}
+            		 Assembler *assembler,
+            		 Quadrature *quadrat,
+            		 int order, 
+            		 bool optimized,
+            		 FirstOrderType type = GRD_PHI);
 
     /// Calculates the element matrix for elInfo and adds it to mat. Memory for
     /// mat must be provided by the caller.
     void calculateElementMatrix(const ElInfo *elInfo,
-				ElementMatrix& mat)
+				                        ElementMatrix& mat)
     {
       calculateElementMatrixImpl(elInfo, mat);
     }
@@ -54,7 +51,7 @@ namespace AMDiS
     /// Calculates the element vector for elInfo and adds it to vec. Memory for
     /// vec must be provided by the caller.
     void calculateElementVector(const ElInfo *elInfo,
-				ElementVector& vec)
+			                          ElementVector& vec)
     {
       calculateElementVectorImpl(elInfo, vec);
     }
@@ -63,8 +60,8 @@ namespace AMDiS
     /// \ref calculateElementVector() is called for the first time for this
     /// Element.
     void initElement(const ElInfo *smallElInfo,
-		     const ElInfo *largeElInfo = NULL,
-		     Quadrature *quad = NULL)
+            		     const ElInfo *largeElInfo = NULL,
+            		     Quadrature *quad = NULL)
     {
       initImpl(smallElInfo, largeElInfo, quad);
     }
@@ -182,10 +179,10 @@ namespace AMDiS
     /// Used for \ref getVectorAtQPs() and \ref getGradientsAtQPs().
     struct ValuesAtQPs {
       ValuesAtQPs()
-	: valid(false), quad(NULL)
+        : valid(false), quad(NULL)
       {}
       ValuesAtQPs(boost::any values_, bool valid_, Quadrature* quad_=NULL)
-	: values(values_), valid(valid_), quad(quad_)
+        : values(values_), valid(valid_), quad(quad_)
       {}
       
       boost::any values; // used for DenseVector<T>

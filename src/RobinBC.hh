@@ -1,7 +1,7 @@
 namespace AMDiS 
 {
   template <class JExpr, class AlphaExpr>
-  void init(JExpr const& j, AlphaExpr const& alpha)
+  void init(JExpr&& j_expr, AlphaExpr&& a_expr)
   {
     int dim = rowFeSpace->getMesh()->getDim();
 
@@ -12,20 +12,20 @@ namespace AMDiS
     // for all element sides
     for (int i = 0; i < dim + 1; i++) {
       coords[i] =
-	new VectorOfFixVecs<DimVec<double> >(dim, dim, DEFAULT_VALUE, 
+        new VectorOfFixVecs<DimVec<double> >(dim, dim, DEFAULT_VALUE, 
 					     DimVec<double>(dim, DEFAULT_VALUE, 0.0));
       // for each vertex of the side
       for (int k = 0; k < dim; k++) {
-	int index = refElement->getVertexOfPosition(INDEX_OF_DIM(dim - 1, dim), i, k);
-	(*coords[i])[k][index] = 1.0;
+      	int index = refElement->getVertexOfPosition(INDEX_OF_DIM(dim - 1, dim), i, k);
+      	(*coords[i])[k][index] = 1.0;
       }
     }
     
     Operator *jOp = new Operator(rowFeSpace);
     Operator *alphaOp = new Operator(rowFeSpace, colFeSpace);
     
-    jOp->addZeroOrderTerm(j);
-    alphaOp->addZeroOrderTerm(alpha);
+    jOp->addZeroOrderTerm(j_expr);
+    alphaOp->addZeroOrderTerm(a_expr);
     
     neumannOperators = new DimVec<SurfaceOperator*>(dim, NO_INIT);
     robinOperators = new DimVec<SurfaceOperator*>(dim, NO_INIT);
@@ -41,7 +41,7 @@ namespace AMDiS
   
 
   template <class JExpr>
-  void init(JExpr const& j)
+  void init(JExpr&& j_expr)
   {
     int dim = rowFeSpace->getMesh()->getDim();
 
@@ -52,17 +52,17 @@ namespace AMDiS
     // for all element sides
     for (int i = 0; i < dim + 1; i++) {
       coords[i] =
-	new VectorOfFixVecs<DimVec<double> >(dim, dim, DEFAULT_VALUE, 
+        new VectorOfFixVecs<DimVec<double> >(dim, dim, DEFAULT_VALUE, 
 					     DimVec<double>(dim, DEFAULT_VALUE, 0.0));
       // for each vertex of the side
       for (int k = 0; k < dim; k++) {
-	int index = refElement->getVertexOfPosition(INDEX_OF_DIM(dim - 1, dim), i, k);
-	(*coords[i])[k][index] = 1.0;
+      	int index = refElement->getVertexOfPosition(INDEX_OF_DIM(dim - 1, dim), i, k);
+      	(*coords[i])[k][index] = 1.0;
       }
     }
     
     Operator *jOp = new Operator(rowFeSpace);
-    jOp->addZeroOrderTerm(j);
+    jOp->addZeroOrderTerm(j_expr);
     neumannOperators = new DimVec<SurfaceOperator*>(dim, NO_INIT);
   
     for (int i = 0; i < dim + 1; i++)

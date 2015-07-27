@@ -5,17 +5,20 @@
 #include <set>
 
 #include "Global.h"
-#include "FiniteElemSpace.h"
 
-namespace AMDiS {
-
+namespace AMDiS 
+{
+  //forward declaration
+  class FiniteElemSpace;
+  
+  
   class SingleComponentInfo
   {      
   public:
     SingleComponentInfo()
       : rowFeSpace(NULL),
-	colFeSpace(NULL),
-	status(0)
+      	colFeSpace(NULL),
+      	status(0)
       {}
     
     void setFeSpace(const FiniteElemSpace *row, const FiniteElemSpace *col = NULL) 
@@ -63,7 +66,7 @@ namespace AMDiS {
       TEST_EXIT_DBG(auxFeSpaces.size() <= 1)("More than one aux FE space!\n");
 
       if (auxFeSpaces.size() == 1)
-	return (*(auxFeSpaces.begin()));
+        return (*(auxFeSpaces.begin()));
 
       return NULL;
     }
@@ -85,25 +88,25 @@ namespace AMDiS {
 
   public:
     /// Single component status flag: empty component, no fe spaces
-    static const int EMPTY = 0;
+    static constexpr int EMPTY = 0;
 
     /// Single component status flag: row = col, no aux
-    static const int EQ_SPACES_NO_AUX = 1;
+    static constexpr int EQ_SPACES_NO_AUX = 1;
 
     /// Single component status flag: row = col = aux
-    static const int EQ_SPACES_WITH_AUX = 2;
+    static constexpr int EQ_SPACES_WITH_AUX = 2;
 
     /// Single component status flag: row = col, different aux
-    static const int EQ_SPACES_WITH_DIF_AUX = 3;
+    static constexpr int EQ_SPACES_WITH_DIF_AUX = 3;
 
     /// Single component status flag: row, col, no aux
-    static const int DIF_SPACES_NO_AUX = 4;
+    static constexpr int DIF_SPACES_NO_AUX = 4;
 
     /// Single component status flag: row, col, aux either equal to row or to col
-    static const int DIF_SPACES_WITH_AUX = 5;
+    static constexpr int DIF_SPACES_WITH_AUX = 5;
 
     /// Single component status flag: row, col, aux (at least 3 different fe spaces)
-    static const int DIF_SPACES_WITH_DIF_AUX = 6;
+    static constexpr int DIF_SPACES_WITH_DIF_AUX = 6;
   };
 
   
@@ -124,16 +127,16 @@ namespace AMDiS {
       vectorComponents.resize(n);
 
       for (int i = 0; i < n; i++)
-	matrixComponents[i].resize(n);
+        matrixComponents[i].resize(n);
     }
 
     void updateStatus() 
     {
       for (int i = 0; i < nComponents; i++) {
-	for (int j = 0; j < nComponents; j++)
-	  matrixComponents[i][j].updateStatus();
-
-	vectorComponents[i].updateStatus();
+      	for (int j = 0; j < nComponents; j++)
+      	  matrixComponents[i][j].updateStatus();
+      
+      	vectorComponents[i].updateStatus();
       }
     }
 

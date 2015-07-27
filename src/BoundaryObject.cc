@@ -5,13 +5,13 @@
 // #include "MacroElement.h"
 #include "Element.h"
 
-namespace AMDiS {
-
+namespace AMDiS 
+{
   BoundaryObject::BoundaryObject()
     : elType(0),
       reverseMode(false),
       excludedSubstructures(0)
-  { }
+  {}
 
 
   BoundaryObject::BoundaryObject(Element *e, 

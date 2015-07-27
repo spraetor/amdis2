@@ -4,10 +4,12 @@
 
 #include <map>
 
-#include "FixVec.h"
+#include "Log.h"
 
 namespace AMDiS 
 {
+  template <class> class WorldVector;
+  
   /// Different possible types for a \ref Projection.
   enum ProjectionType {
     BOUNDARY_PROJECTION = 0, /**< Projection of boundary parts of an element. */
@@ -27,11 +29,11 @@ namespace AMDiS
     /// Constructs a prjection with given id and type.
     Projection(int id, ProjectionType type) 
       : projectionID(id),
-	projectionType(type)
+      	projectionType(type)
     {
       TEST_EXIT(id != 0)("don't use 0 as projection id. is used as no projection\n");
       TEST_EXIT(projectionMap[id] == NULL)
-	("there is already a projection with this id\n");
+      	("there is already a projection with this id\n");
       projectionMap[id] = this;
     }
 
@@ -41,13 +43,13 @@ namespace AMDiS
     virtual void project(WorldVector<double>& x) = 0;
 
     /// Returns \ref projectionID.
-    inline int getID() 
+    int getID() const
     { 
       return projectionID; 
     }
 
     /// Returns \ref projectionType;
-    inline ProjectionType getType() 
+    ProjectionType getType() const
     { 
       return projectionType; 
     }

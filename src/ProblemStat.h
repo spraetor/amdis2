@@ -4,9 +4,7 @@
 
 #include <vector>
 #include <list>
-#if __cplusplus > 199711L
 #include <functional>
-#endif
 
 #include "AMDiS_fwd.h"
 #include "ProblemStatBase.h"
@@ -39,23 +37,23 @@ namespace AMDiS
   {
   protected:
     // Defines a mapping type from dof indices to world coordinates.
-    typedef std::map<DegreeOfFreedom, WorldVector<double> > DofToCoord;
+    using DofToCoord = std::map<DegreeOfFreedom, WorldVector<double> >;
 
     // Defines a mapping type from dof indices to world coordinates.
-    typedef std::map<WorldVector<double>, DegreeOfFreedom> CoordToDof;
+    using CoordToDof = std::map<WorldVector<double>, DegreeOfFreedom>;
 
   public:
     /// Constructor
     ProblemStatSeq(std::string nameStr,
-		   ProblemIterationInterface *problemIteration = NULL);
+            		   ProblemIterationInterface *problemIteration = NULL);
 
     /// Destructor
     virtual ~ProblemStatSeq();
 
     /// Initialisation of the problem.
     virtual void initialize(Flag initFlag,
-			    ProblemStatSeq *adoptProblem = NULL,
-			    Flag adoptFlag = INIT_NOTHING);
+                  			    ProblemStatSeq *adoptProblem = NULL,
+                  			    Flag adoptFlag = INIT_NOTHING);
 
     /// Used in \ref initialize().
     virtual void createMesh();
@@ -88,8 +86,8 @@ namespace AMDiS
     /// Implementation of ProblemStatBase::solve(). Deligates the solving
     /// of problems system to \ref solver.
     virtual void solve(AdaptInfo *adaptInfo,
-		       bool createMatrixData = true,
-		       bool storeMatrixData = false) override;
+            		       bool createMatrixData = true,
+            		       bool storeMatrixData = false) override;
 
     /// Implementation of ProblemStatBase::estimate(). Deligates the estimation
     /// to \ref estimator.
@@ -119,8 +117,8 @@ namespace AMDiS
     /// Assembles \ref A and \ref rhs. With the last two parameters, assembling
     /// can be restricted to matrices or vectors only.
     virtual void buildAfterCoarsen(AdaptInfo *adaptInfo, Flag flag,
-				   bool assembleMatrix = true,
-				   bool assembleVector = true) override;
+                        				   bool assembleMatrix = true,
+                        				   bool assembleVector = true) override;
 
     // bool dualMeshTraverseRequired();
 
@@ -128,13 +126,13 @@ namespace AMDiS
 		//       bool asmMatrix = true, bool asmVector = true);
 
     /// Returns nr of components \ref nComponents
-    virtual int getNumComponents()
+    virtual int getNumComponents() const
     { 
       return nComponents; 
     }
     
     /// Returns nr of additional components \ref nAddComponents
-    virtual int getNumAddComponents()
+    virtual int getNumAddComponents() const
     {
       return nAddComponents;
     }
@@ -150,59 +148,59 @@ namespace AMDiS
 
     /// Adds an operator to \ref A.
     void addMatrixOperator(Operator *op, int i, int j,
-			   double *factor = NULL, double *estFactor = NULL);
+                  			   double *factor = NULL, double *estFactor = NULL);
 
     /// Adds an operator to \ref A.
     void addMatrixOperator(Operator &op, int i, int j,
-			   double *factor = NULL, double *estFactor = NULL);
+                  			   double *factor = NULL, double *estFactor = NULL);
 
     /// Adds an operator to \ref rhs.
     void addVectorOperator(Operator *op, int i,
-			   double *factor = NULL, double *estFactor = NULL);
+                  			   double *factor = NULL, double *estFactor = NULL);
 
     /// Adds an operator to \ref rhs.
     void addVectorOperator(Operator &op, int i,
-			   double *factor = NULL, double *estFactor = NULL);
+                  			   double *factor = NULL, double *estFactor = NULL);
 
     /// Adds a Dirichlet boundary condition, where the rhs is given by an 
     /// abstract function.
     template <class Expr>
-    void addDirichletBC(BoundaryType type, int row, int col, Expr const& expr);
+    void addDirichletBC(BoundaryType type, int row, int col, Expr&& expr);
     
     /// Adds a Neumann boundary condition, where the rhs is given by an
     /// abstract function.
     template <class Expr>
-    void addNeumannBC(BoundaryType type, int row, int col, Expr const& expr);
+    void addNeumannBC(BoundaryType type, int row, int col, Expr&& expr);
 
     /// Adds Robin boundary condition.
     template <class ExprRhs, class ExprLhs>
     void addRobinBC(BoundaryType type, int row, int col, 
-		    ExprRhs const &exprRhs, ExprLhs const& exprLhs);
+		                ExprRhs&& exprRhs, ExprLhs&& exprLhs);
 
     /// Adds Robin boundary condition.
     // TODO: replace by generic expression
     virtual void addRobinBC(BoundaryType type, int row, int col, 
-			    Operator *n, Operator *r);
+			                      Operator *n, Operator *r);
 
     /// Adds a periodic boundary condition.
     virtual void addPeriodicBC(BoundaryType type, int row, int col);
 
     /// add boundary operator to matrix side
     virtual void addBoundaryMatrixOperator(BoundaryType type, 
-          Operator *op, int row, int col);
+                                           Operator *op, int row, int col);
 
     virtual void addBoundaryMatrixOperator(BoundaryType type, 
-          Operator &op, int row, int col)
+                                           Operator &op, int row, int col)
     {
       addBoundaryMatrixOperator(type, &op, row, col);
     }
 
     /// add boundary operator to rhs (vector) side
     virtual void addBoundaryVectorOperator(BoundaryType type, 
-          Operator *op, int row);
+                                           Operator *op, int row);
 
     virtual void addBoundaryVectorOperator(BoundaryType type, 
-          Operator &op, int row)
+                                           Operator &op, int row)
     {
       addBoundaryVectorOperator(type, &op, row);
     }
@@ -210,15 +208,15 @@ namespace AMDiS
     /// This function assembles a DOFMatrix and a DOFVector for the case,
     /// the meshes from row and col FE-space are equal.
     void assembleOnOneMesh(const FiniteElemSpace *feSpace, 
-			   Flag assembleFlag,
-			   DOFMatrix *matrix, DOFVector<double> *vector);
+                  			   Flag assembleFlag,
+                  			   DOFMatrix *matrix, DOFVector<double> *vector);
 
 
     ///
     void assembleBoundaryConditions(DOFVector<double> *rhs,
-				    DOFVector<double> *solution,
-				    Mesh *mesh,
-				    Flag assembleFlag);
+                        				    DOFVector<double> *solution,
+                        				    Mesh *mesh,
+                        				    Flag assembleFlag);
 
  
     /** \name getting methods
@@ -264,7 +262,7 @@ namespace AMDiS
     {
       FUNCNAME("ProblemStatSeq::getMesh()");
       TEST_EXIT(comp < static_cast<int>(componentMeshes.size()) && comp >= 0)
-	("invalid component number\n");
+        ("invalid component number\n");
       return componentMeshes[comp]; 
     }
 
@@ -279,7 +277,7 @@ namespace AMDiS
     { 
       FUNCNAME("ProblemStatSeq::getFeSpace()");
       TEST_EXIT(comp < static_cast<int>(componentSpaces.size()) && comp >= 0)
-	("invalid component number: %d\n", comp);
+        ("invalid component number: %d\n", comp);
       return componentSpaces[comp]; 
     }
 
@@ -338,7 +336,7 @@ namespace AMDiS
     }
 
     /// Returns the name of the problem
-    std::string getName() override
+    std::string getName() const override
     { 
       return name; 
     }
@@ -347,7 +345,7 @@ namespace AMDiS
     std::string getComponentName(int comp = 0)
     {
       TEST_EXIT(comp < static_cast<int>(componentNames.size()) && comp >= 0)
-	("invalid component number\n");
+        ("invalid component number\n");
       return componentNames[comp];
     }
 
@@ -603,9 +601,9 @@ namespace AMDiS
       /// Constructor
       ProblemStat(std::string nameStr,
 		  ProblemIterationInterface *problemIteration = NULL)
-	: ProblemStatType(nameStr, problemIteration),
-	  StandardProblemIteration(this)
-      { }
+      	: ProblemStatType(nameStr, problemIteration),
+      	  StandardProblemIteration(this)
+      {}
 
       /// Determines the execution order of the single adaption steps. If adapt is
       /// true, mesh adaption will be performed. This allows to avoid mesh adaption,
@@ -613,13 +611,13 @@ namespace AMDiS
       // implements StandardProblemIteration::oneIteration(AdaptInfo*, Flag)
       virtual Flag oneIteration(AdaptInfo *adaptInfo, Flag toDo = FULL_ITERATION) override
       {	
-	for (int i = 0; i < ProblemStatType::getNumComponents(); i++)
-	  if (adaptInfo->spaceToleranceReached(i))
-	    adaptInfo->allowRefinement(false, i);
-	  else
-	    adaptInfo->allowRefinement(true, i);	
-
-	return StandardProblemIteration::oneIteration(adaptInfo, toDo);
+      	for (int i = 0; i < ProblemStatType::getNumComponents(); i++)
+      	  if (adaptInfo->spaceToleranceReached(i))
+      	    adaptInfo->allowRefinement(false, i);
+      	  else
+      	    adaptInfo->allowRefinement(true, i);	
+      
+      	return StandardProblemIteration::oneIteration(adaptInfo, toDo);
       }
     };
   }

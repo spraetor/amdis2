@@ -30,7 +30,7 @@ namespace AMDiS
    * with 3 entries in 2d and with 4 entries in 3d. The dimension and the way
    * the vector should be initialized are specified by the constructor call.
    */
-  template<typename T,GeoIndex d>
+  template <class T, GeoIndex d>
   class FixVec : public Vector<T>
   {
     typedef FixVec     self;
@@ -90,9 +90,9 @@ namespace AMDiS
     static int calcSize(int dim) 
     {
       if (dim < 0)
-	return Global::getGeo(WORLD);
+        return Global::getGeo(WORLD);
       else
-	return Global::getGeo(d, dim);
+        return Global::getGeo(d, dim);
     }
   };
 
@@ -106,7 +106,7 @@ namespace AMDiS
    * and call the constructor of each FixVec manually. When you use 
    * VectorOfFixVecs, this work is done by VectorOfFixVecs's constructor.
    */
-  template<typename FixVecType>
+  template <class FixVecType>
   class VectorOfFixVecs
   {
   public:
@@ -115,13 +115,13 @@ namespace AMDiS
     /// must be NO_INIT.
     VectorOfFixVecs(int d, int s, InitType initType) 
       : size(s),
-	dim(d)
+        dim(d)
     {
       TEST_EXIT_DBG(initType == NO_INIT)("wrong initType or wrong initializer\n");
 
       vec.resize(size);
       for (int i = 0; i < size; i++)
-	vec[i] = new FixVecType(dim, NO_INIT);
+        vec[i] = new FixVecType(dim, NO_INIT);
     }
 
     /// constructs a VectorOfFixVecs via an value list.  dim is passed to 
@@ -129,13 +129,13 @@ namespace AMDiS
     /// must be VALUE_LIST. ini contains the initialisation values.
     VectorOfFixVecs(int d, int s, InitType initType, FixVecType const* ini)
       : size(s),
-	dim(d)
+        dim(d)
     {
       TEST_EXIT_DBG(initType == VALUE_LIST)("wrong initType or wrong initializer\n");
 
       vec.resize(size);
       for (int i = 0; i < size; i++)
-	vec[i] = new FixVecType(ini[i]);
+      	vec[i] = new FixVecType(ini[i]);
     }
 
     /// constructs a VectorOfFixVecs with an default value.  dim is passed to 
@@ -143,13 +143,13 @@ namespace AMDiS
     /// must be DEFAULT_VALUE. All entries are set to ini.
     VectorOfFixVecs(int d, int s, InitType initType, const FixVecType& ini)
       : size(s),
-	dim(d)
+        dim(d)
     {
       TEST_EXIT_DBG(initType == DEFAULT_VALUE)("wrong initType or wrong initializer\n");
 
       vec.resize(size);
       for (int i = 0; i < size; i++) 
-	vec[i] = new FixVecType(ini);
+      	vec[i] = new FixVecType(ini);
     }
 
     /// Copy constructor
@@ -160,14 +160,14 @@ namespace AMDiS
 
       vec.resize(size);
       for (int i = 0; i < size; i++) 
-	vec[i] = new FixVecType(*(rhs.vec[i]));
+      	vec[i] = new FixVecType(*(rhs.vec[i]));
     }
 
     /// Destructor
     ~VectorOfFixVecs()
     {
       for (int i = 0; i < size; i++)
-	delete vec[i];
+      	delete vec[i];
 
       vec.clear();
     }
@@ -192,8 +192,8 @@ namespace AMDiS
     {
       TEST_EXIT_DBG(size == rhs.size)("vectors of different size\n");
       if (this != &rhs) {
-	for (int i = 0; i < size; i++)
-	  *(vec[i]) = *(rhs.vec[i]);
+      	for (int i = 0; i < size; i++)
+      	  *(vec[i]) = *(rhs.vec[i]);
       }
       return *this;
     }
@@ -203,7 +203,7 @@ namespace AMDiS
     {
       vec.resize(newsize);
       for (int i = size; i < newsize; i++)
-	vec[i] = new FixVecType(dim, NO_INIT);
+      	vec[i] = new FixVecType(dim, NO_INIT);
       size = newsize;
     }
 
@@ -251,19 +251,19 @@ namespace AMDiS
     /// VectorOfFixVecs constructors.
     MatrixOfFixVecs(int dim, int r, int c, InitType initType)
       : rows(r), 
-	columns(c)
+      	columns(c)
     {
       TEST_EXIT_DBG(initType == NO_INIT)("wrong initType or wrong initializer\n");
       vec = new VectorOfFixVecs<FixVecType>*[rows];
       for (VectorOfFixVecs<FixVecType>** i = &vec[0]; i < &vec[rows]; i++)
-	*i = new VectorOfFixVecs<FixVecType>(dim, columns, NO_INIT);
+      	*i = new VectorOfFixVecs<FixVecType>(dim, columns, NO_INIT);
     }
 
     /// destructor
     ~MatrixOfFixVecs()
     {
       for (VectorOfFixVecs<FixVecType>** i = &vec[0]; i < &vec[rows]; i++)
-	delete *i;
+      	delete *i;
 
       delete [] vec;
     }
@@ -356,7 +356,7 @@ namespace AMDiS
       : Matrix<T>(dim + 1, dim + 1)
     {
       TEST_EXIT_DBG(initType == DEFAULT_VALUE)
-	("wrong initType or wrong initializer\n");    
+        ("wrong initType or wrong initializer\n");    
       this->set(ini);
     }
 
@@ -375,7 +375,7 @@ namespace AMDiS
    * A WorldVector is an AlgoVec with DIM_OF_WORLD entries of type double.
    * Can be used for storing world coordinates.
    */
-  template<typename T>
+  template <typename T>
   class WorldVector : public FixVec<T, WORLD>
   {
   public:

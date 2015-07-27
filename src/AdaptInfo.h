@@ -301,7 +301,6 @@ namespace AMDiS {
     double getEstSum(int index) const
     { 
       FUNCNAME_DBG("AdaptInfo::getEstSum()");
-
       TEST_EXIT_DBG(static_cast<size_t>(index) < scalContents.size())
         ("Wrong index for adaptInfo!\n");
 
@@ -318,7 +317,6 @@ namespace AMDiS {
     double getEstMax(int index) const
     { 
       FUNCNAME_DBG("AdaptInfo::getEstSum()");
-
       TEST_EXIT_DBG(static_cast<size_t>(index) < scalContents.size())
         ("Wrong index for adaptInfo!\n");
 

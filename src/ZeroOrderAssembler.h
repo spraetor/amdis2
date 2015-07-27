@@ -26,19 +26,16 @@ namespace AMDiS
      * object will be returned.
      */
     static ZeroOrderAssembler* getSubAssembler(Operator *op,
-					       Assembler *assembler,
-					       Quadrature *quadrat,
-					       bool optimized);
-
-    /// Destructor.
-    virtual ~ZeroOrderAssembler() {}
+                              					       Assembler *assembler,
+                              					       Quadrature *quadrat,
+                              					       bool optimized);
 
   protected:
     /// Constructor.
     ZeroOrderAssembler(Operator *op, 
-		       Assembler *assembler, 
-		       Quadrature *quadrat,
-		       bool optimized);
+            		       Assembler *assembler, 
+            		       Quadrature *quadrat,
+            		       bool optimized);
 
   protected:
     /// List of all yet created optimized SubAssembler objects.
@@ -119,10 +116,6 @@ namespace AMDiS
 
     /// Integral of psi.
     const Q0Psi *q0;
- 
-#if 0
-    friend class ZeroOrderAssembler;
-#endif
   };
 
 } // end namespace AMDiS

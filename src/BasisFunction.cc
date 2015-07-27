@@ -30,10 +30,11 @@ namespace AMDiS {
   }
 
 
-  const WorldMatrix<double>& BasisFunction::evalD2Uh(const DimVec<double>& lambda,
-						     const DimVec<WorldVector<double> >& grd_lambda,
-						     const ElementVector& uh_loc, 
-						     WorldMatrix<double>* D2_uh) const
+  const WorldMatrix<double>& 
+  BasisFunction::evalD2Uh(const DimVec<double>& lambda,
+        						      const DimVec<WorldVector<double> >& grd_lambda,
+        						      const ElementVector& uh_loc, 
+        						      WorldMatrix<double>* D2_uh) const
   {
     // TODO: REMOVE STATIC
     static WorldMatrix<double> D2(DEFAULT_VALUE, 0.0);
@@ -44,16 +45,16 @@ namespace AMDiS {
     for (int i = 0; i < nBasFcts; i++) {
       (*(*d2Phi)[i])(lambda, D2_b);
       for (int k = 0; k < dim + 1; k++)
-	for (int l = 0; l < dim + 1; l++)
-	  D2_tmp[k][l] += uh_loc[i] * D2_b[k][l];
+      	for (int l = 0; l < dim + 1; l++)
+      	  D2_tmp[k][l] += uh_loc[i] * D2_b[k][l];
     }
 
     for (int i = 0; i < dow; i++)
       for (int j = 0; j < dow; j++) {
-	(*val)[i][j] = 0.0;
-	for (int k = 0; k < dim + 1; k++)
-	  for (int l = 0; l < dim + 1; l++)
-	    (*val)[i][j] += grd_lambda[k][i] * grd_lambda[l][j] * D2_tmp[k][l];
+      	(*val)[i][j] = 0.0;
+      	for (int k = 0; k < dim + 1; k++)
+      	  for (int l = 0; l < dim + 1; l++)
+      	    (*val)[i][j] += grd_lambda[k][i] * grd_lambda[l][j] * D2_tmp[k][l];
       }
     
     return ((*val));

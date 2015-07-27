@@ -7,7 +7,7 @@
 namespace AMDiS 
 {
 
-  template<typename T,GeoIndex d1,GeoIndex d2>
+  template <class T, GeoIndex d1, GeoIndex d2>
   class VecConv
   {
   public:
