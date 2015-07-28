@@ -3,6 +3,7 @@
 #include "DOFAdmin.h"
 #include "Element.h"
 #include "BasisFunction.h"
+#include "FiniteElemSpace.h"
 
 namespace AMDiS 
 {

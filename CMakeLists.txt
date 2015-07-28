@@ -162,6 +162,7 @@ SET(AMDIS_SRC ${SOURCE_DIR}/AdaptBase.cc
 #         ${SOURCE_DIR}/io/detail/VtkWriter.cc
 #	      ${SOURCE_DIR}/nonlin/ProblemNonLin.cc
 	      ${SOURCE_DIR}/solver/SolverMatrix.cc
+	      ${SOURCE_DIR}/solver/Mapper.cc
 #	      ${SOURCE_DIR}/time/RosenbrockAdaptInstationary.cc
 #	      ${SOURCE_DIR}/time/RosenbrockMethod.cc
 #	      ${SOURCE_DIR}/time/RosenbrockStationary.cc

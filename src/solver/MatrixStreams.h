@@ -25,6 +25,8 @@
 #define AMDIS_MATRIXSTREAMS_H
 
 #include "DOFMatrix.h"
+#include "DOFVector.h"
+#include "DOFIterator.h"
 #include "solver/SolverMatrix.h"
 #include "SystemVector.h"
 #include "traits/inserter.h"
@@ -32,6 +34,7 @@
 
 namespace AMDiS {
   
+  // TODO reduce dependencies and remove using namespace
   using namespace mtl::operations;
   
   template< typename VecT, typename CurMap, 

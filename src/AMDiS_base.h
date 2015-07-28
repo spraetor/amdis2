@@ -29,13 +29,17 @@ namespace AMDiS
   typedef enum { NO_NORM = 0, 
             		 H1_NORM = 1, 
             		 L2_NORM = 2 } Norm;
-		 
 
+  /// Specifies which operation should be done after coarsening
+  typedef enum{ NO_OPERATION = 0,   
+                COARSE_RESTRICT = 1,
+                COARSE_INTERPOL = 2, 
+                REFINE_INTERPOL = 4
+  } RefineCoarsenOperation;
+  
   /// Specifies the type of a FirstOrderTerm 
-  enum FirstOrderType {
-    GRD_PSI,
-    GRD_PHI
-  };
+  enum FirstOrderType { GRD_PSI,
+                        GRD_PHI };
   
   struct DofIndex 
   {

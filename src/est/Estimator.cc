@@ -23,6 +23,7 @@
 #include "Traverse.h"
 #include "Initfile.h"
 #include "DualTraverse.h"
+#include "DOFVector.h"
 
 namespace AMDiS {
 

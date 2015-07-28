@@ -27,6 +27,7 @@
 #include "Traverse.h"
 #include "Initfile.h"
 #include "Parametric.h"
+#include "Math.h"
 
 #ifdef HAVE_PARALLEL_DOMAIN_AMDIS
 #include <mpi.h>
@@ -47,6 +48,8 @@ namespace AMDiS {
       jumpResidualOnly(false)
   {
     FUNCNAME("ResidualEstimator::ResidualEstimator()");
+    
+    using math::sqr;
 
     Parameters::get(name + "->C0", C0);
     Parameters::get(name + "->C1", C1);
@@ -106,7 +109,7 @@ namespace AMDiS {
       uhEl[system].change_dim(basFcts[system]->getNumber()); 
       uhNeigh[system].change_dim(basFcts[system]->getNumber());
       if (timestep)
-	uhOldEl[system].change_dim(basFcts[system]->getNumber());
+        uhOldEl[system].change_dim(basFcts[system]->getNumber());
     }
 
     if (timestep) {

@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoarseningManager.h"
+#include "Log.h"
 
 namespace AMDiS 
 {

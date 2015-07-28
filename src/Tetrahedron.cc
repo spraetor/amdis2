@@ -5,6 +5,7 @@
 #include "FixVec.h"
 #include "ElementDofIterator.h"
 #include "Global.h"
+#include "FiniteElemSpace.h"
 
 using namespace std;
 

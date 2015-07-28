@@ -7,10 +7,7 @@
 #include <memory>
 #include <list>
 
-#include <boost/numeric/mtl/mtl.hpp>
-
 #include "AMDiS_fwd.h"
-#include "Global.h"
 #include "Flag.h"
 #include "RCNeighbourList.h"
 #include "DOFAdmin.h"
@@ -20,7 +17,6 @@
 
 namespace AMDiS 
 {
-
   /** \ingroup DOFAdministration
    * \brief
    * A DOFMatrix is a sparse matrix representation for matrices that work
@@ -58,8 +54,8 @@ namespace AMDiS
 
     /// Constructs a DOFMatrix with name n and the given row and column FeSpaces.
     DOFMatrix(const FiniteElemSpace* rowFeSpace, 
-	      const FiniteElemSpace* colFeSpace,
-	      std::string n = "");
+      	      const FiniteElemSpace* colFeSpace,
+      	      std::string n = "");
 
     /// Copy-Constructor
     DOFMatrix(const DOFMatrix& rhs);
@@ -75,13 +71,13 @@ namespace AMDiS
     /// Access underlying matrix directly
     base_matrix_type& getBaseMatrix()
     {
-	return matrix;
+      return matrix;
     }
 
     /// Access underlying matrix directly (const)
     const base_matrix_type& getBaseMatrix() const
     {
-	return matrix;
+      return matrix;
     }
 
     /// Returns \ref coupleMatrix.
@@ -99,8 +95,8 @@ namespace AMDiS
     /// Adds an operator to the DOFMatrix. A factor, that is multipled to the 
     /// operator, and a multilier factor for the estimator may be also given.
     void addOperator(Operator *op, 
-		     double* factor = NULL, 
-		     double* estFactor = NULL);
+            		     double* factor = NULL, 
+            		     double* estFactor = NULL);
 
     ///
     void clearOperators();
@@ -163,13 +159,13 @@ namespace AMDiS
     void assemble(double factor, ElInfo *elInfo, const BoundaryType *bound);
 
     void assemble(double factor, ElInfo *elInfo, const BoundaryType *bound,
-		  Operator *op);
+	                Operator *op);
 
     /// Adds an element matrix to \ref matrix
     void addElementMatrix(const ElementMatrix& elMat, 
-			  const BoundaryType *bound,
-			  ElInfo* rowElInfo,
-			  ElInfo* colElInfo);
+                  			  const BoundaryType *bound,
+                  			  ElInfo* rowElInfo,
+                  			  ElInfo* colElInfo);
 
     ///
     void assembleOperator(Operator &op);
@@ -223,10 +219,7 @@ namespace AMDiS
 
     /// Returns the number of used rows (equal to number of used DOFs in
     /// the row FE space).
-    int getUsedSize() const 
-    {
-      return rowFeSpace->getAdmin()->getUsedSize();
-    }
+    int getUsedSize() const;
 
     std::set<DegreeOfFreedom>& getDirichletRows()
     {
@@ -281,9 +274,9 @@ namespace AMDiS
       nnzPerRow = 0;
 
       if (num_rows(matrix) != 0)
-	nnzPerRow = int(double(matrix.nnz()) / num_rows(matrix) * 1.2); 
+        nnzPerRow = int(double(matrix.nnz()) / num_rows(matrix) * 1.2); 
       if (nnzPerRow < MIN_NNZ_PER_ROW) 
-	nnzPerRow = MIN_NNZ_PER_ROW;
+        nnzPerRow = MIN_NNZ_PER_ROW;
     }
 
     /// Returns \ref nnzPerRow.

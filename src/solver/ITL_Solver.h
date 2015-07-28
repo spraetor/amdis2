@@ -253,24 +253,24 @@ namespace AMDiS
   class gmres_type
   {
     int restart; 
-    ORTHOGONALIZATION orthogonalization;
+    int ortho;
     
   public:
-    gmres_type(std::string name) : restart(30), orthogonalization(GRAM_SCHMIDT)
+    gmres_type(std::string name) : restart(30), ortho(GRAM_SCHMIDT)
     {
       Parameters::get(name + "->restart", restart);
-      Parameters::get(name + "->orthogonalization", orthogonalization);
+      Parameters::get(name + "->orthogonalization", ortho);
     }
     template < class LinOp, class X, class B, class L, class R, class I >
     int operator()(const LinOp& A, X& x, const B& b, const L& l, const R& r, I& iter)
     { 
-      switch (orthogonalization) {
-	default:
-	case GRAM_SCHMIDT:
-	  return itl::gmres2(A, x, b, l, r, iter, restart); break;
+      switch ((ORTHOGONALIZATION)ortho) {
+      	default:
+      	case GRAM_SCHMIDT:
+      	  return itl::gmres2(A, x, b, l, r, iter, restart); break;
 #ifndef HAVE_PARALLEL_MTL4
-	case HOUSEHOLDER:
-	  return itl::gmres_householder(A, x, b, l, iter, restart); break;
+      	case HOUSEHOLDER:
+      	  return itl::gmres_householder(A, x, b, l, iter, restart); break;
 #endif
       }
     }
@@ -370,7 +370,7 @@ namespace AMDiS
   class fgmres_type
   {
     int restart;
-    ORTHOGONALIZATION orthogonalization;
+    int orthogonalization;
     
   public:
     fgmres_type(std::string name) : restart(30), orthogonalization(GRAM_SCHMIDT)
@@ -381,13 +381,13 @@ namespace AMDiS
     template < class LinOp, class X, class B, class L, class R, class I >
     int operator()(const LinOp& A, X& x, const B& b, const L& l, const R& r, I& iter)
     {
-      switch (orthogonalization) {
-	default:
-	case GRAM_SCHMIDT:
-	  return itl::fgmres(A, x, b, l, r, iter, restart); break;
+      switch ((ORTHOGONALIZATION)orthogonalization) {
+      	default:
+      	case GRAM_SCHMIDT:
+      	  return itl::fgmres(A, x, b, l, r, iter, restart); break;
 #ifndef HAVE_PARALLEL_MTL4
-	case HOUSEHOLDER:
-	  return itl::fgmres_householder(A, x, b, r, iter, restart); break;
+      	case HOUSEHOLDER:
+      	  return itl::fgmres_householder(A, x, b, r, iter, restart); break;
 #endif
       }
     }

@@ -6,10 +6,14 @@
 #include <vector>
 
 #include "AMDiS_fwd.h"
+#include "AMDiS_base.h"
 #include "Boundary.h"
 
 namespace AMDiS 
 {
+  // forward declaration
+  class BoundaryCondition;
+  
   using BoundaryIndexMap = std::map<BoundaryType, BoundaryCondition*>;
 
   /**
@@ -23,10 +27,14 @@ namespace AMDiS
   class BoundaryManager
   {
   public:
+    /// Constructor. Reads the nr. of basis functions and allocates an
+    /// array \ref localBound of this size.
     BoundaryManager(const FiniteElemSpace *feSpace);
 
-    BoundaryManager(BoundaryManager &bm);
+    /// Copy constructor.
+    BoundaryManager(BoundaryManager const& bm);
 
+    /// Destructor. Frees the \ref localBound array
     virtual ~BoundaryManager();
 
     /// Adds a local boundary condition to the list of managed conditions.

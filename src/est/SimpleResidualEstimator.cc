@@ -1,24 +1,3 @@
-/******************************************************************************
- *
- * AMDiS - Adaptive multidimensional simulations
- *
- * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
- * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
- *
- * Authors: 
- * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
- *
- * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
- * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
- *
- *
- * This file is part of AMDiS
- *
- * See also license.opensource.txt in the distribution.
- * 
- ******************************************************************************/
-
-
 #include "est/SimpleResidualEstimator.h"
 #include "Operator.h"
 #include "DOFMatrix.h"
@@ -26,15 +5,17 @@
 #include "Assembler.h"
 #include "Traverse.h"
 #include "Initfile.h"
+#include "Math.h"
 
-namespace AMDiS {
-
+namespace AMDiS 
+{
   SimpleResidualEstimator::SimpleResidualEstimator(std::string name) 
     : Estimator(name, 0),
       C0(0.0), 
       C1(0.0)
   {
     // === Read parameters C0 and C1 from init file. ===
+    using math::sqr;
 
     Parameters::get(name + "->C0", C0);
     Parameters::get(name + "->C1", C1);
@@ -394,5 +375,4 @@ namespace AMDiS {
     }    
   }
 
-
-}
+} // end namespace AMDiS

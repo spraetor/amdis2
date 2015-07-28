@@ -81,8 +81,8 @@ namespace AMDiS
     }
       
     // set parameters before reading the initfile
-    if (vm.count("parameters"))
-      Parameters::readArgv(vm["parameters"].as<std::string>());
+    // if (vm.count("parameters"))
+    //   Parameters::readArgv(vm["parameters"].as<std::string>());
     
     if (initFileName == "") {
       if (vm.count("init-file"))
@@ -101,8 +101,9 @@ namespace AMDiS
     // reset parameters from command line
     bool ignoreCommandline = false;
     Parameters::get("ignore commandline options", ignoreCommandline);
-    if (vm.count("parameters") && !ignoreCommandline)
-      Parameters::readArgv(vm["parameters"].as<std::string>(),0);
+    // if (vm.count("parameters") && !ignoreCommandline)
+    //   Parameters::readArgv(vm["parameters"].as<std::string>(),0);
+    // TODO: add command-line arguments again.
     
     
     // initialize global strcutures using parameters

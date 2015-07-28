@@ -73,77 +73,13 @@ namespace AMDiS
   /// Mapper implementation for non-parallel block matrices
   struct BlockMapper : public MapperBase< BlockMapper >
   {
-    typedef unsigned int size_type;
+    using Super = MapperBase< BlockMapper >;
+    using size_type = unsigned long;
     
-    /// Default constructor
+    /// Default constructor.
     BlockMapper()
       : nComp(0), rowOffset(0), colOffset(0), nrow(0), ncol(0), sizes(0)
     {}
-    
-    BlockMapper(BlockMapper const& other)
-      : nComp(other.nComp),
-      	rowOffset(other.rowOffset),
-      	colOffset(other.colOffset),
-      	nrow(other.nrow),
-      	ncol(other.ncol)
-    {
-      sizes.resize(nComp);
-      std::copy(other.sizes.begin(), other.sizes.end(), sizes.begin());
-    }
-    
-    BlockMapper& operator=(BlockMapper const& other)
-    {
-      nComp = other.getNumComponents();
-      rowOffset = other.row(0);
-      colOffset = other.col(0);
-      nrow = other.getNumRows();
-      ncol = other.getNumCols();
-    
-      sizes.resize(nComp);
-      for (size_t i = 0; i < nComp; ++i)
-        sizes[i] = other.getNumRows(i);
-	
-      return *this;
-    }
-    
-    /// Constructor for block-matrices
-    BlockMapper(const SolverMatrix<Matrix<DOFMatrix* > >& sm )
-      : nComp(sm.getOriginalMat()->getSize()), 
-        rowOffset(0), colOffset(0), nrow(0), ncol(0), sizes(nComp)
-    {
-      const Matrix<DOFMatrix* >& orMat(*sm.getOriginalMat());
-      const int ns = orMat.getNumRows();
-      for (int i= 0; i < ns; i++) {
-      	sizes[i] = orMat[i][i]->getFeSpace()->getAdmin()->getUsedSize();
-      	nrow += sizes[i];
-      }
-      ncol = nrow;
-    }
-    
-    /// Constructor for block-matrices
-    BlockMapper(const Matrix<DOFMatrix*>& orMat )
-      : nComp(orMat.getSize()), 
-        rowOffset(0), colOffset(0), nrow(0), ncol(0), sizes(nComp)
-    {
-      const int ns = orMat.getNumRows();
-      for (int i= 0; i < ns; i++) {
-      	sizes[i] = orMat[i][i]->getFeSpace()->getAdmin()->getUsedSize();
-      	nrow += sizes[i];
-      }
-      ncol = nrow;
-    }
-    
-    /// Constructor for single matrix
-    BlockMapper(const DOFMatrix* sm )
-      : nComp(1), 
-        rowOffset(0), colOffset(0), 
-        nrow(0), ncol(0), 
-        sizes(nComp)
-    {
-      sizes[0] = sm->getFeSpace()->getAdmin()->getUsedSize();
-      nrow += sizes[0];
-      ncol = nrow;
-    }
 
     /// Constructor for system with equal components
     BlockMapper(unsigned int nComp, size_type nDOFperComp)
@@ -155,9 +91,27 @@ namespace AMDiS
        for (unsigned int i = 0; i < nComp; ++i)
          sizes[i] = nDOFperComp;
     }
+    
+    /// Copy constructor.
+    BlockMapper(BlockMapper const& other);
+    
+    /// Copy assignment operator.
+    BlockMapper& operator=(BlockMapper const& other);
+    
+    /// Constructor that takes a system-matrix
+    BlockMapper(const Matrix<DOFMatrix*>& orMat);
+    
+    /// Constructor that takes a solvermatrix, 
+    /// calls constructor for system-matrix
+    BlockMapper(const SolverMatrix<Matrix<DOFMatrix* > >& sm)
+      : BlockMapper(*sm.getOriginalMat())
+    {}
+    
+    /// Constructor for single matrix.
+    BlockMapper(const DOFMatrix* mat);
       
     /// calculate row offset for row component \param r
-    void setRow( unsigned int r)
+    void setRow(unsigned int r)
     { 
       assert( r <= sizes.size() );
       rowOffset = sum(r); 
@@ -186,21 +140,20 @@ namespace AMDiS
     ///compute the sum of sizes from [0, end)
     size_type sum(unsigned int end) const 
     {
-      unsigned int ret(0);
-      for (unsigned int i(0); i < end; ++i)
+      unsigned int ret = 0;
+      for (unsigned int i = 0; i < end; ++i)
         ret += sizes[i];
       return ret;
     }
     
   private: // variables
-
     unsigned int nComp;
     size_type rowOffset;
     size_type colOffset;
     unsigned int nrow;
     unsigned int ncol;
     
-    std::vector< size_type > sizes;
+    std::vector<size_type> sizes;
   };
   
   
@@ -209,29 +162,16 @@ namespace AMDiS
   /// Mapper implementation for non-parallel rectangular block matrices
   struct RectangularMapper : public MapperBase< RectangularMapper >
   {
-    typedef unsigned int size_type;
+    using Super = MapperBase< RectangularMapper >;
+    using size_type = unsigned long;
     
     /// Constructor for block-matrices
-    RectangularMapper(const SolverMatrix<Matrix<DOFMatrix* > >& sm )
-    : nRowComp(sm.getOriginalMat()->getNumRows()), 
-      nColComp(sm.getOriginalMat()->getNumCols()), 
-      rowOffset(0), colOffset(0), nrow(0), ncol(0), 
-      sizes_rows(nRowComp), sizes_cols(nColComp)
-    {
-      const Matrix<DOFMatrix* >& orMat(*sm.getOriginalMat());
-
-      for (unsigned int i = 0; i < nRowComp; i++) {
-      	for (unsigned int j = 0; j < nColComp; j++) {
-      	  if (orMat[i][j]) {
-      	    sizes_rows[i] = orMat[i][j]->getRowFeSpace()->getAdmin()->getUsedSize();
-      	    sizes_cols[j] = orMat[i][j]->getColFeSpace()->getAdmin()->getUsedSize();
-      	  }
-      	}
-      	nrow += sizes_rows[i];
-      }
-      for (unsigned int j = 0; j < nColComp; j++)
-        ncol += sizes_cols[j];
-    }
+    RectangularMapper(const Matrix<DOFMatrix*>& sm);
+    
+    /// Constructor for block-matrices, calls constructor for system-matrix
+    RectangularMapper(const SolverMatrix<Matrix<DOFMatrix*> >& sm)
+      : RectangularMapper(*sm.getOriginalMat())
+    {}
       
     /// calculate row offset for row component \param r
     void setRow( unsigned int r)
@@ -263,10 +203,10 @@ namespace AMDiS
   private: // methods
 
     ///compute the sum of sizes from [0, end)
-    size_type sum(unsigned int end, std::vector< size_type >& sizes) const 
+    size_type sum(unsigned int end, std::vector<size_type>& sizes) const 
     {
-      unsigned int ret(0);
-      for (unsigned int i(0); i < end; ++i)
+      unsigned int ret = 0;
+      for (unsigned int i = 0; i < end; ++i)
         ret += sizes[i];
       return ret;
     }
@@ -279,8 +219,8 @@ namespace AMDiS
     unsigned int nrow;
     unsigned int ncol;
     
-    std::vector< size_type > sizes_rows;
-    std::vector< size_type > sizes_cols;
+    std::vector<size_type> sizes_rows;
+    std::vector<size_type> sizes_cols;
   };
   
 } // end namespace AMDiS

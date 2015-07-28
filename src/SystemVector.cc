@@ -27,6 +27,15 @@ namespace AMDiS
     for (size_t i = 0; i < vectors.size(); i++)
       vectors[i] = new DOFVector<double>(*rhs.getDOFVector(i));
   }
+  
+
+  SystemVector::~SystemVector() 
+  {
+    if (createVec) {
+      for (size_t i = 0; i < vectors.size(); i++)
+        delete vectors[i];
+    }
+  }
 
 
   int SystemVector::getUsedSize() const 

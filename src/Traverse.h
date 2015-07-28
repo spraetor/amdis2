@@ -43,14 +43,7 @@ namespace AMDiS
     {}
 
     /// Destructor
-    ~TraverseStack() 
-    {
-      for (size_t i = 0; i < elinfo_stack.size(); i++)
-        delete elinfo_stack[i];
-
-      for (size_t i = 0; i < save_elinfo_stack.size(); i++) 
-        delete save_elinfo_stack[i];
-    }
+    ~TraverseStack();
 
   public:
     /// Returns the first ElInfo of a non recursive traversal which fullfills the

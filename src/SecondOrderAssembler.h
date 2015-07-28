@@ -9,6 +9,9 @@
 
 namespace AMDiS 
 {
+  // forward declaration
+  class Q11PsiPhi;
+  
   /**
    * \ingroup Assembler
    * 
@@ -125,7 +128,7 @@ namespace AMDiS
     /// Integral of the product of the derivative of psi and the derivative of phi.
     const Q11PsiPhi *q11;
 
-    std::vector<DenseVector<double> > LALt;
+    std::vector<DenseMatrix<double> > LALt;
 
 #if 0
     friend class SecondOrderAssembler;

@@ -70,9 +70,9 @@ namespace AMDiS
     struct to_expr_aux<T, /*IsValid: */true, /*IsConstant: */false> 
     {
       using to = to_expr_aux;
-      using tpye = T;
+      using type = T;
       
-      static const type& get(const T& t) const { return t; }
+      static const type& get(const T& t) { return t; }
     };
     
     template <class T> // T is numeric constant
@@ -82,7 +82,7 @@ namespace AMDiS
       using type = ::AMDiS::expressions::RValue<T>;
       
       template <class T_>
-      static type get(T_&& t) const { return {t}; }
+      static type get(T_&& t) { return {t}; }
     };
     
     template <class T>

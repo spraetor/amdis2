@@ -26,13 +26,7 @@ namespace AMDiS
     SystemVector(const SystemVector& rhs);
 
     /// Destructor, deletes all DOFVectors
-    ~SystemVector() 
-    {
-      if (createVec) {
-        for (size_t i = 0; i < vectors.size(); i++)
-          delete vectors[i];
-      }
-    }
+    ~SystemVector();
 
     /// Sets \ref vectors[index] = vec.
     void setDOFVector(int index, DOFVector<double> *vec) 

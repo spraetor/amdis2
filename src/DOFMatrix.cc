@@ -83,6 +83,10 @@ namespace AMDiS
       inserter->print();
   }
 
+  int DOFMatrix::getUsedSize() const 
+  {
+    return rowFeSpace->getAdmin()->getUsedSize();
+  }
 
   DOFMatrix& DOFMatrix::operator=(const DOFMatrix& rhs)
   {

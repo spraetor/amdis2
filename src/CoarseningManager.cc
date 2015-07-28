@@ -6,6 +6,7 @@
 #include "MacroElement.h"
 #include "RCNeighbourList.h"
 #include "FixVec.h"
+#include "ProblemStatBase.h"   // => MESH_COARSENED
 
 namespace AMDiS {
 

@@ -4,6 +4,7 @@
 #include "CoarseningManager.h"
 #include "FixVec.h"
 #include "ElementDofIterator.h"
+#include "FiniteElemSpace.h"
 
 using namespace std;
 
@@ -21,6 +22,7 @@ namespace AMDiS
     ERROR_EXIT("not yet\n");
     return false;
   }
+  
 
   int Triangle::getVertexOfPosition(GeoIndex position, int positionIndex,
 			                              int vertexIndex) const 
@@ -41,6 +43,7 @@ namespace AMDiS
       return 0;
     }
   }
+
 
   void Triangle::sortFaceIndices(int face, FixVec<int, WORLD> &vec) const
   {

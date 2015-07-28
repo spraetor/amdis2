@@ -3,6 +3,7 @@
 #pragma once
 
 #include "Traits.h"
+#include "Math.h"
 
 namespace AMDiS 
 {
@@ -631,7 +632,7 @@ namespace AMDiS
     double val = 0.0;
     for (int i = 0; i < Global::getGeo(WORLD); i++)
       val += v[i] * v[i];
-    return sqrt(val);
+    return std::sqrt(val);
   }
 #endif
 
@@ -641,7 +642,7 @@ namespace AMDiS
   {
     double erg = 0.0;
     for (int i = 0; i < a.getSize(); ++i)
-      erg += sqr(a[i] - b[i]);
+      erg += math::sqr(a[i] - b[i]);
 
     return std::sqrt(erg);
   }

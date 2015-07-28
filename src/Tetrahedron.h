@@ -153,7 +153,7 @@ namespace AMDiS
       TEST_EXIT_DBG(subObj == EDGE || subObj == FACE)("Not yet implemented!\n");
 
       return subObj == FACE
-               ? getSideOfChild(childnr, ithObj, elType);
+               ? getSideOfChild(childnr, ithObj, elType)
                : getEdgeOfChild(childnr, ithObj, elType);
     }
 

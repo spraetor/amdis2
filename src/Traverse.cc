@@ -13,6 +13,15 @@
 
 namespace AMDiS 
 {
+  
+  TraverseStack::~TraverseStack() 
+  {
+    for (size_t i = 0; i < elinfo_stack.size(); i++)
+      delete elinfo_stack[i];
+
+    for (size_t i = 0; i < save_elinfo_stack.size(); i++) 
+      delete save_elinfo_stack[i];
+  }
 
   ElInfo* TraverseStack::traverseFirst(Mesh *mesh, int level, Flag fill_flag)
   {

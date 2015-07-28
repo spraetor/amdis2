@@ -6,6 +6,7 @@
 #include "ElementRegion_ED.h"
 #include "MeshStructure.h"
 #include "BasisFunction.h"
+#include "FiniteElemSpace.h"
 
 namespace AMDiS 
 {

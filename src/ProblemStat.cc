@@ -76,8 +76,9 @@ namespace AMDiS
     for (int i = 0; i < nComponents; i++)
       componentNames[i] = "solution[" + std::to_string(i) + "]";
 
-    Parameters::get(name + "->name", componentNames);
-    componentNames.resize(nComponents);
+    // Parameters::get(name + "->name", componentNames);
+    // componentNames.resize(nComponents);
+    // TODO: need to be corrected
 
     for (int i = 0; i < nComponents; i++)
       Parameters::get(name + "->name[" + std::to_string(i) + "]",

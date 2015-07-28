@@ -20,7 +20,7 @@ namespace AMDiS
   }
 
 
-  BoundaryManager::BoundaryManager(BoundaryManager &bm)
+  BoundaryManager::BoundaryManager(BoundaryManager const& bm)
   {
     localBCs = bm.localBCs;
     allocatedMemoryLocalBounds = bm.allocatedMemoryLocalBounds;
