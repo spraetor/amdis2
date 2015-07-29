@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "functor_expr.hpp"
+#include "functorN_expr.hpp"
 #include "operations/norm.hpp"
 #include "operations/product.hpp"
     

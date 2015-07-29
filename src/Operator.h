@@ -174,10 +174,10 @@ namespace AMDiS
 
     /// Evaluation of all terms in \ref zeroOrder. 
     void evalZeroOrder(int nPoints,		       
-		       const mtl::dense_vector<double>& uhAtQP,
-		       const mtl::dense_vector<WorldVector<double> >& grdUhAtQP,
-		       const mtl::dense_vector<WorldMatrix<double> >& D2UhAtQP,
-		       mtl::dense_vector<double>& result,
+		       const DenseVector<double>& uhAtQP,
+		       const DenseVector<WorldVector<double> >& grdUhAtQP,
+		       const DenseVector<WorldMatrix<double> >& D2UhAtQP,
+		       DenseVector<double>& result,
 		       double factor) const
     {
       for (OperatorTerm const* term : zeroOrder)
@@ -186,10 +186,10 @@ namespace AMDiS
 
     /// Evaluation of all terms in \ref firstOrderGrdPsi. 
     void evalFirstOrderGrdPsi(int nPoints,
-			      const mtl::dense_vector<double>& uhAtQP,
-			      const mtl::dense_vector<WorldVector<double> >& grdUhAtQP,
-			      const mtl::dense_vector<WorldMatrix<double> >& D2UhAtQP,
-			      mtl::dense_vector<double>& result,
+			      const DenseVector<double>& uhAtQP,
+			      const DenseVector<WorldVector<double> >& grdUhAtQP,
+			      const DenseVector<WorldMatrix<double> >& D2UhAtQP,
+			      DenseVector<double>& result,
 			      double factor) const
     {      
       for (OperatorTerm const* term : firstOrderGrdPsi)
@@ -198,10 +198,10 @@ namespace AMDiS
 
     /// Evaluation of all terms in \ref firstOrderGrdPhi. 
     void evalFirstOrderGrdPhi(int nPoints,
-			      const mtl::dense_vector<double>& uhAtQP,
-			      const mtl::dense_vector<WorldVector<double> >& grdUhAtQP,
-			      const mtl::dense_vector<WorldMatrix<double> >& D2UhAtQP,
-			      mtl::dense_vector<double>& result,
+			      const DenseVector<double>& uhAtQP,
+			      const DenseVector<WorldVector<double> >& grdUhAtQP,
+			      const DenseVector<WorldMatrix<double> >& D2UhAtQP,
+			      DenseVector<double>& result,
 			      double factor) const
     {
       for (OperatorTerm const* term : firstOrderGrdPhi)
@@ -210,10 +210,10 @@ namespace AMDiS
 
     /// Evaluation of all terms in \ref secondOrder. 
     void evalSecondOrder(int nPoints,
-			  const mtl::dense_vector<double>& uhAtQP,
-			  const mtl::dense_vector<WorldVector<double> >& grdUhAtQP,
-			  const mtl::dense_vector<WorldMatrix<double> >& D2UhAtQP,
-			  mtl::dense_vector<double>& result,
+			  const DenseVector<double>& uhAtQP,
+			  const DenseVector<WorldVector<double> >& grdUhAtQP,
+			  const DenseVector<WorldMatrix<double> >& D2UhAtQP,
+			  DenseVector<double>& result,
 			 double factor) const
     {      
       for (OperatorTerm const* term : secondOrder)
@@ -234,7 +234,7 @@ namespace AMDiS
     /// Calls getLb() for each term in \ref firstOrderGrdPsi and adds the 
     /// results to Lb.
     void getLbGrdPsi(const ElInfo *elInfo, 
-		     std::vector<mtl::dense_vector<double> >& Lb) const
+		     std::vector<DenseVector<double> >& Lb) const
     {      
       for (OperatorTerm const* term : firstOrderGrdPsi)
 	static_cast<FirstOrderTerm const*>(term)->getLb(elInfo, Lb);
@@ -243,14 +243,14 @@ namespace AMDiS
     /// Calls getLb() for each term in \ref firstOrderGrdPhi and adds the 
     /// results to Lb.
     void getLbGrdPhi(const ElInfo *elInfo, 
-		     std::vector<mtl::dense_vector<double> >& Lb) const
+		     std::vector<DenseVector<double> >& Lb) const
     {      
       for (OperatorTerm const* term : firstOrderGrdPhi)
 	static_cast<FirstOrderTerm const*>(term)->getLb(elInfo, Lb);
     }
 
     /// Calls getC() for each term in \ref zeroOrder and adds the results to c.
-    void getC(const ElInfo *elInfo, int nPoints, mtl::dense_vector<double>& c)
+    void getC(const ElInfo *elInfo, int nPoints, DenseVector<double>& c)
     {      
       for (OperatorTerm const* term : zeroOrder)
 	static_cast<ZeroOrderTerm const*>(term)->getC(elInfo, nPoints, c);

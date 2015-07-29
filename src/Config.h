@@ -11,6 +11,13 @@
 
 #define CACHE_LINE 16
 
+// if FIXED_SIZE == 1 use static arrays
+#ifndef FIXED_SIZE
+#define FIXED_SIZE 1
+//  #define DOW 2
+//  #define DIM 2
+#endif
+
 #if defined(__clang__)					// Clang/LLVM.
   #include "config/Config_clang.h"
   
@@ -38,3 +45,9 @@
 #endif
 
 #include "config/Config_defaults.h"
+
+typedef unsigned char small_t;   // only allow small matrices
+
+// some workarounds for mtl (since the namespace has changed)
+#define MTL_VEC mtl::vec
+#define MTL_MAT mtl::mat

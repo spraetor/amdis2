@@ -71,7 +71,7 @@ namespace AMDiS
     /// evaluation at given coordinates.
     T operator()(const DimVec<double>& bary) const 
     {
-      mtl::dense_vector<T> localVec(dofVector->getFeSpace()->getBasisFcts()->getNumber());
+      DenseVector<T> localVec(dofVector->getFeSpace()->getBasisFcts()->getNumber());
       dofVector->getLocalVector(this->elInfo->getElement(), localVec);
       
       return dofVector->getFeSpace()->getBasisFcts()->evalUh(bary, localVec);
@@ -124,7 +124,7 @@ namespace AMDiS
     const DOFVector<T>* vec;
     
     /// local dof-values of DOFVector on current element
-    mtl::dense_vector<T> localCoeff;
+    DenseVector<T> localCoeff;
     
     /// barycentric coordinates
     mutable DimVec<double> coords;

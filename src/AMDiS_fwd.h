@@ -6,8 +6,8 @@
 #include "OpenMP.h"
 #include "Config.h"
 
-namespace AMDiS {
-
+namespace AMDiS 
+{
   class AdaptInfo;
   class AdaptStationary;
   class Assembler;
@@ -114,18 +114,12 @@ namespace AMDiS {
   template<typename T>                                 class DOFIndexed;
   template<typename T>                                 class DOFVectorBase;
   template<typename T>                                 class DOFVector;
-  template<typename T>                                 class DimVec;
-  template<typename T>                                 class DimMat;
   template<typename T>                                 class DirichletBC;
 //   template<typename ITLSolver>                         class ITL_LinearSolverInterface;
   template<typename T, typename MatT, typename VecT >  class ITL_Preconditioner;
-  template<typename T>                                 class Matrix;
   template<typename T>                                 class MatrixOfFixVecs;
   template<typename T>                                 class MatVecMultiplier;
   template<typename T>                                 class SolverMatrix;
-  template<typename T>                                 class Vector;
-  template<typename T>                                 class WorldVector;
-  template<typename T>                                 class WorldMatrix;
   template<typename T>                                 class VectorOfFixVecs;
   
   namespace detail 

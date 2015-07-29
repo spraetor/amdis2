@@ -17,6 +17,8 @@
 #include "boost/numeric/mtl/matrix/coordinate2D.hpp"
 #include "boost/numeric/mtl/matrix/morton_dense.hpp"
 
+// TODO: remove dependencies
+
 namespace AMDiS 
 {
   namespace traits 
@@ -42,39 +44,7 @@ namespace AMDiS
     };
     
     
-    // vectors
-    template <class T>
-    struct category<Vector<T> > 
-    {
-      typedef tag::vector  tag;
-      typedef T           value_type;
-      typedef int         size_type;
-    };
-    
-    template <class T, GeoIndex d>
-    struct category<FixVec<T, d> > 
-    {
-      typedef tag::vector  tag;
-      typedef T           value_type;
-      typedef int         size_type;
-    };
-    
-    template <class T>
-    struct category<DimVec<T> > 
-    {
-      typedef tag::vector  tag;
-      typedef T           value_type;
-      typedef int         size_type;
-    };
-    
-    template <class T>
-    struct category<WorldVector<T> > 
-    {
-      typedef tag::vector  tag;
-      typedef T           value_type;
-      typedef int         size_type;
-    };
-    
+    // vectors    
     template <class T, class Allocator>
     struct category<std::vector<T, Allocator> > 
     {
@@ -117,29 +87,6 @@ namespace AMDiS
     
     
     // matrices    
-    template <class T>
-    struct category<Matrix<T> > 
-    {
-      typedef tag::matrix  tag;
-      typedef T            value_type;
-    };
-    
-    template <class T>
-    struct category<DimMat<T> > 
-    {
-      typedef tag::matrix  tag;
-      typedef T            value_type;
-      typedef int         size_type;
-    };
-    
-    template <class T>
-    struct category<WorldMatrix<T> > 
-    {
-      typedef tag::matrix  tag;
-      typedef T            value_type;
-      typedef int         size_type;
-    };
-    
     template <class T>
     struct category<WorldVector<WorldVector<T> > > 
     {

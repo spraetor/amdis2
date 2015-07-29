@@ -18,16 +18,16 @@ namespace AMDiS
    */
   void r(const ElInfo *elInfo,
 	 int nPoints,
-	 const mtl::dense_vector<double>& uhIq,
-	 const mtl::dense_vector<WorldVector<double> > &grdUhIq,
-	 const mtl::dense_vector<WorldMatrix<double> > &D2UhIq,
-	 const mtl::dense_vector<double>& uhOldIq,
-	 const mtl::dense_vector<WorldVector<double> > &grdUhOldIq,
-	 const mtl::dense_vector<WorldMatrix<double> > &D2UhOldIq,
+	 const DenseVector<double>& uhIq,
+	 const DenseVector<WorldVector<double> > &grdUhIq,
+	 const DenseVector<WorldMatrix<double> > &D2UhIq,
+	 const DenseVector<double>& uhOldIq,
+	 const DenseVector<WorldVector<double> > &grdUhOldIq,
+	 const DenseVector<WorldMatrix<double> > &D2UhOldIq,
 	 DOFMatrix *A, 
 	 DOFVector<double> *fh,
 	 Quadrature *quad,
-	 mtl::dense_vector<double>& result);
+	 DenseVector<double>& result);
  
   /// Returns pow(det,2.0/dim). Not Member of Estimator to avoid multiple instantiation.
   inline double h2_from_det(double det, int dim) 
@@ -123,20 +123,20 @@ namespace AMDiS
 
     std::vector<ElementVector> uhNeigh;
 
-    mtl::dense_vector<double> uhQP;
+    DenseVector<double> uhQP;
 
-    mtl::dense_vector<double> uhOldQP;
+    DenseVector<double> uhOldQP;
 
     /// Stores the element residual computed at the quadrature points of the element.
     ElementVector riq;
 
-    mtl::dense_vector<WorldVector<double> > grdUhQp;
+    DenseVector<WorldVector<double> > grdUhQp;
 
-    mtl::dense_vector<WorldMatrix<double> > D2UhQp;
+    DenseVector<WorldMatrix<double> > D2UhQp;
 
     /// not used:
-    mtl::dense_vector<WorldVector<double> > grdUhOldQp;
-    mtl::dense_vector<WorldMatrix<double> > D2UhOldQp;
+    DenseVector<WorldVector<double> > grdUhOldQp;
+    DenseVector<WorldMatrix<double> > D2UhOldQp;
     
     ElInfo *neighInfo;
 

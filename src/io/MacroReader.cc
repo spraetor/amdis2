@@ -1230,9 +1230,9 @@ namespace AMDiS { namespace io {
 
     int vertices = Global::getGeo(VERTEX,dim);
 
-    l[0]=absteukl(coord[1],coord[2]);
-    l[1]=absteukl(coord[0],coord[2]);
-    l[2]=absteukl(coord[0],coord[1]);
+    l[0]=distance(coord[1],coord[2]);
+    l[1]=distance(coord[0],coord[2]);
+    l[2]=distance(coord[0],coord[1]);
 
     lg=l[0];
     kz=l[0];

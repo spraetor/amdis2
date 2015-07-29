@@ -46,7 +46,7 @@ namespace AMDiS
   {
   
     // dummy type
-    typedef boost::numeric::ublas::error_cant_deduce_type no_valid_type;
+    class no_valid_type {};
       
     // test for mtl4 types
     // _________________________________________________________________________      

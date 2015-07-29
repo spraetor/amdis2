@@ -555,40 +555,43 @@ namespace AMDiS
   /// creates and inits and double array
   double *createAndInitArray(int size, ...); 
 
-  template<typename T>
+  template <class T>
   struct GradientType
   {
     typedef WorldVector<T> type;
     
-    static mtl::dense_vector<double> getValues(type &t) {
-      mtl::dense_vector<double> result(t.getSize());
+    static DenseVector<double> getValues(type &t) {
+      DenseVector<double> result(t.getSize());
       for (size_t i = 0; i < t.getSize(); i++)
 	result[i] = static_cast<T>(t[i]);
       return result;
     }
   };
 
-  template<typename T>
+  template <class T>
   struct GradientType<WorldVector<T> >
   {
     typedef WorldVector<WorldVector<T> > type;
 
-    static mtl::dense_vector<double> getValues(type &t) {
-      mtl::dense_vector<double> result(sqr(t.getSize()));
+    static DenseVector<double> getValues(type &t) {
+      DenseVector<double> result(sqr(t.getSize()));
       for (size_t i = 0; i < t.getSize(); i++)
 	for (size_t j = 0; j < t.getSize(); j++)
 	  result[i*(t.getSize()) + j] = static_cast<T>(t[i][j]);
       return result;
     }
   };
+  
+  template <class T>
+  using Gradient_t = typename GradientType<T>::type;
 
-  template<typename T>
+  template <class T>
   struct D2Type
   {
     typedef WorldMatrix<T> type;
     
-    static mtl::dense_vector<double> getValues(type &t) {
-      mtl::dense_vector<double> result(t.numRows() * t.numCols());
+    static DenseVector<double> getValues(type &t) {
+      DenseVector<double> result(t.numRows() * t.numCols());
       for (size_t i = 0; i < t.numRows(); i++)
 	for (size_t j = 0; j < t.numCols(); j++)
 	  result[i*(t.numCols()) + j] = static_cast<T>(t[i][j]);
@@ -596,7 +599,10 @@ namespace AMDiS
     }
   };
   
-  template<typename T,GeoIndex d>
+  template <class T>
+  using D2_t = typename D2Type<T>::type;
+  
+  template <class T,GeoIndex d>
   inline void resize(FixVec<T,d>& vec, size_t newSize)
   { }
   

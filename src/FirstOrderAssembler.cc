@@ -114,7 +114,7 @@ namespace AMDiS
 
   void Stand10::calculateElementMatrixImpl(const ElInfo *elInfo, ElementMatrix& mat)
   {
-    mtl::dense_vector<double> grdPsi(dim + 1, 0.0);
+    DenseVector<double> grdPsi(dim + 1, 0.0);
     int nPoints = quadrature->getNumPoints();
     Lb.resize(nPoints);
     vector<double> phival(nCol);
@@ -143,7 +143,7 @@ namespace AMDiS
 
   void Stand10::calculateElementVectorImpl(const ElInfo *elInfo, ElementVector& vec)
   {
-    mtl::dense_vector<double> grdPsi(dim + 1, 0.0);
+    DenseVector<double> grdPsi(dim + 1, 0.0);
     int nPoints = quadrature->getNumPoints();
     Lb.resize(nPoints);
 
@@ -198,7 +198,7 @@ namespace AMDiS
     for (int iq = 0; iq < nPoints; iq++) {
       Lb[iq] *= elInfo->getDet();
 
-      const vector<mtl::dense_vector<double> >& grdPsi = psiFast->getGradient(iq);
+      const vector<DenseVector<double> >& grdPsi = psiFast->getGradient(iq);
       double factor = quadrature->getWeight(iq);
 
       for (int i = 0; i < nRow; i++) {
@@ -231,7 +231,7 @@ namespace AMDiS
   
     for (int iq = 0; iq < nPoints; iq++) {
       Lb[iq] *= elInfo->getDet();
-      const vector<mtl::dense_vector<double> >& grdPsi = psiFast->getGradient(iq);
+      const vector<DenseVector<double> >& grdPsi = psiFast->getGradient(iq);
 
       for (int i = 0; i < nRow; i++)
 	vec[i] += quadrature->getWeight(iq) * dot(Lb[iq], grdPsi[i]);
@@ -353,8 +353,8 @@ namespace AMDiS
     mtl::dense2D<double> facMat(nPoints, nCol);
     for (int iq = 0; iq < nPoints; iq++) {
       double weight = quadrature->getWeight(iq);
-      mtl::dense_vector<double>& Lb_iq = Lb[iq];
-      const vector<mtl::dense_vector<double> >& grdPsi = phiFast->getGradient(iq);
+      DenseVector<double>& Lb_iq = Lb[iq];
+      const vector<DenseVector<double> >& grdPsi = phiFast->getGradient(iq);
 
       Lb_iq *= elInfo->getDet();
 

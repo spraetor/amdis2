@@ -44,21 +44,21 @@ namespace AMDiS
     /// For the given element, this function returns an array of all DOFs of 
     /// this DOFVector that are defined on this element.
     virtual void getLocalVector(const Element *el, 
-				mtl::dense_vector<T>& localVec) const;
+				DenseVector<T>& localVec) const;
 
     /// Evaluates the DOF vector at a set of quadrature points defined on the 
     /// given element.
     void getVecAtQPs(const ElInfo *elInfo, 
 		     const Quadrature *quad,
 		     const FastQuadrature *quadFast,
-		     mtl::dense_vector<T>& vecAtQPs) const;
+		     DenseVector<T>& vecAtQPs) const;
 
     /// Evaluates the gradient of a DOF vector at a set of quadrature points
     /// defined on the given element.
     void getGrdAtQPs( const ElInfo *elInfo,
 		      const Quadrature *quad,
 		      const FastQuadrature *quadFast,
-		      mtl::dense_vector<typename GradientType<T>::type> &grdAtQPs) const;
+		      DenseVector<Gradient_t<T>> &grdAtQPs) const;
 
     /// Evaluates the comp'th component of the derivative of a DOF vector at a
     /// set of quadrature points defined on the given element.
@@ -66,14 +66,14 @@ namespace AMDiS
 		      const Quadrature *quad,
 		      const FastQuadrature *quadFast,
 		      int comp,
-		      mtl::dense_vector<T> &derivativeAtQPs) const;
+		      DenseVector<T> &derivativeAtQPs) const;
 
     /// Evaluates the jacobian of a DOF vector at a set of quadrature points
     ///  defined on the given element.
     void getD2AtQPs(const ElInfo *elInfo,
 		    const Quadrature *quad,
 		    const FastQuadrature *quadFast,
-		    mtl::dense_vector<typename D2Type<T>::type> &d2AtQPs) const;
+		    DenseVector<typename D2Type<T>::type> &d2AtQPs) const;
 
     /// Returns the FE space the DOF vector is defined on.
     inline const FiniteElemSpace* getFeSpace() const 
@@ -84,14 +84,14 @@ namespace AMDiS
     /// Assembles the element vector for the given ellement and adds the
     /// element matrix to the current DOF vector.
     void assemble(T factor, ElInfo *elInfo,			    
-		  const BoundaryType *bound, 
-		  Operator *op = NULL);
+            		  const BoundaryType *bound, 
+            		  Operator *op = NULL);
 
     void addElementVector(T sign,
-			  const ElementVector& elVec, 
-			  const BoundaryType *bound,
-			  ElInfo *elInfo,
-			  bool add = true); 
+                  			  const ElementVector& elVec, 
+                  			  const BoundaryType *bound,
+                  			  ElInfo *elInfo,
+                  			  bool add = true); 
 
     ///
     void assembleOperator(Operator &op);
@@ -400,7 +400,7 @@ namespace AMDiS
     }
  
     /// Calculates Integral of this DOFVector
-    double Int(Quadrature* q = NULL) const
+    T Int(Quadrature* q = NULL) const
     {
       return Int(-1, q);
     }
@@ -415,12 +415,12 @@ namespace AMDiS
      * \param[in]  q          Quadrature object. If not specified, the function
      *                        creates a new quadrature object.
      */
-    double Int(int meshLevel, Quadrature* q = NULL) const;
+    T Int(int meshLevel, Quadrature* q = NULL) const;
 
 
     /// Calculates Integral of this DOFVector over parts of the domain
     /// boundary, indicated by boundaryType. Implemented for DOFVector<double>
-    T IntOnBoundary(BoundaryType boundary, Quadrature* q = NULL) const
+    double IntOnBoundary(BoundaryType boundary, Quadrature* q = NULL) const
     {
       FUNCNAME("DOFVector::IntOnBoundary())");
       TEST_EXIT(false)("Please implement your integration\n");
@@ -548,13 +548,11 @@ namespace AMDiS
 				bool useOldElInfo = false) const;
 
 
-    DOFVector<typename GradientType<T>::type>*
-      getGradient(DOFVector<typename GradientType<T>::type> *grad) const;
+    DOFVector<Gradient_t<T>>* getGradient(DOFVector<Gradient_t<T>> *grad) const;
 
     WorldVector<DOFVector<T>*> *getGradient(WorldVector<DOFVector<T>*> *grad) const;
 
-    DOFVector<typename GradientType<T>::type>*
-      getRecoveryGradient(DOFVector<typename GradientType<T>::type> *grad) const;
+    DOFVector<Gradient_t<T>>* getRecoveryGradient(DOFVector<Gradient_t<T>> *grad) const;
 
   protected: 
 
@@ -732,7 +730,7 @@ namespace AMDiS
 					     WorldVector<DOFVector<double>*> *result);
   
   template<typename T>
-  std::vector<DOFVector<double>*> *transform(DOFVector<typename GradientType<T>::type> *vec,
+  std::vector<DOFVector<double>*> *transform(DOFVector<Gradient_t<T>> *vec,
 					     std::vector<DOFVector<double>*> *res);
   
 } // end namespace AMDiS

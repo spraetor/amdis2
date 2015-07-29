@@ -8,6 +8,7 @@
 #include "MatrixVector.h"
 #include "AMDiS_fwd.h"
 
+#include "traits/basic.hpp"
 #include "traits/meta_basic.hpp"
 #include "traits/tag.hpp"
 #include "traits/types.hpp"
@@ -16,53 +17,28 @@
 #include "traits/num_cols.hpp"
 #include "traits/size.hpp"
 
-#include <boost/numeric/ublas/detail/returntype_deduction.hpp>
-#include <boost/numeric/mtl/concept/std_concept.hpp> // for return_type deduction
-
 // TODO: move to traits directory
 // TODO: use only one type of mult_type deduction
 
 namespace AMDiS 
 {
   namespace traits
-  {
-    
-    // type-generators
-    // _________________________________________________________________________
-    
-    // larger types
-    template<typename T1, typename T2>
-    struct larger_type
+  {        
+    namespace detail
     {
-      typedef typename if_then_else< (sizeof(T1) > sizeof(T2)), T1, T2 >::type type;
-    };
-    
-    // TODO: improve this implementation!!
-#if HAS_DECLTYPE
-    
-    /// determines the type of the product T1*T2
-    template<typename T1, typename T2>
-    struct mult_type
-    {      
-      typedef boost::numeric::ublas::type_deduction_detail::base_result_of<T1, T2> base_type;
-      static typename base_type::x_type x;
-      static typename base_type::y_type y;
+      template <bool Valid, class Type>
+      struct Enabler
+      {
+        using type = typename Type::type;
+      };
       
-      typedef decltype( x * y ) type;
-    };
-    
-    /// determines the type of the sum T1+T2
-    template<typename T1, typename T2>
-    struct add_type
-    {
-      typedef boost::numeric::ublas::type_deduction_detail::base_result_of<T1, T2> base_type;
-      static typename base_type::x_type x;
-      static typename base_type::y_type y;
+      template <class Type>
+      struct Enabler<false, Type>
+      {
+        using type = no_valid_type;
+      };
       
-      typedef decltype( x + y ) type;
-    };
-    
-#else
+    } // end namespace detail
     
     // multiplication types
     // _________________________________________________________________________
@@ -85,7 +61,9 @@ namespace AMDiS
     template<typename T1, typename T2>
     struct mult_type_dispatch<T1, T2, tag::scalar, tag::scalar>
     {
-      typedef typename mtl::Multiplicable<T1, T2>::result_type type;
+      template <class T1_, class T2_>
+      struct Type { using type = decltype(std::declval<T1_>() * std::declval<T2_>()); };
+      using type = typename detail::Enabler< is_multiplicable<T1,T2>::value, Type<T1,T2> >::type;
     };
     
     /// Vec*Vec => Scalar (dot-product)
@@ -171,7 +149,9 @@ namespace AMDiS
     template<typename T1, typename T2>
     struct add_type_dispatch<T1, T2, tag::scalar, tag::scalar>
     {
-      typedef typename mtl::Addable<T1, T2>::result_type type;
+      template <class T1_, class T2_>
+      struct Type { using type = decltype(std::declval<T1_>() + std::declval<T2_>()); };
+      using type = typename detail::Enabler< is_addable<T1,T2>::value, Type<T1,T2> >::type;
     };
     
     /// Vec+Vec => Vec
@@ -207,8 +187,6 @@ namespace AMDiS
       typedef Container<value_type> type;
     };
     
-#endif // endif(HAS_DECLTYPE)
-      
       
   } // end namespace traits
 

@@ -35,7 +35,9 @@ namespace AMDiS {
       auxMesh(NULL),
       traverseInfo(0)
   {
-    Parameters::get(name + "->error norm", norm);
+    int norm_(norm);
+    Parameters::get(name + "->error norm", norm_);
+    norm = (Norm)norm_;
   }
 
 
@@ -44,39 +46,6 @@ namespace AMDiS {
 //     FUNCNAME("Estimator::estimate()");
     
     bool dualTraverse = false;
-
-/*    
-    for (unsigned int i = 0; i < matrix.size(); i++) {
-      TEST_EXIT(traverseInfo.getStatus(row, i) != SingleComponentInfo::DIF_SPACES_WITH_DIF_AUX)
-	("Not yet implemented!\n");
-
-      if (traverseInfo.getStatus(row, i) == SingleComponentInfo::EQ_SPACES_WITH_DIF_AUX ||
-	  traverseInfo.getStatus(row, i) == SingleComponentInfo::DIF_SPACES_NO_AUX ||
-	  traverseInfo.getStatus(row, i) == SingleComponentInfo::DIF_SPACES_WITH_AUX)
-	dualTraverse = true;
-#ifndef NDEBUG
-      MSG("traverseInfo = %d, dualTraverse = %d\n", traverseInfo.getStatus(row, i), int(dualTraverse));
-#endif
-    }
-
-    if (!dualTraverse) {
-      mesh = uh[row == -1 ? 0 : row]->getFeSpace()->getMesh();
-      auxMesh = NULL;
-    } else {
-      const FiniteElemSpace *mainFeSpace = traverseInfo.getRowFeSpace(row);
-      const FiniteElemSpace *auxFeSpace = traverseInfo.getNonRowFeSpace(row);
-
-      TEST_EXIT(mainFeSpace)("No main FE space!\n");
-      TEST_EXIT(auxFeSpace)("No aux FE space!\n"); 
-
-      mesh = mainFeSpace->getMesh();
-      auxMesh = auxFeSpace->getMesh();
-
-      TEST_EXIT_DBG(mainFeSpace->getBasisFcts()->getDegree() ==
-		    auxFeSpace->getBasisFcts()->getDegree())
-	("Mh, do you really want to do this? Think about it ...\n");
-    }
-*/    
 
      mesh = uh[row == -1 ? 0 : row]->getFeSpace()->getMesh();
      auxMesh = NULL;

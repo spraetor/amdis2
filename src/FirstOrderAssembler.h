@@ -44,7 +44,7 @@ namespace AMDiS
 
   protected:
     /// Vector of DimMats for calculation in function calculateElementMatrix().
-    std::vector<mtl::dense_vector<double> > Lb;
+    std::vector<DenseVector<double> > Lb;
 
     /// List of all yet created optimized zero order assemblers for grdPsi.
     static ThreadPrivate<std::vector<SubAssembler*> > optimizedSubAssemblersGrdPsi;
@@ -107,7 +107,7 @@ namespace AMDiS
     }
 
   protected:
-    std::vector<mtl::dense_vector<double> > grdPhi;
+    std::vector<DenseVector<double> > grdPhi;
 
     const BasisFunction *psi, *phi;
   };

@@ -15,12 +15,11 @@ namespace AMDiS {
     return val;
   }
 
-  template <class T>
-  typename GradientType<T>::type& 
+  template <class T> Gradient_t<T>& 
   BasisFunction::evalGrdUh(const DimVec<double>& lambda,
                   			   const DimVec<WorldVector<double> >& grd_lambda,
                   			   const DenseVector<T>& uh_loc,
-                  			   typename GradientType<T>::type& val) const
+                  			   Gradient_t<T>& val) const
   {
 
     DenseVector<double> grdTmp1(dim + 1);

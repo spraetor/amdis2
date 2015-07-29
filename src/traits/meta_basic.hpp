@@ -89,4 +89,20 @@ namespace AMDiS
     f(std::get<I>(t));
     for_each< (I + 1), FuncT, Tp...>(t, f);
   }
+  
+  
+  namespace detail
+  {
+    template <class T, class = decltype(&T::operator[])>
+    static true_ isVectorImpl(int);
+    
+    template <typename T>
+    static false_ isVectorImpl(...);
+    
+  } // end namespace detail
+  
+  template <class T>
+  struct IsVector
+    : decltype(detail::isVectorImpl<T>(int{}))
+  {};
 } // end namespace AMDiS

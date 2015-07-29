@@ -1,29 +1,6 @@
-/******************************************************************************
- *
- * AMDiS - Adaptive multidimensional simulations
- *
- * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
- * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
- *
- * Authors: 
- * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
- *
- * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
- * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
- *
- *
- * This file is part of AMDiS
- *
- * See also license.opensource.txt in the distribution.
- * 
- ******************************************************************************/
-
-
-
 /** \file num_cols.hpp */
 
-#ifndef AMDIS_TYPE_TRAITS_NUM_COLS_HPP
-#define AMDIS_TYPE_TRAITS_NUM_COLS_HPP
+#pragma once
 
 #include "AMDiS_fwd.h"
 #include "category.hpp"
@@ -55,38 +32,6 @@ namespace AMDiS
 	type operator()(const T& v) const { return ::mtl::vector::num_cols(v); }
     };
 
-    /// size implementation for AMDiS::Vector
-    template <typename Value>
-    struct num_cols< AMDiS::Vector<Value> > 
-    {
-	typedef typename category< AMDiS::Vector<Value> >::size_type   type;
-	type operator()(const AMDiS::Vector<Value>& v) const { return 1; }
-    };
-      
-    /// size implementation for AMDiS::FixVec
-    template <typename Value, AMDiS::GeoIndex d>
-    struct num_cols< AMDiS::FixVec<Value, d> >
-    {
-	typedef typename category< AMDiS::FixVec<Value, d> >::size_type   type;
-	type operator()(const AMDiS::FixVec<Value, d>& v) const { return 1; }
-    };
-      
-    /// size implementation for AMDiS::DimVec
-    template <typename Value>
-    struct num_cols< AMDiS::DimVec<Value> > 
-    {
-	typedef typename category< AMDiS::DimVec<Value> >::size_type   type;
-	type operator()(const AMDiS::DimVec<Value>& v) const { return 1; }
-    };
-      
-    /// size implementation for AMDiS::WorldVector
-    template <typename Value>
-    struct num_cols< AMDiS::WorldVector<Value> > 
-    {
-	typedef typename category< AMDiS::WorldVector<Value> >::size_type   type;
-	type operator()(const AMDiS::WorldVector<Value>& v) const { return 1; }
-    };
-      
     /// size implementation for AMDiS::DOFVector
     template <typename Value>
     struct num_cols< AMDiS::DOFVector<Value> > 
@@ -103,33 +48,6 @@ namespace AMDiS
     {
 	typedef typename T::size_type type;
 	type operator()(const T& v) const { return ::mtl::matrix::num_cols(v); }
-    };
-      
-    /// AMDiS::Matrix
-    template <typename Value>
-    struct num_cols< AMDiS::Matrix<Value> >
-    {
-	typedef typename category< AMDiS::Matrix<Value> >::size_type   type;
-	type operator()(const AMDiS::Matrix<Value>& v) const 
-	{ return v.getNumCols(); }
-    };
-    
-    /// AMDiS::DimMat
-    template <typename Value>
-    struct num_cols< AMDiS::DimMat<Value> >
-    {
-	typedef typename category< AMDiS::DimMat<Value> >::size_type   type;
-	type operator()(const AMDiS::DimMat<Value>& v) const 
-	{ return v.getNumCols(); }
-    };
-    
-    /// AMDiS::WorldMatrix
-    template <typename Value>
-    struct num_cols< AMDiS::WorldMatrix<Value> >
-    {
-	typedef typename category< AMDiS::WorldMatrix<Value> >::size_type   type;
-	type operator()(const AMDiS::WorldMatrix<Value>& v) const 
-	{ return v.getNumCols(); }
     };
       
     /// size implementation for AMDiS::DOFMatrix

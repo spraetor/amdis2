@@ -16,13 +16,13 @@ namespace AMDiS
     template <class Vector, class Name>
     struct GradientOf : public LazyOperatorTermBase
     {
-      typedef typename traits::category<Vector>::value_type T;
-      typedef typename GradientType<T>::type value_type;
-      typedef Name  id;
+      using T = Value_t<traits::category<Vector>>;
+      using value_type = Gradient_t<T> ;
+      using id = Name;
 
       DOFVector<T>* vecDV;
-      mutable mtl::dense_vector<typename GradientType<T>::type> vec;
-      mutable mtl::dense_vector<T> coeff;
+      mutable DenseVector<Gradient_t<T>> vec;
+      mutable DenseVector<T> coeff;
 
       GradientOf(Vector& vector) : vecDV(&vector) {}
       GradientOf(Vector* vector) : vecDV(vector) {}
@@ -78,9 +78,9 @@ namespace AMDiS
       typedef Name  id;
 
       DOFVector<T>* vecDV;
-      mutable mtl::dense_vector<typename GradientType<T>::type> vec;
-  //     mutable mtl::dense_vector<T> vec;
-      mutable mtl::dense_vector<T> coeff;
+      mutable DenseVector<Gradient_t<T>> vec;
+  //     mutable DenseVector<T> vec;
+      mutable DenseVector<T> coeff;
       int comp;
 
       DerivativeOf(Vector& vector) : vecDV(&vector), comp(I) {}
@@ -125,7 +125,7 @@ namespace AMDiS
       	  
       	  // eval basisfunctions of DOFVector at coords of given basisFct
       	  size_t nBasisFct = basisFct->getNumber();
-        // 	mtl::dense_vector<typename GradientType<T>::type> helper(nBasisFct);	
+        // 	DenseVector<Gradient_t<T>> helper(nBasisFct);	
       	  
       	  const DimVec<WorldVector<double> > &grdLambda = elInfo->getGrdLambda();
       	  vec.change_dim(nBasisFct);
@@ -153,8 +153,8 @@ namespace AMDiS
       typedef typename traits::ValueType<T>::type value_type;  // => double
 
       DOFVector<T>* vecDV;
-      mutable mtl::dense_vector<typename GradientType<T>::type> vec;
-      mutable mtl::dense_vector<T> coeff;
+      mutable DenseVector<Gradient_t<T>> vec;
+      mutable DenseVector<T> coeff;
 
       GradientOf(Vector& vector) : vecDV(&vector) {}
       GradientOf(Vector* vector) : vecDV(vector) {}
@@ -248,12 +248,12 @@ namespace mtl
   
     template <class Op1, class IsMatrix>
     struct mult_result_WWMatrix {
-      typedef mat_cvec_times_expr<Op1, mtl::dense_vector<WWMatrix> > type;
+      typedef mat_cvec_times_expr<Op1, AMDiS::DenseVector<WWMatrix> > type;
     };
   
     /// Multiply matrix with column vector
     template <class Op1>
-    struct mult_result<Op1, mtl::dense_vector<WWMatrix> > 
+    struct mult_result<Op1, AMDiS::DenseVector<WWMatrix> > 
       : public mult_result_WWMatrix<Op1, typename boost::enable_if<is_matrix<Op1> >::type >
     {};
     

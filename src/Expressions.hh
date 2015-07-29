@@ -176,7 +176,7 @@ namespace AMDiS
     int nBasisFcts = basisFcts->getNumber();
       
     std::vector<DegreeOfFreedom> localIndices(nBasisFcts);
-    mtl::dense_vector<TOut> vecLocalCoeffs(nBasisFcts);
+    DenseVector<TOut> vecLocalCoeffs(nBasisFcts);
 
     DimVec<double> *lambda = NULL;
     DimVec<double> *lambda_1 = new DimVec<double>;

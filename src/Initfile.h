@@ -8,6 +8,7 @@
 #include <boost/lexical_cast.hpp> 
 #include <boost/numeric/conversion/cast.hpp> 
 
+#include <boost/tokenizer.hpp>
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/json_parser.hpp>
 
@@ -15,7 +16,9 @@
 
 // a parser for arithmetic expressions
 #include "muParser.h"
+#include "traits/basic.hpp"
 #include "traits/scalar_types.hpp"
+#include "traits/meta_basic.hpp"
 
 #include "Math.h"
 
@@ -24,26 +27,70 @@ namespace AMDiS
   namespace detail 
   {   
     /// convert string to intrinsic type
-    template <class T> inline
-    typename std::enable_if<traits::is_arithmetic<T>::value >::type
-    convert(const std::string valStr, T& value)
+    template <class T, class Enable = void>
+    struct Convert
     {
-      using boost::numeric_cast;
-
-      mu::Parser parser;
-      parser.DefineConst(_T("M_PI"), m_pi);
-      parser.DefineConst(_T("M_E"), m_e);
-
-      parser.SetExpr(valStr);
-      value = numeric_cast<T>(parser.Eval());
-    }
+      static void eval(std::string valStr, T& value)
+      {
+        value = boost::lexical_cast<T>(valStr);
+      }      
+    };
     
-    template <class T> inline
-    typename std::enable_if<!traits::is_arithmetic<T>::value >::type
-    convert(const std::string valStr, T& value)
+    template <class T>
+    struct Convert<T, typename std::enable_if<traits::is_arithmetic<T>::value >::type>
     {
-      value = boost::lexical_cast<T>(valStr);
-    }
+      static void eval(const std::string valStr, T& value)
+      {
+        using boost::numeric_cast;
+  
+        mu::Parser parser;
+        parser.DefineConst(_T("M_PI"), m_pi);
+        parser.DefineConst(_T("M_E"), m_e);
+  
+        parser.SetExpr(valStr);
+        value = numeric_cast<T>(parser.Eval());
+      }
+    };
+    
+    // convert string to vector
+    template <class T>
+    struct Convert<T, typename std::enable_if<IsVector<T>::value>::type>
+    {
+      static void eval(const std::string valStr, T& value)
+      {
+        using value_type = Value_t<T>;
+        using Tokenizer = boost::tokenizer<boost::char_separator<char> >;
+        
+        std::vector<value_type> values;
+        boost::char_separator<char> sep(",; ");
+        Tokenizer tokens(valStr, sep);
+        int i = 0;
+        for (auto token : tokens) {
+          value_type v;
+          Convert<value_type>::eval(token, v);
+          value[i] = v;
+        }
+      }
+    };
+    
+    // convert string to vector
+    template <class T>
+    struct Convert<std::vector<T> >
+    {
+      static void eval(const std::string valStr, std::vector<T>& values)
+      {
+        using value_type = T;
+        using Tokenizer = boost::tokenizer<boost::char_separator<char> >;
+        
+        boost::char_separator<char> sep(",; ");
+        Tokenizer tokens(valStr, sep);
+        for (auto token : tokens) {
+          value_type v;
+          Convert<value_type>::eval(token, v);
+          values.push_back(v);
+        }
+      }
+    };
 
   } // end namespace detail
 
@@ -113,7 +160,11 @@ namespace AMDiS
 
       // TODO: use boost::optional instead
       // TODO: use convert method from above
-      // value = singlett->pt.get(tag, value);
+      std::string valueStr = "-";
+      valueStr = singlett->pt.get(tag, valueStr);
+      
+      if (valueStr != "-")
+        detail::Convert<T>::eval(valueStr, value);
 
       if (debugInfo == 2) {
       	std::cout << "Parameter '" << tag << "'"

@@ -803,7 +803,7 @@ namespace AMDiS {
 			  int no, 
 			  const int *b_no, 
 			  std::function<double(WorldVector<double>)> f, 
-			  mtl::dense_vector<double> &rvec) const
+			  DenseVector<double> &rvec) const
   {
     FUNCNAME_DBG("Lagrange::interpol()");
 
@@ -838,7 +838,7 @@ namespace AMDiS {
 			  int no, 
 			  const int *b_no,
 			  std::function<WorldVector<double>(WorldVector<double>)> f, 
-			  mtl::dense_vector<WorldVector<double> > &rvec) const
+			  DenseVector<WorldVector<double> > &rvec) const
   {
     FUNCNAME_DBG("*Lagrange::interpol()");
 

@@ -87,12 +87,12 @@ namespace AMDiS {
      */
     void r(const ElInfo *elInfo,
 	   int nPoints,
-	   const mtl::dense_vector<double>& uhIq,
-	   const mtl::dense_vector<WorldMatrix<double> > &D2UhIq,
+	   const DenseVector<double>& uhIq,
+	   const DenseVector<WorldMatrix<double> > &D2UhIq,
 	   DOFMatrix *A, 
 	   DOFVector<double> *fh,
 	   Quadrature *quad,
-	   mtl::dense_vector<double>& result);
+	   DenseVector<double>& result);
  
   protected:
     /// Constant in front of element residual.
@@ -128,11 +128,11 @@ namespace AMDiS {
     /// Vector that stores values on all quadrature points (QP) on one element.
     ElementVector uhQP;
 
-    mtl::dense_vector<WorldVector<double> > grdUhQp;
+    DenseVector<WorldVector<double> > grdUhQp;
 
     /// Matrix that stores the second derivations on all quadrature points
     /// on one element.
-    mtl::dense_vector<WorldMatrix<double> > D2UhQp;
+    DenseVector<WorldMatrix<double> > D2UhQp;
 
     /// Stores the element residual computed at the quadrature points of 
     /// the element.

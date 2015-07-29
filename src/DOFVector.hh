@@ -349,7 +349,7 @@ namespace AMDiS
 
 
   template <class T>
-  double DOFVector<T>::Int(int meshLevel, Quadrature* q) const
+  T DOFVector<T>::Int(int meshLevel, Quadrature* q) const
   {
     Mesh* mesh = this->feSpace->getMesh();
 
@@ -369,7 +369,7 @@ namespace AMDiS
 
     T result; nullify(result);
     int nPoints = quadFast->getNumPoints();
-    mtl::dense_vector<T> uh_vec(nPoints);
+    DenseVector<T> uh_vec(nPoints);
     TraverseStack stack;
     ElInfo *elInfo =  stack.traverseFirst(mesh, meshLevel, flag);
     while (elInfo) {
@@ -406,7 +406,7 @@ namespace AMDiS
 
     double result = 0.0;
     int nPoints = quadFast->getNumPoints();
-    mtl::dense_vector<T> uh_vec(nPoints);
+    DenseVector<T> uh_vec(nPoints);
     TraverseStack stack;
     ElInfo *elInfo = 
       stack.traverseFirst(mesh, -1, 
@@ -447,7 +447,7 @@ namespace AMDiS
 
     double result = 0.0;
     int nPoints = quadFast->getNumPoints();
-    mtl::dense_vector<T> uh_vec(nPoints);
+    DenseVector<T> uh_vec(nPoints);
     TraverseStack stack;
     ElInfo *elInfo = 
       stack.traverseFirst(mesh, -1, 
@@ -489,7 +489,7 @@ namespace AMDiS
     double result = 0.0;
     int nPoints = quadFast->getNumPoints();
     int dimOfWorld = Global::getGeo(WORLD);
-    mtl::dense_vector<WorldVector<T> > grduh_vec(nPoints);
+    DenseVector<WorldVector<T> > grduh_vec(nPoints);
     TraverseStack stack;
     ElInfo *elInfo = 
       stack.traverseFirst(mesh, -1, 
@@ -641,7 +641,7 @@ namespace AMDiS
 
   template <class T>
   void DOFVectorBase<T>::getLocalVector(const Element *el, 
-					mtl::dense_vector<T>& d) const
+					DenseVector<T>& d) const
   {
     FUNCNAME_DBG("DOFVectorBase<T>::getLocalVector()");
 
@@ -661,7 +661,7 @@ namespace AMDiS
   void DOFVectorBase<T>::getVecAtQPs(const ElInfo *elInfo, 
 				     const Quadrature *quad,
 				     const FastQuadrature *quadFast,
-				     mtl::dense_vector<T>& vecAtQPs) const
+				     DenseVector<T>& vecAtQPs) const
   {
     FUNCNAME_DBG("DOFVector<T>::getVecAtQPs()");
     
@@ -674,7 +674,7 @@ namespace AMDiS
 
     const BasisFunction *basFcts = feSpace->getBasisFcts();
     int nBasFcts  = basFcts->getNumber();
-    mtl::dense_vector<T> localVec(nBasFcts);
+    DenseVector<T> localVec(nBasFcts);
     getLocalVector(elInfo->getElement(), localVec);
     
     if (quadFast) {
@@ -701,7 +701,7 @@ namespace AMDiS
   void DOFVectorBase<T>::getGrdAtQPs(const ElInfo *elInfo,
 				     const Quadrature *quad,
 				     const FastQuadrature *quadFast,
-				     mtl::dense_vector<typename GradientType<T>::type> &grdAtQPs) const
+				     DenseVector<Gradient_t<T>> &grdAtQPs) const
   {
     FUNCNAME_DBG("DOFVector<T>::getGrdAtQPs()");
 
@@ -716,10 +716,10 @@ namespace AMDiS
     int dow = Global::getGeo(WORLD);
     int nPoints = quadFast ? quadFast->getQuadrature()->getNumPoints() : quad->getNumPoints();
 
-    mtl::dense_vector<T> localVec(nBasFcts);
+    DenseVector<T> localVec(nBasFcts);
     this->getLocalVector(elInfo->getElement(), localVec);
 
-    mtl::dense_vector<T> grd1(dim + 1);
+    DenseVector<T> grd1(dim + 1);
     int parts = Global::getGeo(PARTS, dim);
     const DimVec<WorldVector<double> > &grdLambda = elInfo->getGrdLambda();
 
@@ -741,7 +741,7 @@ namespace AMDiS
       }
 
     } else {
-      mtl::dense_vector<double> grdPhi(dim + 1);
+      DenseVector<double> grdPhi(dim + 1);
 
       for (int iq = 0; iq < nPoints; iq++) {
 	nullify(grd1);
@@ -767,7 +767,7 @@ namespace AMDiS
 					    const Quadrature *quad,
 					    const FastQuadrature *quadFast,
 					    int comp,
-					    mtl::dense_vector<T> &derivativeAtQPs) const
+					    DenseVector<T> &derivativeAtQPs) const
   {
     FUNCNAME_DBG("DOFVector<T>::getGrdAtQPs()");
 
@@ -781,10 +781,10 @@ namespace AMDiS
     int nBasFcts  = basFcts->getNumber();
     int nPoints = quadFast ? quadFast->getQuadrature()->getNumPoints() : quad->getNumPoints();
 
-    mtl::dense_vector<T> localVec(nBasFcts);
+    DenseVector<T> localVec(nBasFcts);
     this->getLocalVector(elInfo->getElement(), localVec);
 
-    mtl::dense_vector<T> grd1(dim + 1);
+    DenseVector<T> grd1(dim + 1);
     int parts = Global::getGeo(PARTS, dim);
     const DimVec<WorldVector<double> > &grdLambda = elInfo->getGrdLambda();
 
@@ -803,7 +803,7 @@ namespace AMDiS
       }
 
     } else {
-      mtl::dense_vector<double> grdPhi(dim + 1);
+      DenseVector<double> grdPhi(dim + 1);
 
       for (int iq = 0; iq < nPoints; iq++) {
 	nullify(grd1);
@@ -846,7 +846,7 @@ namespace AMDiS
 
     double result = 0.0;
     int nPoints = quadFast->getNumPoints();
-    mtl::dense_vector<T> uh_vec(nPoints);
+    DenseVector<T> uh_vec(nPoints);
     TraverseStack stack;
     ElInfo *elInfo = 
       stack.traverseFirst(mesh, -1,
@@ -872,21 +872,21 @@ namespace AMDiS
 
 
   template <class T>
-  DOFVector<typename GradientType<T>::type>*
-  DOFVector<T>::getGradient(DOFVector<typename GradientType<T>::type> *grad) const
+  DOFVector<Gradient_t<T>>*
+  DOFVector<T>::getGradient(DOFVector<Gradient_t<T>> *grad) const
   {
     FUNCNAME_DBG("DOFVector<T>::getGradient()");
     const FiniteElemSpace *feSpace = DOFVector<T>::feSpace;
 
     // define result vector
-    static DOFVector<typename GradientType<T>::type> *result = NULL; // TODO: REMOVE STATIC
+    static DOFVector<Gradient_t<T>> *result = NULL; // TODO: REMOVE STATIC
 
     if (grad) {
       result = grad;
     } else {
       if(result && result->getFeSpace() != feSpace) {
 	delete result;
-	result = new DOFVector<typename GradientType<T>::type>(feSpace, "gradient");
+	result = new DOFVector<Gradient_t<T>>(feSpace, "gradient");
       }
     }
 
@@ -922,7 +922,7 @@ namespace AMDiS
     for (int i = 0; i < nDofs; i++)
       bary.push_back(basFcts->getCoords(i));
 
-    mtl::dense_vector<T> localUh(basFcts->getNumber());
+    DenseVector<T> localUh(basFcts->getNumber());
 
     // traverse mesh
     std::vector<bool> visited(getUsedSize(), false);
@@ -957,16 +957,16 @@ namespace AMDiS
 
 
   template <class T>
-  DOFVector<typename GradientType<T>::type>*
-  DOFVector<T>::getRecoveryGradient(DOFVector<typename GradientType<T>::type> *grad) const
+  DOFVector<Gradient_t<T>>*
+  DOFVector<T>::getRecoveryGradient(DOFVector<Gradient_t<T>> *grad) const
   {
     const FiniteElemSpace *feSpace = DOFVector<T>::feSpace;
     int dim = DOFVector<T>::dim;
 
     // define result vector
-    static DOFVector<typename GradientType<T>::type> *vec = NULL; // TODO: REMOVE STATIC
+    static DOFVector<Gradient_t<T>> *vec = NULL; // TODO: REMOVE STATIC
 
-    DOFVector<typename GradientType<T>::type> *result = grad;
+    DOFVector<Gradient_t<T>> *result = grad;
 
     if (!result) {
       if (vec && vec->getFeSpace() != feSpace) {
@@ -974,12 +974,12 @@ namespace AMDiS
 	vec = NULL;
       }
       if (!vec)
-	vec = new DOFVector<typename GradientType<T>::type>(feSpace, "gradient");
+	vec = new DOFVector<Gradient_t<T>>(feSpace, "gradient");
 
       result = vec;
     }
 
-    typename GradientType<T>::type grd;
+    Gradient_t<T> grd;
     nullify(grd);
 
     result->set(grd);
@@ -998,7 +998,7 @@ namespace AMDiS
 					 Mesh::CALL_LEAF_EL | Mesh::FILL_DET |
 					 Mesh::FILL_GRD_LAMBDA | Mesh::FILL_COORDS);
 
-    mtl::dense_vector<T> localUh(nBasisFcts);
+    DenseVector<T> localUh(nBasisFcts);
     std::vector<DegreeOfFreedom> localIndices(nBasisFcts);
 
     while (elInfo) {
@@ -1025,7 +1025,7 @@ namespace AMDiS
 #endif
     
     DOFVector<double>::Iterator volIt(&volume, USED_DOFS);
-    typename DOFVector<typename GradientType<T>::type>::Iterator grdIt(result, USED_DOFS);
+    typename DOFVector<Gradient_t<T>>::Iterator grdIt(result, USED_DOFS);
 
     for (volIt.reset(), grdIt.reset(); !volIt.end(); ++volIt, ++grdIt)
       if (*volIt != 0.0)
@@ -1036,7 +1036,7 @@ namespace AMDiS
 
 
   template <class T>
-  std::vector<DOFVector<double>*> *transform(DOFVector<typename GradientType<T>::type> *vec,
+  std::vector<DOFVector<double>*> *transform(DOFVector<Gradient_t<T>> *vec,
 					     std::vector<DOFVector<double>*> *res)
   {
     FUNCNAME_DBG("DOFVector<T>::transform()");
@@ -1204,6 +1204,5 @@ namespace AMDiS
     static DOFVector<T> result; // TODO: REMOVE STATIC
     return add(v1, v2, result);
   }
-
   
 } // end namespace AMDiS

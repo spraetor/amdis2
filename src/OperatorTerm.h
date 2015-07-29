@@ -77,10 +77,10 @@ namespace AMDiS
 
     /// Evaluation of the OperatorTerm at all quadrature points.
     void eval(int nPoints,
-      	      const mtl::dense_vector<double>& uhAtQP,
-      	      const mtl::dense_vector<WorldVector<double> >& grdUhAtQP,
-      	      const mtl::dense_vector<WorldMatrix<double> >& D2UhAtQP,
-      	      mtl::dense_vector<double>& result,
+      	      const DenseVector<double>& uhAtQP,
+      	      const DenseVector<WorldVector<double> >& grdUhAtQP,
+      	      const DenseVector<WorldMatrix<double> >& D2UhAtQP,
+      	      DenseVector<double>& result,
       	      double factor) const
     {
       evalImpl(nPoints, uhAtQP, grdUhAtQP, D2UhAtQP, result, factor);
@@ -92,10 +92,10 @@ namespace AMDiS
     
     // must be implemented by derived class
     virtual void evalImpl(int nPoints,
-                  			  const mtl::dense_vector<double>& uhAtQP,
-                  			  const mtl::dense_vector<WorldVector<double> >& grdUhAtQP,
-                  			  const mtl::dense_vector<WorldMatrix<double> >& D2UhAtQP,
-                  			  mtl::dense_vector<double>& result,
+                  			  const DenseVector<double>& uhAtQP,
+                  			  const DenseVector<WorldVector<double> >& grdUhAtQP,
+                  			  const DenseVector<WorldMatrix<double> >& D2UhAtQP,
+                  			  DenseVector<double>& result,
                   			  double factor) const = 0;
     
   protected:
@@ -210,10 +210,10 @@ namespace AMDiS
   private:
     // Implements OperatorTerm::eval().
     virtual void evalImpl(int nPoints,
-                  			  const mtl::dense_vector<double>& uhAtQP,
-                  			  const mtl::dense_vector<WorldVector<double> >& grdUhAtQP,
-                  			  const mtl::dense_vector<WorldMatrix<double> >& D2UhAtQP,
-                  			  mtl::dense_vector<double>& result,
+                  			  const DenseVector<double>& uhAtQP,
+                  			  const DenseVector<WorldVector<double> >& grdUhAtQP,
+                  			  const DenseVector<WorldMatrix<double> >& D2UhAtQP,
+                  			  DenseVector<double>& result,
                   			  double factor) const override {};
   };
   

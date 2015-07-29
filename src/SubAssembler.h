@@ -123,7 +123,7 @@ namespace AMDiS
     void getGradientsAtQPs(DOFVectorBase<T>* dv,
                   			   const ElInfo* elInfo,
                   			   Quadrature *quad,
-                  			   DenseVector<typename GradientType<T>::type>& grdAtQPs);
+                  			   DenseVector<Gradient_t<T>>& grdAtQPs);
 
     /// The comp'th component of the derivative of DOFVector dv evaluated at
     /// quadrature points. Used by \ref OperatorTerm::initElement().

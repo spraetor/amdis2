@@ -69,7 +69,7 @@ namespace AMDiS
   void SubAssembler::getGradientsAtQPs(DOFVectorBase<T>* vec,
                         				       const ElInfo* elInfo,
                         				       Quadrature *quad,
-                        				       DenseVector<typename GradientType<T>::type>& grdAtQPs)
+                        				       DenseVector<Gradient_t<T>>& grdAtQPs)
   {
     FUNCNAME_DBG("SubAssembler::getGradientsAtQPs()");
 
@@ -79,20 +79,20 @@ namespace AMDiS
 
     if (cachedGradientsAtQPs[vec] && cachedGradientsAtQPs[vec]->valid) {
       grdAtQPs = 
-        boost::any_cast<DenseVector<typename GradientType<T>::type>& >(cachedGradientsAtQPs[vec]->values);
+        boost::any_cast<DenseVector<Gradient_t<T>>& >(cachedGradientsAtQPs[vec]->values);
       return;
     }
 
     boost::any swap;
     if (!cachedGradientsAtQPs[vec]) {
-      swap = DenseVector<typename GradientType<T>::type>();
+      swap = DenseVector<Gradient_t<T>>();
       cachedGradientsAtQPs[vec] = new ValuesAtQPs(swap, false);
     }
 
-    boost::any_cast<DenseVector<typename GradientType<T>::type>& >(cachedGradientsAtQPs[vec]->values).change_dim(localQuad->getNumPoints());
+    boost::any_cast<DenseVector<Gradient_t<T>>& >(cachedGradientsAtQPs[vec]->values).change_dim(localQuad->getNumPoints());
 
-    DenseVector<typename GradientType<T>::type>& values = 
-      boost::any_cast<DenseVector<typename GradientType<T>::type>& >(cachedGradientsAtQPs[vec]->values);
+    DenseVector<Gradient_t<T>>& values = 
+      boost::any_cast<DenseVector<Gradient_t<T>>& >(cachedGradientsAtQPs[vec]->values);
 
     const BasisFunction *psi = rowFeSpace->getBasisFcts();
     const BasisFunction *phi = colFeSpace->getBasisFcts();
@@ -140,8 +140,8 @@ namespace AMDiS
     grdAtQPs.change_dim(localQuad->getNumPoints());
 
     if (cachedGradientsAtQPs[vec] && cachedGradientsAtQPs[vec]->valid) {      
-      DenseVector<typename GradientType<T>::type> tmp 
-        = boost::any_cast<DenseVector<typename GradientType<T>::type>& >(cachedGradientsAtQPs[vec]->values);
+      DenseVector<Gradient_t<T>> tmp 
+        = boost::any_cast<DenseVector<Gradient_t<T>>& >(cachedGradientsAtQPs[vec]->values);
       for (size_t iq = 0; iq < num_rows(tmp); iq++)
         grdAtQPs[iq] = tmp[iq][comp];
       return;

@@ -146,7 +146,7 @@ namespace AMDiS
 
     if (inside) {
       basFcts->getLocalIndices(elInfo->getElement(), feSpace->getAdmin(), localIndices);
-      mtl::dense_vector<WorldVector<double> > uh(nBasFcts);
+      DenseVector<WorldVector<double>> uh(nBasFcts);
       for (int i = 0; i < nBasFcts; i++)
         uh[i] = operator[](localIndices[i]);
       value = basFcts->evalUh(lambda, uh);
@@ -207,7 +207,7 @@ namespace AMDiS
       for (int face = 0; face < dim + 1; face++) {
         if (elInfo->getBoundary(face) == boundaryType) {
           int nPoints = quadSurfaces[face]->getNumPoints();
-          mtl::dense_vector<double> uh_vec(nPoints);
+          DenseVector<double> uh_vec(nPoints);
           double det = elInfo->calcSurfaceDet(*coords[face]);
           double normT = 0.0;
           this->getVecAtQPs(elInfo, quadSurfaces[face], NULL, uh_vec);
@@ -278,7 +278,7 @@ namespace AMDiS
           double det = elInfo->calcSurfaceDet(*coords[face]);
   
           int nPoints = quadSurfaces[face]->getNumPoints();
-          mtl::dense_vector<WorldVector<double> > uh_vec(nPoints);
+          DenseVector<WorldVector<double>> uh_vec(nPoints);
           WorldVector<double> normT; normT.set(0.0);
           this->getVecAtQPs(elInfo, quadSurfaces[face], NULL, uh_vec);
           for (int iq = 0; iq < nPoints; iq++)
@@ -303,7 +303,7 @@ namespace AMDiS
   void DOFVectorBase<double>::getD2AtQPs( const ElInfo *elInfo,
 					  const Quadrature *quad,
 					  const FastQuadrature *quadFast,
-					  mtl::dense_vector<D2Type<double>::type> &d2AtQPs) const
+					  DenseVector<D2Type<double>::type> &d2AtQPs) const
   {
     FUNCNAME("DOFVector<double>::getD2AtQPs()");
   
@@ -322,7 +322,7 @@ namespace AMDiS
     int dow = Global::getGeo(WORLD);
     int nPoints = quadFast ? quadFast->getQuadrature()->getNumPoints() : quad->getNumPoints();
   
-    mtl::dense_vector<double> localVec(nBasFcts);
+    DenseVector<double> localVec(nBasFcts);
     getLocalVector(el, localVec);
 
     DimMat<double> D2Tmp(dim, DEFAULT_VALUE, 0.0);
@@ -514,7 +514,7 @@ namespace AMDiS
 
     if (feSpace->getMesh() == vFeSpace->getMesh()) {      
       std::vector<DegreeOfFreedom> myLocalIndices(nBasFcts);
-      mtl::dense_vector<WorldVector<double> > vLocalCoeffs(vNumBasFcts);
+      DenseVector<WorldVector<double>> vLocalCoeffs(vNumBasFcts);
       Mesh *mesh = feSpace->getMesh();
       TraverseStack stack;
       ElInfo *elInfo = 
@@ -545,7 +545,7 @@ namespace AMDiS
 	  basFcts->getLocalIndices(el, feSpace->getAdmin(), myLocalIndices);
 	  v->getLocalVector(el, vLocalCoeffs);
 	  
-	  mtl::dense_vector<WorldVector<double> > rvec(nBasFcts);
+	  DenseVector<WorldVector<double>> rvec(nBasFcts);
     std::function<WorldVector<double>(WorldVector<double>)> f = F;
 	  basFcts->interpol(elInfo, nBasFcts, NULL, f, rvec);
 	  
@@ -773,5 +773,11 @@ namespace AMDiS
 
     delete [] bound;
   }
+  
+  
+// explicit template instatiation
+template class DOFVector<double>;
+// template class DOFVector<WorldVector<double> >;
+
   
 } // end namespace AMDiS

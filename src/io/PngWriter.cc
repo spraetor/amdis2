@@ -41,9 +41,9 @@ namespace AMDiS { namespace io {
     TraverseStack stack;
     ElInfo *elInfo = stack.traverseFirst(dataCollector->getMesh(), -1, 
 					 Mesh::CALL_LEAF_EL | Mesh::FILL_COORDS);
-    double pointdist = std::min(absteukl(elInfo->getCoord(0), elInfo->getCoord(1)),
-			   std::min(absteukl(elInfo->getCoord(1), elInfo->getCoord(2)),
-			       absteukl(elInfo->getCoord(2), elInfo->getCoord(0))));
+    double pointdist = std::min(distance(elInfo->getCoord(0), elInfo->getCoord(1)),
+			   std::min(distance(elInfo->getCoord(1), elInfo->getCoord(2)),
+			       distance(elInfo->getCoord(2), elInfo->getCoord(0))));
     while (elInfo) {
       for (int i = 0; i < 3; i++) {
 	double x = (elInfo->getCoord(i))[0];

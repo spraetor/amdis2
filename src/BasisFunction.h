@@ -258,12 +258,11 @@ namespace AMDiS
      * there, otherwise a pointer to a static local variable is returned which 
      * will be overwritten after the next call.
      */
-    template <class T>
-    typename GradientType<T>::type& 
+    template <class T> Gradient_t<T>& 
     evalGrdUh(const DimVec<double>& lambda,
       	      const DimVec<WorldVector<double> >& Lambda,
       	      const DenseVector<T>& uh,
-      	      typename GradientType<T>::type& val) const;
+      	      Gradient_t<T>& val) const;
 
 
     /** \brief

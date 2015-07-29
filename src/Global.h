@@ -50,7 +50,7 @@ namespace AMDiS
     }
 
     /// returns geometrical information. Currently this is only dimOfWorld.
-    static inline int getGeo(GeoIndex p) 
+    static int getGeo(GeoIndex p) 
     {
       if (WORLD == p) 
         return dimOfWorld; 
@@ -61,7 +61,7 @@ namespace AMDiS
 
     /// Returns geometrical information about elements of the dimension dim.
     /// getGeo(VERTEX, 3) returns 4 because a Tetrahedron has 4 vertices.
-    static inline int getGeo(GeoIndex p, int dim) 
+    static int getGeo(GeoIndex p, int dim) 
     {
       TEST_EXIT_DBG(p >= MINPART && p <= MAXPART)
         ("Calling for invalid geometry value %d\n",p);
@@ -123,6 +123,7 @@ namespace AMDiS
       return Global::getGeo(WORLD);
     }
   };
+  
   
   /// maximal size to allocate for container types, based on GeoIndex
   template <GeoIndex> struct MaxSize : int_<-1> {};

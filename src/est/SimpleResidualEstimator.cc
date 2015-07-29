@@ -333,12 +333,12 @@ namespace AMDiS
 
   void SimpleResidualEstimator::r(const ElInfo *elInfo,
 				  int nPoints,
-				  const mtl::dense_vector<double>& uhIq,
-				  const mtl::dense_vector<WorldMatrix<double> > &D2UhIq,
+				  const DenseVector<double>& uhIq,
+				  const DenseVector<WorldMatrix<double> > &D2UhIq,
 				  DOFMatrix *A, 
 				  DOFVector<double> *fh,
 				  Quadrature *quad,
-				  mtl::dense_vector<double>& result)
+				  DenseVector<double>& result)
   {
     std::vector<Operator*>::iterator it;
     std::vector<double*>::iterator fac;
