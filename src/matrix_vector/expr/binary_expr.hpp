@@ -3,16 +3,14 @@
 #pragma once
 
 
-#include "traits/basic.hpp"
-#include "traits/category.hpp"
-#include "traits/size.hpp"
-#include "traits/num_rows.hpp"
-#include "traits/num_cols.hpp"
+#include <traits/basic.hpp>
+#include <traits/traits_fwd.hpp>
 
 #include "base_expr.hpp" // for shaped_expr
 
-#include "operations/functors.hpp"
-#include "traits/mult_type.hpp"
+#include <operations/functors.hpp>
+#include <traits/mult_type.hpp>
+#include <Math.h>
 
 namespace AMDiS {
 
@@ -21,17 +19,17 @@ namespace AMDiS {
   struct VectorBinaryExpr
       : public VectorExpr< VectorBinaryExpr<E1, E2, Functor> >
   {
-    typedef VectorBinaryExpr                                  self;
-    typedef VectorExpr<self>                             expr_base;
+    typedef VectorBinaryExpr                                  Self;
+    typedef VectorExpr<Self>                             expr_base;
     
-    typedef typename E1::value_type                     value_type;
-    typedef typename traits::max_size_type<E1,E2>::type  size_type;
+    typedef Value_t<E1>                                 value_type;
+    typedef traits::max_size_type<E1,E2>                 size_type;
     typedef E1                                          expr1_type;
     typedef E2                                          expr2_type;
     
-    static constexpr int _SIZE = MAX(E1::_SIZE, E2::_SIZE);
-    static constexpr int _ROWS = MAX(E1::_ROWS, E2::_ROWS);
-    static constexpr int _COLS = MAX(E1::_COLS, E2::_COLS);
+    static constexpr int _SIZE = math::max(E1::_SIZE, E2::_SIZE);
+    static constexpr int _ROWS = math::max(E1::_ROWS, E2::_ROWS);
+    static constexpr int _COLS = math::max(E1::_COLS, E2::_COLS);
     
   public:
     /// constructor takes two expressions

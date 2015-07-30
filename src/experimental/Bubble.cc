@@ -144,7 +144,7 @@ namespace AMDiS {
   void Bubble::setNDOF()
   {
     nBasFcts = dim + 2;
-    nDOF = new DimVec<int>(dim, DEFAULT_VALUE, 0);
+    nDOF = new DimVec<int>(dim, 0);
 //     for (int i = 0; i < dim; i++)
       (*nDOF)[0] = 1; // CENTER
       (*nDOF)[1] = 1; // VERTEX
@@ -329,11 +329,11 @@ namespace AMDiS {
       bary = new vector<DimVec<double>* >;
 
       for (int i = 0; i < dim+1; i++) {
-	DimVec<double>* unit = new DimVec<double>(dim, DEFAULT_VALUE, 0.0);
+	DimVec<double>* unit = new DimVec<double>(dim, 0.0);
 	(*unit)[i] = 1.0;
 	bary->push_back(unit); //coordinates of the Lagrange functions
       }
-      bary->push_back(new DimVec<double>(dim, DEFAULT_VALUE,1.0/(dim + 1.0))); //coordinates of the bubble function
+      bary->push_back(new DimVec<double>(dim, 1.0/(dim + 1.0))); //coordinates of the bubble function
     }	
   }
 
@@ -459,7 +459,7 @@ namespace AMDiS {
 
     elInfo->testFlag(Mesh::FILL_COORDS);
 
-    WorldVector<double> sum(DEFAULT_VALUE, 0.0);
+    WorldVector<double> sum(DEFAULT_SIZE, 0.0);
     int BubbleIndex=-1;
     int vertices = Global::getGeo(VERTEX, dim);
 

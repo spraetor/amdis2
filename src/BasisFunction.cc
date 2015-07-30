@@ -19,7 +19,7 @@ namespace AMDiS {
       degree(degree_), 
       dim(dim_)
   {
-    nDOF = new DimVec<int>(dim, DEFAULT_VALUE, -1);
+    nDOF = new DimVec<int>(dim, -1);
     dow = Global::getGeo(WORLD);
   }
 
@@ -37,9 +37,9 @@ namespace AMDiS {
         						      WorldMatrix<double>* D2_uh) const
   {
     // TODO: REMOVE STATIC
-    static WorldMatrix<double> D2(DEFAULT_VALUE, 0.0);
-    DimMat<double> D2_b(dim, DEFAULT_VALUE, 0.0);
-    DimMat<double> D2_tmp(dim, DEFAULT_VALUE, 0.0);
+    static WorldMatrix<double> D2(DEFAULT_SIZE, DEFAULT_SIZE, 0.0);
+    DimMat<double> D2_b(dim, 0.0);
+    DimMat<double> D2_tmp(dim, 0.0);
     WorldMatrix<double> *val = D2_uh ? D2_uh : &D2;
   
     for (int i = 0; i < nBasFcts; i++) {

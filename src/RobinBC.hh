@@ -13,7 +13,7 @@ namespace AMDiS
     for (int i = 0; i < dim + 1; i++) {
       coords[i] =
         new VectorOfFixVecs<DimVec<double> >(dim, dim, DEFAULT_VALUE, 
-					     DimVec<double>(dim, DEFAULT_VALUE, 0.0));
+					     DimVec<double>(dim, 0.0));
       // for each vertex of the side
       for (int k = 0; k < dim; k++) {
       	int index = refElement->getVertexOfPosition(INDEX_OF_DIM(dim - 1, dim), i, k);
@@ -53,7 +53,7 @@ namespace AMDiS
     for (int i = 0; i < dim + 1; i++) {
       coords[i] =
         new VectorOfFixVecs<DimVec<double> >(dim, dim, DEFAULT_VALUE, 
-					     DimVec<double>(dim, DEFAULT_VALUE, 0.0));
+					     DimVec<double>(dim, 0.0));
       // for each vertex of the side
       for (int k = 0; k < dim; k++) {
       	int index = refElement->getVertexOfPosition(INDEX_OF_DIM(dim - 1, dim), i, k);

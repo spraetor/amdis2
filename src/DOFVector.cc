@@ -132,7 +132,7 @@ namespace AMDiS
     std::vector<DegreeOfFreedom> localIndices(nBasFcts);
     DimVec<double> lambda(dim, NO_INIT);  
     ElInfo *elInfo = mesh->createNewElInfo();
-    WorldVector<double> value(DEFAULT_VALUE, 0.0);
+    WorldVector<double> value(DEFAULT_SIZE, 0.0);
     bool inside = false;
   
     if (oldElInfo && oldElInfo->getMacroElement()) {
@@ -186,7 +186,7 @@ namespace AMDiS
     // for all element sides
     for (int i = 0; i < dim + 1; i++) {
       coords[i] = new VectorOfFixVecs<DimVec<double> >(dim, dim, DEFAULT_VALUE,
-        DimVec<double>(dim, DEFAULT_VALUE, 0.0));
+        DimVec<double>(dim, 0.0));
       // for each vertex of the side
       for (int k = 0; k < dim; k++) {
         int index = refElement->getVertexOfPosition(INDEX_OF_DIM(dim - 1, dim), 
@@ -253,7 +253,7 @@ namespace AMDiS
     // for all element sides
     for (int i = 0; i < dim + 1; i++) {
       coords[i] = new VectorOfFixVecs<DimVec<double> >(dim, dim, DEFAULT_VALUE,
-        DimVec<double>(dim, DEFAULT_VALUE, 0.0));
+        DimVec<double>(dim, 0.0));
       // for each vertex of the side
       for (int k = 0; k < dim; k++) {
         int index = refElement->getVertexOfPosition(INDEX_OF_DIM(dim - 1, dim), 
@@ -325,7 +325,7 @@ namespace AMDiS
     DenseVector<double> localVec(nBasFcts);
     getLocalVector(el, localVec);
 
-    DimMat<double> D2Tmp(dim, DEFAULT_VALUE, 0.0);
+    DimMat<double> D2Tmp(dim, dim, 0.0);
     int parts = Global::getGeo(PARTS, dim);
     const DimVec<WorldVector<double> > &grdLambda = elInfo->getGrdLambda();
 

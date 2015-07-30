@@ -2,7 +2,10 @@
 
 #pragma once
 
-#include "Config.h"		// small_t
+#include <Config.h>		// small_t
+
+#include <traits/basic.hpp>
+#include <traits/traits_fwd.hpp>
 
 namespace AMDiS 
 {
@@ -22,4 +25,26 @@ namespace AMDiS
   template <class MemoryPolicy, class SizePolicy>    struct VectorBase;
   template <class MemoryPolicy, class SizePolicy>    struct MatrixBase;
   
+  
+  namespace traits 
+  {  
+    /// \cond HIDDEN_SYMBOLS
+    template <class M, class S>
+    struct category<VectorBase<M,S> > 
+    {
+      typedef tag::vector        tag;
+      typedef Value_t<M>  value_type;
+      typedef Size_t<M>    size_type;
+    };
+    
+    template <class M, class S>
+    struct category<MatrixBase<M,S> > 
+    {
+      typedef tag::matrix        tag;
+      typedef Value_t<M>  value_type;
+      typedef Size_t<M>    size_type;
+    };
+    /// \endcond
+    
+  } // end namespace traits
 } // end namespace AMDiS

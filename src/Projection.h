@@ -2,14 +2,15 @@
 
 #pragma once
 
+// std c++ headers
 #include <map>
 
-#include "Log.h"
+// AMDiS headers
+#include <Log.h>
+#include <MatrixVector_fwd.h>
 
 namespace AMDiS 
-{
-  template <class> class WorldVector;
-  
+{  
   /// Different possible types for a \ref Projection.
   enum ProjectionType {
     BOUNDARY_PROJECTION = 0, /**< Projection of boundary parts of an element. */

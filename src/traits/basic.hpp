@@ -2,18 +2,14 @@
 
 #pragma once
 
-#include <boost/version.hpp>
-
-#include "boost/numeric/ublas/detail/returntype_deduction.hpp"
-#if BOOST_VERSION >= 105600
-#include <boost/core/enable_if.hpp>
-#else
-#include <boost/utility/enable_if.hpp>
-#endif
-
+// std c++ headers
 #include <utility>
 #include <type_traits>
 
+// boost headers
+#include <boost/utility/enable_if.hpp>
+
+// AMDiS headers
 #include "meta_basic.hpp"
 
 
@@ -22,10 +18,8 @@
   noexcept(noexcept(__VA_ARGS__)) \
     -> decltype(__VA_ARGS__) { return (__VA_ARGS__); }
 
-
 namespace AMDiS 
 {
-  
   template <class T>
   using Value_t = typename T::value_type;
   
@@ -41,47 +35,6 @@ namespace AMDiS
   using boost::enable_if_c;
   using boost::disable_if;
   using boost::disable_if_c;
-  
-#if 0
-  template <class... Iters>
-  struct MultiIterator
-  {
-    template <class... Iters_>
-    MultiIterator(Iters_&&... iters_) 
-      : iters(std::forward<Iters_>(iters_)...) { }
-    
-    auto begin() {
-      using Indices = std::make_index_sequence<sizeof...(Iters)>;
-      return begin_impl(Indices());
-    }
-    
-    auto end() {
-      using Indices = std::make_index_sequence<sizeof...(Iters)>;
-      return end_impl(Indices());
-    }
-    
-  private:    
-    template <size_t ... I>
-    auto begin_impl(std::index_sequence<I...>) {
-      return std::make_tuple(std::get<I>(iters).begin()...);
-    }
-    template <size_t ... I>
-    auto end_impl(std::index_sequence<I...>) {
-      return std::make_tuple(std::get<I>(iters).end()...);
-    }
-    
-    using TupleType = std::tuple<Iters...>;
-    TupleType iters;
-  };
-  
-  
-  template <class... Iters>
-  auto make_iter(Iters&&... iters)
-  {
-    return MultiIterator<Iters...>(std::forward<Iters>(iters)...);
-  }
-#endif
-  
   
   // some traits to test for binary operators on types
   namespace traits 
@@ -153,6 +106,7 @@ namespace AMDiS
     // maximal size type
     template <class... Es>
     using max_size_type = typename larger_type<Size_t<Es>...>::type;
+    
   } // end namespace traits
   
 } // end namespace AMDiS

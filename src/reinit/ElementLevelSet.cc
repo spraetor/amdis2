@@ -73,7 +73,7 @@ ElementLevelSet::createElementLevelSet(const ElInfo *elInfo_,
 void
 ElementLevelSet::calculateElementLevelSetVal()
 {
-  DimVec<double> lambda(dim, DEFAULT_VALUE, 0.0);
+  DimVec<double> lambda(dim, 0.0);
 
   for (int i = 0; i <= dim; i++) {
 
@@ -124,7 +124,7 @@ ElementLevelSet::calculateIntersecPoints()
   // with the edges of the element.
   //**************************************************************************
   DimVec<double> tempPoint(dim);
-  DimVec<double> zeroVec(dim, DEFAULT_VALUE, 0.0);
+  DimVec<double> zeroVec(dim, 0.0);
   int i, j;
 
   /**

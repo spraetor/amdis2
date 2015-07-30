@@ -2,10 +2,8 @@
 
 #pragma once
 
-#include "traits/basic.hpp"
-#include "traits/size.hpp"
-#include "traits/num_rows.hpp"
-#include "traits/num_cols.hpp"
+#include <traits/basic.hpp>
+#include <traits/traits_fwd.hpp>
 
 #include "base_expr.hpp" // for BaseExpr
 
@@ -16,9 +14,9 @@ namespace AMDiS {
   struct ScalarExpr 
       : public BaseExpr<ScalarExpr<Value> >
   {
-    typedef ScalarExpr           self;
-    typedef BaseExpr<self>  expr_base;
-    typedef small_t        size_type;
+    typedef ScalarExpr           Self;
+    typedef BaseExpr<Self>  expr_base;
+    typedef small_t         size_type;
     
     typedef Value  value_type;
     

@@ -4,26 +4,26 @@
 
 #include <boost/numeric/linear_algebra/identity.hpp>	// mtl::math::zero
 
-#include "traits/basic.hpp"
-#include "traits/num_rows.hpp"
-#include "traits/num_cols.hpp"
-#include "base_expr.hpp"
-#include "operations/meta.hpp"
+#include <traits/basic.hpp>
+#include <traits/traits_fwd.hpp>
 
-#include "Vector.hpp"
+#include "base_expr.hpp"
+#include <operations/meta.hpp>
+#include <matrix_vector/Vector.hpp>
+#include <Math.h>
 
 namespace AMDiS {
 
   template <class MatE>
   struct ColumnIndex
   {
-    typedef typename MatE::value_type  value_type;
-    typedef typename MatE::size_type    size_type;
+    typedef Value_t<MatE>  value_type;
+    typedef Size_t<MatE>    size_type;
     
     ColumnIndex(MatE const& matrix_, size_type row_) 
 	: matrix(matrix_), row(row_) { }
   
-    inline value_type const& operator()(size_type col) const 
+    value_type const& operator()(size_type col) const 
     {
       return matrix(row,col); 
     }
@@ -36,14 +36,12 @@ namespace AMDiS {
   
   // if necessary assign vector_expr to buffer-vector, otherwise store an expr.
   template <class VecE, bool use_buffer>
-  struct BufferType {
-    typedef typename if_c< use_buffer, 
-      typename if_c< (VecE::_SIZE > 0), 
-        VectorBase<MemoryBaseStatic<typename VecE::value_type, MAX(0,VecE::_SIZE), 1>, 
-				   StaticSizePolicy<MAX(0,VecE::_SIZE)> >,
-        VectorBase<MemoryBaseDynamic<typename VecE::value_type, false> > >::type, 
-      VecE const& >::type type;
-  };
+  using BufferType = if_then_else< use_buffer, 
+    if_then_else< (VecE::_SIZE > 0), 
+        VectorBase<MemoryBaseStatic< Value_t<VecE>, math::max(0,VecE::_SIZE), 1>, 
+				     StaticSizePolicy<math::max(0,VecE::_SIZE)> >,
+        VectorBase<MemoryBaseDynamic<Value_t<VecE>, false> > >, 
+    VecE const& >;
 
       
   /// Expression with two arguments, that multiplied a matrix_expr with a vector_expr
@@ -51,22 +49,22 @@ namespace AMDiS {
   struct MatVecExpr 
       : public VectorExpr< MatVecExpr<MatE, VecE, use_buffer> >
   {
-    typedef MatVecExpr                                             self;
-    typedef VectorExpr<self>                                  expr_base;
+    typedef MatVecExpr                                             Self;
+    typedef VectorExpr<Self>                                  expr_base;
     
-    typedef typename VecE::value_type                        value_type;
-    typedef typename traits::max_size_type<MatE, VecE>::type  size_type;
+    typedef Value_t<VecE>                                    value_type;
+    typedef traits::max_size_type<MatE, VecE>                 size_type;
 	
     typedef MatE                                            matrix_type;
-    typedef typename BufferType<VecE, use_buffer>::type     vector_type;
+    typedef BufferType<VecE, use_buffer>                    vector_type;
     
     // sizes of the resulting expr.
     static constexpr int _SIZE = MatE::_ROWS;
     static constexpr int _ROWS = MatE::_ROWS;
-    static constexpr int _COLS = MAX(VecE::_COLS, 1);
+    static constexpr int _COLS = math::max(VecE::_COLS, 1);
     
   private:
-    static constexpr int ARG_COLS = MAX(VecE::_ROWS, MatE::_COLS);
+    static constexpr int ARG_COLS = math::max(VecE::_ROWS, MatE::_COLS);
     
   public:
     /// constructor takes a matrix expression \p mat and a 
@@ -91,7 +89,8 @@ namespace AMDiS {
     value_type reduce(size_type row, int_<N>) const
     {
       using meta::FOR;
-      value_type erg = math::zero(value_type());
+      using ::math::zero;
+      value_type erg = zero(value_type());
       FOR<0,N>::inner_product(ColumnIndex<MatE>(matrix,row), vector, erg, 
 			      functors::dot_functor<value_type, value_type>());
       return erg;
@@ -99,7 +98,8 @@ namespace AMDiS {
     
     value_type reduce(size_type r, int_<-1>) const
     {
-      value_type erg = math::zero(value_type());	  
+      using ::math::zero;
+      value_type erg = zero(value_type());	  
       for (size_type c = 0; c < num_cols(matrix); ++c)
 	erg += matrix(r,c) * vector(c);
       return erg;

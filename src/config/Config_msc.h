@@ -1,25 +1,3 @@
-/******************************************************************************
- *
- * AMDiS - Adaptive multidimensional simulations
- *
- * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
- * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
- *
- * Authors: 
- * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
- *
- * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
- * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
- *
- *
- * This file is part of AMDiS
- *
- * See also license.opensource.txt in the distribution.
- * 
- ******************************************************************************/
-
-
-
 /** \file Config_msc.h */
 
 #pragma once
@@ -42,7 +20,7 @@ typedef __declspec(align(CACHE_LINE)) int    aligned_int;
 typedef __declspec(align(CACHE_LINE)) size_t aligned_size_t;
 
 #include <malloc.h>
-#define ALIGNED_ALLOC(type,size,alignement) (type*)_aligned_malloc(size,alignement)
+#define ALIGNED_ALLOC(type,size) reinterpret_cast<type*>(_aligned_malloc(size*sizeof(type),CACHE_LINE))
 #define ALIGNED_FREE(ptr) _aligned_free(ptr);
 
 // some compiler attributes

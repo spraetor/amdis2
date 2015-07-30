@@ -27,21 +27,18 @@ namespace AMDiS
       level(0),
       elType(0),
       iChild(0),
-      coord(mesh->getDim(), NO_INIT),
-      boundary(mesh->getDim(), DEFAULT_VALUE, INTERIOR),
-      projection(mesh->getDim(), NO_INIT),
-      oppCoord(mesh->getDim(), NO_INIT),
-      neighbour(mesh->getDim(), NO_INIT),
-      neighbourCoord(mesh->getDim(), NO_INIT),
-      oppVertex(mesh->getDim(), NO_INIT),
-      grdLambda(mesh->getDim(), NO_INIT),
+      coord(mesh->getDim()),
+      boundary(mesh->getDim(), INTERIOR),
+      projection(mesh->getDim()),
+      oppCoord(mesh->getDim()),
+      neighbour(mesh->getDim()),
+      neighbourCoord(mesh->getDim(), FixVec<WorldVector<double>, VERTEX>(mesh->getDim())),
+      oppVertex(mesh->getDim()),
+      grdLambda(mesh->getDim()),
       refinementPath(0),
       refinementPathLength(0)
   {
     projection.set((Projection*)(NULL));
-
-    for (int i = 0; i < neighbourCoord.getSize(); i++)
-      neighbourCoord[i].init(mesh->getDim());
 
     dimOfWorld = Global::getGeo(WORLD);
   }
@@ -102,7 +99,7 @@ namespace AMDiS
       
       	e1[0] = coords[1][0] - coords[0][0];
       	e1[1] = coords[1][1] - coords[0][1];
-      	det = norm(&e1);
+      	det = norm(e1);
 
       } else {
       	det = (coords[1][0] - coords[0][0]) * (coords[2][1] - coords[0][1]) - 
@@ -128,9 +125,9 @@ namespace AMDiS
       	}
       	
       	if (dim == 1) {
-      	  det = norm(&e1);
+      	  det = norm(e1);
       	} else if (dim == 2) {
-      	  det = norm(&n);
+      	  det = norm(n);
       	} else if (dim == 3) {
       	  det = n[0] * e3[0] + n[1] * e3[1] + n[2] * e3[2];
       	} else
@@ -149,7 +146,7 @@ namespace AMDiS
   {
     double surfDet;
     int dim = surfVert[0].getSize() - 1;
-    FixVec<WorldVector<double>, VERTEX> worldCoords(dim - 1, NO_INIT);
+    FixVec<WorldVector<double>, VERTEX> worldCoords(dim - 1);
   
     // transform barycentric coords to world coords
     for (int i = 0; i < dim; i++) {

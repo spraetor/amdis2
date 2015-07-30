@@ -884,7 +884,7 @@ Recovery::recovery(DOFVector<double> *uh, const FiniteElemSpace *fe_space,
 
   result = vec;
 
-  result->set(WorldVector<double>(DEFAULT_VALUE, 0.0));
+  result->set(WorldVector<double>(DEFAULT_SIZE, 0.0));
 
   DOFVector<WorldVector<double> >::Iterator grdIt(result, USED_DOFS);
   std::set<DegreeOfFreedom>::const_iterator setIterator;
@@ -935,7 +935,7 @@ Recovery::recovery(DOFVector<double> *uh,
     vec = new DOFVector<WorldVector<double> >(fe_space, "gradient");  
 
   result = vec;
-  result->set(WorldVector<double>(DEFAULT_VALUE, 0.0));
+  result->set(WorldVector<double>(DEFAULT_SIZE, 0.0));
 
   DOFVector<double> volume(fe_space, "volume");
   volume.set(0.0);
@@ -945,7 +945,7 @@ Recovery::recovery(DOFVector<double> *uh,
   const BasisFunction *basFcts = fe_space->getBasisFcts();
   DOFAdmin *admin = fe_space->getAdmin();
   int numPreDofs = admin->getNumberOfPreDofs(0);
-  DimVec<double> bary(dim, DEFAULT_VALUE, (1.0 / (dim + 1.0)));
+  DimVec<double> bary(dim, (1.0 / (dim + 1.0)));
   WorldVector<double> barycenter;     // For world coordinates at barycenter
 
   // traverse mesh

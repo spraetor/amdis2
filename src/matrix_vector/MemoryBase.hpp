@@ -2,15 +2,14 @@
 
 #pragma once
 
-#include "Log.h"			// TEST_EXIT_DBG
-#include "operations/generic_loops.hpp"	// meta::FOR
-
-#include "Config.h"
-#include "utility/aligned_alloc.hpp"	// ALIGNED_ALLOC, ALIGNED_FREE, ...
+// AMDiS headers
+#include <Config.h>
+#include <Log.h>			// TEST_EXIT_DBG
+#include <operations/generic_loops.hpp>	// meta::FOR
+#include <utility/aligned_alloc.hpp>	// ALIGNED_ALLOC, ALIGNED_FREE, ...
 
 namespace AMDiS 
 {
-
   /// Memory base for vector types using static storage
   /** The template parameter \p T describes the value-type of the
    *  data elements. The maximal size (capacity) of the container

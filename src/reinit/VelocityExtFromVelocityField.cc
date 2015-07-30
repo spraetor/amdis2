@@ -32,7 +32,7 @@ VelocityExtFromVelocityField::calcVelocityBoundary(DegreeOfFreedom *locInd,
   // ===== Calculate normal velocity in element vertices. =====
 
   // Get gradient of lSFct on element.
-  DimVec<double> lambda(dim, DEFAULT_VALUE, 0.0);
+  DimVec<double> lambda(dim, 0.0);
   lambda[0] = 1.0;
   WorldVector<double> elGrd;
 

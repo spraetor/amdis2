@@ -13,6 +13,7 @@
 #include "boost/numeric/mtl/vector/parameter.hpp"
 
 #include "operations/functors.hpp"
+#include "operations/generic_loops.hpp"
 
 namespace AMDiS 
 {  
@@ -41,7 +42,7 @@ namespace AMDiS
   }
   
   template <typename T>
-  typename boost::disable_if< typename traits::is_mtl<T>::type,
+  typename disable_if< traits::is_mtl<T>,
     typename result_of::two_norm<T, typename traits::category<T>::tag>::type
   >::type
   inline two_norm(const T& t)
@@ -110,7 +111,7 @@ namespace AMDiS
   }
   
   template <typename T>
-  typename boost::disable_if< typename traits::is_mtl<T>::type,
+  typename disable_if< traits::is_mtl<T>,
     typename result_of::one_norm<T, typename traits::category<T>::tag>::type
   >::type
   inline one_norm(const T& t)

@@ -1,42 +1,13 @@
-/******************************************************************************
- *
- * AMDiS - Adaptive multidimensional simulations
- *
- * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
- * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
- *
- * Authors: 
- * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
- *
- * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
- * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
- *
- *
- * This file is part of AMDiS
- *
- * See also license.opensource.txt in the distribution.
- * 
- ******************************************************************************/
-
-
-
 /** \file types.hpp */
 
-#ifndef AMDIS_TYPE_TRAITS_TYPES_HPP
-#define AMDIS_TYPE_TRAITS_TYPES_HPP
+#pragma once
 
+// mtl4 headers
+#include <boost/numeric/mtl/mtl_fwd.hpp>
+
+// AMDiS headers
 #include "AMDiS_fwd.h"
-#include "FixVec.h"
-
-// mtl4 types
-#include "boost/numeric/mtl/vector/dense_vector.hpp"
-#include "boost/numeric/mtl/matrix/dense2D.hpp"
-#include "boost/numeric/mtl/matrix/compressed2D.hpp"
-#include "boost/numeric/mtl/matrix/coordinate2D.hpp"
-#include "boost/numeric/mtl/matrix/morton_dense.hpp"
-
-#include "boost/numeric/ublas/detail/returntype_deduction.hpp"
-
+// #include "FixVec.h"
 #include "traits/meta_basic.hpp"
 #include "traits/scalar_types.hpp"
 
@@ -44,7 +15,6 @@ namespace AMDiS
 {
   namespace traits 
   {
-  
     // dummy type
     class no_valid_type {};
       
@@ -119,9 +89,6 @@ namespace AMDiS
     template<>
     struct is_amdis<AMDiS::SystemVector > : true_ {};
     
-    
   } // end namespace traits
   
 } // end namespace AMDiS
-
-#endif // AMDIS_TYPE_TRAITS_TYPES_HPP

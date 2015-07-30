@@ -2,17 +2,16 @@
 
 #pragma once
 
-#include "expressions/all_expr.hpp"
+#include <matrix_vector/expr/all_expr.hpp>
 
-#include "operations/functors.hpp"
-#include "operations/reduction_functors.hpp"
+#include <operations/functors.hpp>
+#include <operations/reduction_functors.hpp>
 #include <boost/numeric/mtl/operation/sfunctor.hpp>
 
-#include "Math.h"
+#include <Math.h>
 
 namespace AMDiS 
 {
-
   // ---------------------------------------------------------------------------
   // Operations with Vector and Matrix (elementwise)
   

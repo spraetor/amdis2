@@ -3,20 +3,14 @@
 #pragma once
 
 #include "AMDiS_fwd.h"
-#include "category.hpp"
+#include <traits/traits_fwd.hpp>
 
 namespace AMDiS 
 {
   namespace traits 
   {
-  
-    /// General declaration, used to disable unsupported types
-    template <typename Collection, class Enable = void>
-    struct resize {};
-      
-      
     template <typename T>
-    struct resize<T, typename boost::enable_if< typename has_tag<T, tag::scalar>::type >::type >
+    struct resize<T, typename enable_if< is_scalar<T> >::type >
     {
 	void operator()(T& v, size_t r) const { 
 	TEST_EXIT_DBG(r == 1)
@@ -27,8 +21,7 @@ namespace AMDiS
 // == vectors ===
     
     template <typename T>
-    struct resize<T, typename boost::enable_if
-    < typename boost::mpl::and_< typename is_vector<T>::type, typename is_mtl<T>::type >::type >::type > 
+    struct resize<T, typename enable_if< and_< is_vector<T>, is_mtl<T> > >::type > 
     {
 	void operator()(T& v, size_t r) const { v.change_dim(r); }
     };
@@ -47,8 +40,7 @@ namespace AMDiS
 // === matrices ===
     
     template <typename T>
-    struct resize<T, typename boost::enable_if
-    < typename boost::mpl::and_< typename is_matrix<T>::type, typename is_mtl<T>::type >::type >::type > 
+    struct resize<T, typename enable_if< and_< is_matrix<T>, is_mtl<T> > >::type > 
     {
 	void operator()(T& m, size_t r, size_t c) { return m.change_dim(r,c); }
     };

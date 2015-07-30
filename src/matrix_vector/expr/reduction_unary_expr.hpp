@@ -3,9 +3,9 @@
 #pragma once
 
 
-#include "traits/basic.hpp"
+#include <traits/basic.hpp>
 #include "base_expr.hpp" // for base_expr
-#include "operations/reduction_functors.hpp"
+#include <operations/reduction_functors.hpp>
 
 namespace AMDiS {
 
@@ -14,11 +14,11 @@ namespace AMDiS {
   struct ReductionUnaryExpr 
       : public BaseExpr< ReductionUnaryExpr<E, Functor> >
   {
-    typedef ReductionUnaryExpr                   self;
-    typedef BaseExpr<self>                  expr_base;
+    typedef ReductionUnaryExpr                   Self;
+    typedef BaseExpr<Self>                  expr_base;
     
-    typedef typename Functor::result_type  value_type;
-    typedef typename E::size_type           size_type;
+    typedef Result_t<Functor>              value_type;
+    typedef Size_t<E>                       size_type;
     typedef E                               expr_type;
     
     static constexpr int _SIZE = 1;

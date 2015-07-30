@@ -2,21 +2,19 @@
 
 #pragma once
 
+// std c++ headers
 #include <algorithm>		// std::copy
 #include <utility>		// std::swap
 #include <initializer_list>	// std::initializer_list
 
-#include "Log.h"
-#include "matrix_vector/MatrixVectorBase.hpp"
-
-#include "traits/category.hpp"
-#include "traits/size.hpp"
-#include "traits/num_rows.hpp"
-#include "traits/num_cols.hpp"
+// AMDiS headers
+#include <Log.h>
+#include <traits/traits_fwd.hpp>
+#include <matrix_vector/expr/base_expr.hpp> // VectorExpr
+#include "MatrixVectorBase.hpp"	            // MatrixVectorBase
 
 namespace AMDiS 
 { 
-
   /// Base class for all vectors.
   /** Provide a MemoryPolicy \p MemoryPolicy and a \p SizePolicy for
    *  automatic size calculation. 
@@ -40,9 +38,10 @@ namespace AMDiS
   protected:
     using super::_elements;
     using super::_size;
-    using super::set;
+    using S = SizePolicy;
     
-    typedef SizePolicy S;
+  public:
+    using super::set;
   
   // ----- constructors / assignment -------------------------------------------
   public:
@@ -121,7 +120,7 @@ namespace AMDiS
     value_type& operator[](size_type i) { return _elements[i]; }
     
     /// Access to the i-th vector element. (const variant)
-    onst value_type& operator[](size_type i) const { return _elements[i]; }
+    const value_type& operator[](size_type i) const { return _elements[i]; }
     
     /// Access to the i-th vector element with index checking.
     value_type& at(size_type i) 
@@ -135,6 +134,12 @@ namespace AMDiS
     { 
       TEST_EXIT_DBG(i < _size)("Index " << i << " out of range [0, " << _size << ")!\n");
       return _elements[i]; 
+    }
+    
+    template <class T1, class T2>
+    void setMidpoint(T1, T2)
+    {
+      // TODO: nee to be implemented
     }
   };
   
@@ -158,19 +163,6 @@ namespace AMDiS
   size_t num_cols(VectorBase<M,S> const& vec)
   {
     return 1;
-  }
-  
-  namespace traits {
-    
-    /// \cond HIDDEN_SYMBOLS
-    template <class M, class S>
-    struct category<VectorBase<M,S> > 
-    {
-      typedef tag::vector                    tag;
-      typedef typename M::value_type  value_type;
-      typedef typename M::size_type    size_type;
-    };
-    /// \endcond
   }
 
 } // end namespace AMDiS

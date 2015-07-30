@@ -4,36 +4,24 @@
 
 #include <type_traits>
 
+#include <boost/numeric/mtl/vector/dense_vector.hpp>
+#include <boost/numeric/mtl/matrix/dense2D.hpp>
+#include <boost/numeric/mtl/matrix/compressed2D.hpp>
+#include <boost/numeric/mtl/matrix/coordinate2D.hpp>
+#include <boost/numeric/mtl/matrix/morton_dense.hpp>
+
+// AMDiS headers
 #include "AMDiS_fwd.h"
+#include <traits/traits_fwd.hpp>
 #include "tag.hpp"
 #include "types.hpp"
-
 #include "DOFMatrix.h"
 #include "solver/BlockMTLMatrix.h"
-
-#include "boost/numeric/mtl/vector/dense_vector.hpp"
-#include "boost/numeric/mtl/matrix/dense2D.hpp"
-#include "boost/numeric/mtl/matrix/compressed2D.hpp"
-#include "boost/numeric/mtl/matrix/coordinate2D.hpp"
-#include "boost/numeric/mtl/matrix/morton_dense.hpp"
-
-// TODO: remove dependencies
 
 namespace AMDiS 
 {
   namespace traits 
   {
-    // categories
-    // _________________________________________________________________________
-    
-    template <class T, class Enabled = void>
-    struct category 
-    {
-      typedef tag::unknown  tag;
-      typedef T             value_type;
-      typedef size_t        size_type;
-    };
-    
     // scalars
     template <class T>
     struct category<T, typename enable_if< std::is_arithmetic<T> >::type >
@@ -152,23 +140,7 @@ namespace AMDiS
   
     template <class T>
     struct category< const T > : category< T > {};
-    
-  
-    // operations on tags
-    // _________________________________________________________________________
-    
-    template <class T, class Tag>
-    using has_tag = std::is_same< typename category<T>::tag, Tag >;
-    
-    template <class T>
-    struct is_scalar : has_tag<T, tag::scalar> {};
 
-    template <class T>
-    struct is_vector : has_tag<T, tag::vector> {};
-      
-    template <class T>
-    struct is_matrix : has_tag<T, tag::matrix> {};
-    
     // -------------------------------------------------------------------------
     template <class T, class S, class Enable = void>
     struct is_convertible : std::is_convertible<T, S> {};

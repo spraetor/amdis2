@@ -2,11 +2,8 @@
 
 #pragma once
 
-#include "traits/basic.hpp"
-#include "traits/category.hpp"
-#include "traits/size.hpp"
-#include "traits/num_rows.hpp"
-#include "traits/num_cols.hpp"
+#include <traits/basic.hpp>
+#include <traits/traits_fwd.hpp>
 
 #include "base_expr.hpp" // for ShapedExpr
 
@@ -17,11 +14,11 @@ namespace AMDiS {
   struct ElementwiseUnaryExpr 
       : public ShapedExpr<E, ElementwiseUnaryExpr<E, Functor> >::type
   {
-    typedef ElementwiseUnaryExpr                     self;
-    typedef typename ShapedExpr<E, self>::type  expr_base;
+    typedef ElementwiseUnaryExpr                     Self;
+    typedef typename ShapedExpr<E, Self>::type  expr_base;
     
-    typedef typename Functor::result_type      value_type;
-    typedef typename E::size_type               size_type;
+    typedef Result_t<Functor>                  value_type;
+    typedef Size_t<E>                           size_type;
     typedef E                                   expr_type;
     
     static constexpr int _SIZE = E::_SIZE;

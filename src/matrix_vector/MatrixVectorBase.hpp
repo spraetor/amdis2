@@ -8,13 +8,14 @@
 #include <boost/type_traits/is_convertible.hpp>
 #include <boost/numeric/mtl/operation/assign_mode.hpp>
 
-#include "Log.h"			// TEST_EXIT_DBG
+#include <Log.h>			// TEST_EXIT_DBG
 
-#include "traits/size.hpp"
-#include "traits/base_expr.hpp"
+#include <traits/traits_fwd.hpp>
 
-#include "operations/meta.hpp" 
-#include "operations/assign.hpp"
+#include <operations/meta.hpp>
+#include <operations/assign.hpp>
+
+#define DEFAULT_SIZE 0
 
 namespace AMDiS 
 {  

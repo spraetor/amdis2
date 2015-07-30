@@ -49,5 +49,5 @@
 typedef unsigned char small_t;   // only allow small matrices
 
 // some workarounds for mtl (since the namespace has changed)
-#define MTL_VEC mtl::vec
-#define MTL_MAT mtl::mat
+#define MTL_VEC mtl::vector
+#define MTL_MAT mtl::matrix

@@ -208,7 +208,7 @@ namespace compositeFEM {
     SurfaceQuadrature *surfQuad;
     int numQuadPts;
     VectorOfFixVecs<DimVec<double> > tmpPts(dim, dim, NO_INIT);
-    DimVec<double> tmpPt(dim, DEFAULT_VALUE, 0.0);
+    DimVec<double> tmpPt(dim, 0.0);
     int elStatus;
     Mesh *mesh = elLS->getMesh();
 

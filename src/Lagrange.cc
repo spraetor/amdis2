@@ -190,7 +190,7 @@ namespace AMDiS {
   void Lagrange::setNDOF()
   {
     if (static_cast<int>(baryDimDegree[dim][degree].size()) == 0) {
-      ndofDimDegree[dim][degree] = new DimVec<int>(dim, DEFAULT_VALUE, 0);
+      ndofDimDegree[dim][degree] = new DimVec<int>(dim, 0);
 
       if (degree != 0)
 	(*ndofDimDegree[dim][degree])[VERTEX] = 1;
@@ -646,7 +646,7 @@ namespace AMDiS {
 			      DimVec<double>* vec)
   {
     if (vec == NULL)
-      vec = new DimVec<double>(dim, DEFAULT_VALUE, 0.0);
+      vec = new DimVec<double>(dim, 0.0);
 
     if (dimIndex == numCoords - 1) {
       (*vec)[coordInd[dimIndex]] = double(rest) / degree;

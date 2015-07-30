@@ -12,9 +12,10 @@
 #include <memory>
 #include <list>
 
-#include "Global.h"
-#include "FixVec.h"
 #include "AMDiS_fwd.h"
+#include "AMDiS_base.h"
+#include "Global.h"
+#include "MatrixVector.h"
 
 namespace AMDiS 
 {

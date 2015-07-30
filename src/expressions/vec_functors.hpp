@@ -235,7 +235,7 @@ namespace AMDiS
   
 // cross-product of two vectors
 // _____________________________________________________________________________
-  
+#if 0
   namespace result_of 
   {
     template<class T1, class T2>
@@ -267,7 +267,7 @@ namespace AMDiS
   {
     return binary_expr<functors::Cross>(std::forward<Term1>(t1), std::forward<Term2>(t2));
   }
-
+#endif
   
 // generator for a diagonal matrix from a vector
 // _____________________________________________________________________________
@@ -286,7 +286,7 @@ namespace AMDiS
       result_type operator()(const WorldVector<T> &v) const 
       { 
       	T zero; nullify(zero);
-      	result_type matrix(DEFAULT_VALUE, zero);
+      	result_type matrix(DEFAULT_SIZE, DEFAULT_SIZE, zero);
       	for (int i = 0; i < v.getSize(); ++i)
       	  matrix[i][i] = v[i];
       	return matrix; 
@@ -302,7 +302,7 @@ namespace AMDiS
       result_type operator()(const DimVec<T> &v) const 
       { 
       	T zero; nullify(zero);
-      	result_type matrix(v.getDim(), DEFAULT_VALUE, zero);
+      	result_type matrix(v.getDim(), v.getDim(), zero);
       	for (int i = 0; i < v.getSize(); ++i)
       	  matrix[i][i] = v[i];
       	return matrix; 

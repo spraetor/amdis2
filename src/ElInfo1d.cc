@@ -179,7 +179,7 @@ namespace AMDiS
   {
     FUNCNAME_DBG("ElInfo::getNormal()");
     normal = coord[side] - coord[(side + 1) % 2];
-    double det = norm(&normal);
+    double det = norm(normal);
     TEST_EXIT_DBG(det > 1.e-30)("det = 0 on side %d\n", side);
     normal *= 1.0 / det;
 
@@ -202,7 +202,7 @@ namespace AMDiS
     elementNormal[0] = coord[1][1] - coord[0][1];
     elementNormal[1] = coord[0][0] - coord[1][0];
 
-    double det = norm(&elementNormal);
+    double det = norm(elementNormal);
 
     TEST_EXIT_DBG(det > 1.e-30)("det = 0");
 

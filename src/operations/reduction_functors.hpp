@@ -1,43 +1,26 @@
-/******************************************************************************
- *
- * AMDiS - Adaptive multidimensional simulations
- *
- * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
- * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
- *
- * Authors: 
- * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
- *
- * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
- * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
- *
- *
- * This file is part of AMDiS
- *
- * See also license.opensource.txt in the distribution.
- * 
- ******************************************************************************/
-
-
-
 /** \file reduction_functors.h */
 
 #pragma once
 
+// std c++ headers
 #include <cmath>
 
+// mtl headers
 #include <boost/numeric/mtl/vector/dense_vector.hpp>
 #include <boost/numeric/mtl/vector/reduction_functors.hpp>
 #include <boost/numeric/mtl/operation/dot.hpp>
+#include <boost/numeric/linear_algebra/identity.hpp>
+
+// boost headers
 #include <boost/integer_traits.hpp>
 
-#include "traits/mult_type.hpp"
+// AMDiS headers
+#include <traits/mult_type.hpp>
+#include <operations/functors.hpp>
+#include <operations/assign.hpp>
 
-#include "operations/functors.hpp"
-#include "operations/assign.hpp"
-
-namespace AMDiS {
-
+namespace AMDiS 
+{
   namespace functors
   {
 
@@ -63,7 +46,7 @@ namespace AMDiS {
       template <typename Value>
       static inline void init(Value& value)
       {
-	using math::zero;
+	using ::math::zero;
 	value= zero(value);
       }
 
@@ -103,7 +86,7 @@ namespace AMDiS {
       template <typename Value>
       static inline void init(Value& value)
       {
-	using math::zero;
+	using ::math::zero;
 	value= zero(value);
       }
 
@@ -148,16 +131,15 @@ namespace AMDiS {
     template <class A, class B, class ConjOp>
     struct dot_functor_aux
     {
-      typedef typename if_< boost::is_same<ConjOp, MTL_VEC::detail::with_conj>,
-			    typename mtl::sfunctor::conj<A>::result_type,
-			    A >::type A_;
+      using A_ = if_then_else< std::is_same<ConjOp, MTL_VEC::detail::with_conj>::value,
+		    typename mtl::sfunctor::conj<A>::result_type, A >;
 			    
-      typedef typename traits::mult_type<A_, B>::type result_type;
+      using result_type = typename traits::mult_type<A_, B>::type;
       
       template <typename Value>
       static inline void init(Value& value)
       {
-	using math::zero;
+	using ::math::zero;
 	value= zero(value);
       }
 

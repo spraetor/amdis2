@@ -140,7 +140,7 @@ namespace compositeFEM {
 
     VectorOfFixVecs<DimVec<double> > *subElVertices = 
       new VectorOfFixVecs<DimVec<double> >(dim, dim + 1, NO_INIT);
-    DimVec<double> vertex(dim, DEFAULT_VALUE, 1.0);
+    DimVec<double> vertex(dim, 1.0);
 
     /**
      *  Get the vertex which - with the intersection point in intPoints - forms
@@ -209,7 +209,7 @@ namespace compositeFEM {
 
     VectorOfFixVecs<DimVec<double> >*subElVertices = 
       new VectorOfFixVecs<DimVec<double> >(dim, dim + 1, NO_INIT);
-    DimVec<double> vertex(dim, DEFAULT_VALUE, 1.0);
+    DimVec<double> vertex(dim, 1.0);
 
     /**
      *  Get the vertex which - with the intersection points intPoints - forms
@@ -296,8 +296,8 @@ namespace compositeFEM {
 
     VectorOfFixVecs<DimVec<double> > *subElVertices = 
       new VectorOfFixVecs<DimVec<double> >(dim, dim + 1, NO_INIT);
-    DimVec<double> vertexA(dim, DEFAULT_VALUE, 0.0);
-    DimVec<double> vertexB(dim, DEFAULT_VALUE, 0.0);
+    DimVec<double> vertexA(dim, 0.0);
+    DimVec<double> vertexB(dim, 0.0);
 
     int indexElVertInPol2 = 0;  // index of second vertex of element lying in 
     // subpolytope

@@ -80,16 +80,16 @@ namespace AMDiS
       parametric(NULL), 
       preserveCoarseDOFs(false),
       nDofEl(0),
-      nDof(dimension, DEFAULT_VALUE, 0),
+      nDof(dimension, 0),
       nNodeEl(0),
-      node(dimension, DEFAULT_VALUE, 0),
+      node(dimension, 0),
       elementPrototype(NULL),
       elementDataPrototype(NULL),
       elementIndex(-1),
       initialized(false),
       macroFileInfo(NULL),
       changeIndex(0),
-      final_lambda(dimension, DEFAULT_VALUE, 0.0)
+      final_lambda(dimension, 0.0)
   {
     FUNCNAME("Mesh::Mesh()");
 

@@ -370,7 +370,7 @@ namespace AMDiS { namespace Parallel {
     TEST_EXIT_DBG(num_dim == mesh->getGeo(WORLD))("Should not happen!\n");
 
     map<int, WorldVector<double> > elIndexToCoords;    
-    DimVec<double> bary(mesh->getDim(), DEFAULT_VALUE, 1.0 / mesh->getGeo(VERTEX));
+    DimVec<double> bary(mesh->getDim(), 1.0 / mesh->getGeo(VERTEX));
     WorldVector<double> coords;
     TraverseStack stack;
     ElInfo *elInfo = 

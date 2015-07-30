@@ -312,11 +312,11 @@ namespace AMDiS
   {
     FUNCNAME("ElInfo::worldToCoord()");
 
-    DimVec<WorldVector<double> > edge(mesh->getDim(), NO_INIT);
+    DimVec<WorldVector<double> > edge(mesh->getDim());
     WorldVector<double> x;
     double  x0, det, det0, det1, det2;
   
-    static DimVec<double> vec(mesh->getDim(), NO_INIT);
+    static DimVec<double> vec(mesh->getDim());
 
     TEST_EXIT_DBG(lambda)("lambda must not be NULL\n");
 
@@ -459,13 +459,13 @@ namespace AMDiS
 	e2[i] = coord[face][i] - coord[i0][i];
       }
 
-      vectorProduct(e0, e1, normal);
+      normal = cross(e0, e1);
 
       if ((e2 * normal) < 0.0)
 	for (int i = 0; i < dimOfWorld; i++)
 	  normal[i] = -normal[i];
 
-      det = norm(&normal);
+      det = norm(normal);
       TEST_EXIT_DBG(det > 1.e-30)("det = 0 on face %d\n", face);
 
       normal[0] /= det;

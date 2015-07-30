@@ -11,6 +11,7 @@
 #include "Global.h"
 #include "FixVec.h"
 #include "DOFVector.h"
+#include "MatrixVectorOperations.h"
 
 namespace AMDiS 
 {
@@ -621,7 +622,7 @@ namespace AMDiS
 	grd[0][1] = -grd[1][1] - grd[2][1];
       }
     } else {  
-      vectorProduct(e1, e2, normal);
+      normal = cross(e1, e2);
 
       adet = norm(normal);
 
@@ -631,8 +632,8 @@ namespace AMDiS
 	  for (int j = 0; j < dimOfWorld; j++)
 	    grd[i][j] = 0.0;
       } else {
-	vectorProduct(e2, normal, grd[1]);
-	vectorProduct(normal, e1, grd[2]);
+	grd[1] = cross(e2, normal);
+	grd[2] = cross(normal, e1);
       
 	double adet2 = 1.0 / (adet * adet);
 
@@ -658,9 +659,9 @@ namespace AMDiS
 
     TEST_EXIT_DBG(lambda)("lambda must not be NULL\n");
 
-    DimVec<WorldVector<double> > edge(mesh->getDim(), NO_INIT);
+    DimVec<WorldVector<double> > edge(mesh->getDim());
     WorldVector<double> x; 
-    static DimVec<double> vec(mesh->getDim(), NO_INIT);
+    static DimVec<double> vec(mesh->getDim());
 
     int dim = mesh->getDim();
 
@@ -721,11 +722,11 @@ namespace AMDiS
       e2 = coord[i0]; 
       e2 -= coord[side];
 
-      vectorProduct(e1, e2, elementNormal);
-      vectorProduct(elementNormal, e0, normal);
+      elementNormal = cross(e1, e2);
+      normal = cross(elementNormal, e0);
     }
 
-    double detn = norm(&normal);
+    double detn = norm(normal);
 
     TEST_EXIT_DBG(detn > 1.e-30)("det = 0 on face %d\n", side);
 
@@ -750,9 +751,9 @@ namespace AMDiS
     WorldVector<double> e0 = coord[1] - coord[0];
     WorldVector<double> e1 = coord[2] - coord[0];
 
-    vectorProduct(e0, e1, elementNormal);
+    elementNormal = cross(e0, e1);
 
-    double detn = norm(&elementNormal);
+    double detn = norm(elementNormal);
 
     TEST_EXIT_DBG(detn > 1.e-30)("det = 0");
 

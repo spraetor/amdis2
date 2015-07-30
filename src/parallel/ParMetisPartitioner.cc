@@ -88,7 +88,7 @@ namespace AMDiS { namespace Parallel {
       elmdist[i] += elmdist[i - 1];
 
     // traverse mesh and fill distributed ParMETIS data
-    DimVec<double> bary(dim, DEFAULT_VALUE, 1.0 / mesh->getGeo(VERTEX));
+    DimVec<double> bary(dim, 1.0 / mesh->getGeo(VERTEX));
     WorldVector<double> world;
 
     elementCounter = 0;

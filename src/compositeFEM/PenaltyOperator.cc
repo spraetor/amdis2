@@ -130,7 +130,7 @@ PenaltyOperator::getElementMatrix(const ElInfo *elInfo,
 //   else if (dim == 1 && ElementLevelSet::getNumVertIntPoints() != 0) {
 
 //     // ===== intersection points are element vertices =====
-//     DimVec<double> lambda(dim, DEFAULT_VALUE, 0.0);
+//     DimVec<double> lambda(dim, 0.0);
 //     const int *statusVec = ElementLevelSet::getElVertStatusVec();
 
 //     for (int i=0; i<dim; ++i) {
@@ -246,7 +246,7 @@ PenaltyOperator::getElementVector(const ElInfo *elInfo,
 //   else if (dim == 1 && ElementLevelSet::getNumVertIntPoints() != 0) {
 
 //     // ===== intersection points are element vertices =====
-//     DimVec<double> lambda(dim, DEFAULT_VALUE, 0.0);
+//     DimVec<double> lambda(dim, 0.0);
 //     const int *statusVec = ElementLevelSet::getElVertStatusVec();
 
 //     for (int i=0; i<dim; ++i) {

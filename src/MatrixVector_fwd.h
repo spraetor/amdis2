@@ -2,8 +2,8 @@
 
 #pragma once
 
-#include "GeoIndex.h"
-#include "matrix_vector/Forward.h"
+#include <GeoIndex.h>
+#include <matrix_vector/Forward.h>
 
 namespace AMDiS
 {

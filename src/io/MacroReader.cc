@@ -508,7 +508,7 @@ namespace AMDiS { namespace io {
 	Element *el = const_cast<Element*>((*mel)->getElement());
 	ElementData *ed = el->getElementData(PERIODIC);
 
-	DimVec<bool> periodic(dim, DEFAULT_VALUE, false);
+	DimVec<bool> periodic(dim, false);
 
 	if (ed) {
 	  std::list<LeafDataPeriodic::PeriodicInfo> &periodicInfos = 
@@ -554,7 +554,7 @@ namespace AMDiS { namespace io {
 	
 	ElementData *ed = el->getElementData(PERIODIC);
 
-	DimVec<bool> periodic(dim, DEFAULT_VALUE, false);
+	DimVec<bool> periodic(dim, false);
       
 	if (ed) {
 	  std::list<LeafDataPeriodic::PeriodicInfo> &periodicInfos = 

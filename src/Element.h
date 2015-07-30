@@ -3,6 +3,7 @@
 #pragma once
 
 #include "AMDiS_fwd.h"
+#include "MatrixVector_fwd.h"
 #include "Global.h"
 #include "RefinementManager.h"
 #include "ElementData.h"
@@ -10,9 +11,6 @@
 
 namespace AMDiS 
 {
-  // TODO: move forward declaration
-  template<typename T, GeoIndex d> class FixVec;
-
 #define AMDIS_UNDEFINED  5
 
   /** \ingroup Triangulation 

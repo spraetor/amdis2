@@ -4,8 +4,8 @@
 
 #include <boost/numeric/mtl/operation/sfunctor.hpp>
 
-#include "traits/basic.hpp"
-#include "traits/size.hpp"
+#include <traits/basic.hpp>
+#include <traits/traits_fwd.hpp>
 
 #include "base_expr.hpp" // for shaped_expr
 
@@ -16,11 +16,11 @@ namespace AMDiS {
   struct ScaleExpr 
       : public ShapedExpr<E, ScaleExpr<Value, E, from_left, Functor> >::type
   {
-    typedef ScaleExpr                                self;
-    typedef typename ShapedExpr<E, self>::type  expr_base;
+    typedef ScaleExpr                                Self;
+    typedef typename ShapedExpr<E, Self>::type  expr_base;
     
-    typedef typename E::value_type             value_type;
-    typedef typename E::size_type               size_type;
+    typedef Value_t<E>                         value_type;
+    typedef Size_t<E>                           size_type;
     typedef E                                   expr_type;
     
     static constexpr int _SIZE = E::_SIZE;

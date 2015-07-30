@@ -2,9 +2,15 @@
 
 #pragma once
 
-#include <ostream>	// std::ostream, std::ofstream
+// std c++ headers: std::ostream, std::ofstream
+#include <ostream>	
 
-#include "OpenMP.h"	// ThreadPrivate
+// AMDiS headers: ThreadPrivate
+#include "OpenMP.h"	
+
+
+#define STATIC_ASSERT(...) \
+  static_assert(__VA_ARGS__, #__VA_ARGS__)
 
 namespace AMDiS 
 {

@@ -989,7 +989,7 @@ namespace AMDiS
 
     const BasisFunction *basFcts = feSpace->getBasisFcts();
     int nBasisFcts = basFcts->getNumber();
-    DimVec<double> bary(dim, DEFAULT_VALUE, (1.0 / (dim + 1.0)));
+    DimVec<double> bary(dim, (1.0 / (dim + 1.0)));
 
     // traverse mesh
     Mesh *mesh = feSpace->getMesh();

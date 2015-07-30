@@ -2,22 +2,23 @@
 
 #pragma once
 
-#include "traits/basic.hpp"
-#include "traits/category.hpp"
+#include <traits/basic.hpp>
+#include <traits/category.hpp>
 #include "base_expr.hpp" // for base_expr
+#include <Math.h>
 
-namespace AMDiS {
-
+namespace AMDiS 
+{
   /// Expression with two arguments, that reduces to a scalar
   template <class E1, class E2, class Functor>
   struct ReductionBinaryExpr 
       : public BaseExpr< ReductionBinaryExpr<E1, E2, Functor> >
   {
-    typedef ReductionBinaryExpr                               self;
-    typedef BaseExpr<self>                               expr_base;
+    typedef ReductionBinaryExpr                               Self;
+    typedef BaseExpr<Self>                               expr_base;
     
-    typedef typename Functor::result_type               value_type;
-    typedef typename traits::max_size_type<E1,E2>::type  size_type;
+    typedef Result_t<Functor>                           value_type;
+    typedef traits::max_size_type<E1,E2>                 size_type;
     typedef E1                                          expr1_type;
     typedef E2                                          expr2_type;
     
@@ -26,7 +27,7 @@ namespace AMDiS {
     static constexpr int _COLS = 1;
     
   private:
-    static constexpr int ARG_SIZE = MAX(E1::_SIZE, E2::_SIZE);
+    static constexpr int ARG_SIZE = math::max(E1::_SIZE, E2::_SIZE);
     
   public:
     /// constructor takes two expression \p A and \p B.

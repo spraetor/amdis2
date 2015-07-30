@@ -121,7 +121,7 @@ namespace AMDiS
     static int size = 0;
     D2T *val;
     const VectorOfFixVecs<DimMat<double> > *D2Phil;
-    DimMat<double>  D2Tmp(dim, DEFAULT_VALUE, 0.);
+    DimMat<double>  D2Tmp(dim, dim, 0.0);
 
     int vecSize = uhLoc[0].size();
 

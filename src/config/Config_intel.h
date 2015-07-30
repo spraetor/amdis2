@@ -1,25 +1,3 @@
-/******************************************************************************
- *
- * AMDiS - Adaptive multidimensional simulations
- *
- * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
- * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
- *
- * Authors: 
- * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
- *
- * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
- * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
- *
- *
- * This file is part of AMDiS
- *
- * See also license.opensource.txt in the distribution.
- * 
- ******************************************************************************/
-
-
-
 /** \file Config_intel.h */
 
 #pragma once
@@ -32,15 +10,15 @@
 
 // alignement specification
 // ------------------------
+#include <malloc.h>
 #define ALIGNED(type,name,N)  __declspec(align(CACHE_LINE)) type name[N]
-#define ASSUME_ALIGNED(var)   var; __assume_aligned(var, CACHE_LINE)
-
 typedef __declspec(align(CACHE_LINE)) double aligned_double;
 typedef __declspec(align(CACHE_LINE)) float  aligned_float;
 typedef __declspec(align(CACHE_LINE)) int    aligned_int;
 typedef __declspec(align(CACHE_LINE)) size_t aligned_size_t;
+#define ASSUME_ALIGNED(var)   var; __assume_aligned(var, CACHE_LINE)
 
-#define ALIGNED_ALLOC(type,size,alignment) (type*)_mm_malloc(size,alignment)
+#define ALIGNED_ALLOC(type,size) reinterpret_cast<type*>(_mm_malloc(size*sizeof(type),CACHE_LINE))
 #define ALIGNED_FREE(addr) _mm_free(addr)
 
 // some compiler attributes

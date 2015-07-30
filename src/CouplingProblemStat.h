@@ -228,7 +228,7 @@ namespace AMDiS
       	// create dof admin for vertex dofs if neccessary
       	for (size_t i = 0; i < meshes.size(); i++) {
       	  if (meshes[i]->getNumberOfDofs(VERTEX) == 0) {
-      	    DimVec<int> ln_dof(meshes[i]->getDim(), DEFAULT_VALUE, 0);
+      	    DimVec<int> ln_dof(meshes[i]->getDim(), 0);
       	    ln_dof[VERTEX] = 1;
       	    meshes[i]->createDOFAdmin("vertex dofs", ln_dof);      
       	  }

@@ -2,16 +2,12 @@
 
 #pragma once
 
-#include "traits/basic.hpp"
-#include "traits/category.hpp"
-#include "traits/size.hpp"
-#include "traits/num_rows.hpp"
-#include "traits/num_cols.hpp"
-#include "traits/at.hpp"
+#include <matrix_vector/Forward.h>
+#include <traits/basic.hpp>
+#include <traits/traits_fwd.hpp>
 
 namespace AMDiS 
 {
-
   template <class Model>
   struct BaseExpr 
   {
@@ -25,8 +21,8 @@ namespace AMDiS
   template <class Model>
   struct MatrixExpr : BaseExpr<Model> {};
   
-  namespace traits {
-    
+  namespace traits 
+  {
     /// \cond HIDDEN_SYMBOLS  
     // define categories for the expressions
     template <class M> struct category<BaseExpr<M> > : category<M> {}; 
@@ -52,19 +48,40 @@ namespace AMDiS
     template <class M> struct num_cols<BaseExpr<M> > : num_cols<M> {};
     template <class M> struct num_cols<VectorExpr<M> > : num_cols<M> {};
     template <class M> struct num_cols<MatrixExpr<M> > : num_cols<M> {};
-    
     /// \endcond
+  }
+  
+  
+  
+  template <class M>
+  size_t inline num_cols(const VectorExpr<M>& t)
+  {
+      return num_cols(t.sub());
+  }
+  
+  template <class T>
+  size_t inline num_rows(const VectorExpr<T>& t)
+  {
+      return num_rows(t.sub());
+  }
+  
+  template <class T>
+  size_t inline size(const VectorExpr<T>& t)
+  {
+      return size(t.sub());
   }
   
   // determine shape of expression
   template <class Sub, class Model, class Enable = void>
-  struct ShapedExpr
-    : std::conditional< 
-	   traits::is_vector<Sub>, 
+  struct ShapedExpr 
+  {
+    using type = if_then_else< 
+	   traits::is_vector<Sub>::value, 
 	   VectorExpr<Model>,
-	   if_then_else< traits::is_matrix<Sub>, 
+	   if_then_else< traits::is_matrix<Sub>::value, 
 			 MatrixExpr<Model>,
-			 BaseExpr<Model> > > {};
+			 BaseExpr<Model> > >;
+  };
 
   
 } // end namespace AMDiS

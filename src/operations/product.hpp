@@ -133,7 +133,7 @@ namespace AMDiS
     };
   }
     
-    
+#if 0
   // (v1 x v2)
   // ___________________________________________________________________________
   
@@ -202,7 +202,7 @@ namespace AMDiS
       result_type operator()(const T1 &v1, const T2& v2) const { return eval(v1, v2); }
     };
   }
-  
+#endif
   
   // (v1 * v2')    (only for WorldVector)
   // ___________________________________________________________________________

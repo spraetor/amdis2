@@ -12,11 +12,11 @@ namespace AMDiS
 {
   MacroElement::MacroElement(int dim)
     : element(NULL),
-      coord(dim, NO_INIT),
-      boundary(dim, DEFAULT_VALUE, INTERIOR),
-      projection(dim, NO_INIT),
-      neighbour(dim, NO_INIT),
-      oppVertex(dim, NO_INIT),
+      coord(dim),
+      boundary(dim, INTERIOR),
+      projection(dim),
+      neighbour(dim),
+      oppVertex(dim),
       index(-1), 
       elType(0),
       deserializedNeighbourIndices(NULL)

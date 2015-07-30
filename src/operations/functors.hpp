@@ -2,15 +2,19 @@
 
 #pragma once
 
+// std c++ headers
 #include <complex>
 #include <cmath>
 #include <type_traits>
 
+// boost headers
 #include <boost/math/special_functions/cbrt.hpp>
 #include <boost/math/special_functions/pow.hpp> 
 
+// AMDiS headers
 #include "traits/types.hpp"
 #include "traits/scalar_types.hpp"
+#include "traits/mult_type.hpp"
 #include "operations/meta.hpp"
 
 namespace AMDiS 
@@ -49,6 +53,18 @@ namespace AMDiS
 
     private:
       T val;
+    };
+    
+    /// ct_constant(v) == val
+    template <class T, long val_>
+    struct ct_constant : FunctorBase
+    {
+      typedef T result_type;
+      static constexpr T val = val_;
+      
+      template <class V> static T eval(V&&) { return val; }
+      template <class V> static T apply(V&&) { return val; }
+      template <class V> T operator()(V&&) const { return val; }
     };
     
     template <class T, class S=T>
@@ -215,6 +231,34 @@ namespace AMDiS
 
       static result_type eval(const T& v0, const T& v1) { return std::min(std::abs(v0), std::abs(v1)); }
       result_type operator()(const T &v0, const T& v1) const { return eval(v0,v1); }
+    };    
+    
+    /// cross(v1, v2) = v1 x v2
+    template <class T1, class T2>
+    struct MyCross : FunctorBase
+    {
+      typedef typename traits::mult_type<T1, T2>::type value_type;
+      int getDegree(int d, int d0, int d1) const { return d0+d1; }
+      
+      template <class Vec1, class Vec2>
+      static value_type apply(size_t i, const Vec1 &v1, const Vec2& v2)
+      {
+	using size_type = Size_t<traits::category<Vec1>>;
+	value_type result;
+	
+	TEST_EXIT_DBG( size(v1) == 3 && size(v1) == size(v2) )
+	  ("cross: inkompatible sizes!\n");
+
+	size_type k = (i+1) % 3, l = (i+2) % 3;
+	result = v1(k) * v2(l) - v1(l) * v2(k);
+	return result;
+      }
+      
+      template <class Vec1, class Vec2>
+      value_type operator()(size_t i, const Vec1 &v1, const Vec2& v2) const 
+      { 
+	return apply(i, v1, v2); 
+      }
     };
     
 
@@ -258,7 +302,37 @@ namespace AMDiS
     private:
       const Functor& f;
     };
+    
+    
+    
+    // -------------------------------------------------------------------------
+    
+    template <class F, int arg, class G>
+    struct compose;
+    
+    template <class F, class G>
+    struct compose<F, 1, G>
+    {
+      typedef typename F::result_type result_type;
+      F f;
+      G g;
+      
+      template <class T>
+      result_type& operator()(T& v, T const& v0) { return f(g(v), v0); }
+    };
+    
+    template <class F, class G>
+    struct compose<F, 2, G>
+    {
+      typedef typename F::result_type result_type;
+      F f;
+      G g;
+      
+      template <class T>
+      result_type& operator()(T& v, T const& v0) { return f(v, g(v0)); }
+    };
 
+    
     /// pow<p>(v) == v^p
     template <int p, class T>
     struct pow : FunctorBase

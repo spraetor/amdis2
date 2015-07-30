@@ -4,13 +4,11 @@
 
 #include <boost/numeric/mtl/operation/sfunctor.hpp>
 
-#include "traits/basic.hpp"
-#include "traits/category.hpp"
-#include "traits/size.hpp"
-#include "traits/num_rows.hpp"
-#include "traits/num_cols.hpp"
+#include <traits/basic.hpp>
+#include <traits/traits_fwd.hpp>
 
 #include "base_expr.hpp" // for ShapedExpr
+#include <Math.h>
 
 namespace AMDiS {
 
@@ -19,17 +17,17 @@ namespace AMDiS {
   struct ElementwiseBinaryExpr
       : public ShapedExpr<E1, ElementwiseBinaryExpr<E1, E2, Functor> >::type
   {
-    typedef ElementwiseBinaryExpr                             self;
-    typedef typename ShapedExpr<E1, self>::type          expr_base;
+    typedef ElementwiseBinaryExpr                             Self;
+    typedef typename ShapedExpr<E1, Self>::type          expr_base;
     
-    typedef typename Functor::result_type               value_type;
-    typedef typename traits::max_size_type<E1,E2>::type  size_type;
+    typedef Result_t<Functor>                           value_type;
+    typedef traits::max_size_type<E1,E2>                 size_type;
     typedef E1                                          expr1_type;
     typedef E2                                          expr2_type;
     
-    static constexpr int _SIZE = MAX(E1::_SIZE, E2::_SIZE);
-    static constexpr int _ROWS = MAX(E1::_ROWS, E2::_ROWS);
-    static constexpr int _COLS = MAX(E1::_COLS, E2::_COLS);
+    static constexpr int _SIZE = math::max(E1::_SIZE, E2::_SIZE);
+    static constexpr int _ROWS = math::max(E1::_ROWS, E2::_ROWS);
+    static constexpr int _COLS = math::max(E1::_COLS, E2::_COLS);
     
     /// constructor takes two expressions
     ElementwiseBinaryExpr(expr1_type const& A, expr2_type const& B) 
@@ -87,8 +85,8 @@ namespace AMDiS {
     struct category< ElementwiseBinaryExpr<E1,E2,F> > 
     {
       typedef typename category<E1>::tag          tag;
-      typedef typename F::result_type             value_type;
-      typedef typename max_size_type<E1,E2>::type size_type;
+      typedef Result_t<F>                  value_type;
+      typedef max_size_type<E1,E2>          size_type;
     };
     /// \endcond
   }
@@ -97,14 +95,14 @@ namespace AMDiS {
   template <class E1, class E2>
   struct PlusExpr {
     typedef ElementwiseBinaryExpr<E1, E2, 
-      mtl::sfunctor::plus<typename E1::value_type, typename E2::value_type> > type;
+      mtl::sfunctor::plus<Value_t<E1>, Value_t<E2> > > type;
   };
       
   // E1 - E2
   template <class E1, class E2>
   struct MinusExpr {
     typedef ElementwiseBinaryExpr<E1, E2, 
-      mtl::sfunctor::minus<typename E1::value_type, typename E2::value_type> > type;
+      mtl::sfunctor::minus<Value_t<E1>, Value_t<E2> > > type;
   };
       
   

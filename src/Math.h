@@ -69,18 +69,6 @@ namespace AMDiS
     a = null;
   }
 
-  template <class T> inline void nullify(WorldVector<T> &a)
-  {
-    T null; nullify(null);
-    a = null;
-  }
-
-  template <class T> inline void nullify(WorldMatrix<T> &a)
-  {
-    T null; nullify(null);
-    a = null;
-  }
-
   /// Calculates factorial of i
   inline int fac(int i)
   {

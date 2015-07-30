@@ -2,21 +2,20 @@
 
 #pragma once
 
+// std c++ headers
 #include <algorithm>		// std::copy
 #include <utility>		// std::swap
 #include <initializer_list>	// std::initializer_list
 
-#include "Log.h"
-#include "matrix_vector/MatrixVectorBase.hpp"
+// AMDiS headers
+#include <Log.h>
+#include <traits/traits_fwd.hpp>
+#include <matrix_vector/expr/base_expr.hpp> // MatrixExpr
+#include "MatrixVectorBase.hpp"	            // MatrixVectorBase
 
-#include "traits/category.hpp"
-#include "traits/size.hpp"
-#include "traits/num_rows.hpp"
-#include "traits/num_cols.hpp"
 
 namespace AMDiS 
 { 
-
   /// Base class for all matrices.
   /** Provide a MemoryPolicy \p MemoryPolicy and a \p SizePolicy for
    *  automatic size calculation. 
@@ -40,9 +39,10 @@ namespace AMDiS
   protected:
     using super::_elements;
     using super::_size;
-    using super::set;
+    using S = SizePolicy;
     
-    typedef SizePolicy S;
+  public:
+    using super::set;
   
   // ----- constructors / assignment -------------------------------------------
   public:
@@ -181,7 +181,7 @@ namespace AMDiS
     void setDiag(value_type v)
     {
       TEST_EXIT_DBG( _rows == _cols )("Only for square matrices\n");
-      set(math::zero(value_type()));
+      set((value_type)(0));
       for (size_t i = 0; i < _rows; ++i)
 	this->operator()(i,i) = v;
     }
@@ -212,19 +212,6 @@ namespace AMDiS
   size_t num_cols(MatrixBase<M,S> const& mat)
   {
     return mat.getNumCols();
-  }
-    
-  namespace traits {
-    
-    /// \cond HIDDEN_SYMBOLS
-    template <class M, class S>
-    struct category<MatrixBase<M,S> > 
-    {
-      typedef tag::matrix                    tag;
-      typedef typename M::value_type  value_type;
-      typedef typename M::size_type    size_type;
-    };
-    /// \endcond
   }
   
 } // end namespace AMDiS

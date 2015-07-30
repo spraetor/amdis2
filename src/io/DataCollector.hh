@@ -195,7 +195,7 @@ namespace AMDiS {
 	if (ldp)
 	  nConnection += dynamic_cast<LeafDataPeriodic*>(ldp)->getInfoList().size();
 
-	periodicConnections.push_back(DimVec<bool>(dim, DEFAULT_VALUE, false));
+	periodicConnections.push_back(DimVec<bool>(dim, false));
       }
       elInfo = stack.traverseNext(elInfo);
     }   

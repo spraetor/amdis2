@@ -3,20 +3,14 @@
 #pragma once
 
 #include "AMDiS_fwd.h"
-#include "category.hpp"
-#include "boost/numeric/mtl/operation/num_cols.hpp"
+#include <traits/traits_fwd.hpp>
 
 namespace AMDiS 
 {
   namespace traits 
   {
-      
-    template <typename T, typename Enabled = void>
-    struct num_cols 
-      : ::mtl::traits::num_cols<T> {}; // import mtl-operation by default
-      
     template <typename T>
-    struct num_cols<T, typename boost::enable_if< typename has_tag<T, tag::scalar>::type >::type >
+    struct num_cols<T, typename enable_if< is_scalar<T> >::type >
     {
 	typedef size_t type;
 	type operator()(const T& v) const { return 1; }
@@ -25,8 +19,7 @@ namespace AMDiS
 // == vectors ===
     
     template <typename T>
-    struct num_cols<T, typename boost::enable_if
-    < typename boost::mpl::and_< typename is_vector<T>::type, typename is_mtl<T>::type >::type >::type > 
+    struct num_cols<T, typename enable_if< and_< is_vector<T>, is_mtl<T> > >::type > 
     {
 	typedef typename T::size_type type;
 	type operator()(const T& v) const { return ::mtl::vector::num_cols(v); }
@@ -43,8 +36,7 @@ namespace AMDiS
 // === matrices ===
     
     template <typename T>
-    struct num_cols<T, typename boost::enable_if
-    < typename boost::mpl::and_< typename is_matrix<T>::type, typename is_mtl<T>::type >::type >::type > 
+    struct num_cols<T, typename enable_if< and_< is_matrix<T>, is_mtl<T> > >::type > 
     {
 	typedef typename T::size_type type;
 	type operator()(const T& v) const { return ::mtl::matrix::num_cols(v); }
@@ -87,14 +79,5 @@ namespace AMDiS
     };
     
   } // end namespace traits
-  
-  template <typename T>
-  typename traits::num_cols<T>::type 
-  inline num_cols(const T& t)
-  {
-      return traits::num_cols<T>()(t);
-  }
     
 } // end namespace AMDiS
-
-#endif // AMDIS_TYPE_TRAITS_NUM_COLS_HPP
