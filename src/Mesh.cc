@@ -718,7 +718,7 @@ namespace AMDiS
 			       double *sp)
   {
     static const MacroElement *mel = NULL;
-    DimVec<double> lambda(dim, NO_INIT);
+    DimVec<double> lambda(dim);
     ElInfo *mel_info = createNewElInfo();
 
     if (start_mel != NULL)
@@ -824,7 +824,7 @@ namespace AMDiS
     FUNCNAME("Mesh::findElementAtPointRecursive()");
 
     Element *el = el_info->getElement();
-    DimVec<double> c_lambda(dim, NO_INIT);
+    DimVec<double> c_lambda(dim);
     int inside;
     int ichild, c_outside;
 
@@ -913,7 +913,7 @@ namespace AMDiS
 	c_outside = c_el_info->worldToCoord(*(g_xy), &c_lambda);
 
 	if (c_outside>=0) {  /* test is other child is better... */
-	  DimVec<double> c_lambda2(dim, NO_INIT);
+	  DimVec<double> c_lambda2(dim);
 	  ElInfo *c_el_info2 = createNewElInfo();
 
 	  c_el_info2->fillElInfo(1-ichild, el_info);

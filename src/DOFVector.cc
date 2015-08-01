@@ -79,7 +79,7 @@ namespace AMDiS
     int nBasFcts = basFcts->getNumber();
   
     std::vector<DegreeOfFreedom> localIndices(nBasFcts);
-    DimVec<double> lambda(dim, NO_INIT);
+    DimVec<double> lambda(dim);
   
     ElInfo *elInfo = mesh->createNewElInfo();
     double value = 0.0;
@@ -130,7 +130,7 @@ namespace AMDiS
     int nBasFcts = basFcts->getNumber();
   
     std::vector<DegreeOfFreedom> localIndices(nBasFcts);
-    DimVec<double> lambda(dim, NO_INIT);  
+    DimVec<double> lambda(dim);  
     ElInfo *elInfo = mesh->createNewElInfo();
     WorldVector<double> value(DEFAULT_SIZE, 0.0);
     bool inside = false;
@@ -352,7 +352,7 @@ namespace AMDiS
       }
     } else {
       const BasisFunction *basFcts = feSpace->getBasisFcts();
-      DimMat<double> D2Phi(dim, NO_INIT);
+      DimMat<double> D2Phi(dim, dim);
 
       for (int iq = 0; iq < nPoints; iq++) {
 	for (int k = 0; k < parts; k++)
@@ -443,7 +443,7 @@ namespace AMDiS
       }
     } else {
       if (basisFcts->isNodal()) {
-      DimVec<double> coords2(feSpace->getMesh()->getDim(), NO_INIT);
+      DimVec<double> coords2(feSpace->getMesh()->getDim());
       DualTraverse dualStack;
       ElInfo *elInfo1, *elInfo2;
       ElInfo *elInfoSmall, *elInfoLarge;

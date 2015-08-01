@@ -369,4 +369,24 @@ namespace AMDiS
     friend class DOFVector<WorldVector<double> >;
   };
 
+
+  namespace traits
+  {
+    template <>
+    struct category< AMDiS::DOFMatrix > 
+    {
+      typedef tag::matrix  tag;
+      typedef MTLTypes::value_type  value_type;
+      typedef MTLTypes::size_type   size_type;
+    };
+  }
+  
+  inline size_t size(DOFMatrix const& A) { return size(A.getBaseMatrix()); }
+  
+  inline size_t num_rows(DOFMatrix const& A) { return num_rows(A.getBaseMatrix()); }
+  
+  inline size_t num_cols(DOFMatrix const& A) { return num_cols(A.getBaseMatrix()); } 
+  
+  inline void set_to_zero(DOFMatrix& A) { A.clear(); }
+  
 } // end namespace AMDiS

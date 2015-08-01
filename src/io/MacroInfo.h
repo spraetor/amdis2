@@ -3,9 +3,11 @@
 #pragma once
 
 #include <deque>
-#include "AMDiS_fwd.h"
-#include "AMDiS_base.h"
-#include "Global.h"
+
+#include <AMDiS_fwd.h>
+#include <AMDiS_base.h>
+#include <MatrixVector_fwd.h>
+#include <Global.h>
 
 namespace AMDiS 
 {
@@ -74,8 +76,13 @@ namespace AMDiS
     }
 
   protected:
-    /// Reads indices from macro file
-    int read_indices(FILE *file, Vector<int> &id);
+    /********************************************************************************/
+    /*  read_indices()  reads dim + 1 indices from  file  into  id[0 - dim],        */
+    /*    returns true if dim + 1 inputs arguments could be read successfully by    */
+    /*    fscanf(), else false                                                      */
+    /********************************************************************************/  
+    template <class VectorType>
+    bool read_indices(FILE *file, VectorType& id);
 
     bool initialized;
   };

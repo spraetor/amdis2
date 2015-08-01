@@ -41,7 +41,7 @@ public:
     : dim(dim_),
       nVelDOFs(0),
       lamVec(dim_, dim_ + 1, NO_INIT),
-      permutation(dim_, NO_INIT)
+      permutation(dim_)
   {
     indexFace = -1;
   }

@@ -172,8 +172,8 @@ namespace AMDiS { namespace io {
 	}
 
 	// create periodic info
-	DimVec<WorldVector<double> > periodicCoordsEl1(dim - 1, NO_INIT);
-	DimVec<WorldVector<double> > periodicCoordsEl2(dim - 1, NO_INIT);
+	DimVec<WorldVector<double> > periodicCoordsEl1(dim - 1);
+	DimVec<WorldVector<double> > periodicCoordsEl2(dim - 1);
 
 	Element *element1 = const_cast<Element*>((*(mel + el1))->getElement());
 	Element *element2 = const_cast<Element*>((*(mel + el2))->getElement());
@@ -415,7 +415,7 @@ namespace AMDiS { namespace io {
     FUNCNAME("MacroReader::computeNeighbours()");
 
     int dim = mesh->getDim();
-    FixVec<DegreeOfFreedom*, DIMEN> dof(dim, NO_INIT);
+    FixVec<DegreeOfFreedom*, DIMEN> dof(dim);
 
     for (int i = 0; i < mesh->getNumberOfLeaves(); i++) {
       for (int k = 0; k < mesh->getGeo(NEIGH); k++) {

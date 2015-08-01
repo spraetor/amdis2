@@ -414,75 +414,16 @@ INSTALL(FILES ${HEADERS}
 	DESTINATION include/amdis/)
 list(APPEND deb_add_dirs "include/amdis")
 
-FILE(GLOB HEADERS "${SOURCE_DIR}/config/*.h*")
-INSTALL(FILES ${HEADERS} 
-	DESTINATION include/amdis/config/)
-list(APPEND deb_add_dirs "include/amdis/config")
-
-FILE(GLOB HEADERS "${SOURCE_DIR}/parallel/*.h*")
-INSTALL(FILES ${HEADERS} 
-	DESTINATION include/amdis/parallel/)
-list(APPEND deb_add_dirs "include/amdis/parallel")
-
-FILE(GLOB HEADERS "${SOURCE_DIR}/nonlin/*.h*")
-INSTALL(FILES ${HEADERS} 
-	DESTINATION include/amdis/nonlin/)
-list(APPEND deb_add_dirs "include/amdis/nonlin")
-
-FILE(GLOB HEADERS "${SOURCE_DIR}/est/*.h*")
-INSTALL(FILES ${HEADERS} 
-	DESTINATION include/amdis/est/)
-list(APPEND deb_add_dirs "include/amdis/est")
-
-FILE(GLOB HEADERS "${SOURCE_DIR}/expressions/*.h*")
-INSTALL(FILES ${HEADERS} 
-	DESTINATION include/amdis/expressions/)
-list(APPEND deb_add_dirs "include/amdis/expressions")
-
-FILE(GLOB HEADERS "${SOURCE_DIR}/operations/*.h*")
-INSTALL(FILES ${HEADERS} 
-	DESTINATION include/amdis/operations/)
-list(APPEND deb_add_dirs "include/amdis/operations")
-
-FILE(GLOB HEADERS "${SOURCE_DIR}/traits/*.h*")
-INSTALL(FILES ${HEADERS} 
-	DESTINATION include/amdis/traits/)
-list(APPEND deb_add_dirs "include/amdis/traits")
-
-FILE(GLOB HEADERS "${SOURCE_DIR}/utility/*.h*")
-INSTALL(FILES ${HEADERS} 
-	DESTINATION include/amdis/utility/)
-list(APPEND deb_add_dirs "include/amdis/utility")
-
-FILE(GLOB HEADERS "${SOURCE_DIR}/time/*.h*")
-INSTALL(FILES ${HEADERS} 
-	DESTINATION include/amdis/time/)
-list(APPEND deb_add_dirs "include/amdis/time")
-
-FILE(GLOB HEADERS "${SOURCE_DIR}/solver/*.h*")
-INSTALL(FILES ${HEADERS} 
-	DESTINATION include/amdis/solver)
-list(APPEND deb_add_dirs "include/amdis/solver")
-
-FILE(GLOB HEADERS "${SOURCE_DIR}/solver/details/*.h*")
-INSTALL(FILES ${HEADERS} 
-        DESTINATION include/amdis/solver/details)
-list(APPEND deb_add_dirs "include/amdis/solver/details")
-
-FILE(GLOB HEADERS "${SOURCE_DIR}/solver/itl/*.h*")
-INSTALL(FILES ${HEADERS} 
-	DESTINATION include/amdis/solver/itl)
-list(APPEND deb_add_dirs "include/amdis/solver/itl")
-
-FILE(GLOB HEADERS "${SOURCE_DIR}/io/*.h*")
-INSTALL(FILES ${HEADERS}
-	DESTINATION include/amdis/io)
-list(APPEND deb_add_dirs "include/amdis/io")
-	
-FILE(GLOB HEADERS "${SOURCE_DIR}/io/detail/*h*")
-INSTALL(FILES ${HEADERS}
-        DESTINATION include/amdis/io/detail)
-list(APPEND deb_add_dirs "include/amdis/io/detail")        
+set(include_sub_dirs "config" "parallel" "nonlin" "est" "expressions" 
+					 "matrix_vector" "matrix_vector/expr" "operations" 
+					 "traits" "utility" "time" "solver" "solver/details"
+					 "solver/itl" "io" "io/detail")
+				 
+FOREACH(sub_dir ${include_sub_dirs})
+	FILE(GLOB HEADERS "${SOURCE_DIR}/${sub_dir}/*.h*")
+	INSTALL(FILES ${HEADERS} DESTINATION include/amdis/${sub_dir}/)
+	list(APPEND deb_add_dirs "include/amdis/${sub_dir}")
+ENDFOREACH(sub_dir)
 
 FILE(GLOB HEADERS "${MUPARSER_SOURCE_DIR}/include/*.h")
 INSTALL(FILES ${HEADERS}
@@ -517,10 +458,10 @@ INSTALL(DIRECTORY ${AMDIS_SOURCE_DIR}/lib/mtl4/
 FILE(GLOB_RECURSE mtl4_files 
 		RELATIVE ${AMDIS_SOURCE_DIR}/lib/mtl4/boost/ 
 		${AMDIS_SOURCE_DIR}/lib/mtl4/boost/*.hpp)
-foreach(mtl4_file in ${mtl4_files})
- get_filename_component(mtl4File_path ${mtl4_file} PATH)
- list(APPEND deb_add_dirs "include/amdis/mtl4/boost/${mtl4File_path}")
-endforeach(mtl4_file)
+FOREACH(mtl4_file in ${mtl4_files})
+	get_filename_component(mtl4File_path ${mtl4_file} PATH)
+	list(APPEND deb_add_dirs "include/amdis/mtl4/boost/${mtl4File_path}")
+ENDFOREACH(mtl4_file)
 
 #install documentation
 FILE(GLOB DOCS "${AMDIS_SOURCE_DIR}/doc/*.pdf")

@@ -40,7 +40,7 @@ ElementUpdate_3d::calcElementUpdate(
   double uhVal0_orig;       // original value of vertex 0 after sort and
                             // translation of vertices but before
                             // translation of function values to zero
-  FixVec<WorldVector<double> *, VERTEX> vert(dim, NO_INIT);
+  FixVec<WorldVector<double> *, VERTEX> vert(dim);
   for (int i=0; i<=dim; ++i) {
     vert[i] = vert_[i];
   } 
@@ -620,8 +620,8 @@ ElementUpdate_3d::calcFaceUpdate(WorldVector<double> *A2d,
 				 double &uhValB2d)
 {
   int dim = A2d->getSize();
-  FixVec<WorldVector<double> *, VERTEX> vert2d(dim, NO_INIT);
-  FixVec<double, VERTEX> uhVal2d(dim, NO_INIT);
+  FixVec<WorldVector<double> *, VERTEX> vert2d(dim);
+  FixVec<double, VERTEX> uhVal2d(dim);
 
   vert2d[0] = A2d;
   vert2d[1] = B2d;

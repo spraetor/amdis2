@@ -1,5 +1,7 @@
 #pragma once
 
+#include <traits/meta_basic.hpp>
+
 namespace AMDiS 
 {
   /// internal used indices to represent the different geometrical objects.
@@ -49,4 +51,35 @@ namespace AMDiS
   /// Returns the dimension of GeoIndex ind for dimension dim
 #define DIM_OF_INDEX(ind, dim) ((static_cast<int>(ind) == 0) ? dim : static_cast<int>(ind) - 1)
 
+  
+  
+  /// maximal size to allocate for container types, based on GeoIndex
+  template <GeoIndex> struct MaxSize : int_<-1> {};
+  
+  /// \cond HIDDEN_SYMBOLS
+  template <> struct MaxSize<CENTER> : int_< 1> {};
+  
+#ifdef DOW
+  template <> struct MaxSize<WORLD>  : int_<DOW> {};
+#else
+  template <> struct MaxSize<WORLD>  : int_< 3> {}; // upper bound
+#endif
+    
+#ifdef DIM
+  template <> struct MaxSize<DIMEN>  : int_<DIM> {};
+  template <> struct MaxSize<VERTEX> : int_<DIM+1> {};
+  template <> struct MaxSize<PARTS>  : int_<DIM+1> {};
+  template <> struct MaxSize<NEIGH>  : int_<DIM+1> {};
+  template <> struct MaxSize<EDGE>   : int_<(DIM==1?1:(DIM==2?3:6))> {};
+  template <> struct MaxSize<FACE>   : int_<(DIM==1?0:(DIM==2?1:4))> {};
+#else
+  // upper bounds
+  template <> struct MaxSize<DIMEN>  : int_< 3> {};
+  template <> struct MaxSize<VERTEX> : int_< 4> {};
+  template <> struct MaxSize<PARTS>  : int_< 4> {};
+  template <> struct MaxSize<NEIGH>  : int_< 4> {};
+  template <> struct MaxSize<EDGE>   : int_< 6> {};
+  template <> struct MaxSize<FACE>   : int_< 4> {};
+#endif
+  /// \endcond
 } // end namespace AMDiS

@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "AMDiS_fwd.h"
+#include <AMDiS_fwd.h>
 #include <traits/traits_fwd.hpp>
 
 namespace AMDiS 
@@ -12,8 +12,8 @@ namespace AMDiS
     template <typename T>
     struct size<T, typename enable_if< is_scalar<T> >::type >
     {
-	typedef size_t type;
-	type operator()(const T& v) const { return 1; }
+    	typedef size_t type;
+    	type operator()(const T& v) const { return 1; }
     };
       
 // == vectors ===
@@ -21,16 +21,16 @@ namespace AMDiS
     template <typename T>
     struct size<T, typename enable_if< and_< is_vector<T>, is_mtl<T> > >::type > 
     {
-	typedef typename T::size_type type;
-	type operator()(const T& v) const { return ::mtl::vector::size(v); }
+    	typedef typename T::size_type type;
+    	type operator()(const T& v) const { return ::mtl::vector::size(v); }
     };
       
     /// size implementation for AMDiS::DOFVector
     template <typename Value>
     struct size< AMDiS::DOFVector<Value> > 
     {
-	typedef typename category< AMDiS::DOFVector<Value> >::size_type   type;
-	type operator()(const AMDiS::DOFVector<Value>& v) const { return v.getUsedSize(); }
+    	typedef typename category< AMDiS::DOFVector<Value> >::size_type   type;
+    	type operator()(const AMDiS::DOFVector<Value>& v) const { return v.getUsedSize(); }
     };
   
 // === matrices ===
@@ -38,24 +38,8 @@ namespace AMDiS
     template <typename T>
     struct size<T, typename enable_if< and_< is_matrix<T>, is_mtl<T> > >::type > 
     {
-	typedef typename T::size_type type;
-	type operator()(const T& v) const { return ::mtl::matrix::size(v); }
-    };
-      
-    /// size implementation for AMDiS::DOFMatrix
-    template <>
-    struct size< AMDiS::DOFMatrix > 
-    {
-	typedef category< AMDiS::DOFMatrix >::size_type   type;
-	type operator()(const AMDiS::DOFMatrix& v) const { return mtl::matrix::size(v.getBaseMatrix()); }
-    };
-      
-    /// size implementation for AMDiS::BlockMTLMatrix
-    template <>
-    struct size< AMDiS::BlockMTLMatrix > 
-    {
-	typedef category< AMDiS::BlockMTLMatrix >::size_type   type;
-	type operator()(const AMDiS::BlockMTLMatrix& M) const { return (M.n) * (M.m); }
+    	typedef typename T::size_type type;
+    	type operator()(const T& v) const { return ::mtl::matrix::size(v); }
     };
     
 // === multi-vector or multi-matrix ===
@@ -64,20 +48,20 @@ namespace AMDiS
     template <typename FixVecType>
     struct size< AMDiS::VectorOfFixVecs<FixVecType> > 
     {
-	typedef typename category< AMDiS::VectorOfFixVecs<FixVecType> >::size_type   type;
-	type operator()(const AMDiS::VectorOfFixVecs<FixVecType>& v) const 
-	{ return v.getSize() * v.getSizeOfFixVec(); }
+    	typedef typename category< AMDiS::VectorOfFixVecs<FixVecType> >::size_type   type;
+    	type operator()(const AMDiS::VectorOfFixVecs<FixVecType>& v) const 
+    	{ return v.getSize() * v.getSizeOfFixVec(); }
     };
     
     /// AMDiS::MatrixOfFixVecs
     template <typename FixVecType>
     struct size< AMDiS::MatrixOfFixVecs<FixVecType> >
     {
-	typedef typename category< AMDiS::MatrixOfFixVecs<FixVecType> >::size_type   type;
-	type operator()(const AMDiS::MatrixOfFixVecs<FixVecType>& v) const 
-	{ 
-	  return v.getNumberOfRows() == 0 ? 0 : v.getNumberOfRows() * v.getNumberOfColumns() * v[0].getSizeOfFixVec(); 
-	}
+    	typedef typename category< AMDiS::MatrixOfFixVecs<FixVecType> >::size_type   type;
+    	type operator()(const AMDiS::MatrixOfFixVecs<FixVecType>& v) const 
+    	{ 
+    	  return v.getNumberOfRows() == 0 ? 0 : v.getNumberOfRows() * v.getNumberOfColumns() * v[0].getSizeOfFixVec(); 
+    	}
     };
     
   } // end namespace traits

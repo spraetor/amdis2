@@ -1497,7 +1497,7 @@ namespace AMDiS
     int nPoints = quadrature->getNumPoints();
     int nBasFcts = basisFunctions->getNumber();
 
-    DimVec<double> lambda(dim, NO_INIT);
+    DimVec<double> lambda(dim);
 
     // ----- initialize phi ---------------------------------------------
 

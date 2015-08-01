@@ -302,7 +302,7 @@ ElementLevelSet::calcIntersecNormal_2d(WorldVector<double> &normalVec)
   double factor = 0.01*d/elSize;
   WorldVector<double> tmpPoint;
   int cntr = 0;
-  DimVec<double> lambda(dim, NO_INIT);
+  DimVec<double> lambda(dim);
   
   while (1) {
     ++cntr;
@@ -377,7 +377,7 @@ ElementLevelSet::calcIntersecNormal_3d(WorldVector<double> &normalVec)
   double factor = 0.01*d/elSize;
   WorldVector<double> tmpPoint;
   int cntr = 0;
-  DimVec<double> lambda(dim, NO_INIT);
+  DimVec<double> lambda(dim);
   
   while (1) {
     ++cntr;

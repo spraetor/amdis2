@@ -535,7 +535,7 @@ namespace AMDiS
     int numBasFcts = basFcts->getNumber();
 
     std::vector<DegreeOfFreedom> localIndices(numBasFcts);
-    DimVec<double> lambda(dim, NO_INIT);
+    DimVec<double> lambda(dim);
 
     ElInfo *elInfo = mesh->createNewElInfo();
     idx = 0;

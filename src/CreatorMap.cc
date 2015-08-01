@@ -3,7 +3,7 @@
 #include "MTL4Types.h"
 #include "solver/LinearSolverInterface.h"
 #include "solver/ITL_Solver.h"
-#include "solver/BITL_Solver.h"
+// #include "solver/BITL_Solver.h"
 #include "solver/ITL_Preconditioner.h"
 #include "solver/UmfPackSolver.h"
 #include "solver/KrylovPreconditioner.h"
@@ -99,7 +99,7 @@ namespace AMDiS
     
     // creators for block krylov solvers
     // _________________________________________________________________________
-    
+#if 0
     creator = new B_CGSolver::Creator;
     addCreator("bmtl_cg", creator);
 
@@ -142,7 +142,7 @@ namespace AMDiS
     creator = new B_PreOnly::Creator;
     addCreator("bmtl_preonly", creator);
     addCreator("bmtl_richardson", creator);
-    
+#endif
     // creators for PETSc solvers
     // _________________________________________________________________________
     
@@ -195,14 +195,14 @@ namespace AMDiS
     addCreator("solver", creator);
   }
 
-
+#if 0
   template<>
   void CreatorMap<ITL_PreconditionerBase<BlockMTLMatrix, MTLTypes::MTLVector> >::addDefaultCreators()
   {
     addCreator("no", new BlockIdentityPreconditioner::Creator);
     addCreator("diag", new BlockDiagonalPreconditioner::Creator);
   }
-
+#endif
 
 #if defined HAVE_SEQ_PETSC
   template<>

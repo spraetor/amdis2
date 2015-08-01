@@ -11,12 +11,11 @@
 #include <boost/numeric/mtl/matrix/morton_dense.hpp>
 
 // AMDiS headers
-#include "AMDiS_fwd.h"
+#include <AMDiS_fwd.h>
+#include <AMDiS_base.h>
 #include <traits/traits_fwd.hpp>
 #include "tag.hpp"
 #include "types.hpp"
-#include "DOFMatrix.h"
-#include "solver/BlockMTLMatrix.h"
 
 namespace AMDiS 
 {
@@ -113,22 +112,6 @@ namespace AMDiS
       typedef tag::matrix  tag;
       typedef typename mtl::morton_dense<T, BitMask, Parameters>::value_type value_type;
       typedef typename mtl::morton_dense<T, BitMask, Parameters>::size_type  size_type;
-    };
-  
-    template <>
-    struct category< AMDiS::DOFMatrix > 
-    {
-      typedef tag::matrix  tag;
-      typedef AMDiS::DOFMatrix::value_type  value_type;
-      typedef AMDiS::DOFMatrix::size_type   size_type;
-    };
-  
-    template <>
-    struct category< AMDiS::BlockMTLMatrix > 
-    {
-      typedef tag::matrix  tag;
-      typedef AMDiS::DOFMatrix::value_type  value_type;
-      typedef AMDiS::DOFMatrix::size_type   size_type;
     };
   
     template <class Matrix>

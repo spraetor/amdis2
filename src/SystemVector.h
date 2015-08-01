@@ -7,6 +7,7 @@
 
 #include "AMDiS_fwd.h"
 #include "AMDiS_base.h"
+#include "MatrixVector_fwd.h"
 #include "Log.h"
 
 namespace AMDiS 
@@ -146,6 +147,7 @@ namespace AMDiS
   /// addition of two system vectors
   SystemVector operator+(const SystemVector& x, const SystemVector& y);
 
+// TODO: replace norm functions with const arguments
   /// Norm of system vector.
   inline double norm(SystemVector* x);
 
@@ -169,9 +171,15 @@ namespace AMDiS
   }
   
   /// Returns SystemVector::getUsedSize().
-  inline int size(SystemVector* vec) 
+  inline size_t size(SystemVector const& vec) 
   {
-    return vec->getUsedSize();
+    return static_cast<size_t>(vec.getUsedSize());
+  }
+  
+  /// Returns SystemVector::getUsedSize().
+  inline size_t size(SystemVector const* vec) 
+  {
+    return size(*vec);
   }
 
 } // end namespace AMDiS

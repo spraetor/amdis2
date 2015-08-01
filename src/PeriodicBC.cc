@@ -66,7 +66,7 @@ namespace AMDiS
 
       // create dof permutation
       DimVec<double> *lambda;
-      DimVec<double> newLambda(dim, NO_INIT);
+      DimVec<double> newLambda(dim);
 
       DegreeOfFreedom *mapping = new DegreeOfFreedom[nBasFcts]; 
 
@@ -132,13 +132,13 @@ namespace AMDiS
       return;
     
     DOFAdmin *admin = rowFeSpace->getAdmin();
-    FixVec<int, WORLD> elFace(dim, NO_INIT);
-    FixVec<int, WORLD> neighFace(dim, NO_INIT);
-    DimVec<int> vertexPermutation(dim, NO_INIT);
+    FixVec<int, WORLD> elFace(dim);
+    FixVec<int, WORLD> neighFace(dim);
+    DimVec<int> vertexPermutation(dim);
     const BasisFunction *basFcts = rowFeSpace->getBasisFcts();
     int num = basFcts->getNumber();
     Element *element = elInfo->getElement();
-    DimVec<DegreeOfFreedom> periodicDOFs(dim - 1, NO_INIT);
+    DimVec<DegreeOfFreedom> periodicDOFs(dim - 1);
     GeoIndex sideGeoIndex = INDEX_OF_DIM(dim - 1, dim);
     std::vector<DegreeOfFreedom> neighIndices(num);
     

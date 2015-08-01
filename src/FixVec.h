@@ -46,7 +46,7 @@ namespace AMDiS
 
       vec.resize(size);
       for (int i = 0; i < size; i++)
-        vec[i] = new FixVecType(dim, NO_INIT);
+        vec[i] = new FixVecType(dim);
     }
 
     /// constructs a VectorOfFixVecs via an value list.  dim is passed to 
@@ -128,7 +128,7 @@ namespace AMDiS
     {
       vec.resize(newsize);
       for (int i = size; i < newsize; i++)
-      	vec[i] = new FixVecType(dim, NO_INIT);
+      	vec[i] = new FixVecType(dim);
       size = newsize;
     }
 

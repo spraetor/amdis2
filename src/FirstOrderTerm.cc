@@ -20,12 +20,12 @@ namespace AMDiS
 
     if (num_rows(grdUhAtQP) > 0) {
       for (int iq = 0; iq < nPoints; iq++) {
-	double resultQP = 0.0;
-	for (int i = 0; i < dow; i++)
-	  resultQP += grdUhAtQP[iq][i];
-	
-	result[iq] += resultQP * factor;
-	// result[iq] += sum(grdUhAtQP[iq]) * factor;
+      	double resultQP = 0.0;
+      	for (int i = 0; i < dow; i++)
+      	  resultQP += grdUhAtQP[iq][i];
+      	
+      	result[iq] += resultQP * factor;
+      	// result[iq] += sum(grdUhAtQP[iq]) * factor;
       }
     }
   }
@@ -40,7 +40,7 @@ namespace AMDiS
     for (int i = 0; i < dim; i++) {
       double val = 0.0;
       for (int j = 0; j < dimOfWorld; j++)
-	val += Lambda[i][j];
+        val += Lambda[i][j];
 
       Lb[i] += val * factor;
       // Lb[i] += sum(Lambda[i]) * factor;

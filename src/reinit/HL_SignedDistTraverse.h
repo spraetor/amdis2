@@ -51,8 +51,8 @@ public:
       sDOld_DOF(NULL),
       update_DOF(NULL),
       tol_reached(false),
-      elVert(dim_, NO_INIT),
-      uhVal(dim_, NO_INIT)
+      elVert(dim_),
+      uhVal(dim_)
   {
     FUNCNAME("HL_SignedDistTraverse::HL_SignedDistTraverse");
 

@@ -2,12 +2,12 @@
 
 #pragma once
 
-#include "solver/SolverMatrix.h"
-#include "solver/Mapper.h"
-#include "MTL4Types.h"
+#include <solver/SolverMatrix.h>
+#include <solver/Mapper.h>
+#include <MTL4Types.h>
 
-namespace AMDiS {
-  
+namespace AMDiS 
+{
   /// A wrapper for AMDiS::SolverMatrix to be used in MTL/ITL solvers
   struct BlockMTLMatrix
   {
@@ -114,6 +114,7 @@ namespace AMDiS {
     std::vector<mtl::irange> r_rows, r_cols;
   };
   
+  
   namespace dispatch
   {
     template< typename M >
@@ -127,21 +128,37 @@ namespace AMDiS {
     }
     
   } // end namespace dispatch
+  
+  
+  namespace traits
+  {
+    template <>
+    struct category< BlockMTLMatrix > 
+    {
+      typedef tag::matrix  tag;
+      typedef MTLTypes::value_type  value_type;
+      typedef MTLTypes::size_type   size_type;
+    };
+  }
 
+
+  inline size_t size(const BlockMTLMatrix& A) { return (A.n) * (A.m); }
+  
+  inline size_t num_rows(const BlockMTLMatrix& A) { return A.n; }
+  
+  inline size_t num_cols(const BlockMTLMatrix& A) { return A.m; }
+  
+  inline void set_to_zero(BlockMTLMatrix& A) {}
+  
 } // end namespace AMDiS
-
-
-inline AMDiS::BlockMTLMatrix::size_type size(const AMDiS::BlockMTLMatrix& A) { return (A.n) * (A.m); }
-inline AMDiS::BlockMTLMatrix::size_type num_rows(const AMDiS::BlockMTLMatrix& A) { return A.n; }
-inline AMDiS::BlockMTLMatrix::size_type num_cols(const AMDiS::BlockMTLMatrix& A) { return A.m; }
 
 namespace mtl 
 {
   template <>
   struct Collection<AMDiS::BlockMTLMatrix>
   {
-    typedef double value_type;
-    typedef AMDiS::BlockMTLMatrix::size_type size_type;
+    typedef AMDiS::MTLTypes::value_type value_type;
+    typedef AMDiS::MTLTypes::size_type size_type;
   };
 
   namespace ashape 

@@ -16,6 +16,7 @@
 
 namespace AMDiS 
 {  
+#if 0
   // (v1' * v2)
   // ___________________________________________________________________________
   
@@ -73,7 +74,7 @@ namespace AMDiS
   {
     return dot(v1, v2);
   }
-  
+#endif
   
   namespace functors 
   {
@@ -81,14 +82,14 @@ namespace AMDiS
     template<typename T1, typename T2>
     struct Inner : FunctorBase
     {
-      typedef typename result_of::dot<T1, T2, typename traits::category<T1>::tag, typename traits::category<T2>::tag>::type result_type;      
+      typedef typename traits::mult_type<T1, T2>::type result_type;      
       int getDegree(int d0, int d1) const { return d0+d1; }
       
       static result_type eval(const T1 &v1, const T2& v2) { return dot(v1, v2); }
       result_type operator()(const T1 &v1, const T2& v2) const { return eval(v1, v2); }
     };
   }
-  
+#if 0
     
   // (v' * v)
   // ___________________________________________________________________________
@@ -117,7 +118,7 @@ namespace AMDiS
   {
     return unary_dot_dispatch(t, typename traits::category<T>::tag());
   }
-  
+#endif
   
   namespace functors 
   {
@@ -125,7 +126,7 @@ namespace AMDiS
     template<typename T>
     struct UnaryDot : FunctorBase
     {
-      typedef typename result_of::unary_dot<T, typename traits::category<T>::tag>::type result_type;      
+      typedef typename traits::mult_type<T, T>::type result_type;      
       int getDegree(int d0) const { return 2*d0; }
       
       static result_type eval(const T& v) { return unary_dot(v); }
@@ -186,7 +187,7 @@ namespace AMDiS
     typedef typename traits::category<T2>::tag tag2_;
     return cross_dispatch(v1, v2, tag1_(), tag2_());
   }
-  
+// #endif
   
   namespace functors 
   {
@@ -202,11 +203,12 @@ namespace AMDiS
       result_type operator()(const T1 &v1, const T2& v2) const { return eval(v1, v2); }
     };
   }
-#endif
+
+// #if 0
   
   // (v1 * v2')    (only for WorldVector)
   // ___________________________________________________________________________
-    
+#endif
   namespace result_of
   {
     template <typename T1, typename T2, typename Tag1, typename Tag2> struct outer {};
@@ -224,6 +226,7 @@ namespace AMDiS
       : boost::mpl::identity<Vector> {};
   }
   
+#if 0
   template <typename T>
   WorldMatrix<T>
   inline outer_dispatch(const WorldVector<T>& v1, const WorldVector<T>& v2, tag::vector, tag::vector)
@@ -255,7 +258,7 @@ namespace AMDiS
     typedef typename traits::category<T2>::tag tag2_;
     return outer_dispatch(v1, v2, tag1_(), tag2_());
   }
-  
+#endif
   
   namespace functors 
   {
@@ -272,5 +275,4 @@ namespace AMDiS
       result_type operator()(const WorldVector<Value1> &v1, const WorldVector<Value2>& v2) const { return eval(v1, v2); }
     };
   }
-  
 } // end namespace AMDiS

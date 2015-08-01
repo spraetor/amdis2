@@ -90,22 +90,17 @@ namespace AMDiS
     nVertices = 0;
     initialized = false;
   }
-
-
-  /********************************************************************************/
-  /*  read_indices()  reads dim + 1 indices from  file  into  id[0 - dim],        */
-  /*    returns true if dim + 1 inputs arguments could be read successfully by    */
-  /*    fscanf(), else false                                                      */
-  /********************************************************************************/
-
-  int MacroInfo::read_indices(FILE *file, Vector<int> &id)
+  
+  
+  template <class VectorType>
+  bool MacroInfo::read_indices(FILE *file, VectorType& id)
   {
     int dim = mesh->getDim();
     TEST_EXIT_DBG(id.getSize() == dim+1)("Vector has wrong dimension!");
 
     for (int i = 0; i <= dim; i++)
       if (fscanf(file, "%d", &id[i]) != 1)
-	return false;
+        return false;
 
     return true;
   }
@@ -260,272 +255,272 @@ namespace AMDiS
       switch (sort_key[i_key]) {
 	
       case 0:
-	// line "DIM"
-	result = fscanf(file, "%*s %d", &dim);
-	TEST_EXIT(result == 1)("cannot read DIM correctly in file %s\n", filename.c_str());
-
-	ind = new DimVec<int>(dim, NO_INIT);
-	ind_neigh = new FixVec<int, NEIGH>(dim, NO_INIT);
-
-	key_def[0] = true;
-	break;
-
-      case 1:
-	// line "DIM_OF_WORLD"
-	result = fscanf(file, "%*s %d", &dow);
-	TEST_EXIT(result == 1)
-	  ("cannot read Global::getGeo(WORLD) correctly in file %s\n", filename.c_str());
-	TEST_EXIT(dow == Global::getGeo(WORLD))
-	  ("dimension of world = %d != Global::getGeo(WORLD) = %d\n", 
-	   dow, Global::getGeo(WORLD));
-
-	key_def[1] = true;
-	break;
+      	// line "DIM"
+      	result = fscanf(file, "%*s %d", &dim);
+      	TEST_EXIT(result == 1)("cannot read DIM correctly in file %s\n", filename.c_str());
+      
+      	ind = new DimVec<int>(dim);
+      	ind_neigh = new FixVec<int, NEIGH>(dim);
+      
+      	key_def[0] = true;
+      	break;
+      
+            case 1:
+      	// line "DIM_OF_WORLD"
+      	result = fscanf(file, "%*s %d", &dow);
+      	TEST_EXIT(result == 1)
+      	  ("cannot read Global::getGeo(WORLD) correctly in file %s\n", filename.c_str());
+      	TEST_EXIT(dow == Global::getGeo(WORLD))
+      	  ("dimension of world = %d != Global::getGeo(WORLD) = %d\n", 
+      	   dow, Global::getGeo(WORLD));
+      
+      	key_def[1] = true;
+      	break;
 
       case 2:
-	// line "number of vertices"
-	result = fscanf(file, "%*s %*s %*s %d", &nVertices);
-	TEST_EXIT(result == 1)
-	  ("cannot read number of vertices correctly in file %s\n", filename.c_str());
-	TEST_EXIT(nVertices > 0)
-	  ("number of vertices = %d must be bigger than 0\n", nVertices);
-
-	key_def[2] = true;
-	if (key_def[3])
-	  fill(mesh, nElements, nVertices);
-	break;
+      	// line "number of vertices"
+      	result = fscanf(file, "%*s %*s %*s %d", &nVertices);
+      	TEST_EXIT(result == 1)
+      	  ("cannot read number of vertices correctly in file %s\n", filename.c_str());
+      	TEST_EXIT(nVertices > 0)
+      	  ("number of vertices = %d must be bigger than 0\n", nVertices);
+      
+      	key_def[2] = true;
+      	if (key_def[3])
+      	  fill(mesh, nElements, nVertices);
+      	break;
 
       case 3:
-	// line "number of elements"
-	result = fscanf(file, "%*s %*s %*s %d", &nElements);
-	TEST_EXIT(result == 1)
-	  ("cannot read number of elements correctly in file %s\n", filename.c_str());
-	TEST_EXIT(nElements > 0)
-	  ("number of elements = %d must be bigger than 0\n", nElements);
-
-	key_def[3] = true;
-	if (key_def[2])
-	  fill(mesh, nElements, nVertices);
-	break;
+      	// line "number of elements"
+      	result = fscanf(file, "%*s %*s %*s %d", &nElements);
+      	TEST_EXIT(result == 1)
+      	  ("cannot read number of elements correctly in file %s\n", filename.c_str());
+      	TEST_EXIT(nElements > 0)
+      	  ("number of elements = %d must be bigger than 0\n", nElements);
+      
+      	key_def[3] = true;
+      	if (key_def[2])
+      	  fill(mesh, nElements, nVertices);
+      	break;
 
       case 4:
-	// block "vertex coordinates"
-	result = fscanf(file, "%*s %*s");
-	for (int i = 0; i < nVertices; i++) {
-	  for (j = 0; j <Global::getGeo(WORLD) ; j++) {
-	    result = fscanf(file, "%lf", &dbl);
-	    TEST_EXIT(result == 1)
-	      ("error while reading coordinates, check file %s\n", filename.c_str());
-	    coords[i][j] = dbl;
-	  }
-	}
-	key_def[4] = true;
-	break;
+      	// block "vertex coordinates"
+      	result = fscanf(file, "%*s %*s");
+      	for (int i = 0; i < nVertices; i++) {
+      	  for (j = 0; j <Global::getGeo(WORLD) ; j++) {
+      	    result = fscanf(file, "%lf", &dbl);
+      	    TEST_EXIT(result == 1)
+      	      ("error while reading coordinates, check file %s\n", filename.c_str());
+      	    coords[i][j] = dbl;
+      	  }
+      	}
+      	key_def[4] = true;
+      	break;
 
       case 5:
-	// block "element vertices"
-	result = fscanf(file, "%*s %*s");
-
-	// === Global number of vertices on a single element. ===
-
-	for (int i = 0; i < nElements; i++) {
-	  result = read_indices(file, *ind);
-	  TEST_EXIT(result)
-	    ("cannot read vertex indices of element %d in file %s\n",  i, filename.c_str());
-
-	  for (k = 0; k < mesh->getGeo(VERTEX); k++)
-	    mel_vertex[i][k] = (*ind)[k];
-	}
-
-	key_def[5] = true;
-	break;
+      	// block "element vertices"
+      	result = fscanf(file, "%*s %*s");
+      
+      	// === Global number of vertices on a single element. ===
+      
+      	for (int i = 0; i < nElements; i++) {
+      	  result = read_indices(file, *ind);
+      	  TEST_EXIT(result)
+      	    ("cannot read vertex indices of element %d in file %s\n",  i, filename.c_str());
+      
+      	  for (k = 0; k < mesh->getGeo(VERTEX); k++)
+      	    mel_vertex[i][k] = (*ind)[k];
+      	}
+      
+      	key_def[5] = true;
+      	break;
 
       case 6:
-	// block "element boundaries"
-	result = fscanf(file, "%*s %*s");
-
-
-	// === MEL boundary pointers. ===
-
-	for (int i = 0; i < nElements; i++) {  
-	  // boundary information of ith element 
-
-	  result = read_indices(file, *ind_neigh);
-	  TEST_EXIT(result)
-	    ("cannot read boundary type of element %d in file %s\n", i, filename.c_str());
-
-	  // fill boundary of macro-element
-	  io::MacroReader::fillMelBoundary(mesh, mel[i], *ind_neigh);
-	}
-
-	this->fillBoundaryInfo(mesh);
-                   
-	bound_set = true;
-	key_def[6] = true;
-	break;
+      	// block "element boundaries"
+      	result = fscanf(file, "%*s %*s");
+      
+      
+      	// === MEL boundary pointers. ===
+      
+      	for (int i = 0; i < nElements; i++) {  
+      	  // boundary information of ith element 
+      
+      	  result = read_indices(file, *ind_neigh);
+      	  TEST_EXIT(result)
+      	    ("cannot read boundary type of element %d in file %s\n", i, filename.c_str());
+      
+      	  // fill boundary of macro-element
+      	  io::MacroReader::fillMelBoundary(mesh, mel[i], *ind_neigh);
+      	}
+      
+      	this->fillBoundaryInfo(mesh);
+                         
+      	bound_set = true;
+      	key_def[6] = true;
+      	break;
 
       case 7:
-	// block "element neighbours"
-	result = fscanf(file, "%*s %*s");
-
-	// ===  Fill MEL neighbour pointers:                               ===
-	// ===    if they are specified in the file: read them from file,  ===
-	// ===    else init them by a call of fill_mel_neighbour()         ===
-
-	neigh_set = true;
-	for (int i = 0; i < nElements; i++) {
-	  //  neighbour information about ith element
-
-	  if (read_indices(file, *ind_neigh)) {
-	    io::MacroReader::fillMelNeigh(mel[i], mel, *ind_neigh);
-	  } else {
-	    // setting of neighbours fails
-
-	    neigh_set = false; 
-	    break;
-	  }
-	}
-
-	key_def[7] = true;
-	break;
+      	// block "element neighbours"
+      	result = fscanf(file, "%*s %*s");
+      
+      	// ===  Fill MEL neighbour pointers:                               ===
+      	// ===    if they are specified in the file: read them from file,  ===
+      	// ===    else init them by a call of fill_mel_neighbour()         ===
+      
+      	neigh_set = true;
+      	for (int i = 0; i < nElements; i++) {
+      	  //  neighbour information about ith element
+      
+      	  if (read_indices(file, *ind_neigh)) {
+      	    io::MacroReader::fillMelNeigh(mel[i], mel, *ind_neigh);
+      	  } else {
+      	    // setting of neighbours fails
+      
+      	    neigh_set = false; 
+      	    break;
+      	  }
+      	}
+      
+      	key_def[7] = true;
+      	break;
 
       case 8:
-	// block "element type"
-	result = fscanf(file, "%*s %*s");
-
-	// === MEL elType ===
-
-	if (dim == 2 || dim == 1)
-	  ERROR("there is no element type in 2d and 2d; ignoring data for elType\n");
-
-	for (int i = 0; i < nElements; i++) {
-	  result = fscanf(file, "%d", &j);
-	  TEST_EXIT(result == 1)
-	    ("cannot read elType of element %d in file %s\n", i, filename.c_str());
-	  if (dim == 3)
-	    (mel)[i]->elType = j;
-	}
-
-	key_def[8] = true;
-	break;
+      	// block "element type"
+      	result = fscanf(file, "%*s %*s");
+      
+      	// === MEL elType ===
+      
+      	if (dim == 2 || dim == 1)
+      	  ERROR("there is no element type in 2d and 2d; ignoring data for elType\n");
+      
+      	for (int i = 0; i < nElements; i++) {
+      	  result = fscanf(file, "%d", &j);
+      	  TEST_EXIT(result == 1)
+      	    ("cannot read elType of element %d in file %s\n", i, filename.c_str());
+      	  if (dim == 3)
+      	    (mel)[i]->elType = j;
+      	}
+      
+      	key_def[8] = true;
+      	break;
 
       case 9:
-	// block "projections"
-	{
-	  result = fscanf(file, "%*s");
-
-	  int nFaces = mesh->getGeo(FACE);
-	  int nEdgesAtBoundary = 0;
-
-	  for (k = 1; k < dim; k++)
-	    nEdgesAtBoundary += k;
-
-	  for (int i = 0; i < nElements; i++) {
-	    result = read_indices(file, *ind);
-	    TEST_EXIT(result)
-	      ("cannot read boundary projector of element %d in file %s\n", i, filename.c_str());
-	
-	    Projection *projector = Projection::getProjection((*ind)[0]);
-
-	    if (projector && projector->getType() == VOLUME_PROJECTION) {
-	      mel[i]->setProjection(0, projector);
-	    } else { // boundary projection
-	      for (j = 0; j < mesh->getGeo(NEIGH); j++) {
-		projector = Projection::getProjection((*ind)[j]);
-		if (projector) {
-		  mel[i]->setProjection(j, projector);
-		  if (dim > 2) {
-		    for (k = 0; k < nEdgesAtBoundary; k++) {
-		      int edgeNr = Global::getReferenceElement(dim)->getEdgeOfFace(j, k);
-		      mel[i]->setProjection(nFaces + edgeNr, projector);
-		    }
-		  }
-		}
-	      }
-	    }
-	  }
-	}
-	key_def[9] = true;
-	break;
+      	// block "projections"
+      	{
+      	  result = fscanf(file, "%*s");
+      
+      	  int nFaces = mesh->getGeo(FACE);
+      	  int nEdgesAtBoundary = 0;
+      
+      	  for (k = 1; k < dim; k++)
+      	    nEdgesAtBoundary += k;
+      
+      	  for (int i = 0; i < nElements; i++) {
+      	    result = read_indices(file, *ind);
+      	    TEST_EXIT(result)
+      	      ("cannot read boundary projector of element %d in file %s\n", i, filename.c_str());
+      	
+      	    Projection *projector = Projection::getProjection((*ind)[0]);
+      
+      	    if (projector && projector->getType() == VOLUME_PROJECTION) {
+      	      mel[i]->setProjection(0, projector);
+      	    } else { // boundary projection
+      	      for (j = 0; j < mesh->getGeo(NEIGH); j++) {
+      		projector = Projection::getProjection((*ind)[j]);
+      		if (projector) {
+      		  mel[i]->setProjection(j, projector);
+      		  if (dim > 2) {
+      		    for (k = 0; k < nEdgesAtBoundary; k++) {
+      		      int edgeNr = Global::getReferenceElement(dim)->getEdgeOfFace(j, k);
+      		      mel[i]->setProjection(nFaces + edgeNr, projector);
+      		    }
+      		  }
+      		}
+      	      }
+      	    }
+      	  }
+      	}
+      	key_def[9] = true;
+      	break;
 
       case 10:
-	// block "element region"
-	result = fscanf(file, "%*s %*s");
-
-	// === MEL regions. ===
-
-	for (int i = 0; i < nElements; i++) {
-	  result = fscanf(file, "%d", &j);
-	  TEST_EXIT(result == 1)
-	    ("cannot read region of element %d in file %s\n", i, filename.c_str());
-	  if (j >= 0) {
-	    Element *el = mel[i]->getElement();
-	    ElementRegion_ED *elementRegion = 
-	      new ElementRegion_ED(el->getElementData());
-	    elementRegion->setRegion(j);
-	    el->setElementData(elementRegion);
-	  }
-	}
-	key_def[10] = true;
-	break;
+      	// block "element region"
+      	result = fscanf(file, "%*s %*s");
+      
+      	// === MEL regions. ===
+      
+      	for (int i = 0; i < nElements; i++) {
+      	  result = fscanf(file, "%d", &j);
+      	  TEST_EXIT(result == 1)
+      	    ("cannot read region of element %d in file %s\n", i, filename.c_str());
+      	  if (j >= 0) {
+      	    Element *el = mel[i]->getElement();
+      	    ElementRegion_ED *elementRegion = 
+      	      new ElementRegion_ED(el->getElementData());
+      	    elementRegion->setRegion(j);
+      	    el->setElementData(elementRegion);
+      	  }
+      	}
+      	key_def[10] = true;
+      	break;
 
       case 11:
-	// block "surface region"
-	result = fscanf(file, "%*s %*s");
-	for (int i = 0; i < nElements; i++) {
-	  result = read_indices(file, *ind);
-	  TEST_EXIT(result)
-	    ("cannot read surface regions of element %d in file %s\n", i, filename.c_str());
-
-	  Element *el = mel[i]->getElement();
-
-	  for (j = 0; j < mesh->getGeo(NEIGH); j++) {
-	    if ((*ind)[j] >= 0) {
-	      SurfaceRegion_ED *surfaceRegion = 
-		new SurfaceRegion_ED(el->getElementData());
-	      surfaceRegion->setSide(j);
-	      surfaceRegion->setRegion((*ind)[j]);
-	      el->setElementData(surfaceRegion);
-	    }
-	  }
-	}
-	key_def[11] = true;
-	break;
+      	// block "surface region"
+      	result = fscanf(file, "%*s %*s");
+      	for (int i = 0; i < nElements; i++) {
+      	  result = read_indices(file, *ind);
+      	  TEST_EXIT(result)
+      	    ("cannot read surface regions of element %d in file %s\n", i, filename.c_str());
+      
+      	  Element *el = mel[i]->getElement();
+      
+      	  for (j = 0; j < mesh->getGeo(NEIGH); j++) {
+      	    if ((*ind)[j] >= 0) {
+      	      SurfaceRegion_ED *surfaceRegion = 
+      		new SurfaceRegion_ED(el->getElementData());
+      	      surfaceRegion->setSide(j);
+      	      surfaceRegion->setRegion((*ind)[j]);
+      	      el->setElementData(surfaceRegion);
+      	    }
+      	  }
+      	}
+      	key_def[11] = true;
+      	break;
 
       case 12:
-	// line "mesh name"
-	result = fscanf(file, "%*s %*s %*s");
-	break;
+      	// line "mesh name"
+      	result = fscanf(file, "%*s %*s %*s");
+      	break;
 
       case 13:
-	// line "time"
-	result = fscanf(file, "%*s %*s");
-	break;
+      	// line "time"
+      	result = fscanf(file, "%*s %*s");
+      	break;
 
       case 14:
-	// block "element neighbours inverse"
-	result = fscanf(file, "%*s %*s %*s");
-
-	// ===  Fill MEL neighbour pointers:                               ===
-	// ===    if they are specified in the file: read them from file,  ===
-	// ===    else init them by a call of fill_mel_neighbour()         ===
-
-	neigh_inverse_set = true;
-	for (int i = 0; i < nElements; i++) {
-	  //  neighbour information about ith element
-
-	  if (read_indices(file, *ind_neigh)) {
-	    io::MacroReader::fillMelNeighInv(mel[i], mel, *ind_neigh);
-	  } else {
-	    // setting of neighbours fails
-	    ERROR_EXIT("Problem while reading 'element neighbours inverse' of element %d\n", i);
-	    neigh_inverse_set = false; 
-	    break;
-	  }
-	}
-
-	key_def[7] = true;
-	break;
+      	// block "element neighbours inverse"
+      	result = fscanf(file, "%*s %*s %*s");
+      
+      	// ===  Fill MEL neighbour pointers:                               ===
+      	// ===    if they are specified in the file: read them from file,  ===
+      	// ===    else init them by a call of fill_mel_neighbour()         ===
+      
+      	neigh_inverse_set = true;
+      	for (int i = 0; i < nElements; i++) {
+      	  //  neighbour information about ith element
+      
+      	  if (read_indices(file, *ind_neigh)) {
+      	    io::MacroReader::fillMelNeighInv(mel[i], mel, *ind_neigh);
+      	  } else {
+      	    // setting of neighbours fails
+      	    ERROR_EXIT("Problem while reading 'element neighbours inverse' of element %d\n", i);
+      	    neigh_inverse_set = false; 
+      	    break;
+      	  }
+      	}
+      
+      	key_def[7] = true;
+      	break;
 
       }
     }

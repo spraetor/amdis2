@@ -64,7 +64,7 @@ namespace AMDiS
     static int size = 0;
     GrdT *val;
     VectorOfFixVecs<DimVec<double> > *gradPhi;
-    DimVec<double> grd1(dim, NO_INIT);
+    DimVec<double> grd1(dim);
 
     int vecSize = uhLoc[0].size();
 

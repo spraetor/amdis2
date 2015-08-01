@@ -52,7 +52,7 @@ namespace AMDiS
     TEST_EXIT(matrix->getColFeSpace() == colFeSpace)("invalid col fe space\n");
 
     int dim = elInfo->getMesh()->getDim();
-    DimVec<double>  lambda(dim, NO_INIT);
+    DimVec<double>  lambda(dim);
     double n_A_grdUh, val = 0.0;
     WorldVector<double> normal;
     const DimVec<WorldVector<double> > &Lambda = elInfo->getGrdLambda();

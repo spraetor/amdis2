@@ -154,8 +154,8 @@ namespace AMDiS {
       jump.resize(nPointsSurface);
       localJump.resize(nPointsSurface);
       nNeighbours = Global::getGeo(NEIGH, dim);
-      lambdaNeigh = new DimVec<WorldVector<double> >(dim, NO_INIT);
-      lambda = new DimVec<double>(dim, NO_INIT);
+      lambdaNeigh = new DimVec<WorldVector<double> >(dim);
+      lambda = new DimVec<double>(dim);
 
       secondOrderTerms.resize(nSystems);
       for (int system = 0; system < nSystems; system++) {

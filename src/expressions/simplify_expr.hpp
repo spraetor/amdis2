@@ -436,5 +436,3 @@ namespace AMDiS
   simplify(Term&& t) { return simplify(std::forward<Term>(t), int_<N>()); }
 
 } // end namespace AMDiS
-
-#endif // AMDIS_SIMPLIFY_EXPRESSION_HPP

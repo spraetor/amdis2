@@ -16,7 +16,7 @@ namespace AMDiS
     TEST_EXIT(nPoints == dim + 1)
       ("invalid number of vertices of subelement\n");
 
-    FixVec<WorldVector<double>, VERTEX> worldCoords(dim, NO_INIT);
+    FixVec<WorldVector<double>, VERTEX> worldCoords(dim);
 
     lambda = new VectorOfFixVecs<DimVec<double> >(dim, dim + 1, NO_INIT);
     for (int i = 0; i <= dim; i++) {

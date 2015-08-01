@@ -1,5 +1,6 @@
 #include "ScalableQuadrature.h"
 #include "SubElInfo.h"
+#include "MatrixVectorOperations.h"
 
 namespace AMDiS 
 {
@@ -61,7 +62,7 @@ namespace AMDiS
   void ScalableQuadrature::scaleQuadrature(DimMat<double> *scalMat)
   {
     for (int iq = 0; iq < n_points; iq++) {
-      (*lambda)[iq].multMatrixVec(*scalMat, *getOldLambda(iq));
+      (*lambda)[iq] = (*scalMat) * (*getOldLambda(iq));
 
       for (int i = 0; i <= dim; i++) {
       	// If one component is less than zero, the scaled quadrature point

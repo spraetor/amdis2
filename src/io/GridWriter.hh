@@ -66,7 +66,7 @@ namespace AMDiS  { namespace io {
       }
 
       WorldVector<double> curCoord;
-      DimVec<double> bary(dim, NO_INIT);
+      DimVec<double> bary(dim);
       Element *elp;
       const BasisFunction *basFcts = vec->getFeSpace()->getBasisFcts();
       ElementVector uhLoc(basFcts->getNumber());
@@ -180,7 +180,7 @@ namespace AMDiS  { namespace io {
       }
 
       WorldVector<double> curCoord;
-      DimVec<double> bary(dim, NO_INIT);
+      DimVec<double> bary(dim);
       Element *elp;
       const BasisFunction *basFcts = vec[0]->getFeSpace()->getBasisFcts();
       ElementVector uhLoc(basFcts->getNumber());

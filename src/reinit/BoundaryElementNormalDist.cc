@@ -39,7 +39,7 @@ BoundaryElementNormalDist::calcDistOnBoundaryElement(
     elLS->getElIntersecPoints();
   
   // Calculate (unit) normal to intersection plane.
-  FixVec<WorldVector<double>, DIMEN> planeVecs(dim, NO_INIT);
+  FixVec<WorldVector<double>, DIMEN> planeVecs(dim);
   WorldVector<double> normalVec;
   for (int i=0; i<dim; ++i) {
     elInfo->coordToWorld((*elIntersecPoints)[i], (planeVecs[i]));

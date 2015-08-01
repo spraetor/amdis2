@@ -112,7 +112,7 @@ VelocityExt::setBarycentricCoords_3D_boundary(const double &l_0, const double &l
 void
 VelocityExt::calcBarycentricCoords_3D_boundary(const DimVec<double> sp1, const DimVec<double> sp2, const double lambda, int i)
 {
-  DimVec<double> tempVec(dim, NO_INIT);
+  DimVec<double> tempVec(dim);
   tempVec[0] = sp1[0]+lambda*(sp2[0]-sp1[0]);
   tempVec[1] = sp1[1]+lambda*(sp2[1]-sp1[1]);
   tempVec[2] = sp1[2]+lambda*(sp2[2]-sp1[2]);

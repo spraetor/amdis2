@@ -297,7 +297,7 @@ namespace compositeFEM {
   {
     double surfDet;
     int dim = surfVert[0].getSize() - 1;
-    FixVec<WorldVector<double>, VERTEX> worldCoords(dim - 1, NO_INIT);
+    FixVec<WorldVector<double>, VERTEX> worldCoords(dim - 1);
   
     // transform barycentric coords to world coords
     for (int i = 0; i < dim; i++) {

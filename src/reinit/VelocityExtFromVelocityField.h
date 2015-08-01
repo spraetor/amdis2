@@ -45,7 +45,7 @@ public:
   VelocityExtFromVelocityField(int dim_)
     : VelocityExt(dim_),
       lSFct(NULL),
-      elNormalVel(dim_, NO_INIT),
+      elNormalVel(dim_),
       basFcts(NULL)
   {
     lSFctVal.change_dim(dim + 1);

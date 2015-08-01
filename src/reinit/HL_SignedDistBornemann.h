@@ -78,7 +78,7 @@ public:
     FUNCNAME("HL_SignedDistBornemann::initializeBoundary()");
 
     TraverseStack stack;
-    FixVec<double, VERTEX> distVec(dim, NO_INIT);
+    FixVec<double, VERTEX> distVec(dim);
     int elStatus;
     const int *elVertStatusVec;
     int numIntersecPoints;
@@ -615,7 +615,7 @@ public:
        {
 	 coordsOfNodes[i] = new WorldVector<double>;
        }
-     FixVec<double,VERTEX> boundVal(dim,NO_INIT);
+     FixVec<double,VERTEX> boundVal(dim);
      WorldVector<double> helpVec;
       
       

@@ -27,8 +27,8 @@ namespace AMDiS
     jOp->addZeroOrderTerm(j_expr);
     alphaOp->addZeroOrderTerm(a_expr);
     
-    neumannOperators = new DimVec<SurfaceOperator*>(dim, NO_INIT);
-    robinOperators = new DimVec<SurfaceOperator*>(dim, NO_INIT);
+    neumannOperators = new DimVec<SurfaceOperator*>(dim);
+    robinOperators = new DimVec<SurfaceOperator*>(dim);
   
     for (int i = 0; i < dim + 1; i++) {
       (*neumannOperators)[i] = new SurfaceOperator(jOp, *coords[i]);    
@@ -63,7 +63,7 @@ namespace AMDiS
     
     Operator *jOp = new Operator(rowFeSpace);
     jOp->addZeroOrderTerm(j_expr);
-    neumannOperators = new DimVec<SurfaceOperator*>(dim, NO_INIT);
+    neumannOperators = new DimVec<SurfaceOperator*>(dim);
   
     for (int i = 0; i < dim + 1; i++)
       (*neumannOperators)[i] = new SurfaceOperator(jOp, *coords[i]);    

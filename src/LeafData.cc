@@ -152,7 +152,7 @@ namespace AMDiS
 	}
     
 	  // create new periodic coords
-	DimVec<WorldVector<double> > coords(dim - 1, NO_INIT);
+	DimVec<WorldVector<double> > coords(dim - 1);
 	
 	// for each vertex of childs side
 	for (int j = 0; j < dim; j++) {
@@ -189,7 +189,7 @@ namespace AMDiS
     elementSide = rhs.elementSide;
     if (rhs.periodicCoords) {
       int dim = rhs.periodicCoords->getSize() - 1;
-      periodicCoords = new DimVec<WorldVector<double> >(dim, NO_INIT);
+      periodicCoords = new DimVec<WorldVector<double> >(dim);
       for (int i = 0; i < dim + 1; i++)
 	(*periodicCoords)[i] = (*(rhs.periodicCoords))[i];
     } else {
@@ -207,7 +207,7 @@ namespace AMDiS
   {
     if (coords) {
       int dim = coords->getSize() - 1;
-      periodicCoords = new DimVec<WorldVector<double> >(dim, NO_INIT);
+      periodicCoords = new DimVec<WorldVector<double> >(dim);
       for (int i = 0; i < dim + 1; i++)
 	(*periodicCoords)[i] = (*coords)[i];
     }

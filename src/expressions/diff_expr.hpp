@@ -685,5 +685,3 @@ namespace AMDiS
 
 
 } // end namespace AMDiS
-
-#endif // AMDIS_DIFF_EXPRESSION_HPP

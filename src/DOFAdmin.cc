@@ -16,8 +16,8 @@ namespace AMDiS
 
   DOFAdmin::DOFAdmin(Mesh* m) 
     : mesh(m), 
-      nDof(mesh->getDim(), NO_INIT),
-      nPreDof(mesh->getDim(), NO_INIT)
+      nDof(mesh->getDim()),
+      nPreDof(mesh->getDim())
   { 
     init(); 
   }
@@ -26,8 +26,8 @@ namespace AMDiS
   DOFAdmin::DOFAdmin(Mesh* m, std::string aName) 
     : name(aName), 
       mesh(m), 
-      nDof(mesh->getDim(), NO_INIT),
-      nPreDof(mesh->getDim(), NO_INIT)
+      nDof(mesh->getDim()),
+      nPreDof(mesh->getDim())
   { 
     init(); 
   }
@@ -60,8 +60,8 @@ namespace AMDiS
       holeCount = src.holeCount;
       sizeUsed = src.sizeUsed;
       for (int i = 0; i <= mesh->getDim(); i++) {
-	nDof[i] = src.nDof[i];
-	nPreDof[i] = src.nPreDof[i];
+      	nDof[i] = src.nDof[i];
+      	nPreDof[i] = src.nPreDof[i];
       }
       dofIndexedList = src.dofIndexedList;
       dofContainerList = src.dofContainerList;

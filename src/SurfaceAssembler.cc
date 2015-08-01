@@ -77,7 +77,7 @@ namespace AMDiS
   bool SurfaceAssembler::initElementVector(const ElInfo *elInfo)
   {
     if (Assembler::initElementVector(elInfo)) {
-      FixVec<WorldVector<double>, VERTEX> worldCoords(rowDim_ - 1, NO_INIT);
+      FixVec<WorldVector<double>, VERTEX> worldCoords(rowDim_ - 1);
 
       // transform barycentric coords to world coords
       for (int i = 0; i < rowDim_; i++)

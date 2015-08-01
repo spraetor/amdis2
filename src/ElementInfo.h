@@ -19,11 +19,11 @@ namespace AMDiS
     /// Dimension specific constructor for DimVec creation.
     ElementInfo(int dim) 
       : vertices(dim),
-	vertexInfo(dim, NO_INIT),
-	boundary(dim, NO_INIT),
-	projection(dim, NO_INIT),
-	neighbour(dim, NO_INIT),
-	surfaceRegions(dim, NO_INIT)
+	vertexInfo(dim),
+	boundary(dim),
+	projection(dim),
+	neighbour(dim),
+	surfaceRegions(dim)
     {}
       
     int vertices;

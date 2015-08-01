@@ -33,7 +33,7 @@ void HL_SignedDistTraverse::initializeBoundary()
   
   // ===== Traverse mesh and initialize boundary elements. =====
   TraverseStack stack;
-  FixVec<double, VERTEX> distVec(dim, NO_INIT);
+  FixVec<double, VERTEX> distVec(dim);
   int elStatus;
   
   const int nBasFcts = feSpace->getBasisFcts()->getNumber();

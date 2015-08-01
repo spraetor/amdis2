@@ -157,7 +157,7 @@ namespace AMDiS
 
 	if (coordToDof.find(dofCoords) == coordToDof.end()) {
 	  cout << "Cannot find dof index for coords: " << endl;
-	  dofCoords.print();
+	  cout << dofCoords;
 	  exit(0);
 	}	
 
@@ -224,7 +224,7 @@ namespace AMDiS
 
 	  if (coordToDof.find(rowCoords) == coordToDof.end()) {
 	    cout << "Cannot find row index for coords: " << endl;
-	    rowCoords.print();
+	    cout << rowCoords;
 	    exit(0);
 	  }
 
@@ -238,35 +238,35 @@ namespace AMDiS
       }
 
       for (int i = 0; i < nComponents; i++) {
-	int readNnz;
-	in >> readNnz;
-	for (int k = 0; k < readNnz; k++) {
-	  int row;
-	  double value;
-	  
-	  in >> row;
-	  in >> value;
-
-	  WorldVector<double> rowCoords = dofToCoord[row];
-
-	  if (coordToDof.find(rowCoords) == coordToDof.end()) {
-	    cout << "Cannot find row index for coords: " << endl;
-	    rowCoords.print();
-	    exit(0);
-	  }
-
-	  DegreeOfFreedom rowHere = coordToDof[rowCoords];
-
-	  if (solValues[i].count(rowHere) == 0) {
-	    solValues[i][rowHere] = value;
-	  } else {
-	    double diff = fabs(solValues[i][rowHere] - value);
-	    if (diff > 1e-8) {
-	      cout << "DIFFERENT values in solution vector!" << endl;
-	      exit(0);
-	    }	    
-	  }
-	}
+      	int readNnz;
+      	in >> readNnz;
+      	for (int k = 0; k < readNnz; k++) {
+      	  int row;
+      	  double value;
+      	  
+      	  in >> row;
+      	  in >> value;
+      
+      	  WorldVector<double> rowCoords = dofToCoord[row];
+      
+      	  if (coordToDof.find(rowCoords) == coordToDof.end()) {
+      	    cout << "Cannot find row index for coords: " << endl;
+      	    cout << rowCoords;
+      	    exit(0);
+      	  }
+      
+      	  DegreeOfFreedom rowHere = coordToDof[rowCoords];
+      
+      	  if (solValues[i].count(rowHere) == 0) {
+      	    solValues[i][rowHere] = value;
+      	  } else {
+      	    double diff = fabs(solValues[i][rowHere] - value);
+      	    if (diff > 1e-8) {
+      	      cout << "DIFFERENT values in solution vector!" << endl;
+      	      exit(0);
+      	    }	    
+      	  }
+      	}
       }
     
       in.close();

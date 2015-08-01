@@ -119,84 +119,43 @@ namespace AMDiS
     using F = Functor< Value_t<typename Expr1::type>, Value_t<typename Expr2::type> >;
     return function_(F(), Expr1::get(t1), Expr2::get(t2)); 
   }
-    
-
-// two_norm of vectors
-// _____________________________________________________________________________
-
-  namespace result_of 
-  {
-    template <class T>
-    struct two_norm<T, tag::expression> 
-      : result_of::UnaryExpr<functors::TwoNorm, T, traits::is_vector> {};
-  }
   
+// _____________________________________________________________________________
+      
   /// the 2-norm of a vector v: result = sqrt(v^H * v)
-  template <class Term>
-  inline typename result_of::two_norm<Term, tag::expression>::type
-  two_norm_dispatch(Term&& t, tag::expression)
+  template <class Term> inline 
+  typename result_of::UnaryExpr<functors::TwoNorm, Term, traits::is_vector>::type
+  two_norm(Term&& t)
   {
     return unary_expr< functors::TwoNorm >(std::forward<Term>(t)); 
   }
 
   
-// one_norm of vectors and matrices
-// _____________________________________________________________________________
-
-  namespace result_of 
-  {
-    template <class T>
-    struct one_norm<T, tag::expression> 
-      : result_of::UnaryExpr<functors::OneNorm, T, traits::is_vector, traits::is_matrix> {};
-  }
-  
   /// the 1-norm of a vector v: result = max_i(abs(v_i))
-  template <class Term>
-  inline typename result_of::one_norm<Term, tag::expression>::type
-  one_norm_dispatch(Term&& t, tag::expression)
+  template <class Term> inline 
+  typename result_of::UnaryExpr<functors::OneNorm, Term, traits::is_vector, traits::is_matrix>::type
+  one_norm(Term&& t)
   {
     return unary_expr< functors::OneNorm >(std::forward<Term>(t)); 
   }
-
-  
-// p_norm<P> of vectors
-// _____________________________________________________________________________
-
-  namespace result_of 
-  {
-    template <int P, class T>
-    struct p_norm<P, T, tag::expression> 
-      : result_of::UnaryExprFull<functors::PNorm<P, Value_t<T> >, T, traits::is_vector> {};
-  }
   
   /// the 2-norm of a vector v: result = sqrt(v^H * v)
-  template <int P, class Term>
-  inline typename result_of::p_norm<P, Term, tag::expression>::type
-  p_norm_dispatch(Term&& t, tag::expression)
+  template <int P, class Term> inline 
+  typename result_of::UnaryExprFull<functors::PNorm<P, Value_t<Term> >, Term, traits::is_vector>::type
+  p_norm(Term&& t)
   {
     return unary_expr_full< functors::PNorm<P, Value_t<Term> > >(std::forward<Term>(t)); 
   }
-
-  
-// unary dot (v' * v) of a vector v
-// _____________________________________________________________________________
-
-  namespace result_of 
-  {
-    template <class T>
-    struct unary_dot<T, tag::expression> 
-      : result_of::UnaryExpr<functors::UnaryDot, T, traits::is_vector> {};
-  }
   
   /// the 2-norm squared of a vector v: result = v^H * v
-  template <class Term>
-  inline typename result_of::unary_dot<Term, tag::expression>::type
-  unary_dot_dispatch(Term&& t, tag::expression)
+  template <class Term> inline 
+  typename result_of::UnaryExpr<functors::UnaryDot, Term, traits::is_vector>::type
+  unary_dot(Term&& t)
   {
     return unary_expr< functors::UnaryDot >(std::forward<Term>(t)); 
   }
   
-
+#if 0
 // inner product of two vectors
 // _____________________________________________________________________________
   
@@ -235,7 +194,7 @@ namespace AMDiS
   
 // cross-product of two vectors
 // _____________________________________________________________________________
-#if 0
+
   namespace result_of 
   {
     template<class T1, class T2>

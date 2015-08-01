@@ -3,6 +3,7 @@
 #pragma once
 
 #include "AMDiS_fwd.h"
+#include "MatrixVector_fwd.h"
 
 namespace AMDiS 
 {

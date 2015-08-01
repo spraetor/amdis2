@@ -29,16 +29,16 @@ BoundaryElementTopDist::calcDistOnBoundaryElement(
 			FixVec<double, VERTEX> &dVec)
 {
   //Cartesian coordinates of the 3 or 4 vertices of a simplex
-  FixVec<WorldVector<double>,VERTEX> Vert(dim, NO_INIT);
+  FixVec<WorldVector<double>,VERTEX> Vert(dim);
   //normal unit vector in Cartesian coordinates
   WorldVector<double> normalVec;
   //Cartesian coordinates of dim intersection points
-  FixVec<WorldVector<double>,DIMEN> planeVecs_DIMEN(dim, NO_INIT);
+  FixVec<WorldVector<double>,DIMEN> planeVecs_DIMEN(dim);
   //Cartesian coordinates of 3 or 4 intersection points (3d)
-  FixVec<WorldVector<double>,VERTEX> planeVecs(dim, NO_INIT);
+  FixVec<WorldVector<double>,VERTEX> planeVecs(dim);
   //barycentric coordinates of the intersection point 
   //(straight line - normal) 
-  DimVec<double> SP_Vec(dim, NO_INIT);
+  DimVec<double> SP_Vec(dim);
   //Cartesian coordinates of SP_Vec
   WorldVector<double> SP; 
   

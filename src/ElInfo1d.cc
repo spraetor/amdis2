@@ -142,7 +142,7 @@ namespace AMDiS
     double length = (coord[1][0] - a);
     int dim = mesh->getDim();
 
-    static DimVec<double> vec(dim, NO_INIT);
+    static DimVec<double> vec(dim);
 
     TEST_EXIT_DBG(lambda)("lambda must not be NULL\n");
     TEST_EXIT_DBG(dim == 1)("dim!=1\n");
