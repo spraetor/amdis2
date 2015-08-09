@@ -11,7 +11,6 @@ using namespace std;
 
 namespace AMDiS 
 {
-
   constexpr unsigned char Tetrahedron::nChildEdge[3][2][2];
   constexpr unsigned char Tetrahedron::nChildFace[3][2][2];
   constexpr int Tetrahedron::childVertex[3][2][4];
@@ -37,8 +36,8 @@ namespace AMDiS
 
 
   int Tetrahedron::getVertexOfPosition(GeoIndex position,
-				       int positionIndex,
-				       int vertexIndex) const 
+                                       int positionIndex,
+                                       int vertexIndex) const 
   {
     FUNCNAME("Triangle::getVertexOfPosition()");
     switch(position) {

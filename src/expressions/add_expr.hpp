@@ -25,7 +25,7 @@ namespace AMDiS
       template <class Term0_, class Term1_>
       Add(Term0_&& term0_, Term1_&& term1_)
         : Super(std::forward<Term1>(term0_), std::forward<Term2>(term1_)) 
-      { }
+      {}
       
       int getDegree() const
       {
@@ -110,7 +110,7 @@ namespace AMDiS
   namespace result_of
   {
     template <class Term1, class Term2>
-    using Add = boost::enable_if
+    using Add = enable_if
       < 
       	typename traits::is_valid_arg2<Term1, Term2>::type,
       	expressions::Add
@@ -122,7 +122,7 @@ namespace AMDiS
       
       
     template <class Term>
-    using Negative = boost::enable_if
+    using Negative = enable_if
       < 
       	typename traits::is_valid_arg<Term>::type,
       	expressions::Negative
@@ -133,7 +133,7 @@ namespace AMDiS
       
       
     template <class Term1, class Term2>
-    using Subtract = boost::enable_if
+    using Subtract = enable_if
       < 
       	typename traits::is_valid_arg2<Term1, Term2>::type,
       	expressions::Subtract
@@ -144,16 +144,16 @@ namespace AMDiS
       >;
   }
 
-
+#if 0
   // add two terms
   // _____________________________________________________________________________
   template<typename Term1, typename Term2>
   inline typename result_of::Add<Term1, Term2>::type
-  operator+(const Term1& t1, const Term2& t2)
+  operator+(Term1&& t1, Term2&& t2)
   {
-    typedef typename traits::to_expr<Term1>::to Expr1;
-    typedef typename traits::to_expr<Term2>::to Expr2;
-    return {Expr1::get(t1), Expr2::get(t2)};
+    using Expr1 = traits::to_expr<Term1>;
+    using Expr2 = traits::to_expr<Term2>;
+    return {Expr1::get(std::forward<Term1>(t1)), Expr2::get(std::forward<Term2>(t2))};
   }
 
 
@@ -161,10 +161,10 @@ namespace AMDiS
   // _____________________________________________________________________________
   template<typename Term>
   inline typename result_of::Negative<Term>::type
-  operator-(const Term& t)
+  operator-(Term&& t)
   {
-    typedef typename traits::to_expr<Term>::to Expr;
-    return {Expr::get(t)};
+    using Expr = traits::to_expr<Term>;
+    return {Expr::get(std::forward<Term>(t))};
   }
 
 
@@ -172,11 +172,11 @@ namespace AMDiS
   // _____________________________________________________________________________
   template<typename Term1, typename Term2>
   inline typename result_of::Subtract<Term1, Term2>::type
-  operator-(const Term1& t1, const Term2& t2)
+  operator-(Term1&& t1, Term2&& t2)
   {
-    typedef typename traits::to_expr<Term1>::to Expr1;
-    typedef typename traits::to_expr<Term2>::to Expr2;
-    return {Expr1::get(t1), Expr2::get(t2)};
+    using Expr1 = traits::to_expr<Term1>;
+    using Expr2 = traits::to_expr<Term2>;
+    return {Expr1::get(std::forward<Term1>(t1)), Expr2::get(std::forward<Term2>(t2))};
   }
-
+#endif
 } // end namespace AMDiS

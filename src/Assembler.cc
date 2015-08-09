@@ -75,7 +75,7 @@ namespace AMDiS
   
 
   void Assembler::calculateElementVector(const ElInfo *elInfo, 
-                              					 ElementVector& userVec,
+                              					 DenseVector<double>& userVec,
                               					 double factor)
   {
     if (remember && factor != 1.0)
@@ -100,7 +100,7 @@ namespace AMDiS
       }
     }
 
-    ElementVector& vec = rememberElVec ? elementVector : userVec;
+    DenseVector<double>& vec = rememberElVec ? elementVector : userVec;
 
     if (operat->uhOld && remember) {
       matVecAssemble(elInfo, vec);
@@ -120,11 +120,11 @@ namespace AMDiS
   }
   
 
-  void Assembler::matVecAssemble(const ElInfo *elInfo, ElementVector& vec)
+  void Assembler::matVecAssemble(const ElInfo *elInfo, DenseVector<double>& vec)
   {
 
     Element *el = elInfo->getElement(); 
-    ElementVector uhOldLoc(operat->uhOld->getFeSpace() == rowFeSpace ? 
+    DenseVector<double> uhOldLoc(operat->uhOld->getFeSpace() == rowFeSpace ? 
 			   nRow : nCol);
     operat->uhOld->getLocalVector(el, uhOldLoc);
     

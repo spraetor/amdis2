@@ -17,6 +17,10 @@
 #define RETURNS(...) \
   noexcept(noexcept(__VA_ARGS__)) \
     -> decltype(__VA_ARGS__) { return (__VA_ARGS__); }
+    
+#define RETURNS_CONST(...) \
+  noexcept(noexcept(__VA_ARGS__)) \
+    -> decltype(__VA_ARGS__) const { return (__VA_ARGS__); }
 
 namespace AMDiS 
 {
@@ -28,6 +32,9 @@ namespace AMDiS
   
   template <class T>
   using Result_t = typename T::result_type;
+  
+  template <class T>
+  using Decay_t = typename std::decay<T>::type;
 
   // introduce some shortcuts for boost::mpl
   // ---------------------------------------
@@ -39,6 +46,12 @@ namespace AMDiS
   // some traits to test for binary operators on types
   namespace traits 
   {
+    template <class T>
+    struct id_
+    {
+      using type = T;
+    };
+    
     namespace detail
     {
       template <class...>
@@ -81,7 +94,7 @@ namespace AMDiS
     using is_multiplicable = IsBinopAble<T, U, detail::MultipliesOp>;
       
     template <class T>
-    using is_trivially_copyable = std::is_trivially_copyable<T>;
+    using is_trivially_copyable = std::is_pod<T>;
 
     // larger types
     template <class... Ts>

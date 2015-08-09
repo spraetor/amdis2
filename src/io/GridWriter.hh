@@ -69,7 +69,7 @@ namespace AMDiS  { namespace io {
       DimVec<double> bary(dim);
       Element *elp;
       const BasisFunction *basFcts = vec->getFeSpace()->getBasisFcts();
-      ElementVector uhLoc(basFcts->getNumber());
+      DenseVector<double> uhLoc(basFcts->getNumber());
 
       // get basis of grid 
       for (int i = 0; i < dim; i++) {
@@ -183,7 +183,7 @@ namespace AMDiS  { namespace io {
       DimVec<double> bary(dim);
       Element *elp;
       const BasisFunction *basFcts = vec[0]->getFeSpace()->getBasisFcts();
-      ElementVector uhLoc(basFcts->getNumber());
+      DenseVector<double> uhLoc(basFcts->getNumber());
 
       // get basis of grid 
       for (int i = 0; i < dim; i++) {

@@ -14,6 +14,7 @@
 #include "DOFIterator.h"
 #include "DOFIndexed.h"
 #include "DOFContainer.h"
+#include "DOFVectorBase.h"
 #include "Boundary.h"
 #include "CreatorInterface.h"
 #include "DOFMatrix.h" 
@@ -25,210 +26,6 @@
 
 namespace AMDiS 
 {
-  template <class T> 
-  class DOFVectorBase : public DOFIndexed<T>
-  {
-  public:
-
-    DOFVectorBase() 
-      : feSpace(NULL),
-	elementVector(3),
-        boundaryManager(NULL),
-        nBasFcts(0)
-    {}
-    
-    DOFVectorBase(const FiniteElemSpace *f, std::string n);
-
-    virtual ~DOFVectorBase();
-
-    /// For the given element, this function returns an array of all DOFs of 
-    /// this DOFVector that are defined on this element.
-    virtual void getLocalVector(const Element *el, 
-				DenseVector<T>& localVec) const;
-
-    /// Evaluates the DOF vector at a set of quadrature points defined on the 
-    /// given element.
-    void getVecAtQPs(const ElInfo *elInfo, 
-		     const Quadrature *quad,
-		     const FastQuadrature *quadFast,
-		     DenseVector<T>& vecAtQPs) const;
-
-    /// Evaluates the gradient of a DOF vector at a set of quadrature points
-    /// defined on the given element.
-    void getGrdAtQPs( const ElInfo *elInfo,
-		      const Quadrature *quad,
-		      const FastQuadrature *quadFast,
-		      DenseVector<Gradient_t<T>> &grdAtQPs) const;
-
-    /// Evaluates the comp'th component of the derivative of a DOF vector at a
-    /// set of quadrature points defined on the given element.
-    void getDerivativeAtQPs( const ElInfo *elInfo,
-		      const Quadrature *quad,
-		      const FastQuadrature *quadFast,
-		      int comp,
-		      DenseVector<T> &derivativeAtQPs) const;
-
-    /// Evaluates the jacobian of a DOF vector at a set of quadrature points
-    ///  defined on the given element.
-    void getD2AtQPs(const ElInfo *elInfo,
-		    const Quadrature *quad,
-		    const FastQuadrature *quadFast,
-		    DenseVector<typename D2Type<T>::type> &d2AtQPs) const;
-
-    /// Returns the FE space the DOF vector is defined on.
-    inline const FiniteElemSpace* getFeSpace() const 
-    {
-      return feSpace;
-    }
-
-    /// Assembles the element vector for the given ellement and adds the
-    /// element matrix to the current DOF vector.
-    void assemble(T factor, ElInfo *elInfo,			    
-            		  const BoundaryType *bound, 
-            		  Operator *op = NULL);
-
-    void addElementVector(T sign,
-                  			  const ElementVector& elVec, 
-                  			  const BoundaryType *bound,
-                  			  ElInfo *elInfo,
-                  			  bool add = true); 
-
-    ///
-    void assembleOperator(Operator &op);
-    
-    /// That function must be called after the matrix assembling has been
-    /// finished. This makes it possible to start some cleanup or matrix
-    /// data compressing procedures.
-    void finishAssembling();
- 
-    inline void addOperator(Operator* op, 
-			    double *factor = NULL,
-			    double *estFactor = NULL) 
-    {
-      operators.push_back(op);
-      operatorFactor.push_back(factor);
-      operatorEstFactor.push_back(estFactor);
-    }
-
-    inline std::vector<double*>::iterator getOperatorFactorBegin() 
-    {
-      return operatorFactor.begin();
-    }
-
-    inline std::vector<double*>::iterator getOperatorFactorEnd() 
-    {
-      return operatorFactor.end();
-    }
-
-    inline std::vector<double*>::iterator getOperatorEstFactorBegin() 
-    {
-      return operatorEstFactor.begin();
-    }
-
-    inline std::vector<double*>::iterator getOperatorEstFactorEnd() 
-    {
-      return operatorEstFactor.end();
-    }
-
-
-    inline std::vector<Operator*>::iterator getOperatorsBegin() 
-    {
-      return operators.begin();
-    }
-
-    inline std::vector<Operator*>::iterator getOperatorsEnd() 
-    {
-      return operators.end();
-    }
-
-    Flag getAssembleFlag();
-
-    /// Evaluates \f[ u_h(x(\lambda)) = \sum_{i=0}^{m-1} vec[ind[i]] * 
-    /// \varphi^i(\lambda) \f] where \f$ \varphi^i \f$ is the i-th basis
-    /// function, \f$ x(\lambda) \f$ are the world coordinates of lambda
-    /// and \f$ m \f$ is the number of basis functions
-    T evalUh(const DimVec<double>& lambda, DegreeOfFreedom* ind);
-
-    inline std::vector<Operator*>& getOperators() 
-    { 
-      return operators; 
-    }
-
-    inline std::vector<double*>& getOperatorFactor() 
-    { 
-      return operatorFactor; 
-    }
-
-    inline std::vector<double*>& getOperatorEstFactor() 
-    { 
-      return operatorEstFactor; 
-    }
-
-    /// Returns \ref name
-    inline std::string getName() const 
-    { 
-      return name; 
-    } 
-
-    inline void setName(std::string n)
-    {
-      name = n;
-    }
-
-    inline BoundaryManager* getBoundaryManager() const 
-    { 
-      return boundaryManager; 
-    }
-
-    inline void setBoundaryManager(BoundaryManager *bm) 
-    {
-      boundaryManager = bm;
-    }
-
-    inline void setDirichletDofValue(DegreeOfFreedom dof,
-				     T value)
-    {
-      dirichletDofValues[dof] = value;
-    }
-
-    std::map<DegreeOfFreedom, T>& getDirichletValues()
-    {
-      return dirichletDofValues;
-    }
-
-  protected:
-    ///
-    const FiniteElemSpace *feSpace;
-
-    ///
-    std::string name;
-
-    ///
-    ElementVector elementVector;
-
-    ///
-    std::vector<Operator*> operators;
-
-    ///
-    std::vector<double*> operatorFactor;
-
-    ///
-    std::vector<double*> operatorEstFactor;
-
-    ///
-    BoundaryManager *boundaryManager;
-
-    /// Number of basis functions of the used finite element space.
-    int nBasFcts;
-
-    /// Dimension of the mesh this DOFVectorBase belongs to
-    int dim;
-
-    std::map<DegreeOfFreedom, T> dirichletDofValues;
-  };
-
-
-
   /** \ingroup DOFAdministration 
    * \brief
    * The DOFs described above are just integers that can be used as indices into 
@@ -245,10 +42,11 @@ namespace AMDiS
   class DOFVector : public DOFVectorBase<T>
   {  
   public:
-    typedef typename DOFVectorBase<T>::value_type	value_type;
-    typedef typename DOFVectorBase<T>::size_type	size_type;
-    typedef typename DOFVectorBase<T>::reference	reference;
-    typedef typename DOFVectorBase<T>::const_reference	const_reference;
+    using Super = DOFVectorBase<T>;
+    using value_type = Value_t<Super>;
+    using size_type  = Size_t<Super>;
+    using reference  = typename Super::reference;
+    using const_reference = typename Super::const_reference;
   
   public:
     /** \ingroup DOFAdministration
@@ -258,11 +56,11 @@ namespace AMDiS
     class Iterator : public DOFIterator<T> {
     public:
       Iterator(DOFIndexed<T> *c, DOFIteratorType type)
-	: DOFIterator<T>(c, type)
+        : DOFIterator<T>(c, type)
       {}
 
       Iterator(DOFAdmin *admin, DOFIndexed<T> *c, DOFIteratorType type)
-	: DOFIterator<T>(admin, c, type)
+        : DOFIterator<T>(admin, c, type)
       {}
     };
 
@@ -274,12 +72,12 @@ namespace AMDiS
 
       DOFVector<T> *create() 
       { 
-	return new DOFVector<T>(feSpace, ""); 
+        return new DOFVector<T>(feSpace, ""); 
       }
 
       void free(DOFVector<T> *vec) 
       { 
-	delete vec; 
+        delete vec; 
       }
 
     private:
@@ -304,11 +102,11 @@ namespace AMDiS
       *this = rhs;   
       this->name = rhs.name + "copy";
       if (this->feSpace && this->feSpace->getAdmin())
-	(dynamic_cast<DOFAdmin*>(this->feSpace->getAdmin()))->addDOFIndexed(this);
+        (dynamic_cast<DOFAdmin*>(this->feSpace->getAdmin()))->addDOFIndexed(this);
     }
 
     /// Destructor
-    virtual ~DOFVector();
+    ~DOFVector();
 
     /// Returns iterator to the begin of \ref vec
     typename std::vector<T>::iterator begin() 
@@ -337,7 +135,7 @@ namespace AMDiS
     /// Used by DOFAdmin to compress this DOFVector. Implementation of
     /// \ref DOFIndexedBase::compress()
     virtual void compressDOFIndexed(int first, int last,
-				    std::vector<DegreeOfFreedom> &newDof);
+                                    std::vector<DegreeOfFreedom> &newDof);
     
     /// Restriction after coarsening. Implemented for DOFVector<double>
     void coarseRestrict(RCNeighbourList&, int) {}
@@ -384,7 +182,7 @@ namespace AMDiS
     {
       FUNCNAME_DBG("DOFVector<T>::operator[]");
       TEST_EXIT_DBG(i >= 0 && i < static_cast<int>(vec.size()))
-	("Illegal vector index %d.\n", i);
+        ("Illegal vector index %d.\n", i);
       return vec[i];
     } 
 
@@ -394,7 +192,7 @@ namespace AMDiS
       FUNCNAME_DBG("DOFVector<T>::operator[]");
 
       TEST_EXIT_DBG(i >= 0 && i < static_cast<int>(vec.size())) 
- 	("Illegal vector index %d.\n", i); 
+        ("Illegal vector index %d.\n", i); 
 
       return vec[i];
     }
@@ -533,7 +331,7 @@ namespace AMDiS
     /// the element, where p is inside, starts from oldElInfo. implemented for:
     /// double, WorldVector< double >
     T evalAtPoint(WorldVector<double> &p, 
-		  ElInfo *oldElInfo = NULL) const 
+                  ElInfo *oldElInfo = NULL) const 
     {
       FUNCNAME("DOFVector::evalAtPoint())");
       TEST_EXIT(false)("Please implement your evaluation\n");
@@ -543,9 +341,9 @@ namespace AMDiS
     /// distance to WorldVector p. return true if DOF is found, and false 
     /// otherwise.
     bool getDofIdxAtPoint(WorldVector<double> &p, 
-				DegreeOfFreedom &idx, 
-				ElInfo *oldElInfo = NULL, 
-				bool useOldElInfo = false) const;
+                          DegreeOfFreedom &idx, 
+                          ElInfo *oldElInfo = NULL, 
+                          bool useOldElInfo = false) const;
 
 
     DOFVector<Gradient_t<T>>* getGradient(DOFVector<Gradient_t<T>> *grad) const;
@@ -555,7 +353,6 @@ namespace AMDiS
     DOFVector<Gradient_t<T>>* getRecoveryGradient(DOFVector<Gradient_t<T>> *grad) const;
 
   protected: 
-
     /// Data container
     std::vector<T> vec; 
   }; 
@@ -571,11 +368,11 @@ namespace AMDiS
 
   template<>
   double DOFVector<double>::evalAtPoint(WorldVector<double> &p, 
-					 ElInfo *oldElInfo) const;
+                                        ElInfo *oldElInfo) const;
 
   template<>
   WorldVector<double> DOFVector<WorldVector<double> >::evalAtPoint(WorldVector<double> &p, 
-								   ElInfo *oldElInfo) const;
+                                                                   ElInfo *oldElInfo) const;
 
   template<>
   void DOFVector<double>::refineInterpol(RCNeighbourList&, int);
@@ -599,7 +396,7 @@ namespace AMDiS
    * A DOFVector that stores DOF indices.
    */
   class DOFVectorDOF : public DOFVector<DegreeOfFreedom>,
-		       public DOFContainer
+                       public DOFContainer
   {
   public:  
     /// Calls constructor of DOFVector<DegreeOfFreedom> and registers itself
@@ -648,74 +445,86 @@ namespace AMDiS
 
   // ===========================================================================
 
-  template<typename T>
+  template <class T>
   double norm(DOFVector<T> *vec) 
   {
     return vec->nrm2();
   }
 
-  template<typename T>
+  template <class T>
   double L2Norm(DOFVector<T> *vec) 
   {
     return vec->L2Norm();
   }
 
-  template<typename T>
+  template <class T>
   double H1Norm(DOFVector<T> *vec) 
   {
     return vec->H1Norm();
   }
 
-  template<typename T>
+  template <class T>
   void print(DOFVector<T> *vec) 
   {
     vec->print();
   }
   
   
+  /* ----- OPERATORS WITH DOFVECTORS ---------------------------------------- */
+  
+  
   // point wise multiplication
-  template<typename T>
-  const DOFVector<T>& operator*=(DOFVector<T>& x, const DOFVector<T>& y);
+  template <class T>
+  DOFVector<T>& operator*=(DOFVector<T>& x, DOFVector<T> const& y);
 
   // multiplication with scalar
-  template<typename T>
-  const DOFVector<T>& operator*=(DOFVector<T>& x, T scal);
+  template <class T>
+  DOFVector<T>& operator*=(DOFVector<T>& x, T scal);
 
+  template <class T>
+  DOFVector<T>& operator*(DOFVector<T> v, T d);
+
+  template <class T>
+  DOFVector<T>& operator*(T d, DOFVector<T> v);
+
+  
   // scalar product
-  template<typename T>
-  T operator*(DOFVector<T>& x, DOFVector<T>& y);
+  template <class T>
+  T operator*(DOFVector<T> const& x, DOFVector<T> const& y);
 
+  
   // addition
-  template<typename T>
-  const DOFVector<T>& operator+=(DOFVector<T>& x, const DOFVector<T>& y);
+  template <class T>
+  DOFVector<T>& operator+=(DOFVector<T>& x, const DOFVector<T>& y);
 
   // subtraction
-  template<typename T>
-  const DOFVector<T>& operator-=(DOFVector<T>& x, const DOFVector<T>& y);
+  template <class T>
+  DOFVector<T>& operator-=(DOFVector<T>& x, const DOFVector<T>& y);
+  
 
-  template<typename T>
-  const DOFVector<T>& operator*(const DOFVector<T>& v, double d);
+  // addition
+  template <class T>
+  DOFVector<T> operator+(DOFVector<T> v1 , const DOFVector<T>& v2);
 
-  template<typename T>
-  const DOFVector<T>& operator*(double d, const DOFVector<T>& v);
-
-  template<typename T>
-  const DOFVector<T>& operator+(const DOFVector<T>&v1 , const DOFVector<T>& v2);
+  // subtraction
+  template <class T>
+  DOFVector<T> operator-(DOFVector<T> v1 , const DOFVector<T>& v2);
 
 
-  template<typename T>
+  
+  template <class T>
   inline void set(DOFVector<T>& vec, T d) 
   {
     vec.set(d);
   }
 
-  template<typename T>
+  template <class T>
   inline void setValue(DOFVector<T>& vec, T d) 
   {
     vec.set(d);
   }
 
-  template<typename T>
+  template <class T>
   inline void checkFeSpace(const FiniteElemSpace* feSpace, const std::vector<T>& vec)
   {
     FUNCNAME_DBG("checkFeSpace()");
@@ -729,10 +538,12 @@ namespace AMDiS
   WorldVector<DOFVector<double>*> *transform(DOFVector<WorldVector<double> > *vec,
 					     WorldVector<DOFVector<double>*> *result);
   
-  template<typename T>
+  template <class T>
   std::vector<DOFVector<double>*> *transform(DOFVector<Gradient_t<T>> *vec,
 					     std::vector<DOFVector<double>*> *res);
   
 } // end namespace AMDiS
 
+
+#include "DOFVectorBase.hh"
 #include "DOFVector.hh"

@@ -51,7 +51,7 @@ namespace AMDiS
     /// Calculates the element vector for elInfo and adds it to vec. Memory for
     /// vec must be provided by the caller.
     void calculateElementVector(const ElInfo *elInfo,
-			                          ElementVector& vec)
+			                          DenseVector<double>& vec)
     {
       calculateElementVectorImpl(elInfo, vec);
     }
@@ -143,7 +143,7 @@ namespace AMDiS
 
     // must be implemented by derived class.
     virtual void calculateElementVectorImpl(const ElInfo *elInfo,
-					                                  ElementVector& vec) = 0;
+					                                  DenseVector<double>& vec) = 0;
 
     // calls initElement for all OperatorTerms
     virtual void initImpl(const ElInfo *smallElInfo, 

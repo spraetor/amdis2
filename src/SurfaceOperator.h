@@ -8,7 +8,6 @@
 
 namespace AMDiS 
 {
-
   /** 
    * \ingroup Integration
    *
@@ -46,7 +45,7 @@ namespace AMDiS
      * the base class function.
      */
     virtual void getElementVector(const ElInfo *elInfo, 
-                        				  ElementVector& userVec, 
+                        				  DenseVector<double>& userVec, 
                         				  double factor = 1.0) override;
 
   protected:

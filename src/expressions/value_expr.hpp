@@ -253,11 +253,11 @@ namespace AMDiS
 
   template <class T>
   inline expressions::RValue<T> 
-  constant(T value) { return {value}; }
+  constant_(T value) { return {value}; }
 
   template <int I>
   inline expressions::CValue<I> 
-  constant() { return {}; }
+  constant_() { return {}; }
 
   template <class T>
   inline expressions::Reference<T> 
@@ -271,21 +271,21 @@ namespace AMDiS
   // unit vectors
   template <int I>
   inline expressions::E<I> 
-  E() { return {}; }
+  E_() { return {}; }
   
   inline expressions::E<-1> 
-  E(int i) { return{i}; }
+  E_(int i) { return{i}; }
   
   // unit matrix
   template <int N>
   inline expressions::Eye<N> 
-  eye() { return {}; }  // NxN unit-matrix 
+  eye_() { return {}; }  // NxN unit-matrix 
   
   inline expressions::Eye<-1> 
-  eye(int n) { return {n}; } // nxn unit-matrix
+  eye_(int n) { return {n}; } // nxn unit-matrix
   
   inline expressions::Eye<-2> 
-  eye() { return {}; } // dow x dow unit-matrix
+  eye_() { return {}; } // dow x dow unit-matrix
   
   
 } // end namespace AMDiS

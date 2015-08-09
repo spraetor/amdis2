@@ -92,7 +92,7 @@ namespace compositeFEM {
 
   void SubElementAssembler::getSubElementVector(SubElInfo *subElInfo, 
 						const ElInfo *elInfo, 
-						ElementVector& userVec)
+						DenseVector<double>& userVec)
   {
     /** 
      * Manipulate the quadratures of the SubAssemblers for subelement.
@@ -141,11 +141,11 @@ namespace compositeFEM {
   void SubElementAssembler::getSubPolytopeVector(SubPolytope *subPolytope,
 						 SubElementAssembler *subElementAssembler,
 						 const ElInfo *elInfo,
-						 ElementVector& subPolVec)
+						 DenseVector<double>& subPolVec)
   {
     /// Note: There is no reset of subPolVec.
     std::vector<SubElInfo *>::iterator it;
-    ElementVector subElVec(nRow);
+    DenseVector<double> subElVec(nRow);
 
     /// Assemble for each subelement of subpolytope.
     for (it = subPolytope->getSubElementsBegin(); 

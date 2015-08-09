@@ -141,7 +141,7 @@ namespace AMDiS
   }
 
 
-  void Stand10::calculateElementVectorImpl(const ElInfo *elInfo, ElementVector& vec)
+  void Stand10::calculateElementVectorImpl(const ElInfo *elInfo, DenseVector<double>& vec)
   {
     DenseVector<double> grdPsi(dim + 1, 0.0);
     int nPoints = quadrature->getNumPoints();
@@ -209,7 +209,7 @@ namespace AMDiS
   }
 
 
-  void Quad10::calculateElementVectorImpl(const ElInfo *elInfo, ElementVector& vec)
+  void Quad10::calculateElementVectorImpl(const ElInfo *elInfo, DenseVector<double>& vec)
   {
     if (firstCall) {
       const BasisFunction *basFcts = rowFeSpace->getBasisFcts();
@@ -405,7 +405,7 @@ namespace AMDiS
   }
 
 
-  void Pre10::calculateElementVectorImpl(const ElInfo *elInfo, ElementVector& vec)
+  void Pre10::calculateElementVectorImpl(const ElInfo *elInfo, DenseVector<double>& vec)
   {
     if (firstCall) {
       q10 = Q10PsiPhi::provideQ10PsiPhi(rowFeSpace->getBasisFcts(), 

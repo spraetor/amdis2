@@ -5,18 +5,18 @@
 #include <vector>
 
 #include "AMDiS_fwd.h"
-#include "FixVec.h"
+// #include "FixVec.h"
 #include "Flag.h"
-#include "MatrixVector.h"
-#include "ElInfo.h"
+// #include "MatrixVector.h"
+// #include "ElInfo.h"
 #include "SubAssembler.h"
 #include "OperatorTerm.h"
 #include "ZeroOrderTerm.h"
 #include "FirstOrderTerm.h"
 #include "SecondOrderTerm.h"
 
-#include "traits/category.hpp"
-#include "expressions/expr_traits.hpp"
+#include <traits/category.hpp>
+#include <expressions/expr_traits.hpp>
 
 namespace AMDiS 
 {
@@ -35,7 +35,7 @@ namespace AMDiS
   public:
     /// Constructs an empty Operator of type operatorType for the given FiniteElemSpace.
     Operator(const FiniteElemSpace *rowFeSpace,
-	     const FiniteElemSpace *colFeSpace = NULL);
+             const FiniteElemSpace *colFeSpace = NULL);
     
     Operator(Operator const&) = default;
     
@@ -60,7 +60,7 @@ namespace AMDiS
     template <class C>
     void addZeroOrderTerm(C const& c)
     {
-      typedef typename traits::to_expr<C>::to Expr;
+      using Expr = traits::to_expr<C>;
       addZOTImpl(Expr::get(c));
     }
 
@@ -70,34 +70,35 @@ namespace AMDiS
     {
       typedef typename traits::category<B>::value_type    ValueType;
       typedef typename traits::category<ValueType>::tag   Tag;
-      typedef typename traits::to_expr<B>::to      Expr;
+      using Expr = traits::to_expr<B>;
       addFOTImpl(Tag(), Expr::get(b), type, i);
     }
 
     /// Adds a SecondOrderTerm to the Operator
     template <class A, bool symmetric = false>
     void addSecondOrderTerm(A const& a, int i = -1, int j = -1, 
-			    bool_<symmetric> s = bool_<symmetric>())
+                            bool_<symmetric> s = bool_<symmetric>())
     {
       typedef typename traits::category<A>::value_type    ValueType;
       typedef typename traits::category<ValueType>::tag   Tag;
-      typedef typename traits::to_expr<A>::to      Expr;
       typedef if_then_else< std::is_same<Tag, tag::scalar>::value, 
-			    bool_<true>, bool_<symmetric> > Sym;
+          bool_<true>, bool_<symmetric> > Sym;
+      
+      using Expr = traits::to_expr<A>;
       addSOTImpl(Tag(), Expr::get(a), i, j, Sym::value);
     }
 
     /// Calculates the element matrix for this ElInfo and adds it multiplied by
     /// factor to userMat.
     virtual void getElementMatrix(const ElInfo *elInfo, 
-				  ElementMatrix& userMat, 
-				  double factor = 1.0);
+                                  ElementMatrix& userMat, 
+                                  double factor = 1.0);
 
     /// Calculates the element vector for this ElInfo and adds it multiplied by
     /// factor to userVec.
     virtual void getElementVector(const ElInfo *elInfo, 
-				  ElementVector& userVec, 
-				  double factor = 1.0);
+                                  DenseVector<double>& userVec, 
+                                  double factor = 1.0);
 
     /// That function must be called after one assembling cycle has been finished.
     void finishAssembling();
@@ -164,9 +165,9 @@ namespace AMDiS
 
     /// Initialization of the needed SubAssemblers using the given quadratures. 
     void initAssembler(Quadrature *quad2,
-		       Quadrature *quad1GrdPsi,
-		       Quadrature *quad1GrdPhi,
-		       Quadrature *quad0);
+                       Quadrature *quad1GrdPsi,
+                       Quadrature *quad1GrdPhi,
+                       Quadrature *quad0);
 
 
     /// Calculates the needed quadrature degree for the given order. 
@@ -174,86 +175,86 @@ namespace AMDiS
 
     /// Evaluation of all terms in \ref zeroOrder. 
     void evalZeroOrder(int nPoints,		       
-		       const DenseVector<double>& uhAtQP,
-		       const DenseVector<WorldVector<double> >& grdUhAtQP,
-		       const DenseVector<WorldMatrix<double> >& D2UhAtQP,
-		       DenseVector<double>& result,
-		       double factor) const
+                       const DenseVector<double>& uhAtQP,
+                       const DenseVector<WorldVector<double> >& grdUhAtQP,
+                       const DenseVector<WorldMatrix<double> >& D2UhAtQP,
+                       DenseVector<double>& result,
+                       double factor) const
     {
       for (OperatorTerm const* term : zeroOrder)
-	term->eval(nPoints, uhAtQP, grdUhAtQP, D2UhAtQP, result, factor);
+        term->eval(nPoints, uhAtQP, grdUhAtQP, D2UhAtQP, result, factor);
     }
 
     /// Evaluation of all terms in \ref firstOrderGrdPsi. 
     void evalFirstOrderGrdPsi(int nPoints,
-			      const DenseVector<double>& uhAtQP,
-			      const DenseVector<WorldVector<double> >& grdUhAtQP,
-			      const DenseVector<WorldMatrix<double> >& D2UhAtQP,
-			      DenseVector<double>& result,
-			      double factor) const
+                              const DenseVector<double>& uhAtQP,
+                              const DenseVector<WorldVector<double> >& grdUhAtQP,
+                              const DenseVector<WorldMatrix<double> >& D2UhAtQP,
+                              DenseVector<double>& result,
+                              double factor) const
     {      
       for (OperatorTerm const* term : firstOrderGrdPsi)
-	term->eval(nPoints, uhAtQP, grdUhAtQP, D2UhAtQP, result, factor);
+        term->eval(nPoints, uhAtQP, grdUhAtQP, D2UhAtQP, result, factor);
     }
 
     /// Evaluation of all terms in \ref firstOrderGrdPhi. 
     void evalFirstOrderGrdPhi(int nPoints,
-			      const DenseVector<double>& uhAtQP,
-			      const DenseVector<WorldVector<double> >& grdUhAtQP,
-			      const DenseVector<WorldMatrix<double> >& D2UhAtQP,
-			      DenseVector<double>& result,
-			      double factor) const
+                              const DenseVector<double>& uhAtQP,
+                              const DenseVector<WorldVector<double> >& grdUhAtQP,
+                              const DenseVector<WorldMatrix<double> >& D2UhAtQP,
+                              DenseVector<double>& result,
+                              double factor) const
     {
       for (OperatorTerm const* term : firstOrderGrdPhi)
-	term->eval(nPoints, uhAtQP, grdUhAtQP, D2UhAtQP, result, factor);
+        term->eval(nPoints, uhAtQP, grdUhAtQP, D2UhAtQP, result, factor);
     }
 
     /// Evaluation of all terms in \ref secondOrder. 
     void evalSecondOrder(int nPoints,
-			  const DenseVector<double>& uhAtQP,
-			  const DenseVector<WorldVector<double> >& grdUhAtQP,
-			  const DenseVector<WorldMatrix<double> >& D2UhAtQP,
-			  DenseVector<double>& result,
-			 double factor) const
+                         const DenseVector<double>& uhAtQP,
+                         const DenseVector<WorldVector<double> >& grdUhAtQP,
+                         const DenseVector<WorldMatrix<double> >& D2UhAtQP,
+                         DenseVector<double>& result,
+                         double factor) const
     {      
       for (OperatorTerm const* term : secondOrder)
-	term->eval(nPoints, uhAtQP, grdUhAtQP, D2UhAtQP, result, factor);
+        term->eval(nPoints, uhAtQP, grdUhAtQP, D2UhAtQP, result, factor);
     }
 
     /// Weak evaluation of all terms in \ref secondOrder. 
     void weakEvalSecondOrder(const std::vector<WorldVector<double> > &grdUhAtQP,
-			     std::vector<WorldVector<double> > &result) const;
+                             std::vector<WorldVector<double> > &result) const;
   
     /// Calls getLALt() for each term in \ref secondOrder and adds the results to LALt.
     void getLALt(const ElInfo *elInfo, std::vector<mtl::dense2D<double> > &LALt) const
     {      
       for (OperatorTerm const* term : secondOrder)
-	static_cast<SecondOrderTerm const*>(term)->getLALt(elInfo, LALt);
+        static_cast<SecondOrderTerm const*>(term)->getLALt(elInfo, LALt);
     }
   
     /// Calls getLb() for each term in \ref firstOrderGrdPsi and adds the 
     /// results to Lb.
     void getLbGrdPsi(const ElInfo *elInfo, 
-		     std::vector<DenseVector<double> >& Lb) const
+                     std::vector<DenseVector<double> >& Lb) const
     {      
       for (OperatorTerm const* term : firstOrderGrdPsi)
-	static_cast<FirstOrderTerm const*>(term)->getLb(elInfo, Lb);
+        static_cast<FirstOrderTerm const*>(term)->getLb(elInfo, Lb);
     }
 
     /// Calls getLb() for each term in \ref firstOrderGrdPhi and adds the 
     /// results to Lb.
     void getLbGrdPhi(const ElInfo *elInfo, 
-		     std::vector<DenseVector<double> >& Lb) const
+                     std::vector<DenseVector<double> >& Lb) const
     {      
       for (OperatorTerm const* term : firstOrderGrdPhi)
-	static_cast<FirstOrderTerm const*>(term)->getLb(elInfo, Lb);
+        static_cast<FirstOrderTerm const*>(term)->getLb(elInfo, Lb);
     }
 
     /// Calls getC() for each term in \ref zeroOrder and adds the results to c.
     void getC(const ElInfo *elInfo, int nPoints, DenseVector<double>& c)
     {      
       for (OperatorTerm const* term : zeroOrder)
-	static_cast<ZeroOrderTerm const*>(term)->getC(elInfo, nPoints, c);
+        static_cast<ZeroOrderTerm const*>(term)->getC(elInfo, nPoints, c);
     }
 
     /// Returns true, if there are second order terms. Returns false otherwise.
@@ -340,7 +341,7 @@ namespace AMDiS
     /// Pointer to the solution of the last timestep. Can be used for a more
     /// efficient assemblage of the element vector when the element matrix 
     /// was already computed.
-    const DOFVectorBase<double> *uhOld;
+    DOFVectorBase<double> const* uhOld;
 
     /// Spezifies whether optimized assemblers are used or not.
     bool optimized;

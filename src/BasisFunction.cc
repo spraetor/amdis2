@@ -33,7 +33,7 @@ namespace AMDiS {
   const WorldMatrix<double>& 
   BasisFunction::evalD2Uh(const DimVec<double>& lambda,
         						      const DimVec<WorldVector<double> >& grd_lambda,
-        						      const ElementVector& uh_loc, 
+        						      const DenseVector<double>& uh_loc, 
         						      WorldMatrix<double>* D2_uh) const
   {
     // TODO: REMOVE STATIC

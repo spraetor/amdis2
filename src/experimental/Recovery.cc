@@ -403,7 +403,7 @@ void Recovery::compute_node_sums(DOFVector<double> *uh, ElInfo *elInfo,
 
   WorldVector<double> node;  // For world coordinates at nodes.
   const DegreeOfFreedom **dof = elInfo->getElement()->getDof();
-  ElementVector uh_loc(n_vertices);
+  DenseVector<double> uh_loc(n_vertices);
   uh->getLocalVector(elInfo->getElement(), uh_loc);
 
   for (int l = 0; l < n_vertices; l++) {
@@ -437,7 +437,7 @@ void Recovery::compute_sums_linear(DOFVector<double> *uh, ElInfo *elInfo,
 
   WorldVector<double> node;     // For world coordinates at nodes.
   const DegreeOfFreedom **dof = elInfo->getElement()->getDof();
-  ElementVector uh_loc(n_vertices);
+  DenseVector<double> uh_loc(n_vertices);
   uh->getLocalVector(elInfo->getElement(), uh_loc);
 
   for (int l = 0;  l < n_vertices; l++) {
@@ -954,7 +954,7 @@ Recovery::recovery(DOFVector<double> *uh,
     Mesh::CALL_LEAF_EL | Mesh::FILL_DET | Mesh::FILL_GRD_LAMBDA | Mesh::FILL_COORDS;
   ElInfo *elInfo = stack.traverseFirst(mesh, -1, fillFlag);
 
-  ElementVector localUh(basFcts->getNumber());
+  DenseVector<double> localUh(basFcts->getNumber());
 
   while (elInfo) {
     double det = elInfo->getDet();

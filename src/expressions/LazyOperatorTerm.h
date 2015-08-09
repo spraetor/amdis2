@@ -4,6 +4,7 @@
 
 #include "AMDiS_fwd.h"
 #include "Traits.h"
+#include <traits/concepts.hpp>
 
 namespace AMDiS 
 {
@@ -17,12 +18,12 @@ namespace AMDiS
     template <class List>
     void insertFeSpaces(List& feSpaces) const {}
     
-    int getDegree() const { return 0; }
+    constexpr int getDegree() const { return 0; }
       
-    // TODO: remove OT-template and implement class with variadic templates
-    void initElement(const ElInfo* elInfo,
-          		       SubAssembler* subAssembler, Quadrature *quad, 
-          		       const BasisFunction *basisFct = NULL) {}
+    void initElement(ElInfo const* elInfo,
+                     SubAssembler* subAssembler, 
+                     Quadrature* quad, 
+                     BasisFunction const* basisFct = NULL) {}
   };
 
 
@@ -70,8 +71,8 @@ namespace AMDiS
     using Self = LazyOperatorTerms;
     std::tuple<Terms...> terms;
     
-    template <class... Terms_>
-    LazyOperatorTerms(Terms_&&... terms_)
+    template <class... Terms_, class = typename enable_if< concepts::Term<Terms_...> >::type>
+    constexpr LazyOperatorTerms(Terms_&&... terms_)
       : terms(std::forward<Terms_>(terms_)...) {}
     
     template <class List>
@@ -88,7 +89,7 @@ namespace AMDiS
     }
     
     template <int N>
-    int getDegree(int_<N>) const
+    /*constexpr*/int getDegree(int_<N>) const
     {
       return std::get<N>(terms).getDegree();
     } 

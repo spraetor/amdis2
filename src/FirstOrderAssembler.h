@@ -77,7 +77,7 @@ namespace AMDiS
     virtual void calculateElementMatrixImpl(const ElInfo *elInfo, ElementMatrix& mat) override;
 
     /// Implements SubAssembler::calculateElementVector().
-    virtual void calculateElementVectorImpl(const ElInfo *, ElementVector&) override;
+    virtual void calculateElementVectorImpl(const ElInfo *, DenseVector<double>&) override;
 
   protected:
     const BasisFunction *psi, *phi;
@@ -101,7 +101,7 @@ namespace AMDiS
     virtual void calculateElementMatrixImpl(const ElInfo *elInfo, ElementMatrix& mat) override;
 
     /// Implements SubAssembler::calculateElementVector().
-    virtual void calculateElementVectorImpl(const ElInfo*, ElementVector&) override
+    virtual void calculateElementVectorImpl(const ElInfo*, DenseVector<double>&) override
     {
       ERROR_EXIT("should not be called\n");
     }
@@ -130,7 +130,7 @@ namespace AMDiS
     virtual void calculateElementMatrixImpl(const ElInfo *elInfo, ElementMatrix& mat) override;
 
     /// Implements SubAssembler::calculateElementVector().
-    virtual void calculateElementVectorImpl(const ElInfo *, ElementVector&) override;
+    virtual void calculateElementVectorImpl(const ElInfo *, DenseVector<double>&) override;
   };
 
   
@@ -151,7 +151,7 @@ namespace AMDiS
     virtual void calculateElementMatrixImpl(const ElInfo *elInfo, ElementMatrix& mat) override;
 
     /// Implements SubAssembler::calculateElementVector().
-    virtual void calculateElementVectorImpl(const ElInfo*, ElementVector&) override
+    virtual void calculateElementVectorImpl(const ElInfo*, DenseVector<double>&) override
     {
       ERROR_EXIT("should not be called\n");
     }
@@ -175,7 +175,7 @@ namespace AMDiS
     virtual void calculateElementMatrixImpl(const ElInfo *elInfo, ElementMatrix& mat) override;
 
     /// Implements SubAssembler::calculateElementVector().
-    virtual void calculateElementVectorImpl(const ElInfo*, ElementVector&) override;
+    virtual void calculateElementVectorImpl(const ElInfo*, DenseVector<double>&) override;
 
   protected:
     /// Integral of the product of the derivative of psi and phi.
@@ -205,7 +205,7 @@ namespace AMDiS
     virtual void calculateElementMatrixImpl(const ElInfo *elInfo, ElementMatrix& mat) override;
 
     /// Implements SubAssembler::calculateElementVector().
-    virtual void calculateElementVectorImpl(const ElInfo*, ElementVector&) override
+    virtual void calculateElementVectorImpl(const ElInfo*, DenseVector<double>&) override
     {
       ERROR_EXIT("should not be called\n");
     }

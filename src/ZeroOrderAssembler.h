@@ -25,16 +25,16 @@ namespace AMDiS
      * ZeroOrderAssembler is of type PrecalcZOA. Otherwise a FastQuadZOA
      * object will be returned.
      */
-    static ZeroOrderAssembler* getSubAssembler(Operator *op,
-                              					       Assembler *assembler,
-                              					       Quadrature *quadrat,
+    static ZeroOrderAssembler* getSubAssembler(Operator* op,
+                              					       Assembler* assembler,
+                              					       Quadrature* quadrat,
                               					       bool optimized);
 
   protected:
     /// Constructor.
-    ZeroOrderAssembler(Operator *op, 
-            		       Assembler *assembler, 
-            		       Quadrature *quadrat,
+    ZeroOrderAssembler(Operator* op, 
+            		       Assembler* assembler, 
+            		       Quadrature* quadrat,
             		       bool optimized);
 
   protected:
@@ -56,14 +56,14 @@ namespace AMDiS
   {
   public:
     /// Constructor.
-    StandardZOA(Operator *op, Assembler *assembler, Quadrature *quad);
+    StandardZOA(Operator* op, Assembler* assembler, Quadrature* quad);
 
   private:
     /// Implements SubAssembler::calculateElementMatrix().
-    virtual void calculateElementMatrixImpl(const ElInfo *elInfo, ElementMatrix& mat) override;
+    virtual void calculateElementMatrixImpl(ElInfo const* elInfo, ElementMatrix& mat) override;
 
     /// Implements SubAssembler::calculateElementVector().
-    virtual void calculateElementVectorImpl(const ElInfo *elInfo, ElementVector& vec) override;
+    virtual void calculateElementVectorImpl(ElInfo const* elInfo, DenseVector<double>& vec) override;
   };
 
 
@@ -77,17 +77,17 @@ namespace AMDiS
   {
   public:
     /// Constructor.
-    FastQuadZOA(Operator *op, Assembler *assembler, Quadrature *quad);
+    FastQuadZOA(Operator* op, Assembler* assembler, Quadrature* quad);
 
   private:
     /// Implements SubAssembler::calculateElementMatrix().
-    virtual void calculateElementMatrixImpl(const ElInfo *elInfo, ElementMatrix& mat) override;
+    virtual void calculateElementMatrixImpl(ElInfo const* elInfo, ElementMatrix& mat) override;
 
     /// Implements SubAssembler::calculateElementVector().
-    virtual void calculateElementVectorImpl(const ElInfo *elInfo, ElementVector& vec) override;
+    virtual void calculateElementVectorImpl(ElInfo const* elInfo, DenseVector<double>& vec) override;
 
   protected:
-    ElementVector c;
+    DenseVector<double> c;
   };
 
 
@@ -105,10 +105,10 @@ namespace AMDiS
 
   private:
     /// Implements SubAssembler::calculateElementMatrix().
-    virtual void calculateElementMatrixImpl(const ElInfo *elInfo, ElementMatrix& mat) override;
+    virtual void calculateElementMatrixImpl(ElInfo const* elInfo, ElementMatrix& mat) override;
 
     /// Implements SubAssembler::calculateElementVector().
-    virtual void calculateElementVectorImpl(const ElInfo *elInfo, ElementVector& vec) override;
+    virtual void calculateElementVectorImpl(ElInfo const* elInfo, DenseVector<double>& vec) override;
 
   protected:
     /// Integral of the product of psi and phi.

@@ -72,7 +72,7 @@ namespace AMDiS
       using to = to_expr_aux;
       using type = T;
       
-      static const type& get(const T& t) { return t; }
+      static constexpr const type& get(const T& t) { return t; }
     };
     
     template <class T> // T is numeric constant
@@ -82,7 +82,7 @@ namespace AMDiS
       using type = ::AMDiS::expressions::RValue<T>;
       
       template <class T_>
-      static type get(T_&& t) { return {t}; }
+      static constexpr type get(T_&& t) { return {t}; }
     };
     
     template <class T>

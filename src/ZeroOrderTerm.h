@@ -5,8 +5,8 @@
 #include "AMDiS_fwd.h"
 #include "OperatorTerm.h"
 
-namespace AMDiS {
-
+namespace AMDiS 
+{
   /**
    * \ingroup Assembler
    *
@@ -20,13 +20,13 @@ namespace AMDiS {
     ZeroOrderTerm(int deg) : OperatorTerm(deg) {}
     
     /// Evaluates \f$ c \f$
-    void getC(const ElInfo *elInfo, int nPoints, ElementVector& C) const
+    void getC(ElInfo const* elInfo, int nPoints, DenseVector<double>& C) const
     {
       getCImpl(elInfo, nPoints, C);
     }
 
   private:
-    virtual void getCImpl(const ElInfo *elInfo, int nPoints, ElementVector& C) const = 0;
+    virtual void getCImpl(ElInfo const* elInfo, int nPoints, DenseVector<double>& C) const = 0;
   };
   
   
@@ -43,7 +43,7 @@ namespace AMDiS {
 
   private:
     /// Implemetation of ZeroOrderTerm::getC().
-    virtual void getCImpl(const ElInfo *elInfo, int nPoints, ElementVector& C) const override
+    virtual void getCImpl(ElInfo const* elInfo, int nPoints, DenseVector<double>& C) const override
     {
       for (int iq = 0; iq < nPoints; iq++)
         C[iq] += this->expr(iq);
@@ -51,9 +51,9 @@ namespace AMDiS {
 
     /// Implemetation of OperatorTerm::eval().
     virtual void evalImpl(int nPoints,
-                  			  const DenseVector<double>& uhAtQP,
-                  			  const DenseVector<WorldVector<double> >& grdUhAtQP,
-                  			  const DenseVector<WorldMatrix<double> >& D2UhAtQP,
+                  			  DenseVector<double> const& uhAtQP,
+                  			  DenseVector<WorldVector<double> > const& grdUhAtQP,
+                  			  DenseVector<WorldMatrix<double> > const& D2UhAtQP,
                   			  DenseVector<double>& result,
                   			  double fac) const override
     {

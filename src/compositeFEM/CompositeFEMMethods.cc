@@ -66,7 +66,7 @@ void CompositeFEMMethods::setPosLsToFct(DOFVector<double> *dof,
   TraverseStack stack;
   ElInfo *elInfo = stack.traverseFirst(dof->getFeSpace()->getMesh(), -1, 
 				       Mesh::CALL_LEAF_EL | Mesh::FILL_COORDS);
-  ElementVector locVec(basisFcts->getNumber());
+  DenseVector<double> locVec(basisFcts->getNumber());
   std::vector<DegreeOfFreedom> locInd(basisFcts->getNumber());
 
   while (elInfo) {

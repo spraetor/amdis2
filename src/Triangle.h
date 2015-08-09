@@ -72,7 +72,7 @@ namespace AMDiS
     virtual bool hasSide(Element* sideElem) const override;
 
     /// implements Element::sortFaceIndices
-    virtual void sortFaceIndices(int face, FixVec<int, WORLD> &vec) const override;
+    virtual void sortFaceIndices(int face, FixVec<int, WORLD>& vec) const override;
 
     /// implements Element::isLine. Returns false because this element is a Triangle
     virtual bool isLine() const override
@@ -175,7 +175,7 @@ namespace AMDiS
                         				    std::vector<GeoIndex>* dofGeoIndex = NULL) const override;
 
     virtual void getSubBoundary(BoundaryObject bound, 
-				                        std::vector<BoundaryObject> &subBound) const override;
+				                        std::vector<BoundaryObject>& subBound) const override;
 				
 
     std::string getTypeName() const

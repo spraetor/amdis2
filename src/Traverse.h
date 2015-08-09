@@ -50,11 +50,11 @@ namespace AMDiS
     /// selection criterion specified by level and fill_flag and initializes the
     /// stack. After a call of traverseFirst the next Elements are traversed via 
     /// \ref traverseNext(). 
-    ElInfo* traverseFirst(Mesh *mesh, int level, Flag fill_flag);
+    ElInfo* traverseFirst(Mesh* mesh, int level, Flag fill_flag);
 
     /// Works in the same way as \ref traverseFirst defined above, but limits the
     /// traversal to one macro mesh only.
-    ElInfo* traverseFirstOneMacro(Mesh *mesh, int macroIndex, int level, 
+    ElInfo* traverseFirstOneMacro(Mesh* mesh, int macroIndex, int level, 
 				                          Flag fill_flag);
 
     /// Returns the next ElInfo in a traversal initiated by \ref traverseFirst()
@@ -85,7 +85,7 @@ namespace AMDiS
     /// Only for 3d: Calls update of all ElInfo3d onjects in \ref elinfo_stack
     void update();
 
-    void fillRefinementPath(ElInfo& elInfo, const ElInfo& upperElInfo);
+    void fillRefinementPath(ElInfo& elInfo, ElInfo const& upperElInfo);
 
     /// Is used for parallel mesh traverse.
     void setMyThreadId(int n) 
@@ -99,7 +99,7 @@ namespace AMDiS
       maxThreads = n;
     }
 
-    int getStackData(std::vector<ElInfo*> &elInfos, std::vector<int> &infos) 
+    int getStackData(std::vector<ElInfo*>& elInfos, std::vector<int>& infos) 
     {
       elInfos = elinfo_stack;
       infos = info_stack;
@@ -141,7 +141,7 @@ namespace AMDiS
 
     /// Avoids copy of a traverse stack. If copy should be possible
     /// the operator must be implemented (deep copy not flat copy!)
-    void operator=(const TraverseStack& /*rhs*/) 
+    void operator=(TraverseStack const& /*rhs*/) 
     {
       FUNCNAME("TraverseStack::operator=()");
       ERROR_EXIT("not implemented");
@@ -149,7 +149,7 @@ namespace AMDiS
 
     /// Avoids copy of a traverse stack. If copy should be possible
     /// the operator must be implemented (deep copy not flat copy!)
-    TraverseStack(const TraverseStack&) 
+    TraverseStack(TraverseStack const&) 
     {
       FUNCNAME("TraverseStack::TraverseStack()");
       ERROR_EXIT("not implemented");
@@ -175,7 +175,7 @@ namespace AMDiS
     int limitedToMacroElement;
   
     /// current macro element
-    const MacroElement *traverse_mel;
+    MacroElement const* traverse_mel;
 
     /// Current size of the stack
     int stack_size;
@@ -194,7 +194,7 @@ namespace AMDiS
     std::vector<int> info_stack;
 
     ///
-    const MacroElement *save_traverse_mel;
+    MacroElement const* save_traverse_mel;
 
     ///
     std::vector<ElInfo*> save_elinfo_stack;

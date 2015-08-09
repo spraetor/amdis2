@@ -62,7 +62,7 @@ namespace AMDiS
 
     TEST_EXIT(basFcts == rowFeSpace->getBasisFcts())("invalid basFcts\n");
 
-    ElementVector uhEl(basFcts->getNumber());
+    DenseVector<double> uhEl(basFcts->getNumber());
     dv->getLocalVector(elInfo->getElement(), uhEl);
 
     TEST_EXIT(neumannOperators || robinOperators)
@@ -103,7 +103,7 @@ namespace AMDiS
       	DenseVector<WorldMatrix<double> > D2UhAtQp;
       	dv->getVecAtQPs(elInfo, quadrature, NULL, uhAtQp);
         
-      	ElementVector f(nPoints);
+      	DenseVector<double> f(nPoints);
       	set_to_zero(f);
       
       	if (robinOperators)

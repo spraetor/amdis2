@@ -34,10 +34,10 @@ namespace AMDiS
     template <class T>
     struct identity : FunctorBase
     {
-      typedef T result_type;
-      int degree(int d0) const { return d0; }
+      using result_type = T;
+      constexpr int degree(int d0) const { return d0; }
 
-      static T eval(const T& v) { return v; }
+      static constexpr T eval(const T& v) { return v; }
       T operator()(const T& v) const { return eval(v); }
     };
 
@@ -45,7 +45,7 @@ namespace AMDiS
     template <class T>
     struct constant : FunctorBase
     {
-      typedef T result_type;
+      using result_type = T;
       constant(T val_) : val(val_) {}
 
       template <class V>
@@ -59,7 +59,7 @@ namespace AMDiS
     template <class T, long val_>
     struct ct_constant : FunctorBase
     {
-      typedef T result_type;
+      using result_type = T;
       static constexpr T val = val_;
       
       template <class V> static T eval(V&&) { return val; }
@@ -70,7 +70,7 @@ namespace AMDiS
     template <class T, class S=T>
     struct add_constant : FunctorBase
     {
-      typedef T result_type;
+      using result_type = T;
       S value;
       add_constant(S value) : value(value) {}
       
@@ -80,7 +80,7 @@ namespace AMDiS
     template <class T, class S=T>
     struct minus_constant : FunctorBase
     {
-      typedef T result_type;
+      using result_type = T;
       S value;
       minus_constant(S value) : value(value) {}
       
@@ -90,7 +90,7 @@ namespace AMDiS
     template <class T, class S=T>
     struct mult_constant : FunctorBase
     {
-      typedef T result_type;
+      using result_type = T;
       S value;
       mult_constant(S value) : value(value) {}
       
@@ -100,7 +100,7 @@ namespace AMDiS
     template <class T, class S=T>
     struct div_constant : FunctorBase
     {
-      typedef T result_type;
+      using result_type = T;
       S value;
       div_constant(S value) : value(value) {}
       
@@ -111,7 +111,7 @@ namespace AMDiS
     template <class T>
     struct assign : FunctorBase
     {
-      typedef T result_type;
+      using result_type = T;
       
       static result_type& apply(T& v, T const& v0) { return (v = v0); }
       result_type& operator()(T& v, T const& v0) { return apply(v,v0); }
@@ -121,7 +121,7 @@ namespace AMDiS
     template <class T>
     struct add_assign : FunctorBase
     {
-      typedef T result_type;
+      using result_type = T;
       
       static result_type& apply(T& v, T const& v0) { return (v += v0); }
       result_type& operator()(T& v, T const& v0) { return apply(v,v0); }
@@ -131,7 +131,7 @@ namespace AMDiS
     template <class T>
     struct mult_assign : FunctorBase
     {
-      typedef T result_type;
+      using result_type = T;
       
       static result_type& apply(T& v, T const& v0) { return (v *= v0); }
       result_type& operator()(T& v, T const& v0) { return apply(v,v0); }
@@ -141,7 +141,7 @@ namespace AMDiS
     template <class T>
     struct div_assign : FunctorBase
     {
-      typedef T result_type;
+      using result_type = T;
       
       static result_type& apply(T& v, T const& v0) { return (v /= v0); }
       result_type& operator()(T& v, T const& v0) { return apply(v,v0); }
@@ -151,7 +151,7 @@ namespace AMDiS
     template <class T>
     struct max_assign : FunctorBase
     {
-      typedef T result_type;
+      using result_type = T;
       
       static result_type& apply(T& v, T const& v0) { return (v = std::max(v,v0)); }
       result_type& operator()(T& v, T const& v0) { return apply(v,v0); }
@@ -161,42 +161,98 @@ namespace AMDiS
     template <class T>
     struct min_assign : FunctorBase
     {
-      typedef T result_type;
+      using result_type = T;
       
       static result_type& apply(T& v, T const& v0) { return (v = std::min(v,v0)); }
       result_type& operator()(T& v, T const& v0) { return apply(v,v0); }
     };
     
+    // -------------------------------------------------------------------------
 
     /// abs(v) == |v|
     template <class T>
     struct abs : FunctorBase
     {
-      typedef T result_type;
-      int getDegree(int d0) const { return d0; }
+      using result_type = T;
+      constexpr int getDegree(int d0) const { return d0; }
 
-      static result_type eval(const T& v) { return std::abs(v); }
+      static result_type eval(const T& v) { return math::abs(v); }
       result_type operator()(const T &v) const { return eval(v); }
     };
 
     template <class T>
     struct abs<std::complex<T> > : FunctorBase
     {
-      typedef T result_type;
-      int getDegree(int d0) const { return d0; }
+      using result_type = T;
+      constexpr int getDegree(int d0) const { return d0; }
 
       static result_type eval(const T& v) { return std::norm(v); }
       result_type operator()(const T &v) const { return eval(v); }
+    };
+    
+    /// negate(v) == -v
+    template <class T>
+    struct negate : FunctorBase
+    {
+      using result_type = T;
+      constexpr int getDegree(int d0) const { return d0; }
+
+      static result_type eval(const T& v) { return -v; }
+      result_type operator()(const T &v) const { return eval(v); }
+    };
+
+    /// a + b
+    template <class T1, class T2 = T1>
+    struct plus : FunctorBase
+    {
+      using result_type = typename traits::add_type<T1, T2>::type;
+      constexpr int getDegree(int d0, int d1) const { return math::max(d0, d1); }
+
+      static result_type eval(const T1& v0, const T2& v1) { return v0 + v1; }
+      result_type operator()(const T1& v0, const T2& v1) const { return eval(v0,v1); }
+    };
+
+    /// a - b
+    template <class T1, class T2 = T1>
+    struct minus : FunctorBase
+    {
+      using result_type = typename traits::add_type<T1, T2>::type;
+      constexpr int getDegree(int d0, int d1) const { return math::max(d0, d1); }
+
+      static result_type eval(const T1& v0, const T2& v1) { return v0 - v1; }
+      result_type operator()(const T1& v0, const T2& v1) const { return eval(v0,v1); }
+    };
+
+    /// a * b
+    template <class T1, class T2 = T1>
+    struct multiplies : FunctorBase
+    {
+      using result_type = typename traits::mult_type<T1, T2>::type;
+      constexpr int getDegree(int d0, int d1) const { return d0 + d1; }
+
+      static result_type eval(const T1& v0, const T2& v1) { return v0 * v1; }
+      result_type operator()(const T1& v0, const T2& v1) const { return eval(v0,v1); }
+    };
+
+    /// a / b
+    template <class T1, class T2 = T1>
+    struct divides : FunctorBase
+    {
+      using result_type = typename traits::mult_type<T1, T2>::type;
+      constexpr int getDegree(int d0, int d1) const { return d0 + d1; }
+
+      static result_type eval(const T1& v0, const T2& v1) { return v0 / v1; }
+      result_type operator()(const T1& v0, const T2& v1) const { return eval(v0,v1); }
     };
 
     /// max(a,b)
     template <class T>
     struct max : FunctorBase
     {
-      typedef T result_type;
-      int getDegree(int d0) const { return d0; }
+      using result_type = T;
+      constexpr int getDegree(int d0, int d1) const { return math::max(d0, d1); }
 
-      static result_type eval(const T& v0, const T& v1) { return std::max(v0, v1); }
+      static result_type eval(const T& v0, const T& v1) { return math::max(v0, v1); }
       result_type operator()(const T &v0, const T& v1) const { return eval(v0,v1); }
     };
 
@@ -204,10 +260,10 @@ namespace AMDiS
     template <class T>
     struct min : FunctorBase
     {
-      typedef T result_type;
-      int getDegree(int d0) const { return d0; }
+      using result_type = T;
+      constexpr int getDegree(int d0, int d1) const { return math::max(d0, d1); }
 
-      static result_type eval(const T& v0, const T& v1) { return std::min(v0, v1); }
+      static result_type eval(const T& v0, const T& v1) { return math::min(v0, v1); }
       result_type operator()(const T &v0, const T& v1) const { return eval(v0,v1); }
     };
 
@@ -215,10 +271,10 @@ namespace AMDiS
     template <class T>
     struct abs_max : FunctorBase
     {
-      typedef T result_type;
-      int getDegree(int d0) const { return d0; }
+      using result_type = T;
+      constexpr int getDegree(int d0) const { return d0; }
 
-      static result_type eval(const T& v0, const T& v1) { return std::max(std::abs(v0), std::abs(v1)); }
+      static result_type eval(const T& v0, const T& v1) { return math::max(math::abs(v0), math::abs(v1)); }
       result_type operator()(const T &v0, const T& v1) const { return eval(v0,v1); }
     };
 
@@ -226,19 +282,20 @@ namespace AMDiS
     template <class T>
     struct abs_min : FunctorBase
     {
-      typedef T result_type;
-      int getDegree(int d0) const { return d0; }
+      using result_type = T;
+      constexpr int getDegree(int d0) const { return d0; }
 
-      static result_type eval(const T& v0, const T& v1) { return std::min(std::abs(v0), std::abs(v1)); }
+      static result_type eval(const T& v0, const T& v1) { return math::min(math::abs(v0), math::abs(v1)); }
       result_type operator()(const T &v0, const T& v1) const { return eval(v0,v1); }
     };    
     
-    /// cross(v1, v2) = v1 x v2
+    
+    /// cross(v1, v2) = v1 x v2, TODO: find better name
     template <class T1, class T2>
     struct MyCross : FunctorBase
     {
       typedef typename traits::mult_type<T1, T2>::type value_type;
-      int getDegree(int d, int d0, int d1) const { return d0+d1; }
+      constexpr int getDegree(int d, int d0, int d1) const { return d0+d1; }
       
       template <class Vec1, class Vec2>
       static value_type apply(size_t i, const Vec1 &v1, const Vec2& v2)
@@ -337,7 +394,7 @@ namespace AMDiS
     template <int p, class T>
     struct pow : FunctorBase
     {
-      typedef T result_type;
+      using result_type = T;
       int getDegree(int d0) const { return p*d0; }
 
       static result_type eval(const T& v) { return boost::math::pow<p>(v); }
@@ -351,7 +408,7 @@ namespace AMDiS
     template <int p, class T>
     struct root : FunctorBase
     {
-      typedef T result_type;
+      using result_type = T;
       int getDegree(int d0) const { return p*d0; } // optimal polynomial approximation degree ?
 
       static result_type eval(const T& v) { return root_dispatch<p,T>::eval(v); }

@@ -269,7 +269,7 @@ inline void transformDOF_extended(DOFVector<T1> *vec1, const T2 val, DOFVector<T
     int nResBasisFcts = resBasisFcts->getNumber();
 
     std::vector<DegreeOfFreedom> resLocalIndices(nResBasisFcts);
-    ElementVector vec1LocalCoeffs(nVec1BasisFcts);
+    DenseVector<double> vec1LocalCoeffs(nVec1BasisFcts);
 
     DimVec<double> *coords = NULL;
     TraverseStack stack;
@@ -353,7 +353,7 @@ inline void transformDOF_extended(const T1 val, DOFVector<T2> *vec1, DOFVector<T
     int nResBasisFcts = resBasisFcts->getNumber();
 
     std::vector<DegreeOfFreedom> resLocalIndices(nResBasisFcts);
-    ElementVector vec1LocalCoeffs(nVec1BasisFcts);
+    DenseVector<double> vec1LocalCoeffs(nVec1BasisFcts);
 
     DimVec<double> *coords = NULL;
     TraverseStack stack;
@@ -532,8 +532,8 @@ inline void transformDOF(DOFVector<T1> *vec1, DOFVector<T2> *vec2, T3 val, DOFVe
     int nResBasisFcts = resBasisFcts->getNumber();
 
     std::vector<DegreeOfFreedom> resLocalIndices(nResBasisFcts);
-    ElementVector vec1LocalCoeffs(nVec1BasisFcts);
-    ElementVector vec2LocalCoeffs(nVec2BasisFcts);
+    DenseVector<double> vec1LocalCoeffs(nVec1BasisFcts);
+    DenseVector<double> vec2LocalCoeffs(nVec2BasisFcts);
 
     DimVec<double> *coords = NULL;
     TraverseStack stack;
@@ -596,8 +596,8 @@ inline void transformDOF(DOFVector<T1> *vec1, T2 val, DOFVector<T2> *vec3, DOFVe
     int nResBasisFcts = resBasisFcts->getNumber();
 
     std::vector<DegreeOfFreedom> resLocalIndices(nResBasisFcts);
-    ElementVector vec1LocalCoeffs(nVec1BasisFcts);
-    ElementVector vec3LocalCoeffs(nVec3BasisFcts);
+    DenseVector<double> vec1LocalCoeffs(nVec1BasisFcts);
+    DenseVector<double> vec3LocalCoeffs(nVec3BasisFcts);
 
     DimVec<double> *coords = NULL;
     TraverseStack stack;
@@ -660,8 +660,8 @@ inline void transformDOF(T1 val, DOFVector<T2> *vec2, DOFVector<T2> *vec3, DOFVe
     int nResBasisFcts = resBasisFcts->getNumber();
 
     std::vector<DegreeOfFreedom> resLocalIndices(nResBasisFcts);
-    ElementVector vec2LocalCoeffs(nVec2BasisFcts);
-    ElementVector vec3LocalCoeffs(nVec3BasisFcts);
+    DenseVector<double> vec2LocalCoeffs(nVec2BasisFcts);
+    DenseVector<double> vec3LocalCoeffs(nVec3BasisFcts);
 
     DimVec<double> *coords = NULL;
     TraverseStack stack;

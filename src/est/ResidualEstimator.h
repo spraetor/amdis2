@@ -117,18 +117,18 @@ namespace AMDiS
 
     const BasisFunction **basFcts;
 
-    std::vector<ElementVector> uhEl;
+    std::vector<DenseVector<double>> uhEl;
 
-    std::vector<ElementVector> uhOldEl;
+    std::vector<DenseVector<double>> uhOldEl;
 
-    std::vector<ElementVector> uhNeigh;
+    std::vector<DenseVector<double>> uhNeigh;
 
     DenseVector<double> uhQP;
 
     DenseVector<double> uhOldQP;
 
     /// Stores the element residual computed at the quadrature points of the element.
-    ElementVector riq;
+    DenseVector<double> riq;
 
     DenseVector<WorldVector<double> > grdUhQp;
 

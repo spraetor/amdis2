@@ -12,7 +12,7 @@ namespace AMDiS
   public:
     struct Iterator : public DOFIterator<DegreeOfFreedom> 
     {
-      Iterator(VertexVector *c, DOFIteratorType type)
+      Iterator(VertexVector* c, DOFIteratorType type)
       	: DOFIterator<DegreeOfFreedom>(const_cast<DOFAdmin*>(c->getAdmin()), 
                         				       dynamic_cast<DOFIndexed<DegreeOfFreedom>*>(c), 
                         				       type)
@@ -42,7 +42,7 @@ namespace AMDiS
 
     void set(DegreeOfFreedom val);
 
-    void compressDofContainer(int size, std::vector<DegreeOfFreedom> &newDOF);
+    void compressDofContainer(int size, std::vector<DegreeOfFreedom>& newDOF);
 
     void changeDofIndices(std::map<DegreeOfFreedom, DegreeOfFreedom>& dofIndexMap);
 

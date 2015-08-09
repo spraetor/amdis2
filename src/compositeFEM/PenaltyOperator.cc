@@ -158,7 +158,7 @@ PenaltyOperator::getElementMatrix(const ElInfo *elInfo,
 
 void 
 PenaltyOperator::getElementVector(const ElInfo *elInfo, 
-				  ElementVector& userVec, 
+				  DenseVector<double>& userVec, 
 				  double factor)
 {
   VectorOfFixVecs<DimVec<double> > *intersecPoints = NULL;

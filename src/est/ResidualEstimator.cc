@@ -707,7 +707,7 @@ namespace AMDiS {
 	 DOFMatrix *A, 
 	 DOFVector<double> *fh,
 	 Quadrature *quad,
-	 ElementVector& result)
+	 DenseVector<double>& result)
   {
     std::vector<Operator*>::iterator it;
     std::vector<double*>::iterator fac;
@@ -751,7 +751,7 @@ namespace AMDiS {
 	  if (num_rows(uhOldIq) > 0)
 	    (*it)->evalZeroOrder(nPoints, uhOldIq, grdUhOldIq, D2UhOldIq, result, -factor);	  
 	} else {
-	  ElementVector fx(nPoints, 0.0);
+	  DenseVector<double> fx(nPoints, 0.0);
 	  (*it)->getC(elInfo, nPoints, fx);
 
 	  for (int iq = 0; iq < nPoints; iq++)

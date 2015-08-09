@@ -114,7 +114,7 @@ public:
   DimVec<double> elNormalVel;
 
   /// Values of level set function in vertices of element.
-  ElementVector lSFctVal;
+  DenseVector<double> lSFctVal;
 
   /// Basis functions.
   const BasisFunction *basFcts;

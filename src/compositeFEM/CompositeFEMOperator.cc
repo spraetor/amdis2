@@ -166,7 +166,7 @@ void CompositeFEMOperator::getElementMatrix(const ElInfo *elInfo,
 
 
 void CompositeFEMOperator::getElementVector(const ElInfo *elInfo, 
-					    ElementVector& userVec, 
+					    DenseVector<double>& userVec, 
 					    double factor)
 {
   FUNCNAME("CompositeFEMOperator::getElementVector");
@@ -251,7 +251,7 @@ void CompositeFEMOperator::getElementVector(const ElInfo *elInfo,
     ERROR_EXIT("cannot get position of subpolytope\n");
   }
 
-  ElementVector subPolVec1(subElementAssembler->getNRow());
+  DenseVector<double> subPolVec1(subElementAssembler->getNRow());
   set_to_zero(subPolVec1);
   subElementAssembler->getSubPolytopeVector(subPolytope,
 					    subElementAssembler,
@@ -259,9 +259,9 @@ void CompositeFEMOperator::getElementVector(const ElInfo *elInfo,
 					    subPolVec1);  
 
   // Integration on second subpolytope produced by the intersection.
-  ElementVector elVec(subElementAssembler->getNRow());
+  DenseVector<double> elVec(subElementAssembler->getNRow());
   set_to_zero(elVec);
-  ElementVector subPolVec2(subElementAssembler->getNRow());
+  DenseVector<double> subPolVec2(subElementAssembler->getNRow());
   set_to_zero(subPolVec2);
 
   if (!assembler.get()) {

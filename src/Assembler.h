@@ -46,7 +46,7 @@ namespace AMDiS
 
     /// Assembles the element vector for the given ElInfo
     void calculateElementVector(const ElInfo *elInfo, 
-                        				ElementVector& userVec, 
+                        				DenseVector<double>& userVec, 
                         				double factor = 1.0);
 
     /// Returns \ref rowFeSpace.
@@ -155,7 +155,7 @@ namespace AMDiS
      * Vector assembling by element matrix-vector multiplication. 
      * Usefull if an element matrix was already calculated.
      */
-    void matVecAssemble(const ElInfo *elInfo, ElementVector& vec);
+    void matVecAssemble(const ElInfo *elInfo, DenseVector<double>& vec);
 
     /** \brief
      * Checks whether quadratures for subassemblers are already set.
@@ -204,7 +204,7 @@ namespace AMDiS
     ElementMatrix elementMatrix;
 
     /// Locally stored element vector
-    ElementVector elementVector;
+    DenseVector<double> elementVector;
 
     ///
     ElementMatrix tmpMat;

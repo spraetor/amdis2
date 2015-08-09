@@ -100,7 +100,7 @@ namespace AMDiS
   }
 
   
-  SystemVector& SystemVector::operator=(const SystemVector& rhs) 
+  SystemVector& SystemVector::operator=(SystemVector const& rhs) 
   {
     TEST_EXIT_DBG(rhs.vectors.size() == vectors.size())("Invalied sizes!\n");
     for (size_t i = 0; i < vectors.size(); i++)
@@ -110,7 +110,7 @@ namespace AMDiS
   }
 
   
-  void SystemVector::copy(const SystemVector& rhs) 
+  void SystemVector::copy(SystemVector const& rhs) 
   {
     TEST_EXIT_DBG(getSize() == rhs.getSize())("Invalid sizes!\n");
     for (size_t i = 0; i < vectors.size(); i++)
@@ -125,7 +125,7 @@ namespace AMDiS
   }
 
   
-  void SystemVector::interpol(SystemVector *v, double factor) 
+  void SystemVector::interpol(SystemVector* v, double factor) 
   {
     for (int i = 0; i < v->getSize(); i++)
       vectors[i]->interpol(v->getDOFVector(i), factor);
@@ -143,9 +143,10 @@ namespace AMDiS
   }
   
   
+  /* ----- OPERATORS WITH SYSTEM-VECTORS ------------------------------------ */
   
   
-  const SystemVector& operator*=(SystemVector& x, double d) 
+  SystemVector& operator*=(SystemVector& x, double d) 
   {
     for (int i = 0; i < x.getSize(); i++)
       *(x.getDOFVector(i)) *= d;
@@ -153,7 +154,23 @@ namespace AMDiS
   }
 
 
-  double operator*(SystemVector& x, SystemVector& y) 
+  SystemVector operator*(SystemVector x, double d) 
+  {
+    for (int i = 0; i < x.getSize(); i++)
+      (*(x.getDOFVector(i))) *= d;
+    return x;
+  }
+
+  
+  SystemVector operator*(double d, SystemVector x) 
+  {
+    for (int i = 0; i < x.getSize(); i++)
+      (*(x.getDOFVector(i))) *= d;
+    return x;
+  }
+
+
+  double operator*(SystemVector const& x, SystemVector const& y) 
   {
     TEST_EXIT_DBG(x.getSize() == y.getSize())("invalid size\n");
     double result = 0.0;
@@ -163,7 +180,7 @@ namespace AMDiS
   }
 
 
-  const SystemVector& operator+=(SystemVector& x, const SystemVector& y) 
+  SystemVector& operator+=(SystemVector& x, SystemVector const& y) 
   {
     TEST_EXIT_DBG(x.getSize() == y.getSize())("invalid size\n");
     for (int i = 0; i < x.getSize(); i++)
@@ -172,7 +189,7 @@ namespace AMDiS
   }
 
 
-  const SystemVector& operator-=(SystemVector& x, SystemVector& y) 
+  SystemVector& operator-=(SystemVector& x, SystemVector const& y) 
   {
     TEST_EXIT_DBG(x.getSize() == y.getSize())("invalid size\n");
     for (int i = 0; i < x.getSize(); i++)
@@ -181,35 +198,16 @@ namespace AMDiS
   }
 
 
-  SystemVector operator*(SystemVector& x, double d) 
-  {
-    SystemVector result = x;
-    for (int i = 0; i < x.getSize(); i++)
-      (*(result.getDOFVector(i))) *= d;
-    return result;
-  }
-
-  
-  SystemVector operator*(double d, SystemVector& x) 
-  {
-    SystemVector result = x;
-    for (int i = 0; i < x.getSize(); i++)
-      (*(result.getDOFVector(i))) *= d;
-    return result;
-  }
-
-
-  SystemVector operator+(const SystemVector& x, const SystemVector& y)
+  SystemVector operator+(SystemVector x, SystemVector const& y)
   {
     TEST_EXIT_DBG(x.getSize() == y.getSize())("invalid size\n");
-    SystemVector result = x;
     for (int i = 0; i < x.getSize(); i++)
-      (*(result.getDOFVector(i))) += (*(y.getDOFVector(i)));
-    return result;
+      (*(x.getDOFVector(i))) += (*(y.getDOFVector(i)));
+    return x;
   }
   
   
-  double norm(SystemVector* x) 
+  double norm(SystemVector const* x) 
   {
     double result = 0.0;
     for (int i = 0; i < x->getSize(); i++)
@@ -218,7 +216,7 @@ namespace AMDiS
   }
 
 
-  double L2Norm(SystemVector* x) 
+  double L2Norm(SystemVector const* x) 
   {
     double result = 0.0;
     for (int i = 0; i < x->getSize(); i++)
@@ -227,7 +225,7 @@ namespace AMDiS
   }
 
 
-  double H1Norm(SystemVector* x) 
+  double H1Norm(SystemVector const* x) 
   {
     double result = 0.0;
     for (int i = 0; i < x->getSize(); i++)

@@ -11,6 +11,7 @@
 #include "Boundary.h"
 #include "DOFAdmin.h"
 #include "ElInfo.h"
+// #include "Expressions.h"
 #include "FiniteElemSpace.h"
 #include "Global.h"
 #include "Mesh.h"
@@ -21,6 +22,7 @@
 #include "Initfile.h"
 #include "Traverse.h"
 #include "DualTraverse.h"
+#include "MatrixVectorOperations.h"
 
 #ifdef HAVE_PARALLEL_DOMAIN_AMDIS
 #include "parallel/MpiHelper.h"
@@ -73,23 +75,6 @@ namespace mtl
 namespace AMDiS 
 {
   template <class T>
-  DOFVectorBase<T>::DOFVectorBase(const FiniteElemSpace *f, std::string n)
-    : feSpace(f),
-      name(n),
-      elementVector(f->getBasisFcts()->getNumber()),
-      boundaryManager(NULL)
-  {    
-    nBasFcts = feSpace->getBasisFcts()->getNumber();
-    dim = feSpace->getMesh()->getDim();
-  }
-  
-
-  template <class T>
-  DOFVectorBase<T>::~DOFVectorBase()
-  {}
-
- 
-  template <class T>
   DOFVector<T>::DOFVector(const FiniteElemSpace* f, std::string n, bool addToSynch)
     : DOFVectorBase<T>(f, n)
   {
@@ -112,6 +97,7 @@ namespace AMDiS
 #endif
   }
 
+  
   template <class T>
   DOFVector<T>::~DOFVector()
   {
@@ -128,33 +114,6 @@ namespace AMDiS
     vec.clear();
   }
 
-  template <class T>
-  void DOFVectorBase<T>::addElementVector(T factor, 
-					  const ElementVector &elVec, 
-					  const BoundaryType *bound,
-					  ElInfo *elInfo,
-					  bool add)
-  {
-    std::vector<DegreeOfFreedom> indices(nBasFcts);
-    feSpace->getBasisFcts()->getLocalIndices(elInfo->getElement(), 
-					     feSpace->getAdmin(),
-					     indices);
-
-    for (int i = 0; i < nBasFcts; i++) {
-      BoundaryCondition *condition = 
-	bound ? this->getBoundaryManager()->getBoundaryCondition(bound[i]) : NULL;
-
-      if (!(condition && condition->isDirichlet())) {
-	DegreeOfFreedom irow = indices[i];
-
-	if (add)
-	  (*this)[irow] += factor * elVec[i];
-	else  
-	  (*this)[irow] = factor * elVec[i];
-      }
-    }
-  }
-
 
   template <class T>
   double DOFVector<T>::squareNrm2() const
@@ -163,7 +122,7 @@ namespace AMDiS
     
     double nrm = 0.0;
     Iterator vecIterator(dynamic_cast<DOFIndexed<T>*>(const_cast<DOFVector<T>*>(this)), 
-			 USED_DOFS);
+                         USED_DOFS);
     for (vecIterator.reset(); !vecIterator.end(); ++vecIterator)
       nrm += (*vecIterator) * (*vecIterator);
 
@@ -207,7 +166,7 @@ namespace AMDiS
 
     double nrm = 0.0;    
     Iterator vecIterator(dynamic_cast<DOFIndexed<T>*>(const_cast<DOFVector<T>*>(this)), 
-			 USED_DOFS);
+                         USED_DOFS);
     for (vecIterator.reset(); !vecIterator.end(); ++vecIterator)
       nrm += *vecIterator;
 
@@ -231,7 +190,7 @@ namespace AMDiS
 
 
   template <class T>
-  void DOFVector<T>::copy(const DOFVector<T>& x)
+  void DOFVector<T>::copy(DOFVector<T> const& x)
   {
     FUNCNAME_DBG("DOFVector<T>::copy()");
 
@@ -328,27 +287,6 @@ namespace AMDiS
 
 
   template <class T>
-  T DOFVectorBase<T>::evalUh(const DimVec<double>& lambda, 
-			     DegreeOfFreedom* dof_indices)
-  {
-    BasisFunction* phi = const_cast<BasisFunction*>(this->getFeSpace()->getBasisFcts());
-    int nBasisFcts = phi->getNumber();
-    T val = 0.0;
-
-    for (int i = 0; i < nBasisFcts; i++)
-      val += (*this)[dof_indices[i]]*(*phi->getPhi(i))(lambda);
-
-    // TODO: ist das im Parallelen so richtig???
-#ifdef HAVE_PARALLEL_DOMAIN_AMDIS
-    double localVal = val;
-    MPI::COMM_WORLD.Allreduce(&localVal, &val, 1, MPI_DOUBLE, MPI_SUM);
-#endif
-
-    return val;
-  }
-
-
-  template <class T>
   T DOFVector<T>::Int(int meshLevel, Quadrature* q) const
   {
     Mesh* mesh = this->feSpace->getMesh();
@@ -377,7 +315,7 @@ namespace AMDiS
       T normT; nullify(normT);
       this->getVecAtQPs(elInfo, NULL, quadFast, uh_vec);
       for (int iq = 0; iq < nPoints; iq++)
-	normT += quadFast->getWeight(iq) * (uh_vec[iq]);
+        normT += quadFast->getWeight(iq) * (uh_vec[iq]);
       result += det * normT;
 
       elInfo = stack.traverseNext(elInfo);
@@ -416,15 +354,14 @@ namespace AMDiS
       double normT = 0.0;
       this->getVecAtQPs(elInfo, NULL, quadFast, uh_vec);
       for (int iq = 0; iq < nPoints; iq++)
-	normT += quadFast->getWeight(iq) * abs(uh_vec[iq]);
+        normT += quadFast->getWeight(iq) * abs(uh_vec[iq]);
       result += det * normT;
 
       elInfo = stack.traverseNext(elInfo);
     }
 
 #ifdef HAVE_PARALLEL_DOMAIN_AMDIS
-    double localResult = result;
-    MPI::COMM_WORLD.Allreduce(&localResult, &result, 1, MPI_DOUBLE, MPI_SUM);
+    Parallel::mpi::globalAdd(result);
 #endif
     
     return result;
@@ -457,15 +394,14 @@ namespace AMDiS
       double normT = 0.0;
       this->getVecAtQPs(elInfo, NULL, quadFast, uh_vec);
       for (int iq = 0; iq < nPoints; iq++)
-	normT += quadFast->getWeight(iq) * sqr(uh_vec[iq]);
+        normT += quadFast->getWeight(iq) * sqr(uh_vec[iq]);
       result += det * normT;
 
       elInfo = stack.traverseNext(elInfo);
     }
 
 #ifdef HAVE_PARALLEL_DOMAIN_AMDIS
-    double localResult = result;
-    MPI::COMM_WORLD.Allreduce(&localResult, &result, 1, MPI_DOUBLE, MPI_SUM);
+    Parallel::mpi::globalAdd(result);
 #endif
     
     return result;
@@ -513,8 +449,7 @@ namespace AMDiS
     }
 
 #ifdef HAVE_PARALLEL_DOMAIN_AMDIS
-    double localResult = result;
-    MPI::COMM_WORLD.Allreduce(&localResult, &result, 1, MPI_DOUBLE, MPI_SUM);
+    Parallel::mpi::globalAdd(result);
 #endif
     
     return result;
@@ -523,10 +458,10 @@ namespace AMDiS
 
 
   template <class T>
-  bool DOFVector<T>::getDofIdxAtPoint(WorldVector<double> &p, 
-				      DegreeOfFreedom &idx, 
-				      ElInfo *oldElInfo, 
-				      bool useOldElInfo) const
+  bool DOFVector<T>::getDofIdxAtPoint(WorldVector<double>& p, 
+                                      DegreeOfFreedom& idx, 
+                                      ElInfo* oldElInfo, 
+                                      bool useOldElInfo) const
   { 
     Mesh *mesh = this->feSpace->getMesh();
     const BasisFunction *basFcts = this->feSpace->getBasisFcts();
@@ -564,13 +499,12 @@ namespace AMDiS
     
     for (int i = 0; i < numBasFcts; i++) {
       elInfo->coordToWorld(*(basFcts->getCoords(i)), coord);
-      WorldVector<double> dist = coord - p;
-      double newDist = norm(dist);
+      double newDist = norm(coord - p);
       if (newDist < minDist) {
-	minIdx = i;
-	minDist = newDist;
-	if (minDist < 1.e-10)
-	  break;
+        minIdx = i;
+        minDist = newDist;
+        if (minDist < 1.e-10)
+          break;
       }
     }
     
@@ -584,34 +518,11 @@ namespace AMDiS
 
   template <class T>
   void DOFVector<T>::compressDOFIndexed(int first, int last, 
-					std::vector<DegreeOfFreedom> &newDOF)
+                                        std::vector<DegreeOfFreedom>& newDOF)
   {
     for (int i = first; i <= last; i++)
       if (newDOF[i] >= 0)
-	vec[newDOF[i]] = vec[i];
-  }
-
-
-  template <class T>
-  Flag DOFVectorBase<T>::getAssembleFlag()
-  {
-    Flag fillFlag(0);
-    
-    for (std::vector<Operator*>::iterator op = this->operators.begin(); 
-	 op != this->operators.end(); ++op)
-      fillFlag |= (*op)->getFillFlag();
-
-    return fillFlag;
-  }
-
-
-  template <class T>
-  void DOFVectorBase<T>::finishAssembling()
-  {
-    // call the operatos cleanup procedures
-    for (std::vector<Operator*>::iterator it = this->operators.begin();
-	 it != this->operators.end(); ++it)
-      (*it)->finishAssembling();
+        vec[newDOF[i]] = vec[i];
   }
 
 
@@ -628,7 +539,7 @@ namespace AMDiS
     
     if (rhs.boundaryManager) {
       if (this->boundaryManager) 
-	delete this->boundaryManager; 
+        delete this->boundaryManager; 
 
       this->boundaryManager = new BoundaryManager(*rhs.boundaryManager);
     } else {
@@ -637,191 +548,8 @@ namespace AMDiS
 
     return *this;
   }
-
-
-  template <class T>
-  void DOFVectorBase<T>::getLocalVector(const Element *el, 
-					DenseVector<T>& d) const
-  {
-    FUNCNAME_DBG("DOFVectorBase<T>::getLocalVector()");
-
-    TEST_EXIT_DBG(feSpace->getMesh() == el->getMesh())
-      ("Element is defined on a different mesh than the DOF vector!\n");
-
-    std::vector<DegreeOfFreedom> localIndices(nBasFcts);
-    const DOFAdmin* admin = feSpace->getAdmin();
-    feSpace->getBasisFcts()->getLocalIndices(el, admin, localIndices);
-
-    for (int i = 0; i < nBasFcts; i++)
-      d[i] = (*this)[localIndices[i]];
-  }
-
-
-  template <class T>
-  void DOFVectorBase<T>::getVecAtQPs(const ElInfo *elInfo, 
-				     const Quadrature *quad,
-				     const FastQuadrature *quadFast,
-				     DenseVector<T>& vecAtQPs) const
-  {
-    FUNCNAME_DBG("DOFVector<T>::getVecAtQPs()");
-    
-    TEST_EXIT_DBG(quad || quadFast)
-      ("Neither quad nor quadFast defined!\n");
-    TEST_EXIT_DBG(!(quad && quadFast) || quad == quadFast->getQuadrature())
-      ("quad != quadFast->quadrature\n");    
-    TEST_EXIT_DBG(!quadFast || quadFast->getBasisFunctions() == feSpace->getBasisFcts())
-      ("Invalid basis functions!");
-
-    const BasisFunction *basFcts = feSpace->getBasisFcts();
-    int nBasFcts  = basFcts->getNumber();
-    DenseVector<T> localVec(nBasFcts);
-    getLocalVector(elInfo->getElement(), localVec);
-    
-    if (quadFast) {
-      // using precalculated values at QPs
-      const mtl::dense2D<double>& phi = quadFast->getPhi();
-      vecAtQPs.change_dim(num_rows(phi)); 	// = quadrature->getNumPoints()
-      vecAtQPs = phi * localVec; 		// Matrix<double> * Vector<T>
-    } else {
-      // evaluate basisFunctions at QPs
-      int nPoints = quad->getNumPoints();
-      vecAtQPs.change_dim(nPoints);
-
-      for (int iq = 0; iq < nPoints; iq++) {
-       	nullify(vecAtQPs[iq]);
-       	for (int j = 0; j < nBasFcts; j++)
-       	  vecAtQPs[iq] += 
-       	    localVec[j] * (*(basFcts->getPhi(j)))(quad->getLambda(iq));
-      }
-    }
-  }
-
-
-  template <class T>
-  void DOFVectorBase<T>::getGrdAtQPs(const ElInfo *elInfo,
-				     const Quadrature *quad,
-				     const FastQuadrature *quadFast,
-				     DenseVector<Gradient_t<T>> &grdAtQPs) const
-  {
-    FUNCNAME_DBG("DOFVector<T>::getGrdAtQPs()");
-
-    TEST_EXIT_DBG(quad || quadFast)("neither quad nor quadFast defined\n");
-    TEST_EXIT_DBG(!(quad && quadFast) || quad == quadFast->getQuadrature())
-      ("quad != quadFast->quadrature\n");
-    TEST_EXIT_DBG(!quadFast || quadFast->getBasisFunctions() == feSpace->getBasisFcts())
-      ("invalid basis functions");
-
-    const BasisFunction *basFcts = feSpace->getBasisFcts();
-    int nBasFcts  = basFcts->getNumber();
-    int dow = Global::getGeo(WORLD);
-    int nPoints = quadFast ? quadFast->getQuadrature()->getNumPoints() : quad->getNumPoints();
-
-    DenseVector<T> localVec(nBasFcts);
-    this->getLocalVector(elInfo->getElement(), localVec);
-
-    DenseVector<T> grd1(dim + 1);
-    int parts = Global::getGeo(PARTS, dim);
-    const DimVec<WorldVector<double> > &grdLambda = elInfo->getGrdLambda();
-
-    grdAtQPs.change_dim(nPoints);
-    if (quadFast) {
-      for (int iq = 0; iq < nPoints; iq++) {
-	nullify(grd1);
-
-	for (int j = 0; j < nBasFcts; j++) { // #BasisFunctions 
-	  for (int k = 0; k < parts; k++)  // #edges (2d) or #faces (3d)
-	    grd1[k] += quadFast->getGradient(iq, j, k) * localVec[j];
-	}
-
-	for (int l = 0; l < dow; l++) {
-	  nullify(grdAtQPs[iq][l]);
-	  for (int k = 0; k < parts; k++)
-	    grdAtQPs[iq][l] += grdLambda[k][l] * grd1[k];
-	}
-      }
-
-    } else {
-      DenseVector<double> grdPhi(dim + 1);
-
-      for (int iq = 0; iq < nPoints; iq++) {
-	nullify(grd1);
-
-	for (int j = 0; j < nBasFcts; j++) {
-	  (*(basFcts->getGrdPhi(j)))(quad->getLambda(iq), grdPhi);
-	  for (int k = 0; k < parts; k++)
-	    grd1[k] += grdPhi[k] * localVec[j];
-	}
-
-	for (int l = 0; l < dow; l++) {
-	  nullify(grdAtQPs[iq][l]);
-	  for (int k = 0; k < parts; k++)
-	    grdAtQPs[iq][l] += grdLambda[k][l] * grd1[k];
-	}
-      }
-    }
-  }
-
-
-  template <class T>
-  void DOFVectorBase<T>::getDerivativeAtQPs(const ElInfo *elInfo,
-					    const Quadrature *quad,
-					    const FastQuadrature *quadFast,
-					    int comp,
-					    DenseVector<T> &derivativeAtQPs) const
-  {
-    FUNCNAME_DBG("DOFVector<T>::getGrdAtQPs()");
-
-    TEST_EXIT_DBG(quad || quadFast)("neither quad nor quadFast defined\n");
-    TEST_EXIT_DBG(!(quad && quadFast) || quad == quadFast->getQuadrature())
-      ("quad != quadFast->quadrature\n");
-    TEST_EXIT_DBG(!quadFast || quadFast->getBasisFunctions() == feSpace->getBasisFcts())
-      ("invalid basis functions");
-
-    const BasisFunction *basFcts = feSpace->getBasisFcts();
-    int nBasFcts  = basFcts->getNumber();
-    int nPoints = quadFast ? quadFast->getQuadrature()->getNumPoints() : quad->getNumPoints();
-
-    DenseVector<T> localVec(nBasFcts);
-    this->getLocalVector(elInfo->getElement(), localVec);
-
-    DenseVector<T> grd1(dim + 1);
-    int parts = Global::getGeo(PARTS, dim);
-    const DimVec<WorldVector<double> > &grdLambda = elInfo->getGrdLambda();
-
-    derivativeAtQPs.change_dim(nPoints);
-    if (quadFast) {
-      for (int iq = 0; iq < nPoints; iq++) {
-	nullify(grd1);
-
-	for (int j = 0; j < nBasFcts; j++) // #BasisFunctions
-	  for (int k = 0; k < parts; k++)  // #edges (2d) or #faces (3d)
-	    grd1[k] += quadFast->getGradient(iq, j, k) * localVec[j];
-
-	  nullify(derivativeAtQPs[iq]);
-	  for (int k = 0; k < parts; k++)
-	    derivativeAtQPs[iq] += grdLambda[k][comp] * grd1[k];
-      }
-
-    } else {
-      DenseVector<double> grdPhi(dim + 1);
-
-      for (int iq = 0; iq < nPoints; iq++) {
-	nullify(grd1);
-
-	for (int j = 0; j < nBasFcts; j++) {
-	  (*(basFcts->getGrdPhi(j)))(quad->getLambda(iq), grdPhi);
-	  for (int k = 0; k < parts; k++)
-	    grd1[k] += grdPhi[k] * localVec[j];
-	}
-
-	  nullify(derivativeAtQPs[iq]);
-	  for (int k = 0; k < parts; k++)
-	    derivativeAtQPs[iq] += grdLambda[k][comp] * grd1[k];
-      }
-    }
-  }
-
-
+  
+  
   template <class T>
   inline void set_to_zero(AMDiS::DOFVector<T>& v)
   {
@@ -856,15 +584,14 @@ namespace AMDiS
       double normT = 0.0;
       this->getVecAtQPs(elInfo, NULL, quadFast, uh_vec);
       for (int iq = 0; iq < nPoints; iq++)
-	normT += quadFast->getWeight(iq) * sqr(uh_vec[iq]) * sqr(1.0 - uh_vec[iq]);
+        normT += quadFast->getWeight(iq) * sqr(uh_vec[iq]) * sqr(1.0 - uh_vec[iq]);
       result += det * normT;
 
       elInfo = stack.traverseNext(elInfo);
     }
 
 #ifdef HAVE_PARALLEL_DOMAIN_AMDIS
-    double localResult = result;
-    MPI::COMM_WORLD.Allreduce(&localResult, &result, 1, MPI_DOUBLE, MPI_SUM);
+    Parallel::mpi::globalAdd(result);
 #endif
     
     return result;
@@ -885,8 +612,8 @@ namespace AMDiS
       result = grad;
     } else {
       if(result && result->getFeSpace() != feSpace) {
-	delete result;
-	result = new DOFVector<Gradient_t<T>>(feSpace, "gradient");
+        delete result;
+        result = new DOFVector<Gradient_t<T>>(feSpace, "gradient");
       }
     }
 
@@ -908,10 +635,10 @@ namespace AMDiS
       int nPositions = mesh->getGeo(geoIndex);
       int numPreDofs = admin->getNumberOfPreDofs(i);
       for (int j = 0; j < nPositions; j++) {
-	int dofs = basFcts->getNumberOfDofs(geoIndex);
-	nNodeDOFs.push_back(dofs);
-	nDofs += dofs;
-	nNodePreDofs.push_back(numPreDofs);
+        int dofs = basFcts->getNumberOfDofs(geoIndex);
+        nNodeDOFs.push_back(dofs);
+        nDofs += dofs;
+        nNodePreDofs.push_back(numPreDofs);
       }
       nNodes += nPositions;
     }
@@ -932,21 +659,21 @@ namespace AMDiS
 
     while (elInfo) {
       const DegreeOfFreedom **dof = elInfo->getElement()->getDof();
-      const DimVec<WorldVector<double> > &grdLambda = elInfo->getGrdLambda();
+      auto& grdLambda = elInfo->getGrdLambda();
       this->getLocalVector(elInfo->getElement(), localUh);
 
       int localDOFNr = 0;
       for (int i = 0; i < nNodes; i++) { // for all nodes
-	for (int j = 0; j < nNodeDOFs[i]; j++) { // for all dofs at this node
-	  DegreeOfFreedom dofIndex = dof[i][nNodePreDofs[i] + j];
-	  if (!visited[dofIndex]) {
-	    basFcts->evalGrdUh(*(bary[localDOFNr]), grdLambda,
-			       localUh, ((*result)[dofIndex]));
+        for (int j = 0; j < nNodeDOFs[i]; j++) { // for all dofs at this node
+          DegreeOfFreedom dofIndex = dof[i][nNodePreDofs[i] + j];
+          if (!visited[dofIndex]) {
+            basFcts->evalGrdUh(*(bary[localDOFNr]), grdLambda,
+                               localUh, ((*result)[dofIndex]));
 
-	    visited[dofIndex] = true;
-	  }
-	  localDOFNr++;
-	}
+            visited[dofIndex] = true;
+          }
+          localDOFNr++;
+        }
       }
 
       elInfo = stack.traverseNext(elInfo);
@@ -970,11 +697,11 @@ namespace AMDiS
 
     if (!result) {
       if (vec && vec->getFeSpace() != feSpace) {
-	delete vec;
-	vec = NULL;
+        delete vec;
+        vec = NULL;
       }
       if (!vec)
-	vec = new DOFVector<Gradient_t<T>>(feSpace, "gradient");
+        vec = new DOFVector<Gradient_t<T>>(feSpace, "gradient");
 
       result = vec;
     }
@@ -1003,21 +730,20 @@ namespace AMDiS
 
     while (elInfo) {
       double det = elInfo->getDet();
-      const DimVec<WorldVector<double> > &grdLambda = elInfo->getGrdLambda();
+      auto& grdLambda = elInfo->getGrdLambda();
       this->getLocalVector(elInfo->getElement(), localUh);
       basFcts->evalGrdUh(bary, grdLambda, localUh, grd);
       basFcts->getLocalIndices(elInfo->getElement(), feSpace->getAdmin(), localIndices);
 
       for (int i = 0; i < nBasisFcts; i++) {
-	(*result)[localIndices[i]] += grd * det;
-	volume[localIndices[i]] += det;
+        (*result)[localIndices[i]] += grd * det;
+        volume[localIndices[i]] += det;
       }
 
       elInfo = stack.traverseNext(elInfo);
     
     }
    
-    // NOTE: We have to synchronize the vectors in PARALLEL_DOMAIN_AMDIS mode
 #ifdef HAVE_PARALLEL_DOMAIN_AMDIS
     Parallel::MeshDistributor::globalMeshDistributor->checkMeshChange(false);
     Parallel::MeshDistributor::globalMeshDistributor->synchAddVector(*result);
@@ -1029,15 +755,15 @@ namespace AMDiS
 
     for (volIt.reset(), grdIt.reset(); !volIt.end(); ++volIt, ++grdIt)
       if (*volIt != 0.0)
-	*grdIt *= 1.0 / (*volIt);
+        *grdIt *= 1.0 / (*volIt);
       
     return result;
   }
 
 
   template <class T>
-  std::vector<DOFVector<double>*> *transform(DOFVector<Gradient_t<T>> *vec,
-					     std::vector<DOFVector<double>*> *res)
+  std::vector<DOFVector<double>*> *transform(DOFVector<Gradient_t<T>>* vec,
+                                             std::vector<DOFVector<double>*>* res)
   {
     FUNCNAME_DBG("DOFVector<T>::transform()");
 
@@ -1050,11 +776,11 @@ namespace AMDiS
     if (!res && !result) {
       result = new std::vector<DOFVector<double>*>(len);
       for (int i = 0; i < len; i++)
-	(*result)[i] = new DOFVector<double>(vec->getFeSpace(), "transform");
+        (*result)[i] = new DOFVector<double>(vec->getFeSpace(), "transform");
     } else if (res->size() == 0 || (*res)[0] == NULL) {
       res->resize(len, NULL);
       for (int i = 0; i < len; i++)
-	(*res)[i] = new DOFVector<double>(vec->getFeSpace(), "transform");
+        (*res)[i] = new DOFVector<double>(vec->getFeSpace(), "transform");
     }
 
     std::vector<DOFVector<double>*> *r = res ? res : result;
@@ -1062,7 +788,7 @@ namespace AMDiS
     int vecSize = vec->getSize();
     for (int i = 0; i < vecSize; i++)
       for (int j = 0; j < len; j++)
-	(*((*r)[j]))[i] = (GradientType<T>::getValues((*vec)[i]))[j];
+        (*((*r)[j]))[i] = (GradientType<T>::getValues((*vec)[i]))[j];
 
     return r;
   }
@@ -1072,24 +798,23 @@ namespace AMDiS
   
 
   template<typename T>
-  const DOFVector<T>& operator*=(DOFVector<T>& x, T scal)
+  DOFVector<T>& operator*=(DOFVector<T>& x, T scal)
   {
     FUNCNAME_DBG("DOFVector<T>::operator*=(DOFVector<T>& x, T scal)");
 
     TEST_EXIT_DBG(x.getFeSpace() && x.getFeSpace()->getAdmin())
       ("pointer is NULL: %8X, %8X\n", x.getFeSpace(), x.getFeSpace()->getAdmin());
 
-    typename DOFVector<T>::Iterator vecIterator(dynamic_cast<DOFIndexed<T>*>(&x), 
-						USED_DOFS);
-    for (vecIterator.reset(); !vecIterator.end(); ++vecIterator)
-      (*vecIterator) *= scal; 
+    DOFIterator<T> xIterator(&x, USED_DOFS);
+    for (xIterator.reset(); !xIterator.end(); ++xIterator)
+      (*xIterator) *= scal; 
 
     return x;
   }
 
 
   template<typename T>
-  const DOFVector<T>& operator+=(DOFVector<T>& x, const DOFVector<T>& y)
+  DOFVector<T>& operator+=(DOFVector<T>& x, DOFVector<T> const& y)
   {
     FUNCNAME_DBG("DOFVector<T>::operator+=(DOFVector<T>& x, const DOFVector<T>& y)");
     
@@ -1101,10 +826,9 @@ namespace AMDiS
        x.getFeSpace()->getAdmin(), y.getFeSpace()->getAdmin());
     TEST_EXIT_DBG(x.getSize() == y.getSize())("different sizes\n");
     
-    typename DOFVector<T>::Iterator xIterator(dynamic_cast<DOFIndexed<T>*>(&x), USED_DOFS);
-    typename DOFVector<T>::Iterator yIterator(dynamic_cast<DOFIndexed<T>*>(const_cast<DOFVector<T>*>(&y)), USED_DOFS);
-    for (xIterator.reset(), yIterator.reset(); !xIterator.end();
-	 ++xIterator, ++yIterator)
+    DOFIterator<T> xIterator(&x, USED_DOFS);
+    DOFConstIterator<T> yIterator(&y, USED_DOFS);
+    for (xIterator.reset(), yIterator.reset(); !xIterator.end(); ++xIterator, ++yIterator)
       *xIterator += *yIterator; 
 
     return x;
@@ -1112,7 +836,7 @@ namespace AMDiS
 
 
   template<typename T>
-  const DOFVector<T>& operator-=(DOFVector<T>& x, const DOFVector<T>& y)
+  DOFVector<T>& operator-=(DOFVector<T>& x, DOFVector<T> const& y)
   {
     FUNCNAME_DBG("DOFVector<T>::operator-=(DOFVector<T>& x, const DOFVector<T>& y)");
 
@@ -1124,10 +848,9 @@ namespace AMDiS
        x.getFeSpace()->getAdmin(), y.getFeSpace()->getAdmin());
     TEST_EXIT_DBG(x.getSize() == y.getSize())("different sizes\n");
     
-    typename DOFVector<T>::Iterator xIterator(dynamic_cast<DOFIndexed<T>*>(&x), USED_DOFS);
-    typename DOFVector<T>::Iterator yIterator(dynamic_cast<DOFIndexed<T>*>(const_cast<DOFVector<T>*>(&y)), USED_DOFS);
-    for (xIterator.reset(), yIterator.reset(); !xIterator.end();
-	 ++xIterator, ++yIterator)
+    DOFIterator<T> xIterator(&x, USED_DOFS);
+    DOFConstIterator<T> yIterator(&y, USED_DOFS);
+    for (xIterator.reset(), yIterator.reset(); !xIterator.end(); ++xIterator, ++yIterator)
       *xIterator -= *yIterator; 
 
     return x;
@@ -1135,7 +858,7 @@ namespace AMDiS
 
 
   template<typename T>
-  const DOFVector<T>& operator*=(DOFVector<T>& x, const DOFVector<T>& y)
+  DOFVector<T>& operator*=(DOFVector<T>& x, DOFVector<T> const& y)
   {
     FUNCNAME_DBG("DOFVector<T>::operator*=(DOFVector<T>& x, const DOFVector<T>& y)");
     
@@ -1147,10 +870,9 @@ namespace AMDiS
        x.getFeSpace()->getAdmin(), y.getFeSpace()->getAdmin());
     TEST_EXIT_DBG(x.getSize() == y.getSize())("different sizes\n");
     
-    typename DOFVector<T>::Iterator xIterator(dynamic_cast<DOFIndexed<T>*>(&x), USED_DOFS);
-    typename DOFVector<T>::Iterator yIterator(dynamic_cast<DOFIndexed<T>*>(const_cast<DOFVector<T>*>(&y)), USED_DOFS);
-    for (xIterator.reset(), yIterator.reset(); !xIterator.end();
-	 ++xIterator, ++yIterator)
+    DOFIterator<T> xIterator(&x, USED_DOFS);
+    DOFConstIterator<T> yIterator(&y, USED_DOFS);
+    for (xIterator.reset(), yIterator.reset(); !xIterator.end(); ++xIterator, ++yIterator)
       *xIterator *= *yIterator; 
 
     return x;
@@ -1158,7 +880,7 @@ namespace AMDiS
 
 
   template<typename T>
-  T operator*(DOFVector<T>& x, DOFVector<T>& y)
+  T operator*(DOFVector<T> const& x, DOFVector<T> const& y)
   {
     FUNCNAME("DOFVector<T>::operator*(DOFVector<T>& x, DOFVector<T>& y)");
     const DOFAdmin *admin = NULL;
@@ -1170,12 +892,11 @@ namespace AMDiS
        x.getFeSpace()->getAdmin(), y.getFeSpace()->getAdmin());
     TEST_EXIT(x.getSize() == y.getSize())("different sizes\n");
 
-    T dot = 0;
-
-    typename DOFVector<T>::Iterator xIterator(dynamic_cast<DOFIndexed<T>*>(&x), USED_DOFS);
-    typename DOFVector<T>::Iterator yIterator(dynamic_cast<DOFIndexed<T>*>(&y), USED_DOFS);
-    for (xIterator.reset(), yIterator.reset(); !xIterator.end();
-	 ++xIterator, ++yIterator) 
+    T dot; nullify(dot);
+    
+    DOFConstIterator<T> xIterator(&x, USED_DOFS);
+    DOFConstIterator<T> yIterator(&y, USED_DOFS);
+    for (xIterator.reset(), yIterator.reset(); !xIterator.end(); ++xIterator, ++yIterator) 
       dot += (*xIterator) * (*yIterator);
 
     return dot;
@@ -1183,26 +904,33 @@ namespace AMDiS
   
 
   template<typename T>
-  const DOFVector<T>& operator*(const DOFVector<T>& v, double d)
+  DOFVector<T> operator*(DOFVector<T> v, T d)
   {
-    static DOFVector<T> result; // TODO: REMOVE STATIC
-    return mult(d, v, result); 
+    v *= d;
+    return v; 
   }
 
 
   template<typename T>
-  const DOFVector<T>& operator*(double d, const DOFVector<T>& v)
+  DOFVector<T>& operator*(T d, DOFVector<T> v)
   {
-    static DOFVector<T> result; // TODO: REMOVE STATIC
-    return mult(d, v, result);
+    v *= d;
+    return v; 
   }
 
 
   template<typename T>
-  const DOFVector<T>& operator+(const DOFVector<T> &v1 , const DOFVector<T> &v2)
+  DOFVector<T> operator+(DOFVector<T> v1 , const DOFVector<T> &v2)
   {
-    static DOFVector<T> result; // TODO: REMOVE STATIC
-    return add(v1, v2, result);
+    v1 += v2;
+    return v1;
+  }
+
+  template<typename T>
+  DOFVector<T> operator-(DOFVector<T> v1 , const DOFVector<T> &v2)
+  {
+    v1 -= v2;
+    return v1;
   }
   
 } // end namespace AMDiS

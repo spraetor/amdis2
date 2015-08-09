@@ -275,7 +275,7 @@ namespace AMDiS
     const WorldMatrix<double>& 
     evalD2Uh(const DimVec<double>& lambda,
       	     const DimVec<WorldVector<double> >& Lambda,
-      	     const ElementVector& uh,
+      	     const DenseVector<double>& uh,
       	     WorldMatrix<double>* val) const;
 
     /**

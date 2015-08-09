@@ -24,7 +24,7 @@ namespace AMDiS
             		 bool createVec_ = false);
 
     /// Copy Constructor.
-    SystemVector(const SystemVector& rhs);
+    SystemVector(SystemVector const& rhs);
 
     /// Destructor, deletes all DOFVectors
     ~SystemVector();
@@ -46,7 +46,7 @@ namespace AMDiS
     }
 
     /// Returns \ref vectors[index].
-    const DOFVector<double>* getDOFVector(int index) const 
+    DOFVector<double> const* getDOFVector(int index) const 
     {
       TEST_EXIT_DBG(index < getSize())
         ("Invalid index %d!\n", index);
@@ -108,7 +108,7 @@ namespace AMDiS
 
     void interpol(std::vector<std::function<double(WorldVector<double>)> >& f);
 
-    void interpol(SystemVector *v, double factor);
+    void interpol(SystemVector* v, double factor);
 
     int calcMemoryUsage() const;
 
@@ -125,37 +125,43 @@ namespace AMDiS
     bool createVec;
   };
 
+  
+  /* ----- OPERATORS WITH SYSTEM-VECTORS ------------------------------------ */
+  
 
   /// multiplication with scalar
-  const SystemVector& operator*=(SystemVector& x, double d);
+  SystemVector& operator*=(SystemVector& x, double d);
+
+  /// multiplication with a scalar
+  SystemVector operator*(SystemVector x, double d);
+
+  /// multiplication with a scalar
+  SystemVector operator*(double d, SystemVector x);
 
   /// scalar product
-  double operator*(SystemVector& x, SystemVector& y);
+  double operator*(SystemVector const& x, SystemVector const& y);
 
   /// addition of two system vectors
-  const SystemVector& operator+=(SystemVector& x, const SystemVector& y);
+  SystemVector& operator+=(SystemVector& x, SystemVector const& y);
 
   /// subtraction of two system vectors.
-  const SystemVector& operator-=(SystemVector& x, SystemVector& y);
-
-  /// multiplication with a scalar
-  SystemVector operator*(SystemVector& x, double d);
-
-  /// multiplication with a scalar
-  SystemVector operator*(double d, SystemVector& x);
+  SystemVector& operator-=(SystemVector& x, SystemVector const& y);
 
   /// addition of two system vectors
-  SystemVector operator+(const SystemVector& x, const SystemVector& y);
+  SystemVector operator+(SystemVector x, SystemVector const& y);
 
-// TODO: replace norm functions with const arguments
+  /// addition of two system vectors
+  SystemVector operator-(SystemVector x, SystemVector const& y);
+  
+  
   /// Norm of system vector.
-  inline double norm(SystemVector* x);
+  double norm(SystemVector const* x);
 
   /// L2 norm of system vector.
-  double L2Norm(SystemVector* x);
+  double L2Norm(SystemVector const* x);
 
   /// H1 norm of system vector.
-  double H1Norm(SystemVector* x);
+  double H1Norm(SystemVector const* x);
 
 
   /// Calls SystemVector::set(). Used for solving.

@@ -1,11 +1,11 @@
-#include <numeric>
+#include <utility> // std::swap
 
 #include "VertexVector.h"
 #include "DOFAdmin.h"
 #include "DOFIterator.h"
 
-namespace AMDiS {
-
+namespace AMDiS 
+{
   VertexVector::VertexVector(const DOFAdmin *a, std::string n)
     : DOFVectorDOF(),
       admin(a)
@@ -65,4 +65,4 @@ namespace AMDiS {
     std::swap(vec, tmp);
   }
 
-}
+} // end namespace AMDiS

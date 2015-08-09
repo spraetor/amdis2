@@ -98,7 +98,7 @@ namespace compositeFEM {
 
     void getSubElementVector(SubElInfo *subElInfo, 
 			     const ElInfo *elInfo, 
-			     ElementVector& userVec);
+			     DenseVector<double>& userVec);
 
     void getSubElementMatrix(SubElInfo *subElInfo, 
 			     const ElInfo *elInfo, 
@@ -107,7 +107,7 @@ namespace compositeFEM {
     void getSubPolytopeVector(SubPolytope *subPolytope,
 			      SubElementAssembler *subElementAssembler,
 			      const ElInfo *elInfo,
-			      ElementVector& userVec);
+			      DenseVector<double>& userVec);
 
     void getSubPolytopeMatrix(SubPolytope *subPolytope,
 			      SubElementAssembler *subElementAssembler,

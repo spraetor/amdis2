@@ -10,7 +10,6 @@ using namespace std;
 
 namespace AMDiS 
 {
-
   constexpr int Triangle::vertexOfEdge[3][2];
   constexpr int Triangle::sideOfChild[2][3];
   constexpr int Triangle::vertexOfParent[2][3];
@@ -45,7 +44,7 @@ namespace AMDiS
   }
 
 
-  void Triangle::sortFaceIndices(int face, FixVec<int, WORLD> &vec) const
+  void Triangle::sortFaceIndices(int face, FixVec<int, WORLD>& vec) const
   {
     // TODO: REMOVE STATIC
     static MatrixOfFixVecs<FixVec<int, WORLD> > *sorted_2d = NULL;
@@ -262,7 +261,7 @@ namespace AMDiS
 
 
   void Triangle::getSubBoundary(BoundaryObject bound, 
-				vector<BoundaryObject> &subBound) const
+                                vector<BoundaryObject>& subBound) const
   {
     TEST_EXIT_DBG(bound.subObj == EDGE)("This should not happen!\n");
 
@@ -294,7 +293,7 @@ namespace AMDiS
   }
 
   
-  void Triangle::prepareNextBound(BoundaryObject &bound, int ithChild) const
+  void Triangle::prepareNextBound(BoundaryObject& bound, int ithChild) const
   {
     FUNCNAME_DBG("Triangle::prepareNextBound()");
 

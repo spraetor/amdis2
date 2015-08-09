@@ -2,8 +2,9 @@
 #include "ElInfo.h"
 #include "Assembler.h"
 #include "FixVec.h"
-#include "DOFVector.h"
+#include "DOFVectorBase.h"
 #include "Quadrature.h"
+#include "Mesh.h"
 
 namespace AMDiS 
 {
@@ -11,7 +12,7 @@ namespace AMDiS
     : rowFeSpace(row), 
       colFeSpace(col ? col : row),
       fillFlag(Mesh::CALL_LEAF_EL | Mesh::FILL_COORDS | 
-	       Mesh::FILL_DET | Mesh::FILL_GRD_LAMBDA),
+               Mesh::FILL_DET | Mesh::FILL_GRD_LAMBDA),
       needDualTraverse(false),
       assembler(NULL),
       uhOld(NULL),
@@ -35,8 +36,8 @@ namespace AMDiS
 
 
   void Operator::getElementMatrix(const ElInfo *elInfo, 
-				  ElementMatrix& userMat, 
-				  double factor)
+                                  ElementMatrix& userMat, 
+                                  double factor)
   {
     if (!assembler.get())
       initAssembler(NULL, NULL, NULL, NULL);
@@ -46,8 +47,8 @@ namespace AMDiS
 
 
   void Operator::getElementVector(const ElInfo *elInfo, 
-				  ElementVector& userVec, 
-				  double factor)
+                                  DenseVector<double>& userVec, 
+                                  double factor)
   {
     if (!assembler.get())
       initAssembler(NULL, NULL, NULL, NULL);
@@ -57,19 +58,19 @@ namespace AMDiS
 
 
   void Operator::initAssembler(Quadrature *quad2,
-			       Quadrature *quad1GrdPsi,
-			       Quadrature *quad1GrdPhi,
-			       Quadrature *quad0) 
+                               Quadrature *quad1GrdPsi,
+                               Quadrature *quad1GrdPhi,
+                               Quadrature *quad0) 
   {    
     if (optimized) {
       Assembler *aptr = 
-	new OptimizedAssembler(this, quad2, quad1GrdPsi, quad1GrdPhi, 
-			       quad0, rowFeSpace, colFeSpace);
+        new OptimizedAssembler(this, quad2, quad1GrdPsi, quad1GrdPhi, 
+                               quad0, rowFeSpace, colFeSpace);
       assembler.set(aptr);
     } else {
       Assembler *aptr = 
-	new StandardAssembler(this, quad2, quad1GrdPsi, quad1GrdPhi, 
-			      quad0, rowFeSpace, colFeSpace);
+        new StandardAssembler(this, quad2, quad1GrdPsi, quad1GrdPhi, 
+                              quad0, rowFeSpace, colFeSpace);
       assembler.set(aptr);
     }
   }
@@ -85,9 +86,9 @@ namespace AMDiS
       break;
     case 1:
       if (firstOrderType == GRD_PHI)
-	terms = &firstOrderGrdPhi;
+        terms = &firstOrderGrdPhi;
       else 
-	terms = &firstOrderGrdPsi;
+        terms = &firstOrderGrdPsi;
       break;
     case 2:
       terms = &secondOrder;
@@ -125,11 +126,10 @@ namespace AMDiS
 
 
   void Operator::weakEvalSecondOrder(const std::vector<WorldVector<double> > &grdUhAtQP,
-				     std::vector<WorldVector<double> > &result) const
+                                     std::vector<WorldVector<double> > &result) const
   {
-    for (std::vector<OperatorTerm*>::const_iterator termIt = secondOrder.begin(); 
-	 termIt != secondOrder.end(); ++termIt)
-      static_cast<SecondOrderTerm*>(*termIt)->weakEval(grdUhAtQP, result);
+    for (OperatorTerm const* term : secondOrder)
+      static_cast<SecondOrderTerm const*>(term)->weakEval(grdUhAtQP, result);
   }
   
 } // end namespace AMDiS

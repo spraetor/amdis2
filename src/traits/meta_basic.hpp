@@ -4,6 +4,7 @@
 
 // std c++ headers
 #include <type_traits>
+#include <tuple>
 
 namespace AMDiS 
 {

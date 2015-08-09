@@ -366,7 +366,7 @@ namespace AMDiS
       double factor = *fac ? **fac : 1.0;
 
       if (factor) {
-	ElementVector fx(nPoints, 0.0);
+	DenseVector<double> fx(nPoints, 0.0);
 	(*it)->getC(elInfo, nPoints, fx);
 	
 	for (int iq = 0; iq < nPoints; iq++)

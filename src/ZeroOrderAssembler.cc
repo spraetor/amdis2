@@ -21,17 +21,17 @@ namespace AMDiS
   ZeroOrderAssembler::standardSubAssemblers;
 
 
-  ZeroOrderAssembler::ZeroOrderAssembler(Operator *op,
-                              					 Assembler *assembler,
-                              					 Quadrature *quad,
+  ZeroOrderAssembler::ZeroOrderAssembler(Operator* op,
+                              					 Assembler* assembler,
+                              					 Quadrature* quad,
                               					 bool optimized)
     : SubAssembler(op, assembler, quad, 0, optimized)
   {}
 
 
   ZeroOrderAssembler* ZeroOrderAssembler::getSubAssembler(Operator* op,
-                                          							  Assembler *assembler,
-                                          							  Quadrature *quad,
+                                          							  Assembler* assembler,
+                                          							  Quadrature* quad,
                                           							  bool optimized)
   {
     // check if an assembler is needed at all
@@ -90,7 +90,7 @@ namespace AMDiS
     const BasisFunction *phi = colFeSpace->getBasisFcts();
 
     int nPoints = quadrature->getNumPoints();
-    ElementVector c(nPoints, 0.0);
+    DenseVector<double> c(nPoints, 0.0);
     DenseVector<double> phival(nCol);
 
     for (auto& term : terms)
@@ -135,10 +135,10 @@ namespace AMDiS
   }
 
   // TODO: add combination of elementMatrix and elementVector assembling
-  void StandardZOA::calculateElementVectorImpl(const ElInfo *elInfo, ElementVector& vec)
+  void StandardZOA::calculateElementVectorImpl(const ElInfo *elInfo, DenseVector<double>& vec)
   {
     int nPoints = quadrature->getNumPoints();
-    ElementVector c(nPoints, 0.0);
+    DenseVector<double> c(nPoints, 0.0);
 
     for (auto& term : terms)
       (static_cast<ZeroOrderTerm*>(term))->getC(elInfo, nPoints, c);
@@ -214,7 +214,7 @@ namespace AMDiS
   }
 
 
-  void FastQuadZOA::calculateElementVectorImpl(const ElInfo *elInfo, ElementVector& vec)
+  void FastQuadZOA::calculateElementVectorImpl(const ElInfo *elInfo, DenseVector<double>& vec)
   {
     int nPoints = quadrature->getNumPoints();
 
@@ -226,7 +226,7 @@ namespace AMDiS
       firstCall = false;      
     }
 
-    ElementVector c(nPoints, 0.0);
+    DenseVector<double> c(nPoints, 0.0);
     for (auto& term : terms)
       (static_cast<ZeroOrderTerm*>(term))->getC(elInfo, nPoints, c);
 
@@ -259,7 +259,7 @@ namespace AMDiS
       firstCall = false;      
     }
 
-    ElementVector c(1, 0.0);
+    DenseVector<double> c(1, 0.0);
     for (auto& term : terms)
       (static_cast<ZeroOrderTerm*>(term))->getC(elInfo, 1, c);    
 
@@ -283,17 +283,17 @@ namespace AMDiS
 
 
   void PrecalcZOA::calculateElementVectorImpl(const ElInfo *elInfo, 
-					                                    ElementVector& vec)
+					                                    DenseVector<double>& vec)
   {
     if (firstCall) {
       q00 = Q00PsiPhi::provideQ00PsiPhi(rowFeSpace->getBasisFcts(), 
-					colFeSpace->getBasisFcts(), 
-					quadrature);
+                                        colFeSpace->getBasisFcts(), 
+                                        quadrature);
       q0 = Q0Psi::provideQ0Psi(rowFeSpace->getBasisFcts(), quadrature);	
       firstCall = false;      
     }
 
-    ElementVector c(1, 0.0);
+    DenseVector<double> c(1, 0.0);    
     for (auto& term : terms)
       (static_cast<ZeroOrderTerm*>(term))->getC(elInfo, 1, c);
 

@@ -120,13 +120,13 @@ namespace AMDiS {
     const BasisFunction *basFcts;
 
     /// Vector that stores all global DOFs of one element.
-    ElementVector uhEl;
+    DenseVector<double> uhEl;
 
     /// Vector that stores all global DOFs of one element.
-    ElementVector uhNeigh;
+    DenseVector<double> uhNeigh;
 
     /// Vector that stores values on all quadrature points (QP) on one element.
-    ElementVector uhQP;
+    DenseVector<double> uhQP;
 
     DenseVector<WorldVector<double> > grdUhQp;
 
@@ -136,7 +136,7 @@ namespace AMDiS {
 
     /// Stores the element residual computed at the quadrature points of 
     /// the element.
-    ElementVector riq;
+    DenseVector<double> riq;
 
     /// Pointer to the information object of some neighbouring element.
     ElInfo *neighInfo;

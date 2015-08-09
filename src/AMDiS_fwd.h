@@ -138,9 +138,6 @@ namespace AMDiS
   
   template <class T>
   using SparseMatrix = mtl::compressed2D<T>;
-
-  // TODO: use templated ElementVector
-  using ElementVector = DenseVector<double>;
   
   // TODO: use templated ElementMatrix;
   using ElementMatrix = DenseMatrix<double>;

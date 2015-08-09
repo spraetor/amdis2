@@ -25,7 +25,7 @@ if(CMAKE_CXX_COMPILER MATCHES ".*icpc")
 	list(APPEND CMAKE_CXX_FLAGS "-diag-disable 654 -diag-disable 858") 
 endif()
 
-list(APPEND COMPILEFLAGS "-std=c++11 -Wall -pedantic")
+list(APPEND COMPILEFLAGS "-std=c++11" "-Wall" "-pedantic")
 
 SET(ENABLE_PARALLEL_DOMAIN "OFF" CACHE STRING "use parallel domain decomposition. please set to one of: PMTL, PETSC, OFF" )
 option(ENABLE_ZOLTAN false)
@@ -68,6 +68,7 @@ SET(AMDIS_SRC ${SOURCE_DIR}/AdaptBase.cc
 #	      ${SOURCE_DIR}/DOFIndexed.cc
 	      ${SOURCE_DIR}/DOFMatrix.cc
 	      ${SOURCE_DIR}/DOFVector.cc
+        ${SOURCE_DIR}/DOFVectorBase.cc
 #	      ${SOURCE_DIR}/Debug.cc
 	      ${SOURCE_DIR}/DirichletBC.cc
 	      ${SOURCE_DIR}/DualTraverse.cc
@@ -385,6 +386,9 @@ else()
   add_library(amdis SHARED ${AMDIS_SRC} ${PARALLEL_DOMAIN_AMDIS_SRC})
   add_library(muparser SHARED ${MUPARSER_SRC})
 endif()
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set_property(TARGET amdis PROPERTY CXX_STANDARD 11)
+set_property(TARGET muparser PROPERTY CXX_STANDARD 11)
 
 list(APPEND AMDIS_LIBS amdis ${Boost_LIBRARIES})
 

@@ -90,7 +90,7 @@ namespace AMDiS
 
   
   void SurfaceOperator::getElementVector(const ElInfo *elInfo, 
-                              					 ElementVector& userVec, 
+                              					 DenseVector<double>& userVec, 
                               					 double factor = 1.0)
   {
     int dim = rowFeSpace->getMesh()->getDim();

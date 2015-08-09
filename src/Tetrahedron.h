@@ -24,7 +24,7 @@ namespace AMDiS
     {}
 
     /// implements Element::clone
-    virtual Element *clone() const override
+    virtual Element* clone() const override
     { 
       return new Tetrahedron(mesh); 
     }
@@ -131,7 +131,7 @@ namespace AMDiS
                         				    std::vector<GeoIndex>* dofGeoIndex = NULL) const override;
 
     virtual void getSubBoundary(BoundaryObject bound, 
-				                        std::vector<BoundaryObject> &subBound) const override;
+				                        std::vector<BoundaryObject>& subBound) const override;
 
 
     /// implements Element::getSideOfChild()

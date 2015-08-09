@@ -95,7 +95,7 @@ public:
    * integration domain.
    */
   void getElementVector(const ElInfo *elInfo, 
-			ElementVector& userVec, 
+			DenseVector<double>& userVec, 
 			double factor = 1.0);
 
 protected:
