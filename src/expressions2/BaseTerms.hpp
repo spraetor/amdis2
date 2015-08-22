@@ -2,7 +2,6 @@
 
 #pragma once
 
-// #include <matrix_vector/Forward.h>
 #include <traits/basic.hpp>
 #include <traits/traits_fwd.hpp>
 
@@ -34,34 +33,33 @@ namespace AMDiS
   // some elementary traits functions: size, num_rows, num_cols
   
   template <class T>
-  size_t inline size(const VectorTerm<T>& t) { return size(t.sub()); }
+  inline size_t size(const VectorTerm<T>& t) { return size(t.sub()); }
   
   template <class T>
-  size_t inline size(const MatrixTerm<T>& t) { return size(t.sub()); }
+  inline size_t size(const MatrixTerm<T>& t) { return size(t.sub()); }
   
   template <class T>
-  size_t inline num_rows(const VectorTerm<T>& t) { return num_rows(t.sub()); }
+  inline size_t num_rows(const VectorTerm<T>& t) { return num_rows(t.sub()); }
   
   template <class T>
-  size_t inline num_rows(const MatrixTerm<T>& t) { return num_rows(t.sub()); }  
+  inline size_t num_rows(const MatrixTerm<T>& t) { return num_rows(t.sub()); }  
   
   template <class M>
-  size_t inline num_cols(const VectorTerm<M>& t) { return num_cols(t.sub()); }
+  inline size_t num_cols(const VectorTerm<M>& t) { return num_cols(t.sub()); }
   
   template <class M>
-  size_t inline num_cols(const MatrixTerm<M>& t) { return num_cols(t.sub()); }
+  inline size_t num_cols(const MatrixTerm<M>& t) { return num_cols(t.sub()); }
   
   
   // determine shape of expression
   template <class Sub, class Model, class Enable = void>
   struct ShapedTerm 
   {
-    using type = if_then_else< 
-	   traits::is_vector<Sub>::value, 
-	   VectorTerm<Model>,
-	   if_then_else< traits::is_matrix<Sub>::value, 
-			 MatrixTerm<Model>,
-			 BaseTerm<Model> > >;
+    using type = if_then_else< traits::is_vector<Sub>::value, 
+                    VectorTerm<Model>,
+                    if_then_else< traits::is_matrix<Sub>::value, 
+                        MatrixTerm<Model>,
+                        BaseTerm<Model> > >;
   };
   
   template <class Sub, class Model>

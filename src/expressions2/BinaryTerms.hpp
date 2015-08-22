@@ -23,17 +23,21 @@ namespace AMDiS
     using value_type = typename std::result_of<Functor(Value_t<Term1>, Value_t<Term2>)>::type;
     
     /// constructor takes two terms
-    template <class Term1_, class Term2_>
+    template <class Term1_, class Term2_, 
+      class = Requires_t< traits::IsCompatible<Types<Term1,Term2>, Types<Term1_,Term2_>>> >
     constexpr BinaryTerm(Term1_&& A, Term2_&& B) 
       : Super(std::forward<Term1_>(A), std::forward<Term2_>(B)),
-        term1(A), term2(A) 
+        term1{A}, 
+        term2{B} 
     {}
     
     /// constructor takes two terms and the functor
-    template <class Term1_, class Term2_, class Functor_>
+    template <class Term1_, class Term2_, class Functor_, 
+      class = Requires_t< traits::IsCompatible<Types<Term1,Term2,Functor>, Types<Term1_,Term2_,Functor_>>> >
     constexpr BinaryTerm(Term1_&& A, Term2_&& B, Functor_&& f) 
       : Super(std::forward<Term1_>(A), std::forward<Term2_>(B)),
-        term1(A), term2(B),
+        term1{A}, 
+        term2{B},
         fct{f}
     {}
      
@@ -66,21 +70,21 @@ namespace AMDiS
   
   /// Size of ElementwiseBinaryExpr
   template <class Term1, class Term2, class F>
-  size_t size(BinaryTerm<Term1, Term2, F> const& term)
+  inline size_t size(BinaryTerm<Term1, Term2, F> const& term)
   {
     return size(term.getTerm1());
   }
   
   /// number of rows of ElementwiseBinaryExpr
   template <class Term1, class Term2, class F>
-  size_t num_rows(BinaryTerm<Term1, Term2, F> const& term)
+  inline size_t num_rows(BinaryTerm<Term1, Term2, F> const& term)
   {
     return num_rows(term.getTerm1());
   }
   
   /// number of columns of ElementwiseBinaryExpr
   template <class Term1, class Term2, class F>
-  size_t num_cols(BinaryTerm<Term1, Term2, F> const& term)
+  inline size_t num_cols(BinaryTerm<Term1, Term2, F> const& term)
   {
     return num_cols(term.getTerm1());
   }
@@ -100,26 +104,22 @@ namespace AMDiS
 
   // Term1 + Term2
   template <class Term1, class Term2>
-  using PlusTerm =
-    BinaryTerm<Term1, Term2, 
-      functors::plus<Value_t<Term1>, Value_t<Term2> > >;
+  using PlusTerm = BinaryTerm<Term1, Term2, 
+      functors::plus<Value_t<Term1>, Value_t<Term2>> >;
       
   // Term1 - Term2
   template <class Term1, class Term2>
-  using MinusTerm =
-    BinaryTerm<Term1, Term2, 
-      functors::minus<Value_t<Term1>, Value_t<Term2> > >;
+  using MinusTerm = BinaryTerm<Term1, Term2, 
+      functors::minus<Value_t<Term1>, Value_t<Term2>> >;
 
   // Term1 * Term2
   template <class Term1, class Term2>
-  using MultipliesTerm =
-    BinaryTerm<Term1, Term2, 
-      functors::multiplies<Value_t<Term1>, Value_t<Term2> > >;
+  using MultipliesTerm = BinaryTerm<Term1, Term2, 
+      functors::multiplies<Value_t<Term1>, Value_t<Term2>> >;
       
   // Term1 / Term2
   template <class Term1, class Term2>
-  using DividesTerm =
-    BinaryTerm<Term1, Term2, 
-      functors::divides<Value_t<Term1>, Value_t<Term2> > >;
+  using DividesTerm = BinaryTerm<Term1, Term2, 
+      functors::divides<Value_t<Term1>, Value_t<Term2>> >;
   
 } // end namespace AMDiS

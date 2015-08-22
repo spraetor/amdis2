@@ -7,18 +7,19 @@
 #include <utility>
 
 // AMDiS headers
-#include "LazyOperatorTerm.h"
+#include <expressions/LazyOperatorTerm.h>
 #include <traits/basic.hpp>
 #include <traits/traits_fwd.hpp>
 #include <traits/meta_basic.hpp>
-#include <traits/concepts.hpp>
+
+#include "TermConcepts.hpp"
 
 namespace AMDiS 
 { 
   namespace traits
   {
     /// get the degree of a functor by combining the degrees of the arguments
-    template <class F, int N, class Enable = void>
+    template <class F, int N, class = void>
     struct functor_degree
     {
       template <class... Int>
@@ -48,12 +49,12 @@ namespace AMDiS
     using Super      = LazyOperatorTerms<Term1, Terms...>;
     using value_type = typename std::result_of<F(Value_t<Term1>, Value_t<Terms>...)>::type;
     
-    FunctorTerm(Self const&) = default;
-    
-    template <class F_, class... Terms_, class = typename enable_if< concepts::CoordsFunctor<F_> >::type>
+    template <class F_, class... Terms_,
+              class = Requires_t< traits::IsCompatible<Types<F,Term1,Terms...>, 
+                                                       Types<F_,Terms_...>>> >
     FunctorTerm(F_&& f, Terms_&&... terms_)
       : Super(std::forward<Terms_>(terms_)...), 
-        fct{std::forward<F_>(f)}
+        fct(f)
     {}
     
     constexpr int getDegree() const
@@ -68,9 +69,10 @@ namespace AMDiS
     
     // call f.getDegree() function    
     template <int I, class... Terms_>
-    int getDegree(int_<I>, Terms_ const&... terms) const
+    int getDegree(int_<I>, Terms_&&... terms) const
     {
-      return getDegree(int_<I-1>(), Super::getTerm(int_<I-1>()), terms...);
+      return getDegree(int_<I-1>(), Super::getTerm(int_<I-1>()), 
+                       std::forward<Terms_>(terms)...);
     }
     
     template <class... Terms_>
@@ -81,9 +83,10 @@ namespace AMDiS
 
     // call f.operator()(...)
     template <int I, class... Terms_>
-    value_type eval(int iq, int_<I>, Terms_ const&... terms) const
+    value_type eval(int iq, int_<I>, Terms_&&... terms) const
     {
-        return eval(iq, int_<I-1>(), Super::getTerm(int_<I-1>()), terms...);
+        return eval(iq, int_<I-1>(), Super::getTerm(int_<I-1>()), 
+                    std::forward<Terms_>(terms)...);
     }
     
     template <class... Terms_>
@@ -95,6 +98,7 @@ namespace AMDiS
   private:
     F fct; ///< the functor
   };
+  
   
   namespace traits 
   {

@@ -2,8 +2,8 @@
 
 #pragma once
 
+#include <expressions/LazyOperatorTerm.h>
 #include "BaseTerms.hpp"
-#include "LazyOperatorTerm.h"
 
 namespace AMDiS 
 {
@@ -14,7 +14,6 @@ namespace AMDiS
   {
     using Self = RTConstant;
     using value_type = Decay_t<T>;
-    value_type value;
     
     constexpr RTConstant(value_type const& value_)
       : value{value_}
@@ -23,6 +22,9 @@ namespace AMDiS
     value_type operator()(int) const { return value; }
     
     std::string str() const { return std::to_string(value); }
+    
+  private:
+    value_type value;
   };
 
 
@@ -33,13 +35,15 @@ namespace AMDiS
   {
     using Self = CTConstant;
     using value_type = int;
-    static constexpr value_type value = V;
     
     constexpr CTConstant() {}
     
     value_type operator()(int) const { return value; }
     
     std::string str() const { return std::string("[") + std::to_string(value) + "]"; }
+    
+  private:
+    constexpr static value_type value = V;
   };
   
   
@@ -50,7 +54,6 @@ namespace AMDiS
   {
     using Self = Reference;
     using value_type = Decay_t<T>;
-    const value_type& value;
     
     constexpr Reference(value_type const& value_) 
       : value{value_} {}
@@ -58,6 +61,9 @@ namespace AMDiS
     value_type operator()(int) const { return value; }
     
     std::string str() const { return std::string("&(") + std::to_string(value) + ")"; }
+    
+  private:
+    value_type const& value;
   };
 
 } // end namespace AMDiS

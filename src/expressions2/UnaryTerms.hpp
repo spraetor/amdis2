@@ -20,17 +20,19 @@ namespace AMDiS
     using value_type = typename std::result_of<Functor(Value_t<Term>)>::type;
     
     /// constructor takes two termessions
-    template <class Term_>
+    template <class Term_, 
+      class = Requires_t< traits::IsCompatible<Term, Term_>> >
     constexpr UnaryTerm(Term_&& A) 
       : Super(std::forward<Term_>(A)),
-        term(A)
+        term{A}
     {}
     
     /// constructor takes two termessions
-    template <class Term_, class F_>
+    template <class Term_, class F_, 
+      class = Requires_t< traits::IsCompatible<Types<Functor,Term>, Types<F_,Term_>>> >
     constexpr UnaryTerm(Term_&& A, F_&& f) 
       : Super(std::forward<Term_>(A)),
-        term(A),
+        term{A},
         fct{f}
     {}
      
