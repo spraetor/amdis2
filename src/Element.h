@@ -11,8 +11,18 @@
 
 namespace AMDiS 
 {
-#define AMDIS_UNDEFINED  5
+#define AMDIS_UNDEFINED  5 // used in MacroReader (???)
 
+  /// Accessor class used as passkey pattern in the setIndex method
+  /// to provide access to this specific method only.
+  class MeshAccessor
+  {
+    friend class Mesh;
+    MeshAccessor() = default;
+    MeshAccessor(MeshAccessor const&) = default;
+  };
+  
+  
   /** \ingroup Triangulation 
    * \brief
    * Base class for Line, Triangle, Tetrahedron
@@ -61,7 +71,7 @@ namespace AMDiS
 
     /// Clone this Element and return a reference to it. Because also the DOFs
     /// are cloned, \ref Mesh::serializedDOfs must be used.
-    Element* cloneWithDOFs();
+    Element* cloneWithDOFs(std::map<std::pair<DegreeOfFreedom, int>, DegreeOfFreedom*>& serializedDOFs);
 
     /** \name getting methods
      * \{
@@ -128,11 +138,11 @@ namespace AMDiS
     double getEstimation(int row) const
     {
       if (isLeaf()) {
-	TEST_EXIT_DBG(elementData)("leaf element without leaf data\n");
-	ElementData *ld = elementData->getElementData(ESTIMATABLE);
-	TEST_EXIT_DBG(ld)("leaf data not estimatable!\n");
+        TEST_EXIT_DBG(elementData)("leaf element without leaf data\n");
+        ElementData *ld = elementData->getElementData(ESTIMATABLE);
+        TEST_EXIT_DBG(ld)("leaf data not estimatable!\n");
 
-	return dynamic_cast<LeafDataEstimatableInterface*>(ld)->getErrorEstimate(row);
+        return dynamic_cast<LeafDataEstimatableInterface*>(ld)->getErrorEstimate(row);
       }	
       
       return 0.0;
@@ -143,11 +153,11 @@ namespace AMDiS
     double getCoarseningEstimation(int row) 
     {
       if (isLeaf()) {
-	TEST_EXIT_DBG(elementData)("leaf element without leaf data\n");
-	ElementData *ld = elementData->getElementData(COARSENABLE);
-	TEST_EXIT_DBG(ld)("element data not coarsenable!\n");
+        TEST_EXIT_DBG(elementData)("leaf element without leaf data\n");
+        ElementData *ld = elementData->getElementData(COARSENABLE);
+        TEST_EXIT_DBG(ld)("element data not coarsenable!\n");
 
-	return dynamic_cast<LeafDataCoarsenableInterface*>(ld)->getCoarseningErrorEstimate(row);
+        return dynamic_cast<LeafDataCoarsenableInterface*>(ld)->getCoarseningErrorEstimate(row);
       }
       
       return 0.0;
@@ -165,8 +175,8 @@ namespace AMDiS
     /// Returns \ref newCoord[i]
     double getNewCoord(int i) const 
     {
-	TEST_EXIT_DBG(newCoord)("newCoord = NULL\n");
-	return (*newCoord)[i];
+      TEST_EXIT_DBG(newCoord)("newCoord = NULL\n");
+      return (*newCoord)[i];
     }
 
     /// Returns Element's \ref index
@@ -240,14 +250,14 @@ namespace AMDiS
       FUNCNAME("Element::setEstimation()");
 
       if (isLeaf()) {
-	TEST_EXIT_DBG(elementData)("Leaf element %d without leaf data!\n", index);
-	ElementData *ld = elementData->getElementData(ESTIMATABLE);
-	TEST_EXIT_DBG(ld)("Leaf data %d not estimatable!\n", index);
+        TEST_EXIT_DBG(elementData)("Leaf element %d without leaf data!\n", index);
+        ElementData *ld = elementData->getElementData(ESTIMATABLE);
+        TEST_EXIT_DBG(ld)("Leaf data %d not estimatable!\n", index);
 
-	dynamic_cast<LeafDataEstimatableInterface*>(ld)->
-	  setErrorEstimate(row, est);
+        dynamic_cast<LeafDataEstimatableInterface*>(ld)->
+          setErrorEstimate(row, est);
       } else {
-	ERROR_EXIT("setEstimation only for leaf elements!\n");
+        ERROR_EXIT("setEstimation only for leaf elements!\n");
       }
     }
 
@@ -256,14 +266,14 @@ namespace AMDiS
     void setCoarseningEstimation(double est, int row)
     {
       if (isLeaf()) {
-	TEST_EXIT_DBG(elementData)("leaf element without leaf data\n");
-	ElementData *ld = elementData->getElementData(COARSENABLE);
-	TEST_EXIT_DBG(ld)("leaf data not coarsenable\n");
+        TEST_EXIT_DBG(elementData)("leaf element without leaf data\n");
+        ElementData *ld = elementData->getElementData(COARSENABLE);
+        TEST_EXIT_DBG(ld)("leaf data not coarsenable\n");
 
-	dynamic_cast<LeafDataCoarsenableInterface*>(ld)->
-	  setCoarseningErrorEstimate(row, est);
+        dynamic_cast<LeafDataCoarsenableInterface*>(ld)->
+          setCoarseningErrorEstimate(row, est);
       } else {
-	ERROR_EXIT("setEstimation only for leaf elements!\n");
+        ERROR_EXIT("setEstimation only for leaf elements!\n");
       }
     }
 
@@ -277,7 +287,7 @@ namespace AMDiS
     void decrementMark() 
     {
       if (0 < mark) 
-	mark--;
+        mark--;
     }
 
     /// Sets Element's \ref mark
@@ -299,8 +309,8 @@ namespace AMDiS
     /// Returns local vertex number of the vertexIndex-th vertex of the
     /// positionIndex-th part of type position (vertex, edge, face)
     virtual int getVertexOfPosition(GeoIndex position,
-				    int positionIndex,
-				    int vertexIndex) const = 0;
+                                    int positionIndex,
+                                    int vertexIndex) const = 0;
 
     ///
     virtual int getPositionOfVertex(int side, int vertex) const = 0;
@@ -341,14 +351,14 @@ namespace AMDiS
      * \param[in]  elType     Type of the element. Important only in 3D.
      */
     virtual int getSubObjOfChild(int childnr, GeoIndex subObj, int ithObj, 
-				 int elType = 0) const = 0;
+                                 int elType = 0) const = 0;
 
     /// Returns which vertex of elements parent corresponds to the vertexnr of
     /// the element, if the element is the childnr-th child of the parent.
     /// If the vertex is the ner vertex at the refinement edge, -1 is returned.
     virtual int getVertexOfParent(int childnr, 
-				  int vertexnr, 
-				  int elType = 0) const = 0;
+                                  int vertexnr, 
+                                  int elType = 0) const = 0;
 
     /// Returns whether Element is a Line
     virtual bool isLine() const = 0;
@@ -385,9 +395,9 @@ namespace AMDiS
      *                         with n0 beging the number of predofs.
      */
     virtual void getNodeDofs(const FiniteElemSpace* feSpace, 
-			     BoundaryObject bound,
-			     DofContainer& dofs,
-			     bool baseDofPtr = false) const = 0;
+                             BoundaryObject bound,
+                             DofContainer& dofs,
+                             bool baseDofPtr = false) const = 0;
 
     /** \brief
      * Traverses a vertex/edge/face of a given element (this includes also all
@@ -408,15 +418,14 @@ namespace AMDiS
      *                         identifing the DOF to be a vertex, edge, face or
      *                         center DOF.
      */
-    virtual void 
-    getHigherOrderDofs(const FiniteElemSpace* feSpace, 
-		       BoundaryObject bound,
-		       DofContainer& dofs,
-		       bool baseDofPtr = false,
-		       std::vector<GeoIndex>* dofGeoIndex = NULL) const = 0;
+    virtual void getHigherOrderDofs(const FiniteElemSpace* feSpace, 
+                                    BoundaryObject bound,
+                                    DofContainer& dofs,
+                                    bool baseDofPtr = false,
+                                    std::vector<GeoIndex>* dofGeoIndex = NULL) const = 0;
 
     virtual void getSubBoundary(BoundaryObject bound, 
-				std::vector<BoundaryObject> &subBound) const = 0;
+                                std::vector<BoundaryObject> &subBound) const = 0;
 
     /** \} */
 
@@ -425,10 +434,10 @@ namespace AMDiS
     /// Combines \ref getNodeDofs and \ref getHigherOrderDofs to one function. 
     /// See parameter description there.
     void getAllDofs(const FiniteElemSpace* feSpace, 
-		    BoundaryObject bound, 
-		    DofContainer& dofs,
-		    bool baseDofPtr = false,
-		    std::vector<GeoIndex>* dofGeoIndex = NULL);
+                    BoundaryObject bound, 
+                    DofContainer& dofs,
+                    bool baseDofPtr = false,
+                    std::vector<GeoIndex>* dofGeoIndex = NULL);
     
     /// assignment operator
     Element& operator=(const Element& el);
@@ -441,12 +450,12 @@ namespace AMDiS
     void refineElementData(Element* child1, Element* child2, int elType = 0) 
     {
       if (elementData) {
-	bool remove = elementData->refineElementData(this, child1, child2, elType);
-	if (remove) {
-	  ElementData *tmp = elementData->getDecorated();
-	  delete elementData;
-	  elementData = tmp;
-	}
+        bool remove = elementData->refineElementData(this, child1, child2, elType);
+        if (remove) {
+          ElementData *tmp = elementData->getDecorated();
+          delete elementData;
+          elementData = tmp;
+        }
       }
     }
 
@@ -457,15 +466,15 @@ namespace AMDiS
       ElementData *childData;
       childData = child1->getElementData();
       if (childData) {
-	childData->coarsenElementData(this, child1, child2, elType);
-	delete childData;
-	child1->setElementData(NULL);
+        childData->coarsenElementData(this, child1, child2, elType);
+        delete childData;
+        child1->setElementData(NULL);
       }
       childData = child2->getElementData();
       if (childData) {
-	childData->coarsenElementData(this, child2, child1, elType);
-	delete childData;
-	child2->setElementData(NULL);
+        childData->coarsenElementData(this, child2, child1, elType);
+        delete childData;
+        child2->setElementData(NULL);
       }
     }
 
@@ -479,7 +488,7 @@ namespace AMDiS
     ElementData* getElementData(int typeID) const 
     {
       if (elementData)
-	return elementData->getElementData(typeID);
+        return elementData->getElementData(typeID);
 
       return NULL;
     }
@@ -494,7 +503,7 @@ namespace AMDiS
      * elementTyp is the type of this element (comes from ElInfo)
      */
     bool isRefinedAtSide(int side, Element *el1, Element *el2, 
-			 unsigned char elementTyp = 255);
+                         unsigned char elementTyp = 255);
 
     /// Returns whether Element's \ref newCoord is set
     bool isNewCoordSet() const 
@@ -507,23 +516,30 @@ namespace AMDiS
 
     /// Sets Element's \ref dof pointer.
     void createNewDofPtrs(bool setDofs = false);
- 
-  protected:
-    /// Sets Element's \ref index. Used by friend class Mesh.
-    void setIndex(int i) 
+    
+  /* protected: */
+    
+    // this method can only be accessed by a friend of MeshAccessor
+    void setIndex(MeshAccessor, int i) 
     {
       index = i;
     }
+    
+    static void clearDeletedDofs(MeshAccessor)
+    {
+      Element::deletedDOFs.clear();
+    }
 
     /// Used by friend class Mesh while dofCompress
-    void newDofFct1(const DOFAdmin*, std::vector<DegreeOfFreedom>&);
+    void newDofFct1(MeshAccessor, const DOFAdmin*, std::vector<DegreeOfFreedom>&);
 
     /// Used by friend class Mesh while dofCompress
-    void newDofFct2(const DOFAdmin*);
-
+    void newDofFct2(MeshAccessor, const DOFAdmin*);
+ 
+  protected:
     /// Changes old dofs to negative new dofs
     void changeDofs1(const DOFAdmin* admin, std::vector<DegreeOfFreedom>& newDofIndex,
-		     int n0, int nd0, int nd, int pos);
+                     int n0, int nd0, int nd, int pos);
 
     /// Changes negative new dofs to positive
     void changeDofs2(int n0, int nd0, int nd, int pos);
@@ -569,8 +585,6 @@ namespace AMDiS
     /// a DOF-vector (all DOFS at a node, edge, etc.) is deleted, its address is
     /// added to this map to note not to delete it a second time.
     static std::map<DegreeOfFreedom*, bool> deletedDOFs;
-
-    friend class Mesh;
   };
 
 

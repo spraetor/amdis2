@@ -158,9 +158,9 @@ SET(AMDIS_SRC ${SOURCE_DIR}/AdaptBase.cc
 	      ${SOURCE_DIR}/io/Spreadsheet.cc
 	      ${SOURCE_DIR}/io/ValueReader.cc
 	      ${SOURCE_DIR}/io/ValueWriter.cc
-#	      ${SOURCE_DIR}/io/VtkWriter.cc
-#	      ${SOURCE_DIR}/io/VtkVectorWriter.cc
-#         ${SOURCE_DIR}/io/detail/VtkWriter.cc
+	      ${SOURCE_DIR}/io/VtkWriter.cc
+	      ${SOURCE_DIR}/io/VtkVectorWriter.cc
+        ${SOURCE_DIR}/io/detail/VtkWriter.cc
 #	      ${SOURCE_DIR}/nonlin/ProblemNonLin.cc
 	      ${SOURCE_DIR}/solver/SolverMatrix.cc
 	      ${SOURCE_DIR}/solver/Mapper.cc
@@ -389,6 +389,7 @@ endif()
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set_property(TARGET amdis PROPERTY CXX_STANDARD 11)
 set_property(TARGET muparser PROPERTY CXX_STANDARD 11)
+SET_TARGET_PROPERTIES(muparser PROPERTIES COMPILE_FLAGS "-Wno-switch")
 
 list(APPEND AMDIS_LIBS amdis ${Boost_LIBRARIES})
 
@@ -418,7 +419,7 @@ INSTALL(FILES ${HEADERS}
 	DESTINATION include/amdis/)
 list(APPEND deb_add_dirs "include/amdis")
 
-set(include_sub_dirs "config" "parallel" "nonlin" "est" "expressions" 
+set(include_sub_dirs "config" "parallel" "nonlin" "est" "expressions2" 
 					 "matrix_vector" "matrix_vector/expr" "operations" 
 					 "traits" "utility" "time" "solver" "solver/details"
 					 "solver/itl" "io" "io/detail")

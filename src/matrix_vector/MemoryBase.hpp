@@ -23,20 +23,19 @@ namespace AMDiS
   {
     static_assert( N*M > 0 , "Container size must be > 0" );
     
-    typedef MemoryBaseStatic            self;
-    typedef T                     value_type;
-    typedef small_t               size_type;
-    typedef value_type*              pointer;
-    typedef value_type const*  const_pointer;
+    using value_type    = T;
+    using size_type     = small_t;
+    using pointer       = value_type*;
+    using const_pointer = value_type const*;
     
     // static sizes
-    static constexpr int _SIZE = N*M;
-    static constexpr int _ROWS = N;
-    static constexpr int _COLS = M;
+    constexpr static int _SIZE = N*M;
+    constexpr static int _ROWS = N;
+    constexpr static int _COLS = M;
     
   protected:
-    static constexpr size_type _size = _SIZE;
-    static constexpr size_type _capacity = _SIZE; // TODO: eventuell aufrunden
+    constexpr static size_type _size = _SIZE;
+    constexpr static size_type _capacity = _SIZE; // TODO: eventuell aufrunden
     
     ALIGNED(T, _elements, _capacity);   // T _elements[N];
   
@@ -49,14 +48,14 @@ namespace AMDiS
     
   public:
     /// destructor
-    virtual ~MemoryBaseStatic() { }
+    virtual ~MemoryBaseStatic() {}
     
   public:
     /// return the \ref _size of the vector.
     size_type getSize() const { return _size; }
     
     /// return the \ref _capacity of the vector.
-    static constexpr size_type getCapacity() { return _capacity; }
+    constexpr static size_type getCapacity() { return _capacity; }
     
     /// return the amount of memory in Bytes allocated by this vector.
     size_type getMemoryUsage() const 
@@ -74,8 +73,8 @@ namespace AMDiS
     void resize(size_type s) 
     {
       if (s != _size) {
-	// Not supported
-	assert( false );
+        // Not supported
+        assert( false );
       }
     }
     
@@ -110,18 +109,16 @@ namespace AMDiS
    **/
   template <class T, bool aligned>
   struct MemoryBaseDynamic
-  {
-    typedef MemoryBaseDynamic           self;
-    
-    typedef T                     value_type;
-    typedef small_t               size_type;
-    typedef value_type*              pointer;
-    typedef value_type const*  const_pointer;
+  {    
+    using value_type    = T;
+    using size_type     = small_t;
+    using pointer       = value_type*;
+    using const_pointer = value_type const*;
     
     // static sizes (by default -1 := dynamic size)
-    static constexpr int _SIZE = -1;
-    static constexpr int _ROWS = -1;
-    static constexpr int _COLS = -1;
+    constexpr static int _SIZE = -1;
+    constexpr static int _ROWS = -1;
+    constexpr static int _COLS = -1;
     
   protected:
     size_type  _size;
@@ -132,8 +129,8 @@ namespace AMDiS
     /// default constructor
     explicit MemoryBaseDynamic(size_type s = 0)
       : _size(s),
-	_capacity(s),
-	_elements(_size ? (aligned ? ALIGNED_ALLOC(T, s) : new T[s]) : NULL)
+        _capacity(s),
+        _elements(_size ? (aligned ? ALIGNED_ALLOC(T, s) : new T[s]) : NULL)
     { }
     
   public:
@@ -141,9 +138,9 @@ namespace AMDiS
     virtual ~MemoryBaseDynamic()
     {
       if (_elements) {
-	if (aligned) { ALIGNED_FREE(_elements); } 
-	else { delete [] _elements; }
-	_elements = NULL;
+        if (aligned) { ALIGNED_FREE(_elements); } 
+        else { delete [] _elements; }
+        _elements = NULL;
       }
     }
     
@@ -158,8 +155,8 @@ namespace AMDiS
     size_type getMemoryUsage() const 
     {
       return (aligned ? ALIGNED_SIZE(_capacity*sizeof(T), CACHE_LINE) 
-		      : _capacity*sizeof(T))
-	    + 2*sizeof(size_type);
+                : _capacity*sizeof(T))
+            + 2*sizeof(size_type);
     }
       
     /// return address of contiguous memory block \ref _elements
@@ -173,15 +170,15 @@ namespace AMDiS
     void resize(size_type s) 
     {
       if (s <= _capacity) {
-	_size = s;
-	// TODO: (maybe) set unused entries to NULL
+        _size = s;
+        // TODO: (maybe) set unused entries to NULL
       } else {
-	if (_elements) {
-	  if (aligned) { ALIGNED_FREE(_elements); } 
-	  else { delete [] _elements; }
-	}
-	_elements = aligned ? ALIGNED_ALLOC(T, s) : new T[s];
-	_size = s;
+        if (_elements) {
+          if (aligned) { ALIGNED_FREE(_elements); } 
+          else { delete [] _elements; }
+        }
+        _elements = aligned ? ALIGNED_ALLOC(T, s) : new T[s];
+        _size = s;
       }
     }
     
@@ -196,7 +193,7 @@ namespace AMDiS
     void assign_aux(Target& target, Source const& src, Assigner assigner, false_)
     {
       for (size_type i = 0; i < _size; ++i)
-	Assigner::apply(target(i), src(i));
+        Assigner::apply(target(i), src(i));
     }
     
     template <class Target, class Source, class Assigner> // assume aligned
@@ -204,14 +201,14 @@ namespace AMDiS
     {
       value_type* var = (value_type*)ASSUME_ALIGNED(_elements);
       for (size_type i = 0; i < _size; ++i)
-	Assigner::apply(var[i], src(i));
+        Assigner::apply(var[i], src(i));
     }
     
     template <class Functor>
     void for_each_aux(Functor f)
     {
       for (size_type i = 0; i < _size; ++i)
-	f(_elements[i]);
+        f(_elements[i]);
     }
   };
   
@@ -231,20 +228,19 @@ namespace AMDiS
   {
     static_assert( N*M > 0 , "Container size must be > 0" );
     
-    typedef MemoryBaseHybrid            self;
-    typedef T                     value_type;
-    typedef small_t               size_type;
-    typedef value_type*              pointer;
-    typedef value_type const*  const_pointer;
+    using value_type    = T;
+    using size_type     = small_t;
+    using pointer       = value_type*;
+    using const_pointer = value_type const*;
     
     // static sizes
-    static constexpr int _SIZE = -1;
-    static constexpr int _ROWS = -1;
-    static constexpr int _COLS = -1;
+    constexpr static int _SIZE = -1;
+    constexpr static int _ROWS = -1;
+    constexpr static int _COLS = -1;
     
   protected:
     size_type _size;
-    static constexpr size_type _capacity = N*M;
+    constexpr static size_type _capacity = N*M;
     
     ALIGNED(T, _elements, _capacity);   // T _elements[N];
   
@@ -284,10 +280,10 @@ namespace AMDiS
     void resize(size_type s) 
     {
       if (s <= _capacity) {
-	_size = s;
+        _size = s;
       } else {
-	// not supported
-	assert( false );
+        // not supported
+        assert( false );
       }
     }
     
@@ -296,14 +292,14 @@ namespace AMDiS
     void assign_aux(Target& target, Source const& src, Assigner assigner)
     {
       for (size_type i = 0; i < _size; ++i)
-	Assigner::apply(target(i), src(i));
+        Assigner::apply(target(i), src(i));
     }
     
     template <class Functor>
     void for_each_aux(Functor f)
     {
       for (size_type i = 0; i < _size; ++i)
-	f(_elements[i]);
+        f(_elements[i]);
     }
   };
 

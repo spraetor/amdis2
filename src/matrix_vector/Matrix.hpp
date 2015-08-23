@@ -68,8 +68,8 @@ namespace AMDiS
     /// Copy constructor
     MatrixBase(self const& other)
       : super(other._size),
-	_rows(other._rows),
-	_cols(other._cols)
+        _rows(other._rows),
+        _cols(other._cols)
     {
       std::copy(other.begin(), other.end(), _elements);
     }
@@ -79,8 +79,8 @@ namespace AMDiS
     template <class Expr>
     MatrixBase(MatrixExpr<Expr> const& expr)
       : super(size(expr)),
-	_rows(num_rows(expr)),
-	_cols(num_cols(expr))
+        _rows(num_rows(expr)),
+        _cols(num_cols(expr))
     {
       this->operator=(expr);
     }
@@ -119,9 +119,9 @@ namespace AMDiS
     void resize(size_type r, size_type c)
     {
       if (r != _rows || c != _cols) {
-	super::resize(r*c);
-	_rows = r;
-	_cols = c;
+        super::resize(r*c);
+        _rows = r;
+        _cols = c;
       }
     }
     

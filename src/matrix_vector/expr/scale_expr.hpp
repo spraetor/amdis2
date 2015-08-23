@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include <boost/numeric/mtl/operation/sfunctor.hpp>
+#include <operations/functors.hpp>
 
 #include <traits/basic.hpp>
 #include <traits/traits_fwd.hpp>
@@ -14,33 +14,33 @@ namespace AMDiS {
   /// Expression with one argument
   template <class Value, class E, bool from_left, class Functor>
   struct ScaleExpr 
-      : public ShapedExpr<E, ScaleExpr<Value, E, from_left, Functor> >::type
+      : public ShapedExpr_t<E, ScaleExpr<Value, E, from_left, Functor> >
   {
-    typedef ScaleExpr                                Self;
-    typedef typename ShapedExpr<E, Self>::type  expr_base;
+    using Self       = ScaleExpr;
+    using expr_base  = ShapedExpr_t<E, Self>;
     
-    typedef Value_t<E>                         value_type;
-    typedef Size_t<E>                           size_type;
-    typedef E                                   expr_type;
+    using value_type = Value_t<E>;
+    using size_type  = Size_t<E>;
+    using expr_type  = E;
     
-    static constexpr int _SIZE = E::_SIZE;
-    static constexpr int _ROWS = E::_ROWS;
-    static constexpr int _COLS = E::_COLS;
+    constexpr static int _SIZE = E::_SIZE;
+    constexpr static int _ROWS = E::_ROWS;
+    constexpr static int _COLS = E::_COLS;
     
   public:
     /// constructor takes the factor \p v and and expression \p A
-    ScaleExpr(Value v, expr_type const& A) 
-	: value(v), expr(A) 
+    constexpr ScaleExpr(Value v, expr_type const& A) 
+      : value(v), expr(A) 
     { }
     
     /// access the elements of an expr.
-    value_type operator()(size_type i) const
+    constexpr value_type operator()(size_type i) const
     { 
       return apply(i, bool_<from_left>());
     }
     
     /// access the elements of a matrix-expr.
-    value_type operator()(size_type i, size_type j) const
+    constexpr value_type operator()(size_type i, size_type j) const
     { 
       return apply(i, j, bool_<from_left>());
     }
@@ -49,58 +49,60 @@ namespace AMDiS {
     
   private:
     // scale from left
-    value_type apply(size_type i, true_) const 
+    constexpr value_type apply(size_type i, true_) const 
     {
-      return Functor::apply( value, expr(i) );
+      return fct( value, expr(i) );
     }
     
     // scale from right
-    value_type apply(size_type i, false_) const 
+    constexpr value_type apply(size_type i, false_) const 
     {
-      return Functor::apply( expr(i), value );
+      return fct( expr(i), value );
     }
     
     // scale from left
-    value_type apply(size_type i, size_type j, true_) const 
+    constexpr value_type apply(size_type i, size_type j, true_) const 
     {
-      return Functor::apply( value, expr(i,j) );
+      return fct( value, expr(i,j) );
     }
     
     // scale from right
-    value_type apply(size_type i, size_type j, false_) const 
+    constexpr value_type apply(size_type i, size_type j, false_) const 
     {
-      return Functor::apply( expr(i,j), value );
+      return fct( expr(i,j), value );
     }
     
   private:
     Value value;
     expr_type const& expr;
+    
+    Functor fct;
   };
   
   
   /// Size of ScaleExpr
   template <class V, class E, bool l, class F>
-  size_t size(ScaleExpr<V, E, l, F> const& expr)
+  inline size_t size(ScaleExpr<V, E, l, F> const& expr)
   {
     return size(expr.get_first());
   }
   
   /// Size of ScaleExpr
   template <class V, class E, bool l, class F>
-  size_t num_rows(ScaleExpr<V, E, l, F> const& expr)
+  inline size_t num_rows(ScaleExpr<V, E, l, F> const& expr)
   {
     return num_rows(expr.get_first());
   }
   
   /// Size of ScaleExpr
   template <class V, class E, bool l, class F>
-  size_t num_cols(ScaleExpr<V, E, l, F> const& expr)
+  inline size_t num_cols(ScaleExpr<V, E, l, F> const& expr)
   {
     return num_cols(expr.get_first());
   }
   
-  namespace traits {
-    
+  namespace traits 
+  {    
     /// \cond HIDDEN_SYMBOLS
     template <class V, class E, bool l, class F>
     struct category<ScaleExpr<V,E,l,F> > : category<E> {};
@@ -109,23 +111,20 @@ namespace AMDiS {
 
   // s * V
   template <class Value, class E>
-  struct LeftScaleExpr : enable_if< 
-    and_< traits::is_multiplicable<typename E::value_type, Value>,
-	  traits::is_scalar<Value> >,
-    ScaleExpr<Value, E, true, mtl::sfunctor::times<typename E::value_type, Value> > > {};
+  using LeftScaleExpr = typename enable_if< 
+    and_< traits::is_multiplicable<Value_t<E>, Value>, traits::is_scalar<Value> >,
+    ScaleExpr<Value, E, true, functors::multiplies<Value_t<E>, Value> > >::type;
     
   // V * s
   template <class Value, class E>
-  struct RightScaleExpr : enable_if< 
-    and_< traits::is_multiplicable<typename E::value_type, Value>,
-	  traits::is_scalar<Value> >,
-    ScaleExpr<Value, E, false, mtl::sfunctor::times<typename E::value_type, Value> > > {};
+  using RightScaleExpr = typename enable_if< 
+    and_< traits::is_multiplicable<Value_t<E>, Value>, traits::is_scalar<Value> >,
+    ScaleExpr<Value, E, false, functors::multiplies<Value_t<E>, Value> > >::type;
   
   // V / s
   template <class Value, class E>
-  struct RightDivideExpr : enable_if< 
-    and_< traits::is_multiplicable<typename E::value_type, Value>,
-	  traits::is_scalar<Value> >,
-    ScaleExpr<Value, E, false, mtl::sfunctor::divide<typename E::value_type, Value> > > {};
+  using RightDivideExpr = typename enable_if< 
+    and_< traits::is_multiplicable<Value_t<E>, Value>, traits::is_scalar<Value> >,
+    ScaleExpr<Value, E, false, functors::divides<Value_t<E>, Value> > >::type;
   
 } // end namespace AMDiS

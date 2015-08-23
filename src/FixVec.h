@@ -244,7 +244,7 @@ namespace AMDiS
     static DenseVector<double> getValues(type &t) {
       DenseVector<double> result(t.getSize());
       for (size_t i = 0; i < t.getSize(); i++)
-	result[i] = static_cast<T>(t[i]);
+        result[i] = static_cast<T>(t[i]);
       return result;
     }
   };
@@ -257,8 +257,8 @@ namespace AMDiS
     static DenseVector<double> getValues(type &t) {
       DenseVector<double> result(sqr(t.getSize()));
       for (size_t i = 0; i < t.getSize(); i++)
-	for (size_t j = 0; j < t.getSize(); j++)
-	  result[i*(t.getSize()) + j] = static_cast<T>(t[i][j]);
+        for (size_t j = 0; j < t.getSize(); j++)
+          result[i*(t.getSize()) + j] = static_cast<T>(t[i][j]);
       return result;
     }
   };
@@ -274,8 +274,8 @@ namespace AMDiS
     static DenseVector<double> getValues(type &t) {
       DenseVector<double> result(t.numRows() * t.numCols());
       for (size_t i = 0; i < t.numRows(); i++)
-	for (size_t j = 0; j < t.numCols(); j++)
-	  result[i*(t.numCols()) + j] = static_cast<T>(t[i][j]);
+        for (size_t j = 0; j < t.numCols(); j++)
+          result[i*(t.numCols()) + j] = static_cast<T>(t[i][j]);
       return result;
     }
   };
@@ -328,5 +328,3 @@ namespace mtl
   } // end namespace traits
   
 } // end namespace mtl
-
-#include "FixVec.hh"

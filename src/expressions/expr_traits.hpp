@@ -47,13 +47,13 @@ namespace AMDiS
     using is_valid_arg3 = is_valid_args<T1, T2, T3>;
       
     // expressions
-    template <class T>
-    struct category<T, typename boost::enable_if<is_expr<T> >::type >
-    {
-      using tag = tag::expression;
-      using value_type = Value_t<T>;
-      // typedef size_t               size_type;
-    };
+//     template <class T>
+//     struct category<T, typename boost::enable_if<is_expr<T> >::type >
+//     {
+//       using tag = tag::expression;
+//       using value_type = Value_t<T>;
+//       // typedef size_t               size_type;
+//     };
 	
       
     // type-conversion

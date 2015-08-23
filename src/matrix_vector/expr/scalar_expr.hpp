@@ -7,29 +7,29 @@
 
 #include "base_expr.hpp" // for BaseExpr
 
-namespace AMDiS {
-
+namespace AMDiS 
+{
   /// Expression to encapsulate scalars
   template <class Value>
   struct ScalarExpr 
       : public BaseExpr<ScalarExpr<Value> >
   {
-    typedef ScalarExpr           Self;
-    typedef BaseExpr<Self>  expr_base;
-    typedef small_t         size_type;
+    using Self       = ScalarExpr;
+    using expr_base  = BaseExpr<Self>;
+    using size_type  = small_t;
+    using value_type = Value;
     
-    typedef Value  value_type;
-    
-    static constexpr int _SIZE = 1;
-    static constexpr int _ROWS = 1;
-    static constexpr int _COLS = 1;
+    constexpr static int _SIZE = 1;
+    constexpr static int _ROWS = 1;
+    constexpr static int _COLS = 1;
     
   public:
     /// construcor takes the factor \p factor_
-    ScalarExpr(value_type factor_) : factor(factor_) {}
+    constexpr ScalarExpr(value_type factor_) 
+      : factor(factor_) {}
     
     /// access the elements of an expr.
-    value_type operator()(size_type = 0, size_type = 0) const
+    constexpr value_type operator()(size_type = 0, size_type = 0) const
     { 
       return factor;
     }
@@ -56,15 +56,15 @@ namespace AMDiS {
   template <class Value>
   inline size_t num_cols(ScalarExpr<Value> const&) { return 1; }
   
-  namespace traits {
-    
+  namespace traits 
+  { 
     /// \cond HIDDEN_SYMBOLS
     template <class V>
     struct category<ScalarExpr<V> > 
     {
-      typedef typename category<V>::tag  tag;
-      typedef V                   value_type;
-      typedef small_t             size_type;
+      using tag = typename category<V>::tag;
+      using value_type = V;
+      using size_type = small_t;
     };
     /// \endcond
   }

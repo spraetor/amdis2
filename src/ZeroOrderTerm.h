@@ -33,12 +33,12 @@ namespace AMDiS
   /* ----- BASIC OPERATOR-TERMS USED IN EXPRESSIONS --------------------------- */
   
   
-  template <class Expr>
-  struct GenericZeroOrderTerm : public GenericOperatorTerm<Expr, 0>
+  template <class Term>
+  struct GenericZeroOrderTerm : public GenericOperatorTerm<Term, 0>
   {
-    template <class Expr_>
-    GenericZeroOrderTerm(Expr_&& expr_)
-      : GenericOperatorTerm<Expr, 0>(std::forward<Expr_>(expr_))
+    template <class Term_>
+    GenericZeroOrderTerm(Term_&& term_)
+      : GenericOperatorTerm<Term, 0>(std::forward<Term_>(term_))
     {}
 
   private:
@@ -46,7 +46,7 @@ namespace AMDiS
     virtual void getCImpl(ElInfo const* elInfo, int nPoints, DenseVector<double>& C) const override
     {
       for (int iq = 0; iq < nPoints; iq++)
-        C[iq] += this->expr(iq);
+        C[iq] += this->term(iq);
     }
 
     /// Implemetation of OperatorTerm::eval().
@@ -58,7 +58,7 @@ namespace AMDiS
                   			  double fac) const override
     {
       for (int iq = 0; iq < nPoints; iq++)
-        result[iq] += fac * this->expr(iq) * uhAtQP[iq];
+        result[iq] += fac * this->term(iq) * uhAtQP[iq];
     }
   };
   

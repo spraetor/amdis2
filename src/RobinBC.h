@@ -3,7 +3,8 @@
 #pragma once
 
 #include "BoundaryCondition.h"
-#include "expressions/expr_traits.hpp"
+#include <expressions2/TermGenerator.hpp>
+#include <traits/basic.hpp>
 
 namespace AMDiS 
 {
@@ -23,20 +24,19 @@ namespace AMDiS
   public:
     /// Constructor. \f$ j \f$ and \f$ alpha \f$ are given as AbstractFunction objects.
     template <class JExpr, class AlphaExpr>
-    RobinBC(BoundaryType type, JExpr&& j_expr, AlphaExpr&& a_expr,
+    RobinBC(BoundaryType type, 
+            JExpr&& j_expr, AlphaExpr&& a_expr,
       	    const FiniteElemSpace *rowFeSpace,
       	    const FiniteElemSpace *colFeSpace = NULL)
       : BoundaryCondition(type, rowFeSpace, colFeSpace), 
       	neumannOperators(NULL), 
       	robinOperators(NULL)
     {
-      using JExprType = traits::to_expr<JExpr>;
-      using AlphaExprType = traits::to_expr<AlphaExpr>;
-      
-      if (traits::is_valid_arg<AlphaExpr>::value)
-        init(JExprType::get(j_expr), AlphaExprType::get(a_expr));
+      if (traits::IsCompatible<AlphaExpr, tag::dummy>::value)
+        init(toTerm(std::forward<JExpr>(j_expr)));
       else
-        init(JExprType::get(j_expr));
+        init(toTerm(std::forward<JExpr>(j_expr)), 
+             toTerm(std::forward<AlphaExpr>(a_expr)));
     }
     
     // TODO: move to private section:
@@ -85,7 +85,7 @@ namespace AMDiS
       	      JExpr&& j_expr,
       	      const FiniteElemSpace *rowFeSpace,
       	      const FiniteElemSpace *colFeSpace = NULL)
-      : RobinBC(type, j_expr, tag::dummy(), rowFeSpace, colFeSpace)
+      : RobinBC(type, std::forward<JExpr>(j_expr), tag::dummy(), rowFeSpace, colFeSpace)
     {}
   };
 

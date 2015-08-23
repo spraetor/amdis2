@@ -159,14 +159,14 @@ namespace AMDiS {
 
       secondOrderTerms.resize(nSystems);
       for (int system = 0; system < nSystems; system++) {
-	secondOrderTerms[system] = false;
+        secondOrderTerms[system] = false;
 
-	if (matrix[system] == NULL)
-	  continue;
+        if (matrix[system] == NULL)
+          continue;
 
-	for (std::vector<Operator*>::iterator it = matrix[system]->getOperators().begin();
-	     it != matrix[system]->getOperators().end(); ++it)
-	  secondOrderTerms[system] = secondOrderTerms[system] || (*it)->secondOrderTerms();
+        for (std::vector<Operator*>::iterator it = matrix[system]->getOperators().begin();
+            it != matrix[system]->getOperators().end(); ++it)
+          secondOrderTerms[system] = secondOrderTerms[system] || (*it)->secondOrderTerms();
       }
     }
     
@@ -241,7 +241,7 @@ namespace AMDiS {
 	for (int k = 0; k <= dim; k++)
 	  elInfo->getCoord(k) = coords[el->getDof(k, 0)];
 	
-	double detNeigh = abs(elInfo->calcGrdLambda(*lambdaNeigh));
+	double detNeigh = std::abs(elInfo->calcGrdLambda(*lambdaNeigh));
 	stdMpiDet.getSendData(it->first).push_back(detNeigh);
 	
 	
@@ -596,7 +596,7 @@ namespace AMDiS {
 	if (parametric)
 	  neighInfo = parametric->addParametricInfo(neighInfo);	  
 
-	detNeigh = abs(neighInfo->calcGrdLambda(*lambdaNeigh));
+	detNeigh = std::abs(neighInfo->calcGrdLambda(*lambdaNeigh));
       } else {
 	TEST_EXIT_DBG(!parametric)("No yet implemented!\n");
 

@@ -57,7 +57,7 @@ namespace AMDiS
       
     template <class T>
     struct is_matrix : has_tag<T, tag::matrix> {};
-    
+
   } // end namespace traits
   
   

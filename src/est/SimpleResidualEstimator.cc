@@ -242,7 +242,7 @@ namespace AMDiS
       }      
 	
       // Compute determinant of the neighbouring element.
-      double detNeigh = abs(neighInfo->calcGrdLambda(*lambdaNeigh));
+      double detNeigh = std::abs(neighInfo->calcGrdLambda(*lambdaNeigh));
            
       // Reset data.
       for (int iq = 0; iq < nPointsSurface; iq++)

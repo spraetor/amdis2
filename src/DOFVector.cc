@@ -384,7 +384,7 @@ namespace AMDiS
 	for (int i = 0; i < nBasisFcts; i++) {
 	  if (vec[myLocalIndices[i]] == 0.0) {
             elInfo1->coordToWorld(*(basisFcts->getCoords(i)), worldVec);
-	    elInfo2->worldToCoord(worldVec, &coords2);
+	    elInfo2->worldToCoord(worldVec, coords2);
 	  
 	    bool isPositive = true;
 	    for (int j = 0; j < coords2.getSize(); j++) {

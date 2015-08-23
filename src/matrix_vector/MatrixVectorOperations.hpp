@@ -17,61 +17,55 @@ namespace AMDiS
   
   /// expression for V + W
   template <class E1, class E2>
-  typename PlusExpr<E1, E2>::type
+  constexpr PlusExpr<E1, E2>
   operator+(BaseExpr<E1> const& expr1, BaseExpr<E2> const& expr2)
   {
-    typedef typename PlusExpr<E1, E2>::type binary_op;
-    return binary_op(expr1.sub(), expr2.sub());
+    return {expr1.sub(), expr2.sub()};
   }
   
   
   /// expression for V - W
   template <class E1, class E2>
-  typename MinusExpr<E1, E2>::type
+  constexpr MinusExpr<E1, E2>
   operator-(BaseExpr<E1> const& expr1, BaseExpr<E2> const& expr2)
   {
-    typedef typename MinusExpr<E1, E2>::type binary_op;
-    return binary_op(expr1.sub(), expr2.sub());
+    return {expr1.sub(), expr2.sub()};
   }
   
   
   /// expression for -V
   template <class E>
-  ElementwiseUnaryExpr<E, mtl::sfunctor::negate<Value_t<E>> >
+  constexpr ElementwiseUnaryExpr<E, functors::negate<Value_t<E>> >
   operator-(BaseExpr<E> const& expr)
   {
-    typedef ElementwiseUnaryExpr<E, mtl::sfunctor::negate<Value_t<E>> > op;
-    return op(expr.sub());
+    return {expr.sub()};
   }
   
   
   /// expression for V * scalar
   template <class Value, class E>
-  typename RightScaleExpr<Value, E>::type
+  constexpr RightScaleExpr<Value, E>
   operator*(BaseExpr<E> const& expr, Value scal)
   {
-    typedef typename RightScaleExpr<Value, E>::type binary_op;
-    return binary_op(scal, expr.sub());
+    return {scal, expr.sub()};
   }
   
   
   /// expression for scalar * V
   template <class Value, class E>
-  typename LeftScaleExpr<Value, E>::type
+  constexpr LeftScaleExpr<Value, E>
   operator*(Value scal, BaseExpr<E> const& expr)
   {
-    typedef typename LeftScaleExpr<Value, E>::type binary_op;
-    return binary_op(scal, expr.sub());
+    return {scal, expr.sub()};
   }
   
   
   /// expression for V / scalar
   template <class Value, class E>
-  typename RightDivideExpr<Value, E>::type
+  constexpr RightDivideExpr<Value, E>
   operator/(BaseExpr<E> const& expr, Value scal)
   {
-    typedef typename RightDivideExpr<Value, E>::type binary_op;
-    return binary_op(scal, expr.sub());
+    return {scal, expr.sub()};
   }
   
   // ---------------------------------------------------------------------------
@@ -79,16 +73,15 @@ namespace AMDiS
   
   /// scalar product V*V
   template <class E1, class E2>
-  Value_t<typename DotExpr<E1, E2>::type>
+  Value_t<DotExpr<E1, E2>>
   dot(VectorExpr<E1> const& expr1, VectorExpr<E2> const& expr2)
   {
-    typedef typename DotExpr<E1, E2>::type binary_op;
-    return binary_op(expr1.sub(), expr2.sub())();
+    return DotExpr<E1, E2>(expr1.sub(), expr2.sub())();
   }
   
   /// expression for V * W (dot product)
   template <class E1, class E2>
-  Value_t<typename DotExpr<E1, E2>::type>
+  Value_t<DotExpr<E1, E2>>
   operator*(VectorExpr<E1> const& expr1, VectorExpr<E2> const& expr2)
   {
     return dot(expr1, expr2);
@@ -96,18 +89,15 @@ namespace AMDiS
 
   // E1 x E2
   template <class E1, class E2> // assume vector shape for E1 and E2
-  struct CrossExpr {
-    typedef VectorBinaryExpr<E1, E2, 
-      functors::MyCross<Value_t<E1>, Value_t<E2>> > type;
-  };
+  using CrossExpr = VectorBinaryExpr<E1, E2, 
+    functors::MyCross<Value_t<E1>, Value_t<E2>> >;
     
   /// expression for V x W (cross product / outer product / tensor product)
   template <class E1, class E2>
-  typename CrossExpr<E1, E2>::type
+  CrossExpr<E1, E2>
   cross(VectorExpr<E1> const& expr1, VectorExpr<E2> const& expr2)
   {
-    typedef typename CrossExpr<E1, E2>::type binary_op;
-    return binary_op(expr1.sub(), expr2.sub());
+    return {expr1.sub(), expr2.sub()};
   }
   
   // ---------------------------------------------------------------------------
@@ -246,7 +236,7 @@ namespace AMDiS
   /// euklidean distance |V1 - V2|_2
   template <class E1, class E2>
   Value_t<typename UnaryDotExpr<E1>::type>
-  distance(VectorExpr<E1> const& expr1, VectorExpr<E2> const& expr2) // NOTE: in AMDiS::absteukl
+  distance(VectorExpr<E1> const& expr1, VectorExpr<E2> const& expr2)
   {
     return std::sqrt(unary_dot(expr1.sub() - expr2.sub()));
   }
@@ -260,8 +250,7 @@ namespace AMDiS
   MatVecExpr<E1, E2, false>
   operator*(MatrixExpr<E1> const& expr1, VectorExpr<E2> const& expr2)
   {
-    typedef MatVecExpr<E1, E2, false> binary_op;
-    return binary_op(expr1.sub(), expr2.sub());
+    return {expr1.sub(), expr2.sub()};
   }
 
   
@@ -274,7 +263,7 @@ namespace AMDiS
     
     for (Size_t<E1> i = 0; i < size(v1); ++i)
       if (math::abs(v1(i) - v2(i)) > DBL_TOL) 
-	return false;
+        return false;
     
     return false;
   }
@@ -297,7 +286,7 @@ namespace AMDiS
     
     for (Size_t<E1> i = 0; i < size(v1); ++i) {
       if (math::abs(v1(i) - v2(i)) < DBL_TOL) 
-	continue;
+        continue;
       return v1(i) < v2(i);
     }
     return false;

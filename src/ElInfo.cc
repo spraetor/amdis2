@@ -166,7 +166,7 @@ namespace AMDiS
       det = calcGrdLambda(grdLambda);
     } else {
       if (fillFlag.isSet(Mesh::FILL_DET))
-	det = calcDet();
+        det = calcDet();
     }
   }
 

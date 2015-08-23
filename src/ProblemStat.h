@@ -164,13 +164,13 @@ namespace AMDiS
 
     /// Adds a Dirichlet boundary condition, where the rhs is given by an 
     /// abstract function.
-    template <class Expr>
-    void addDirichletBC(BoundaryType type, int row, int col, Expr&& expr);
+    template <class Term>
+    void addDirichletBC(BoundaryType type, int row, int col, Term&& term);
     
     /// Adds a Neumann boundary condition, where the rhs is given by an
     /// abstract function.
-    template <class Expr>
-    void addNeumannBC(BoundaryType type, int row, int col, Expr&& expr);
+    template <class Term>
+    void addNeumannBC(BoundaryType type, int row, int col, Term&& term);
 
     /// Adds Robin boundary condition.
     template <class ExprRhs, class ExprLhs>
@@ -627,3 +627,5 @@ namespace AMDiS
 #endif
   
 } // end namespace AMDiS
+
+#include "ProblemStat.hh"

@@ -102,7 +102,7 @@ namespace AMDiS
 
     /// Implemetation of SecondOrderTerm::weakEval().
     virtual void weakEvalImpl(const std::vector<WorldVector<double> > &grdUhAtQP,
-			                        std::vector<WorldVector<double> > &result) override;
+			                        std::vector<WorldVector<double> > &result) const override;
   };
 
 
@@ -134,7 +134,7 @@ namespace AMDiS
 
     /// Implemetation of SecondOrderTerm::weakEval().
     virtual void weakEvalImpl(const std::vector<WorldVector<double> > &grdUhAtQP,
-			                        std::vector<WorldVector<double> > &result) override;
+			                        std::vector<WorldVector<double> > &result) const override;
   };
 
 
@@ -178,7 +178,7 @@ namespace AMDiS
 
     /// Implemetation of SecondOrderTerm::weakEval().
     virtual void weakEvalImpl(const std::vector<WorldVector<double> > &grdUhAtQP,
-		                          std::vector<WorldVector<double> > &result) override;
+		                          std::vector<WorldVector<double> > &result) const override;
   };
   
   
@@ -224,11 +224,11 @@ namespace AMDiS
   template <class Term>
   void GenericSecondOrderTerm_1<Term>::weakEvalImpl(
       	  const std::vector<WorldVector<double> > &grdUhAtQP,
-      	  std::vector<WorldVector<double> > &result) 
+      	  std::vector<WorldVector<double> > &result) const
   {
     int nPoints = grdUhAtQP.size();
     for (int iq = 0; iq < nPoints; iq++)
-      axpy(this->term(iq), grdUhAtQP[iq], result[iq]);
+      result[iq] += this->term(iq) * grdUhAtQP[iq];
   }
   
   
@@ -277,7 +277,7 @@ namespace AMDiS
   template <class Term, bool symmetric>
   void GenericSecondOrderTerm_A<Term, symmetric>::weakEvalImpl(
       	  const std::vector<WorldVector<double> > &grdUhAtQP,
-      	  std::vector<WorldVector<double> > &result)
+      	  std::vector<WorldVector<double> > &result) const
   {
     int nPoints = grdUhAtQP.size();
     WorldMatrix<double> A;
@@ -318,7 +318,7 @@ namespace AMDiS
   template <int I, int J, class Term>
   void GenericSecondOrderTerm_ij<I, J, Term>::weakEvalImpl(
       	  const std::vector<WorldVector<double> > &grdUhAtQP,
-      	  std::vector<WorldVector<double> > &result) 
+      	  std::vector<WorldVector<double> > &result) const
   {
     int nPoints = grdUhAtQP.size();
     for (int iq = 0; iq < nPoints; iq++)

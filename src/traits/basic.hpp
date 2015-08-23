@@ -15,12 +15,7 @@
 
 // a helper mycro to reduce typing
 #define RETURNS(...) \
-  noexcept(noexcept(__VA_ARGS__)) \
-    -> decltype(__VA_ARGS__) { return (__VA_ARGS__); }
-    
-#define RETURNS_CONST(...) \
-  noexcept(noexcept(__VA_ARGS__)) \
-    -> decltype(__VA_ARGS__) const { return (__VA_ARGS__); }
+  -> decltype(__VA_ARGS__) { return (__VA_ARGS__); }
 
 namespace AMDiS 
 {
@@ -36,12 +31,49 @@ namespace AMDiS
   template <class T>
   using Decay_t = typename std::decay<T>::type;
 
-  // introduce some shortcuts for boost::mpl
-  // ---------------------------------------
+  template <class T1, class T2>
+  using Common_t = typename std::common_type<T1,T2>::type;
+  
+  namespace detail
+  {
+    template <class T, class = void>
+    struct assign_type { using type = T; };
+    
+  } // end namespace detail
+  
+  template <class T>
+  using Assign_t = typename detail::assign_type<T>::type;
+  
+  
+  // ---------------------------------------------------------------------------
+  
+  
+  template <class... Ts>
+  struct Types {};
+  
+  template <class... Ts>
+  using Types_t = Types<Decay_t<Ts>...>;
+  
+  template <int... Is>
+  struct Ints {};
+  
+  
+  // ---------------------------------------------------------------------------
+  
+  
   using boost::enable_if;
   using boost::enable_if_c;
   using boost::disable_if;
   using boost::disable_if_c;
+  
+  template <class C, class T = void>
+  using Requires_t = typename std::enable_if<C::value,T>::type;
+  
+  template <bool C, class T = void>
+  using Requires = typename std::enable_if<C,T>::type;
+  
+  // ---------------------------------------------------------------------------
+  
   
   // some traits to test for binary operators on types
   namespace traits 
@@ -119,7 +151,28 @@ namespace AMDiS
     // maximal size type
     template <class... Es>
     using max_size_type = typename larger_type<Size_t<Es>...>::type;
+            
+    namespace detail
+    {
+      template <class A, class B>
+      struct IsCompatible : std::is_same<Decay_t<A>, Decay_t<B> > {};
+      
+      template <class A, class B>
+      struct IsCompatible<Types<A>, Types<B>> 
+        : IsCompatible<A,B> {};
+        
+      template <>
+      struct IsCompatible<Types<>, Types<>> : true_ {};
+      
+      template <class A0, class... As, class B0, class... Bs>
+      struct IsCompatible<Types<A0,As...>, Types<B0,Bs...>>
+        : and_<IsCompatible<A0,B0>, IsCompatible<Types<As...>, Types<Bs...>> > {};
+    }
+    
+    template <class A, class B>
+    using IsCompatible = detail::IsCompatible<A,B>;
     
   } // end namespace traits
+  
   
 } // end namespace AMDiS

@@ -112,7 +112,7 @@ namespace AMDiS
     /// DOFVector dv evaluated at quadrature points.
     /// Used by \ref OperatorTerm::initElement().
     template <class T>
-    void getVectorAtQPs(DOFVectorBase<T>* dv, 
+    void getVectorAtQPs(DOFVectorBase<T> const* dv, 
                   			const ElInfo* elInfo,
                   			Quadrature *quad,
                   			DenseVector<T>& vecAtQPs);
@@ -120,7 +120,7 @@ namespace AMDiS
     /// Gradients of DOFVector dv evaluated at quadrature points.
     /// Used by \ref OperatorTerm::initElement().
     template <class T>
-    void getGradientsAtQPs(DOFVectorBase<T>* dv,
+    void getGradientsAtQPs(DOFVectorBase<T> const* dv,
                   			   const ElInfo* elInfo,
                   			   Quadrature *quad,
                   			   DenseVector<Gradient_t<T>>& grdAtQPs);
@@ -130,7 +130,7 @@ namespace AMDiS
     /// Attention: not caching at the moment! Using cache if gradients for read 
     /// but not for write.
     template <class T>
-    void getDerivativeAtQPs(DOFVectorBase<T>* dv,
+    void getDerivativeAtQPs(DOFVectorBase<T> const* dv,
                   			    const ElInfo* elInfo,
                   			    Quadrature *quad,
                   			    int comp,

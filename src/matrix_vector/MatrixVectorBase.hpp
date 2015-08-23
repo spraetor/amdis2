@@ -5,11 +5,11 @@
 #include <algorithm> // std::copy, std::fill
 #include <ostream>   // std::basic_ostream
 
-#include <boost/type_traits/is_convertible.hpp>
 #include <boost/numeric/mtl/operation/assign_mode.hpp>
 
 #include <Log.h>			// TEST_EXIT_DBG
 
+#include <traits/basic.hpp>
 #include <traits/traits_fwd.hpp>
 
 #include <operations/meta.hpp>
@@ -63,7 +63,7 @@ namespace AMDiS
     
     /// fill vector with scalar value
     template <class S>
-    typename enable_if< boost::is_convertible<S, value_type> >::type
+    typename enable_if< std::is_convertible<S, value_type> >::type
     set(S const& value) 
     {
       std::fill(_elements, _elements + _size, value);
@@ -139,7 +139,7 @@ namespace AMDiS
   public:
     /// Assignment operator for scalars
     template <class S>
-    typename enable_if< boost::is_convertible<S, value_type>, model >::type &
+    typename enable_if< std::is_convertible<S, value_type>, model >::type &
     operator=(S value) 
     {
       for_each(assign::value<value_type, S>(value));
@@ -148,7 +148,7 @@ namespace AMDiS
 
     /// compound assignment *= of a scalar
     template <class S>
-    typename enable_if< boost::is_convertible<S, value_type>, model >::type &
+    typename enable_if< std::is_convertible<S, value_type>, model >::type &
     operator*=(S value)
     {
       for_each(assign::mult_value<value_type, S>(value));
@@ -157,7 +157,7 @@ namespace AMDiS
     
     /// compound assignment /= of a scalar
     template <class S>
-    typename enable_if< boost::is_convertible<S, value_type>, model >::type &
+    typename enable_if< std::is_convertible<S, value_type>, model >::type &
     operator/=(S value)
     {
       for_each(assign::div_value<value_type, S>(value));

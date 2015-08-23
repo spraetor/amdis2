@@ -14,25 +14,25 @@ namespace AMDiS
   struct ReductionBinaryExpr 
       : public BaseExpr< ReductionBinaryExpr<E1, E2, Functor> >
   {
-    typedef ReductionBinaryExpr                               Self;
-    typedef BaseExpr<Self>                               expr_base;
+    using Self = ReductionBinaryExpr;
+    using expr_base = BaseExpr<Self>;
     
-    typedef Result_t<Functor>                           value_type;
-    typedef traits::max_size_type<E1,E2>                 size_type;
-    typedef E1                                          expr1_type;
-    typedef E2                                          expr2_type;
+    using value_type = Result_t<Functor>;
+    using size_type  = traits::max_size_type<E1,E2>;
+    using expr1_type = E1;
+    using expr2_type = E2;
     
-    static constexpr int _SIZE = 1;
-    static constexpr int _ROWS = 1;
-    static constexpr int _COLS = 1;
+    constexpr static int _SIZE = 1;
+    constexpr static int _ROWS = 1;
+    constexpr static int _COLS = 1;
     
   private:
-    static constexpr int ARG_SIZE = math::max(E1::_SIZE, E2::_SIZE);
+    constexpr static int ARG_SIZE = math::max(E1::_SIZE, E2::_SIZE);
     
   public:
     /// constructor takes two expression \p A and \p B.
     ReductionBinaryExpr(expr1_type const& A, expr2_type const& B) 
-	: expr1(A), expr2(B)
+      : expr1(A), expr2(B)
     { 
       TEST_EXIT_DBG( size(A) == size(B) )("Sizes do not match!\n");
     }
@@ -59,7 +59,7 @@ namespace AMDiS
       using meta::FOR;
       value_type erg; Functor::init(erg);
       for (size_type i = 0; i < N; ++i)
-	Functor::update(erg, expr1(i), expr2(i));
+        Functor::update(erg, expr1(i), expr2(i));
 //       FOR<0,N>::inner_product(expr1, expr2, erg, Functor());
       return Functor::post_reduction(erg);
     }
@@ -68,7 +68,7 @@ namespace AMDiS
     {
       value_type erg; Functor::init(erg);
       for (size_type i = 0; i < size(expr1); ++i)
-	Functor::update(erg, expr1(i), expr2(i));
+        Functor::update(erg, expr1(i), expr2(i));
       return Functor::post_reduction(erg);
     }
     
@@ -79,34 +79,32 @@ namespace AMDiS
   
   /// Size of ReductionBinaryExpr
   template <class E1, class E2, class F>
-  size_t size(ReductionBinaryExpr<E1,E2,F> const&) { return 1; }
+  inline size_t size(ReductionBinaryExpr<E1,E2,F> const&) { return 1; }
   
   /// Size of ReductionBinaryExpr
   template <class E1, class E2, class F>
-  size_t num_rows(ReductionBinaryExpr<E1,E2,F> const&) { return 1; }
+  inline size_t num_rows(ReductionBinaryExpr<E1,E2,F> const&) { return 1; }
   
   /// Size of ReductionBinaryExpr
   template <class E1, class E2, class F>
-  size_t num_cols(ReductionBinaryExpr<E1,E2,F> const&) { return 1; }
+  inline size_t num_cols(ReductionBinaryExpr<E1,E2,F> const&) { return 1; }
   
-  namespace traits {
-    
+  namespace traits 
+  { 
     /// \cond HIDDEN_SYMBOLS
     template <class E1, class E2, class F>
     struct category<ReductionBinaryExpr<E1,E2,F> > 
     {
-      typedef typename category<typename F::result_type>::tag         tag;
-      typedef typename F::result_type                          value_type;
-      typedef typename ReductionBinaryExpr<E1,E2,F>::size_type  size_type;
+      using tag = typename category<Result_t<F>>::tag;
+      using value_type = Result_t<F>;
+      using size_type  = Size_t<ReductionBinaryExpr<E1,E2,F>>;
     };
     /// \endcond
   }
   
   // standard inner product
   template <class E1, class E2>
-  struct DotExpr {
-    typedef ReductionBinaryExpr<E1, E2, 
-	      functors::dot_functor<typename E1::value_type, typename E2::value_type> > type;
-  };
+  using DotExpr = ReductionBinaryExpr<E1, E2, 
+    functors::dot_functor<Value_t<E1>, Value_t<E2>> >;
   
 } // end namespace AMDiS

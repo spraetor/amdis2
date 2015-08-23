@@ -135,30 +135,22 @@ namespace AMDiS
   
   /// Assign an expression to a DOFVector
   template <class T, class Expr>
-  inline typename boost::enable_if<
-    and_<traits::is_expr<Expr>, 
-	 traits::is_convertible<typename Expr::value_type, T> >
-    >::type
-  transformDOF(Expr expr, DOFVector<T>* result);
+  Requires_t<and_<traits::is_expr<Expr>, traits::IsConvertible<Value_t<Expr>, T>> >
+  inline transformDOF(Expr expr, DOFVector<T>* result);
 
   
   /// \brief Assign an expression to a DOFVector 
   /// (using multi-mesh if \ref expr and \ref result vector are on different meshes)
   template <class T, class Expr>
-  inline typename boost::enable_if<
-    and_<traits::is_expr<Expr>, 
-	 traits::is_convertible<typename Expr::value_type, T> >
-    >::type
-  transformDOF_mm(Expr expr, DOFVector<T>* result);
+  Requires_t<and_<traits::is_expr<Expr>, traits::IsConvertible<Value_t<Expr>, T>> >
+  inline transformDOF_mm(Expr expr, DOFVector<T>* result);
 
   
   /// Assign an expression to a DOFVector
   template <class T, class Expr>
-  typename boost::enable_if<
-    and_<traits::is_expr<Expr>, 
-	 traits::is_convertible<typename Expr::value_type, T> >,
-    DOFVector<T>& >::type
-  operator<<(DOFVector<T>& result, const Expr& expr)
+  Requires_t<and_<traits::is_expr<Expr>, traits::IsConvertible<Value_t<Expr>, T>>, >
+    DOFVector<T>& >
+  inline operator<<(DOFVector<T>& result, const Expr& expr)
   {
     transformDOF(expr, &result);
     return result;
@@ -170,9 +162,9 @@ namespace AMDiS
   
   /// Print an expression to an output stream
   template <class Expr>
-  typename boost::enable_if<traits::is_expr<Expr>, 
-			    std::ostream& >::type
-  operator<<(std::ostream& result, const Expr& expr)
+  Requires_t<traits::is_expr<Expr>, 
+    std::ostream& >
+  inline operator<<(std::ostream& result, const Expr& expr)
   {
     result << expr.str();
     return result;

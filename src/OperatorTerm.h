@@ -9,7 +9,6 @@
 
 namespace AMDiS 
 {
-
   /** 
    * \ingroup Assembler
    * 
@@ -127,6 +126,7 @@ namespace AMDiS
     /// Flag for symmetric terms
     static const Flag SYMMETRIC;
 
+    // TODO: remove friend declaration
     friend class SubAssembler;
     friend class ZeroOrderAssembler;
     friend class FirstOrderAssembler;
@@ -152,21 +152,22 @@ namespace AMDiS
 
   
   /// basic interface for OperatorTerms based on expressions
-  template <class Expr, int Order = -1>
+  template <class Term, int Order = -1>
   struct GenericOperatorTerm : public GetTerm<Order>::type
   {
     typedef typename GetTerm<Order>::type Super;
     
     /// Expression term stored as copy
-    Expr expr;
+    Term term;
     
     /// constructor
     /// adds all feSpaces provided by the expression term to auxFeSpaces liste
-    template <class Expr_>
-    GenericOperatorTerm(Expr_&& expr_)
-      : Super(expr_.getDegree()), expr(expr_) 
+    template <class Term_>
+    GenericOperatorTerm(Term_&& term_)
+      : Super(term_.getDegree()), 
+        term{term_} 
     {
-      expr.insertFeSpaces(this->auxFeSpaces);
+      term.insertFeSpaces(this->auxFeSpaces);
 #ifndef NDEBUG
       test_auxFeSpaces(this->auxFeSpaces);
 #endif
@@ -174,23 +175,22 @@ namespace AMDiS
 
   private:
     /// \brief Implements OperatorTerm::initImpl().
-    /// calls init() for \ref expr
+    /// calls init() for \ref term
     virtual void initImpl(const ElInfo* elInfo,
                   			  SubAssembler* subAssembler,
                   			  Quadrature* quad) override
     {
-      expr.initElement(elInfo, subAssembler, quad, NULL);
+      term.initElement(elInfo, subAssembler, quad, NULL);
     }
     
     /// test for only one mesh allowed in expressions
     template <class FeSpaceList>
     void test_auxFeSpaces(FeSpaceList const& auxFeSpaces)
     {
-      typedef typename FeSpaceList::const_iterator fe_iter;
       if (auxFeSpaces.size() > 0) {
-      	Mesh* mesh0 = (*auxFeSpaces.begin())->getMesh();
-      	for (fe_iter it = auxFeSpaces.begin(); it != auxFeSpaces.end(); it++) {
-      	  if ((*it)->getMesh() != mesh0) {
+      	Mesh* mesh0 = (*begin(auxFeSpaces))->getMesh();
+      	for (auto const* feSpace : auxFeSpaces) {
+      	  if (feSpace->getMesh() != mesh0) {
       	    ERROR_EXIT("Only one mesh allowed in expression.\n");
       	  }
       	}
@@ -199,13 +199,13 @@ namespace AMDiS
   };
   
 
-  template <class Expr>
-  struct GenericOperatorTerm<Expr, -1> : public GenericOperatorTerm<Expr, -2>
+  template <class Term>
+  struct GenericOperatorTerm<Term, -1> : public GenericOperatorTerm<Term, -2>
   {
-    typedef GenericOperatorTerm<Expr, -2> Super;
-    template <class Expr_>
-    GenericOperatorTerm(Expr_&& expr_) 
-      : Super(std::forward<Expr_>(expr_)) { }
+    typedef GenericOperatorTerm<Term, -2> Super;
+    template <class Term_>
+    GenericOperatorTerm(Term_&& term_) 
+      : Super(std::forward<Term_>(term_)) { }
     
   private:
     // Implements OperatorTerm::eval().

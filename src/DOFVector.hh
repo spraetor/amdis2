@@ -29,6 +29,8 @@
 #include "parallel/MeshDistributor.h"
 #endif
 
+#include <expressions2/_Expressions.h>
+
 // Defining the interface for MTL4
 namespace mtl 
 {
@@ -354,7 +356,7 @@ namespace AMDiS
       double normT = 0.0;
       this->getVecAtQPs(elInfo, NULL, quadFast, uh_vec);
       for (int iq = 0; iq < nPoints; iq++)
-        normT += quadFast->getWeight(iq) * abs(uh_vec[iq]);
+        normT += quadFast->getWeight(iq) * std::abs(uh_vec[iq]);
       result += det * normT;
 
       elInfo = stack.traverseNext(elInfo);

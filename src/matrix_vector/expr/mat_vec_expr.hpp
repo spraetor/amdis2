@@ -12,13 +12,13 @@
 #include <matrix_vector/Vector.hpp>
 #include <Math.h>
 
-namespace AMDiS {
-
+namespace AMDiS 
+{
   template <class MatE>
   struct ColumnIndex
   {
-    typedef Value_t<MatE>  value_type;
-    typedef Size_t<MatE>    size_type;
+    using value_type = Value_t<MatE>;
+    using size_type  = Size_t<MatE>;
     
     ColumnIndex(MatE const& matrix_, size_type row_) 
 	: matrix(matrix_), row(row_) { }
@@ -49,22 +49,22 @@ namespace AMDiS {
   struct MatVecExpr 
       : public VectorExpr< MatVecExpr<MatE, VecE, use_buffer> >
   {
-    typedef MatVecExpr                                             Self;
-    typedef VectorExpr<Self>                                  expr_base;
+    using Self = MatVecExpr;
+    using expr_base = VectorExpr<Self>;
     
-    typedef Value_t<VecE>                                    value_type;
-    typedef traits::max_size_type<MatE, VecE>                 size_type;
+    using value_type = Value_t<VecE>;
+    using size_type  = traits::max_size_type<MatE, VecE>;
 	
-    typedef MatE                                            matrix_type;
-    typedef BufferType<VecE, use_buffer>                    vector_type;
+    using matrix_type = MatE;
+    using vector_type = BufferType<VecE, use_buffer>;
     
     // sizes of the resulting expr.
-    static constexpr int _SIZE = MatE::_ROWS;
-    static constexpr int _ROWS = MatE::_ROWS;
-    static constexpr int _COLS = math::max(VecE::_COLS, 1);
+    constexpr static int _SIZE = MatE::_ROWS;
+    constexpr static int _ROWS = MatE::_ROWS;
+    constexpr static int _COLS = math::max(VecE::_COLS, 1);
     
   private:
-    static constexpr int ARG_COLS = math::max(VecE::_ROWS, MatE::_COLS);
+    constexpr static int ARG_COLS = math::max(VecE::_ROWS, MatE::_COLS);
     
   public:
     /// constructor takes a matrix expression \p mat and a 
@@ -101,7 +101,7 @@ namespace AMDiS {
       using ::math::zero;
       value_type erg = zero(value_type());	  
       for (size_type c = 0; c < num_cols(matrix); ++c)
-	erg += matrix(r,c) * vector(c);
+        erg += matrix(r,c) * vector(c);
       return erg;
     }
     
@@ -113,34 +113,34 @@ namespace AMDiS {
   
   /// Size of MatVecExpr
   template <class E1, class E2, bool b>
-  size_t size(MatVecExpr<E1,E2,b> const& expr)
+  inline size_t size(MatVecExpr<E1,E2,b> const& expr)
   {
     return num_rows(expr.get_matrix());
   }
   
   /// number of rows of MatVecExpr
   template <class E1, class E2, bool b>
-  size_t num_rows(MatVecExpr<E1,E2,b> const& expr)
+  inline size_t num_rows(MatVecExpr<E1,E2,b> const& expr)
   {
     return num_rows(expr.get_matrix());
   }
   
   /// number of columns of MatVecExpr
   template <class E1, class E2, bool b>
-  size_t num_cols(MatVecExpr<E1,E2,b> const& expr)
+  inline size_t num_cols(MatVecExpr<E1,E2,b> const& expr)
   {
     return 1;
   }
   
-  namespace traits {
-    
+  namespace traits 
+  {
     /// \cond HIDDEN_SYMBOLS
     template <class E1, class E2, bool b>
     struct category<MatVecExpr<E1,E2,b> > 
     {
-      typedef typename category<E2>::tag                       tag;
-      typedef typename MatVecExpr<E1,E2,b>::value_type  value_type;
-      typedef typename MatVecExpr<E1,E2,b>::size_type    size_type;
+      using tag = typename category<E2>::tag;
+      using value_type = Value_t<MatVecExpr<E1,E2,b>>;
+      using size_type  = Size_t<MatVecExpr<E1,E2,b>>;
     };
     /// \endcond
   }

@@ -311,7 +311,7 @@ ElementLevelSet::calcIntersecNormal_2d(WorldVector<double> &normalVec)
       tmpPoint[i] = baryc[i] + factor*normalVec[i];
     }
 
-    elInfo->worldToCoord(tmpPoint, &lambda);
+    elInfo->worldToCoord(tmpPoint, lambda);
     for (int i=0; i<=dim; ++i) {
       if (lambda[i] < 0) {
 	factor *= 0.1;

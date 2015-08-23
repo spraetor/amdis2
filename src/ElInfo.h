@@ -326,7 +326,7 @@ namespace AMDiS
     /// program exits.
     void testFlag(const Flag& flag) const
     {    
-      TEST_EXIT_DBG(fillFlag.isSet(flags))("flag not set\n");
+      TEST_EXIT_DBG(fillFlag.isSet(flag))("flag not set\n");
     }
 
     /// Transforms local barycentric coordinates of a point defined on this 
@@ -342,7 +342,7 @@ namespace AMDiS
     /// The barycentric coordinates are stored in lambda. 
     /// pure virtual => must be overriden in sub-class.
     virtual int worldToCoord(const WorldVector<double>& world, 
-				   DimVec<double>* lambda) const = 0;
+                             DimVec<double>& lambda) const = 0;
 
     /// Fills this ElInfo with macro element information of mel.
     /// pure virtual => must be overriden in sub-class.
@@ -479,6 +479,7 @@ namespace AMDiS
     /// child.
     static const int childEdge[3][2][6];
 
+    // TODO: remove friend declaration
     friend class ElInfo1d;
     friend class ElInfo2d;
     friend class ElInfo3d;

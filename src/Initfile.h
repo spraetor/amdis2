@@ -123,6 +123,16 @@ namespace AMDiS
     o << "]";
     return o;
   }
+  
+  inline void replaceAll(std::string& str, const std::string& from, const std::string& to) {
+    if(from.empty())
+        return;
+    size_t start_pos = 0;
+    while((start_pos = str.find(from, start_pos)) != std::string::npos) {
+        str.replace(start_pos, from.length(), to);
+        start_pos += to.length(); // In case 'to' contains 'from', like replacing 'x' with 'yx'
+    }
+}
 
 // _____________________________________________________________________________
 
@@ -147,7 +157,7 @@ namespace AMDiS
     *    1..print missing parameter info, 2..print parameter value) [optional]
     */
     template <class T>
-    static void get(const std::string tag, T& value, int debugInfo = -1)
+    static void get(std::string tag, T& value, int debugInfo = -1)
     {
       initIntern();
       if (debugInfo == -1)
@@ -157,11 +167,15 @@ namespace AMDiS
       	debugInfo = singlett->getMsgInfo();
       	singlett->msgInfo=swap;
       }
+      
+      using path = boost::property_tree::ptree::path_type;
+      replaceAll(tag, "->", ">");
+      auto tagPath = path(tag, '>');
 
       // TODO: use boost::optional instead
       // TODO: use convert method from above
       std::string valueStr = "-";
-      valueStr = singlett->pt.get(tag, valueStr);
+      valueStr = singlett->pt.get(tagPath, valueStr);
       
       if (valueStr != "-")
         detail::Convert<T>::eval(valueStr, value);
@@ -176,13 +190,16 @@ namespace AMDiS
 
     /// update map tag->value_old to tag->value in singleton
     template <class T>
-    static void set(const std::string tag, T& value, int debugInfo=  -1) 
+    static void set(std::string tag, T& value, int debugInfo=  -1) 
     {
       initIntern();
       if (debugInfo == -1)
         debugInfo = singlett->getMsgInfo();
 
-      singlett->pt.put(tag, value);
+      using path = boost::property_tree::ptree::path_type;
+      replaceAll(tag, "->", ">");
+      auto tagPath = path(tag, '>');
+      singlett->pt.put(tagPath, value);
       
       // update msg parameters msgInfo, msgWait, paramInfo
       singlett->getInternalParameters();

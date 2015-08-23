@@ -112,7 +112,7 @@ namespace AMDiS
       ERROR_EXIT("invalid dimension\n");
     }
 
-    elementPrototype->setIndex(-1);
+    elementPrototype->setIndex({}, -1);
 
     elementIndex = 0;
   }
@@ -194,7 +194,7 @@ namespace AMDiS
       *el = **it;
 
       // Make a copy of the Element data, together with all DOFs
-      el->setElement((*it)->getElement()->cloneWithDOFs());
+      el->setElement((*it)->getElement()->cloneWithDOFs(Mesh::serializedDOFs));
 
       // Insert the new MacroElement in the vector of all MacroElements.
       macroElements.push_back(el);
@@ -258,30 +258,27 @@ namespace AMDiS
   void Mesh::removeAllMacroElements()
   {
     // Delete all the dofs
-    Element::deletedDOFs.clear();
-    for (deque<MacroElement*>::const_iterator it = macroElements.begin();
-	 it != macroElements.end(); ++it) {
-      (*it)->getElement()->deleteElementDOFs();
-    }
-    Element::deletedDOFs.clear();
+    Element::clearDeletedDofs({});
+    for (MacroElement const* macroEl : macroElements)
+      macroEl->getElement()->deleteElementDOFs();
+    
+    Element::clearDeletedDofs({});
     
     // Set all neighbors null
-    for (deque<MacroElement*>::const_iterator macroIt = macroElements.begin();
-	 macroIt != macroElements.end(); ++macroIt) {
-
+    for (MacroElement* macroEl : macroElements) {
       for (int i = 0; i < getGeo(NEIGH); i++)
-	(*macroIt)->setNeighbour(i, NULL);
+        macroEl->setNeighbour(i, NULL);
 
-      Element *mel = (*macroIt)->getElement();
+      Element *mel = macroEl->getElement();
       // Delete element hierarchie
       if (!(mel->isLeaf())) {
-	delete mel->getChild(0);
-	delete mel->getChild(1);
+        delete mel->getChild(0);
+        delete mel->getChild(1);
 
-	mel->child[0] = NULL;
-	mel->child[1] = NULL;
+        mel->setFirstChild(NULL);
+        mel->setSecondChild(NULL);
 
-	mel->setElementData(elementDataPrototype->clone()); 
+        mel->setElementData(elementDataPrototype->clone()); 
       }
     }
     
@@ -290,14 +287,13 @@ namespace AMDiS
     nElements = 0;
     nVertices = 0;
     
-    for (size_t i = 0; i < admin.size(); i++)
-      {
-	TEST_EXIT_DBG(admin[i]->getUsedSize() == admin[i]->getHoleCount())
-	  ("All macro elements has been removed. But not all dofs are cleaned. (UsedSize = %d, HoleCount = %d)\n", 
-	    admin[i]->getUsedSize(), admin[i]->getHoleCount());
-	  
-	admin[i]->reset();
-      }
+    for (size_t i = 0; i < admin.size(); i++) {
+      TEST_EXIT_DBG(admin[i]->getUsedSize() == admin[i]->getHoleCount())
+        ("All macro elements has been removed. But not all dofs are cleaned. (UsedSize = %d, HoleCount = %d)\n", 
+          admin[i]->getUsedSize(), admin[i]->getHoleCount());
+        
+      admin[i]->reset();
+    }
   }
   
   void Mesh::removeMacroElements(std::set<MacroElement*>& delMacros,
@@ -330,8 +326,8 @@ namespace AMDiS
     while (elInfo) {
       elDofIter.reset(elInfo->getElement());
       do {
-	dofsOwner[elDofIter.getBaseDof()].insert(elInfo->getMacroElement());
-	dofsPosIndex[elDofIter.getBaseDof()] = elDofIter.getPosIndex();
+        dofsOwner[elDofIter.getBaseDof()].insert(elInfo->getMacroElement());
+        dofsPosIndex[elDofIter.getBaseDof()] = elDofIter.getPosIndex();
       } while (elDofIter.nextStrict());
 
       elInfo = stack.traverseNext(elInfo);
@@ -345,13 +341,12 @@ namespace AMDiS
     // macro element deque is than replaced by the new created one.
 
     deque<MacroElement*> newMacroElements;
-    for (deque<MacroElement*>::iterator elIter = macroElements.begin();
-	 elIter != macroElements.end(); ++elIter) {
+    for (MacroElement* macroEl :  macroElements) {
       // If the current mesh macro element should not be deleted, i.e., it is not
       // a member of the list of macro elements to be deleted, is is inserted to
       // the new macro element list.
-      if (delMacros.find(*elIter) == delMacros.end())
-	newMacroElements.push_back(*elIter);     
+      if (delMacros.find(macroEl) == delMacros.end())
+        newMacroElements.push_back(macroEl);     
     }
 
     // And replace the macro element list with the new one.
@@ -363,28 +358,26 @@ namespace AMDiS
     // === neighbours of some other macro elements. Furtheremore, delete the  ===
     // === whole element hierarchie structure of the macro element.           ===
     
-    for (std::set<MacroElement*>::iterator macroIt = delMacros.begin();
-	 macroIt != delMacros.end(); ++macroIt) {
-
+    for (MacroElement* macroEl : delMacros) {
       // Go through all neighbours of the macro element and remove this macro
       // element to be neighbour of some other macro element.
       for (int i = 0; i < getGeo(NEIGH); i++)
-	if ((*macroIt)->getNeighbour(i))
-	  for (int j = 0; j < getGeo(NEIGH); j++)
-	    if ((*macroIt)->getNeighbour(i)->getNeighbour(j) == *macroIt)
-	      (*macroIt)->getNeighbour(i)->setNeighbour(j, NULL);
+        if (macroEl->getNeighbour(i))
+          for (int j = 0; j < getGeo(NEIGH); j++)
+            if (macroEl->getNeighbour(i)->getNeighbour(j) == macroEl)
+              macroEl->getNeighbour(i)->setNeighbour(j, NULL);
 
 
-      Element *mel = (*macroIt)->getElement();
+      Element *mel = macroEl->getElement();
       // Delete element hierarchie
       if (!(mel->isLeaf())) {
-	delete mel->getChild(0);
-	delete mel->getChild(1);
+        delete mel->getChild(0);
+        delete mel->getChild(1);
 
-	mel->child[0] = NULL;
-	mel->child[1] = NULL;
+        mel->setFirstChild(NULL);
+        mel->setSecondChild(NULL);
 
-	mel->setElementData(elementDataPrototype->clone()); 
+        mel->setElementData(elementDataPrototype->clone()); 
       }
 
       mel->delDofPtr();
@@ -394,23 +387,18 @@ namespace AMDiS
     // === Check now all the DOFs that have no owner anymore and therefore  ===
     // === have to be removed.                                              ===
 
-    for (DofElMap::iterator dofsIt = dofsOwner.begin(); 
-	 dofsIt != dofsOwner.end(); ++dofsIt) {
-      
+    for (auto dofsIt : dofsOwner) {      
       bool deleteDof = true;
-
-      for (std::set<MacroElement*>::iterator elIter = dofsIt->second.begin();
-	   elIter != dofsIt->second.end(); ++elIter) {
-	std::set<MacroElement*>::iterator mIt = delMacros.find(*elIter);
-	if (mIt == delMacros.end()) {
-	  deleteDof = false;
-	  break;
-	}
+      for (MacroElement* macroEl : dofsIt.second) {
+        if (delMacros.find(macroEl) == delMacros.end()) {
+          deleteDof = false;
+          break;
+        }
       }
 
       if (deleteDof)
-	freeDof(const_cast<DegreeOfFreedom*>(dofsIt->first), 
-		dofsPosIndex[dofsIt->first]);      
+        freeDof(const_cast<DegreeOfFreedom*>(dofsIt.first), 
+          dofsPosIndex[dofsIt.first]);      
     }
 
 
@@ -425,16 +413,16 @@ namespace AMDiS
 
       elInfo = stack.traverseFirst(this, -1, Mesh::CALL_EVERY_EL_PREORDER);
       while (elInfo) {
-	nElements++;
+        nElements++;
 
-	if (elInfo->getElement()->isLeaf()) {
-	  nLeaves++;
+        if (elInfo->getElement()->isLeaf()) {
+          nLeaves++;
 
-	  for (int i = 0; i < getGeo(VERTEX); i++)
-	    allVertices.insert(elInfo->getElement()->getDof(i));
-	}
+          for (int i = 0; i < getGeo(VERTEX); i++)
+            allVertices.insert(elInfo->getElement()->getDof(i));
+        }
 
-	elInfo = stack.traverseNext(elInfo);
+        elInfo = stack.traverseNext(elInfo);
       }
 
       nVertices = allVertices.size();
@@ -442,11 +430,11 @@ namespace AMDiS
       
       for (size_t i = 0; i < admin.size(); i++)
       {
-	TEST_EXIT_DBG(admin[i]->getUsedSize() == admin[i]->getHoleCount())
-	  ("All macro elements has been removed. But not all dofs are cleaned. (UsedSize = %d, HoleCount = %d)\n", 
-	    admin[i]->getUsedSize(), admin[i]->getHoleCount());
-	  
-	admin[i]->reset();
+        TEST_EXIT_DBG(admin[i]->getUsedSize() == admin[i]->getHoleCount())
+          ("All macro elements has been removed. But not all dofs are cleaned. (UsedSize = %d, HoleCount = %d)\n", 
+            admin[i]->getUsedSize(), admin[i]->getHoleCount());
+          
+        admin[i]->reset();
       }
     }
     // === Note: Although the macro elements are removed from the mesh,   ===
@@ -534,14 +522,14 @@ namespace AMDiS
       TraverseStack stack;
       ElInfo *elInfo = stack.traverseFirst(this, -1, fill_flag);
       while (elInfo) {
-	elInfo->getElement()->newDofFct1(compressAdmin, newDofIndex);
-	elInfo = stack.traverseNext(elInfo);
+        elInfo->getElement()->newDofFct1({}, compressAdmin, newDofIndex);
+        elInfo = stack.traverseNext(elInfo);
       }
 
       elInfo = stack.traverseFirst(this, -1, fill_flag);
       while (elInfo) {
-	elInfo->getElement()->newDofFct2(compressAdmin);
-	elInfo = stack.traverseNext(elInfo);
+        elInfo->getElement()->newDofFct2({}, compressAdmin);
+        elInfo = stack.traverseNext(elInfo);
       }
     }       
   }
@@ -744,7 +732,7 @@ namespace AMDiS
 //     macrosVisited.insert(mel->getIndex());
 
     int k;
-    while ((k = mel_info->worldToCoord(xy, &lambda)) >= 0) {
+    while ((k = mel_info->worldToCoord(xy, lambda)) >= 0) {
       macrosVisited.insert(mel->getIndex());
       
       if (mel->getNeighbour(k) && !macrosVisited.count(mel->getNeighbour(k)->getIndex())) {
@@ -837,7 +825,7 @@ namespace AMDiS
 	return true;
       }  else {  /* outside */
 	if (g_xy0) { /* find boundary point of [xy0, xy] */
-	  el_info->worldToCoord(*(g_xy0), &c_lambda);
+	  el_info->worldToCoord(*(g_xy0), c_lambda);
 	  double s = lambda[outside] / (lambda[outside] - c_lambda[outside]);
 	  for (int i = 0; i <= dim; i++) 
 	    final_lambda[i] = s * c_lambda[i] + (1.0 - s) * lambda[i];
@@ -861,7 +849,7 @@ namespace AMDiS
       if (lambda[0] >= lambda[1]) {
 	c_el_info->fillElInfo(0, el_info);
 	if (outside >= 0) {
-	  outside = el_info->worldToCoord(*(g_xy), &c_lambda);
+	  outside = el_info->worldToCoord(*(g_xy), c_lambda);
 	  TEST_EXIT(outside == 0)("point outside domain\n");
 	} else {
 	  c_lambda[0] = lambda[0] - lambda[1];
@@ -870,7 +858,7 @@ namespace AMDiS
       } else {
 	c_el_info->fillElInfo(1, el_info);
 	if (outside >= 0)  {
-	  outside = el_info->worldToCoord(*(g_xy), &c_lambda);
+	  outside = el_info->worldToCoord(*(g_xy), c_lambda);
 	  TEST_EXIT(outside == 0)("point outside domain\n");
 	} else {
 	  c_lambda[1] = lambda[1] - lambda[0];
@@ -883,7 +871,7 @@ namespace AMDiS
       if (lambda[0] >= lambda[1]) {
 	c_el_info->fillElInfo(0, el_info);
 	if (el->isNewCoordSet()) {
-	  outside = c_el_info->worldToCoord(*(g_xy), &c_lambda);
+	  outside = c_el_info->worldToCoord(*(g_xy), c_lambda);
 	  TEST_EXIT(outside == 0)("outside curved boundary child 0\n");	  
 	} else {
 	  c_lambda[0] = lambda[2];
@@ -893,7 +881,7 @@ namespace AMDiS
       } else {
 	c_el_info->fillElInfo(1, el_info);
 	if (el->isNewCoordSet()) {
-	  outside = c_el_info->worldToCoord(*(g_xy), &c_lambda);
+	  outside = c_el_info->worldToCoord(*(g_xy), c_lambda);
 	  TEST_EXIT(outside == 0)("outside curved boundary child 1\n");	  
 	} else {
 	  c_lambda[0] = lambda[1] - lambda[0];
@@ -910,14 +898,14 @@ namespace AMDiS
 	else
 	  ichild = 1;
 	c_el_info->fillElInfo(ichild, el_info);
-	c_outside = c_el_info->worldToCoord(*(g_xy), &c_lambda);
+	c_outside = c_el_info->worldToCoord(*(g_xy), c_lambda);
 
 	if (c_outside>=0) {  /* test is other child is better... */
 	  DimVec<double> c_lambda2(dim);
 	  ElInfo *c_el_info2 = createNewElInfo();
 
 	  c_el_info2->fillElInfo(1-ichild, el_info);
-	  int c_outside2 = c_el_info2->worldToCoord(*(g_xy), &c_lambda2);
+	  int c_outside2 = c_el_info2->worldToCoord(*(g_xy), c_lambda2);
 
 	  MSG("new_coord CHILD %d: outside=%d, lambda=(%.2f %.2f %.2f %.2f)\n",
 	      ichild, c_outside, c_lambda[0], c_lambda[1], c_lambda[2], c_lambda[3]);
@@ -1349,7 +1337,7 @@ namespace AMDiS
 
   void Mesh::deleteMeshStructure()
   {
-    Element::deletedDOFs.clear();
+    Element::clearDeletedDofs({});
     
     for (deque<MacroElement*>::const_iterator it = macroElements.begin();
 	 it != macroElements.end(); ++it) {
@@ -1357,7 +1345,7 @@ namespace AMDiS
       delete *it;
     }    
 
-    Element::deletedDOFs.clear();
+    Element::clearDeletedDofs({});
   }
 
 

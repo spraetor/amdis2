@@ -27,6 +27,14 @@ namespace compositeFEM {
 using namespace AMDiS;
 using namespace std;
 
+
+PenaltyOperator::~PenaltyOperator()
+{
+  if (surfaceOp)
+    delete surfaceOp;    
+  delete tempCoords;
+}
+
 double 
 PenaltyOperator::getPenaltyCoeff(const ElInfo *elInfo)
 {
@@ -89,7 +97,7 @@ PenaltyOperator::getElementMatrix(const ElInfo *elInfo,
       (*tempCoords)[1] = (*intersecPoints)[1];
       (*tempCoords)[2] = (*intersecPoints)[2];
       if (!surfaceOp) {
-	surfaceOp = new SurfaceOperator(this, (*tempCoords));
+	surfaceOp = new SurfaceOperator(*this, (*tempCoords));
       }
       else {
 	surfaceOp->adaptSurfaceOperator((*tempCoords));
@@ -117,7 +125,7 @@ PenaltyOperator::getElementMatrix(const ElInfo *elInfo,
       }
 
       if (!surfaceOp) {
-	surfaceOp = new SurfaceOperator(this, *tempCoords);
+	surfaceOp = new SurfaceOperator(*this, *tempCoords);
       }
       else {
 	surfaceOp->adaptSurfaceOperator(*tempCoords);
@@ -140,7 +148,7 @@ PenaltyOperator::getElementMatrix(const ElInfo *elInfo,
 // 	(*tempCoords)[0] = lambda;
 
 // 	if (!surfaceOp) {
-// 	  surfaceOp = new SurfaceOperator(this, *tempCoords);
+// 	  surfaceOp = new SurfaceOperator(*this, *tempCoords);
 // 	}
 // 	else {
 // 	  surfaceOp->adaptSurfaceOperator(*tempCoords);
@@ -205,7 +213,7 @@ PenaltyOperator::getElementVector(const ElInfo *elInfo,
       (*tempCoords)[1] = (*intersecPoints)[1];
       (*tempCoords)[2] = (*intersecPoints)[2];
       if (!surfaceOp) {
-	surfaceOp = new SurfaceOperator(this, (*tempCoords));
+	surfaceOp = new SurfaceOperator(*this, (*tempCoords));
       }
       else {
 	surfaceOp->adaptSurfaceOperator((*tempCoords));
@@ -233,7 +241,7 @@ PenaltyOperator::getElementVector(const ElInfo *elInfo,
       }
 
       if (!surfaceOp) {
-	surfaceOp = new SurfaceOperator(this, *tempCoords);
+	surfaceOp = new SurfaceOperator(*this, *tempCoords);
       }
       else {
 	surfaceOp->adaptSurfaceOperator(*tempCoords);
@@ -256,7 +264,7 @@ PenaltyOperator::getElementVector(const ElInfo *elInfo,
 // 	(*tempCoords)[0] = lambda;
 
 // 	if (!surfaceOp) {
-// 	  surfaceOp = new SurfaceOperator(this, *tempCoords);
+// 	  surfaceOp = new SurfaceOperator(*this, *tempCoords);
 // 	}
 // 	else {
 // 	  surfaceOp->adaptSurfaceOperator(*tempCoords);

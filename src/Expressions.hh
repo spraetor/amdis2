@@ -89,11 +89,8 @@ namespace AMDiS
 
   // works only for nodal basis functions!
   template <class T, class Expr>
-  inline typename boost::enable_if<
-    and_<traits::is_expr<Expr>, 
-      traits::is_convertible<typename Expr::value_type, T> >
-    >::type
-  transformDOF(Expr expr, DOFVector<T>* result)
+  Requires_t<and_<traits::is_expr<Expr>, traits::IsConvertible<Value_t<Expr>, T>> >
+  inline transformDOF(Expr expr, DOFVector<T>* result)
   {
     GenericOperatorTerm<Expr> ot(expr);
     std::set<const FiniteElemSpace*> feSpaces = ot.getAuxFeSpaces();
@@ -154,11 +151,8 @@ namespace AMDiS
 
   // works only for nodal basis functions!
   template <class T, class Expr>
-  inline typename boost::enable_if<
-    and_<traits::is_expr<Expr>, 
-      traits::is_convertible<typename Expr::value_type, T> >
-    >::type
-  transformDOF_mm(Expr expr, DOFVector<T>* result)
+  Requires_t<and_<traits::is_expr<Expr>, traits::IsConvertible<Value_t<Expr>, T>> >
+  inline transformDOF_mm(Expr expr, DOFVector<T>* result)
   {
     typedef typename Expr::value_type TOut;
     
@@ -179,7 +173,7 @@ namespace AMDiS
     DenseVector<TOut> vecLocalCoeffs(nBasisFcts);
 
     DimVec<double> *lambda = NULL;
-    DimVec<double> *lambda_1 = new DimVec<double>;
+    DimVec<double> lambda_1(mesh1->getDim());
     WorldVector<double> coords;
 	    
     DualTraverse dualTraverse;
@@ -206,7 +200,7 @@ namespace AMDiS
       	dualElInfo.rowElInfo->coordToWorld(*lambda, coords);
       	int inside = dualElInfo.colElInfo->worldToCoord(coords, lambda_1);
       	if (inside < 0) {
-      	  temp[localIndices[i]] += basisFcts->evalUh(*lambda_1, vecLocalCoeffs);
+      	  temp[localIndices[i]] += basisFcts->evalUh(lambda_1, vecLocalCoeffs);
       	  assigned[localIndices[i]]++;
       	}
       }
@@ -226,8 +220,6 @@ namespace AMDiS
       *resultIter = (*tempIter);
       *resultIter/= (*assignedIter);
     }
-    
-    delete lambda_1;
   }
 
 } // end namespace AMDiS

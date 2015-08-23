@@ -16,6 +16,7 @@ namespace AMDiS
       boundary(dim, INTERIOR),
       projection(dim),
       neighbour(dim),
+      neighbour_inv(dim),
       oppVertex(dim),
       index(-1), 
       elType(0),

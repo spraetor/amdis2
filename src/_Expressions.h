@@ -10,7 +10,7 @@
 #include "Log.h"
 
 #include <expressions/MathOperations.hpp>
-#include <traits/concepts.hpp>
+// #include <traits/concepts.hpp>
 
 namespace AMDiS 
 {

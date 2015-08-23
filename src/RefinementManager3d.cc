@@ -14,6 +14,9 @@
 #include "PeriodicBC.h"
 #include "VertexVector.h"
 #include "Debug.h"
+#ifndef NDEBUG
+#include "MacroElement.h"
+#endif
 
 using namespace std;
 

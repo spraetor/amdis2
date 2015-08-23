@@ -50,6 +50,13 @@ namespace AMDiS
     }
 
     /// returns geometrical information. Currently this is only dimOfWorld.
+#if FIXED_SIZE && defined(DOW)
+    constexpr static int getGeo(GeoIndex p) 
+    {
+      return DOW;
+//       return p == WORLD ? DOW : throw std::runtime_error("Illegal request for geometry data!");
+    }
+#else
     static int getGeo(GeoIndex p) 
     {
       if (WORLD == p) 
@@ -58,6 +65,7 @@ namespace AMDiS
       ERROR_EXIT("Illegal request for geometry data: part = %d!\n", p);
       return 0;
     }
+#endif
 
     /// Returns geometrical information about elements of the dimension dim.
     /// getGeo(VERTEX, 3) returns 4 because a Tetrahedron has 4 vertices.
@@ -85,7 +93,11 @@ namespace AMDiS
 
   private:
     /// Dimension of the simulated world
+#if FIXED_SIZE && defined(DOW)
+    constexpr static int dimOfWorld = DOW;
+#else
     static int dimOfWorld;
+#endif
 
     /// contains a pointer to a Line, a Triangle, and a Tetrahedron.
     /// This allows the access to information of the concrete elements via

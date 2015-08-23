@@ -13,7 +13,7 @@
 
 // if FIXED_SIZE == 1 use static arrays
 #ifndef FIXED_SIZE
-#define FIXED_SIZE 1
+#define FIXED_SIZE 0
 //  #define DOW 2
 //  #define DIM 2
 #endif

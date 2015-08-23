@@ -308,7 +308,7 @@ namespace AMDiS
 
 
   int ElInfo3d::worldToCoord(const WorldVector<double>& xy,
-				   DimVec<double>* lambda) const
+				   DimVec<double>& lambda) const
   {
     FUNCNAME("ElInfo::worldToCoord()");
 
@@ -317,8 +317,6 @@ namespace AMDiS
     double  x0, det, det0, det1, det2;
   
     static DimVec<double> vec(mesh->getDim());
-
-    TEST_EXIT_DBG(lambda)("lambda must not be NULL\n");
 
     int dim = mesh->getDim();
 
@@ -367,25 +365,25 @@ namespace AMDiS
       ERROR("det = %le; abort\n", det);
 
       for (int i = 0; i <= dim; i++)
-	(*lambda)[i] = 1.0 / dim;
+        lambda[i] = 1.0 / dim;
 
       return 0;
     }
 
-    (*lambda)[0] = det0 / det;
-    (*lambda)[1] = det1 / det;
-    (*lambda)[2] = det2 / det;
-    (*lambda)[3] = 1.0 - (*lambda)[0] - (*lambda)[1] - (*lambda)[2];
+    lambda[0] = det0 / det;
+    lambda[1] = det1 / det;
+    lambda[2] = det2 / det;
+    lambda[3] = 1.0 - lambda[0] - lambda[1] - lambda[2];
   
     int k = -1;
     double lmin = 0.0;
 
     for (int i = 0; i <= dim; i++) {
-      if ((*lambda)[i] < -1.E-5) {
-	if ((*lambda)[i] < lmin) {
-	  k = i;
-	  lmin = (*lambda)[i];
-	}
+      if (lambda[i] < -1.E-5) {
+        if (lambda[i] < lmin) {
+          k = i;
+          lmin = lambda[i];
+        }
       }
     }
 

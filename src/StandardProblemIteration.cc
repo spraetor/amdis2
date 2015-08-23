@@ -18,7 +18,7 @@ namespace AMDiS
   
   ProblemStatBase* StandardProblemIteration::getProblem(std::string name)
   { FUNCNAME_DBG("StandardProblemIteration::getProblem");
-    TEST_EXIT_DBG(name == problem.getName())("Problem name does not match!\n");
+    TEST_EXIT_DBG(name == problem->getName())("Problem name does not match!\n");
     return problem;
   }
 

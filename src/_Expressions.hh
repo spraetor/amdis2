@@ -12,7 +12,7 @@ namespace AMDiS
   transformDOF(Term term, DOFVector<T>* result)
   {
     typedef Value_t<Term> TOut;
-    STATIC_ASSERT( traits::is_convertible<TOut, T>::value );
+    STATIC_ASSERT( traits::IsConvertible<TOut, T>::value );
    
     GenericOperatorTerm<Term> ot(term);
     std::set<const FiniteElemSpace*> feSpaces = ot.getAuxFeSpaces();

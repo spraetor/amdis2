@@ -96,7 +96,7 @@ BoundaryElementTopDist::calcDistOnBoundaryElement(
 	  SP[1]=Vert[i][1]-h_dist*normalVec[1];
 	  
 	  //barycentric coordinates of the intersection point
-	  elInfo->worldToCoord(SP, &SP_Vec);
+	  elInfo->worldToCoord(SP, SP_Vec);
 	  
 	  //calculating of the distance		   
 	  //intersection point inside of the 2d-simplex?
@@ -181,7 +181,7 @@ BoundaryElementTopDist::calcDistOnBoundaryElement(
 	    }
 	  
 	  //barycentric coordinates of the intersection point
-	  elInfo->worldToCoord(SP, &SP_Vec);
+	  elInfo->worldToCoord(SP, SP_Vec);
 	  
 	  //intersection point inside of the 3d-simplex
 	  //distance calculated with the unit normal vector of the 

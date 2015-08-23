@@ -91,6 +91,7 @@ namespace AMDiS
     /// copy assignment operator
     self& operator=(self const& other)
     {
+      this->resize( other._size );
       std::copy(other.begin(), other.end(), _elements);
       return *this;
     }
@@ -137,9 +138,9 @@ namespace AMDiS
     }
     
     template <class T1, class T2>
-    void setMidpoint(T1, T2)
+    void setMidpoint(T1 const& t1, T2 const& t2)
     {
-      // TODO: nee to be implemented
+      this->operator=(0.5*(t1 + t2));
     }
   };
   

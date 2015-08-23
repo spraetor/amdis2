@@ -524,27 +524,29 @@ namespace AMDiS
 
     for (int i = 0; i < nComponents; i++) {
       TEST_EXIT(estimator[i] == NULL)("estimator already created\n");
-      string estName = 
-	name + "->estimator[" + std::to_string(i) + "]";
+      string estName = name + "->estimator[" + std::to_string(i) + "]";
 
       // === create estimator ===
       string estimatorType("0");
       Parameters::get(estName, estimatorType);
+      if (estimatorType == "0")
+        Parameters::get(estName + "->name", estimatorType);
+      
       EstimatorCreator *estimatorCreator = 
-	dynamic_cast<EstimatorCreator*>(CreatorMap<Estimator>::getCreator(estimatorType, estName));
+        dynamic_cast<EstimatorCreator*>(CreatorMap<Estimator>::getCreator(estimatorType, estName));
       if (estimatorCreator) {
-	estimatorCreator->setName(estName);
-	estimatorCreator->setRow(i);
-	estimatorCreator->setSolution(solution->getDOFVector(i));
-	estimator[i] = estimatorCreator->create();
+        estimatorCreator->setName(estName);
+        estimatorCreator->setRow(i);
+        estimatorCreator->setSolution(solution->getDOFVector(i));
+        estimator[i] = estimatorCreator->create();
       }
 
 
       if (estimator[i])
-	for (int j = 0; j < nComponents; j++)
-	  estimator[i]->addSystem((*systemMatrix)[i][j], 
-				  solution->getDOFVector(j), 
-				  rhs->getDOFVector(i));      // NOTE: hier eventuell (i) statt (j) ??? --> corrected
+        for (int j = 0; j < nComponents; j++)
+          estimator[i]->addSystem((*systemMatrix)[i][j], 
+                solution->getDOFVector(j), 
+                rhs->getDOFVector(i));      // NOTE: hier eventuell (i) statt (j) ??? --> corrected
     }
   }
 
@@ -554,16 +556,15 @@ namespace AMDiS
     int nMarkersCreated = 0;
 
     for (int i = 0; i < nComponents; i++) {
-      marker[i] = Marker::createMarker
-	(name + "->marker[" + std::to_string(i) + "]", i);
+      marker[i] = Marker::createMarker(name + "->marker[" + std::to_string(i) + "]", i);
 
       if (marker[i]) {
-	nMarkersCreated++;
+        nMarkersCreated++;
 
-	// If there is more than one marker, and all components are defined
-	// on the same mesh, the maximum marking has to be enabled.
- 	if (nMarkersCreated > 1 && nMeshes == 1)
- 	  marker[i]->setMaximumMarking(true);
+        // If there is more than one marker, and all components are defined
+        // on the same mesh, the maximum marking has to be enabled.
+        if (nMarkersCreated > 1 && nMeshes == 1)
+          marker[i]->setMaximumMarking(true);
       }
     }
   }
@@ -582,10 +583,10 @@ namespace AMDiS
       vector< DOFVector<double>* > solutionList(nComponents);
 
       for (int i = 0; i < nComponents; i++) {
-	TEST_EXIT(componentMeshes[0] == componentMeshes[i])
-	  ("All Meshes have to be equal to write a vector file.\n");
+        TEST_EXIT(componentMeshes[0] == componentMeshes[i])
+          ("All Meshes have to be equal to write a vector file.\n");
 
-	solutionList[i] = solution->getDOFVector(i);
+        solutionList[i] = solution->getDOFVector(i);
       }
 
       fileWriters.push_back(new FileWriter(numberedName,
@@ -600,9 +601,9 @@ namespace AMDiS
       Parameters::get(numberedName + "->filename", filename);
 
       if (filename != "")
-	fileWriters.push_back(new FileWriter(numberedName, 
-					     componentMeshes[i], 
-					     solution->getDOFVector(i)));      
+        fileWriters.push_back(new FileWriter(numberedName, 
+                    componentMeshes[i], 
+                    solution->getDOFVector(i)));      
     }
     
     // create a filewrite for groups of components to write vector-valued output
@@ -610,31 +611,31 @@ namespace AMDiS
     Parameters::get(name + "->output->num vectors", nVectors);
     if (nVectors > 0) {
       for (int j = 0; j < nVectors; j++) {
-	numberedName = name + "->output->vector[" + std::to_string(j) + "]";
-	
-	filename = "";
-	Parameters::get(numberedName + "->filename", filename);
-	std::string componentName = "";
-	Parameters::get(numberedName + "->name", componentName);
-	std::vector<std::string> names; 
-	if (componentName != "")
-	  names.push_back(componentName);
-	std::vector<int> comp;
-	Parameters::get(numberedName + "->components", comp);
-	
-	if (filename != "" && comp.size() > 0) {
-	  // Create own filewriters for each component of the problem
-	  std::vector<DOFVector<double>*> vectors;
-	  for (size_t i = 0; i < comp.size(); i++)
-	    vectors.push_back(solution->getDOFVector(comp[i]));
-	  
-	  fileWriters.push_back(new FileWriter(numberedName, 
-					      componentMeshes[comp[0]], 
-					      vectors,
-					      names
-					      ));      
-	  
-	}
+        numberedName = name + "->output->vector[" + std::to_string(j) + "]";
+        
+        filename = "";
+        Parameters::get(numberedName + "->filename", filename);
+        std::string componentName = "";
+        Parameters::get(numberedName + "->name", componentName);
+        std::vector<std::string> names; 
+        if (componentName != "")
+          names.push_back(componentName);
+        std::vector<int> comp;
+        Parameters::get(numberedName + "->components", comp);
+        
+        if (filename != "" && comp.size() > 0) {
+          // Create own filewriters for each component of the problem
+          std::vector<DOFVector<double>*> vectors;
+          for (size_t i = 0; i < comp.size(); i++)
+            vectors.push_back(solution->getDOFVector(comp[i]));
+          
+          fileWriters.push_back(new FileWriter(numberedName, 
+                      componentMeshes[comp[0]], 
+                      vectors,
+                      names
+                      ));      
+          
+        }
       }
     }
   }

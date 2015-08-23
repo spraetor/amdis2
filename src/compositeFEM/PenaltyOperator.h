@@ -28,12 +28,12 @@
 #include "ElementLevelSet.h"
 #include "Flag.h"
 #include "Operator.h"
-#include "SurfaceOperator.h"
 #include "ElementLevelSet.h"
 
 namespace AMDiS {
   class ElInfo;
   class FiniteElemSpace;
+  class SurfaceOperator;
 }
 
 namespace compositeFEM {
@@ -66,12 +66,7 @@ public:
   }
 
   /// Destructor.
-  ~PenaltyOperator()
-  {
-    if (surfaceOp)
-      delete surfaceOp;    
-    delete tempCoords;
-  }
+  ~PenaltyOperator();
 
   /** 
    * Calculates the element matrix for this ElInfo and adds it multiplied by

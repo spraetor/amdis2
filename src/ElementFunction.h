@@ -105,7 +105,7 @@ namespace AMDiS
     {
       const BasisFunction *basisFcts = vec->getFeSpace()->getBasisFcts();
       
-      elInfo->worldToCoord(x, &coords);
+      elInfo->worldToCoord(x, coords);
       return basisFcts->evalUh(coords, localCoeff) * factor;
     }
     

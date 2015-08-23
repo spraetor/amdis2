@@ -8,7 +8,7 @@
 #include "OperatorTerm.h"
 #include "DOFVector.h"
 
-#include "expressions/expr_traits.hpp"
+#include "expressions2/TermGenerator.hpp"
 
 namespace AMDiS 
 {  
@@ -79,8 +79,7 @@ namespace AMDiS
   class DirichletBC : public detail::DirichletBC
   {
     using Super = detail::DirichletBC;
-    using ToExpr = traits::to_expr<Expr>;
-    using ExprType = typename ToExpr::type;
+    using TermType = ToTerm_t<Expr>;
     
   public:
     /// Constructor.
@@ -91,8 +90,7 @@ namespace AMDiS
             		const FiniteElemSpace *colFeSpace = NULL,
             		bool apply = true)
       : Super(type, rowFeSpace, colFeSpace, apply),
-      	fct(ToExpr::get(fct_)),
-      	term(fct)
+      	fct(toTerm(std::forward<Expr_>(fct_)))
     {}
     
   
@@ -105,18 +103,17 @@ namespace AMDiS
     {
       const BasisFunction *basFcts = rowFeSpace->getBasisFcts();
       // initialize expression on ElInfo
-      fct.initElement(&term, elInfo, NULL, NULL, basFcts);
+      fct.initElement(elInfo, NULL, NULL, basFcts);
       for (int i = 0; i < nBasFcts; i++)
       	if (localBound[i] == boundaryType) {
-      	  typename ExprType::value_type value = fct(i);
+      	  Value_t<TermType> value = fct(i);
       	  vector->setDirichletDofValue(dofIndices[i], value);
       	  (*vector)[dofIndices[i]] = value;
       	}
     }
 			      
   protected:
-    ExprType fct;
-    GenericOperatorTerm<ExprType> term;
+    TermType fct;
   };
   
 } // end namespace AMDiS

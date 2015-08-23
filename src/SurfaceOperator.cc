@@ -5,9 +5,9 @@
 
 namespace AMDiS 
 {
-  SurfaceOperator::SurfaceOperator(Operator *operat, 
+  SurfaceOperator::SurfaceOperator(Operator const& operat, 
 				   VectorOfFixVecs<DimVec<double> > &coords) 
-    : Operator(*operat), 
+    : Operator(operat), 
       coords_(coords),
       quad2(NULL),
       quad1GrdPsi(NULL),

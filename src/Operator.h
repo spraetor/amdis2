@@ -16,7 +16,7 @@
 #include "SecondOrderTerm.h"
 
 #include <traits/category.hpp>
-#include <expressions/expr_traits.hpp>
+#include <expressions2/TermGenerator.hpp>
 
 namespace AMDiS 
 {
@@ -58,34 +58,30 @@ namespace AMDiS
 
     /// Adds a ZeroOrderTerm to the Operator: < c * u, v >
     template <class C>
-    void addZeroOrderTerm(C const& c)
+    void addZeroOrderTerm(C&& c)
     {
-      using Expr = traits::to_expr<C>;
-      addZOTImpl(Expr::get(c));
+      addZOTImpl(toTerm(std::forward<C>(c)));
     }
 
     /// Adds a FirstOrderTerm to the Operator: < 1 * b * u, v >
     template <class B>
-    void addFirstOrderTerm(B const& b, FirstOrderType type = GRD_PHI, int i = -1)
+    void addFirstOrderTerm(B&& b, FirstOrderType type = GRD_PHI, int i = -1)
     {
-      typedef typename traits::category<B>::value_type    ValueType;
-      typedef typename traits::category<ValueType>::tag   Tag;
-      using Expr = traits::to_expr<B>;
-      addFOTImpl(Tag(), Expr::get(b), type, i);
+      using ValueType = Value_t<traits::category<B>>;
+      using Tag = typename traits::category<ValueType>::tag;
+      addFOTImpl(Tag(), toTerm(std::forward<B>(b)), type, i);
     }
 
     /// Adds a SecondOrderTerm to the Operator
     template <class A, bool symmetric = false>
-    void addSecondOrderTerm(A const& a, int i = -1, int j = -1, 
+    void addSecondOrderTerm(A&& a, int i = -1, int j = -1, 
                             bool_<symmetric> s = bool_<symmetric>())
     {
-      typedef typename traits::category<A>::value_type    ValueType;
-      typedef typename traits::category<ValueType>::tag   Tag;
-      typedef if_then_else< std::is_same<Tag, tag::scalar>::value, 
-          bool_<true>, bool_<symmetric> > Sym;
-      
-      using Expr = traits::to_expr<A>;
-      addSOTImpl(Tag(), Expr::get(a), i, j, Sym::value);
+      using ValueType = Value_t<traits::category<A>>;
+      using Tag = typename traits::category<ValueType>::tag;
+      using Sym = if_then_else< std::is_same<Tag, tag::scalar>::value, 
+                                bool_<true>, bool_<symmetric> >;
+      addSOTImpl(Tag(), toTerm(std::forward<A>(a)), i, j, Sym::value);
     }
 
     /// Calculates the element matrix for this ElInfo and adds it multiplied by
@@ -285,19 +281,19 @@ namespace AMDiS
     
   protected:
     template <class C>
-    void addZOTImpl(C const& c);
+    void addZOTImpl(C&& c);
     
     template <class B>
-    void addFOTImpl(tag::scalar, B const& b, FirstOrderType type, int i);
+    void addFOTImpl(tag::scalar, B&& b, FirstOrderType type, int i);
     
     template <class B>
-    void addFOTImpl(tag::vector, B const& b, FirstOrderType type, int i);
+    void addFOTImpl(tag::vector, B&& b, FirstOrderType type, int i);
     
     template <class A>
-    void addSOTImpl(tag::scalar, A const& a, int i, int j, bool sym);
+    void addSOTImpl(tag::scalar, A&& a, int i, int j, bool sym);
     
     template <class A>
-    void addSOTImpl(tag::matrix, A const& a, int i, int j, bool sym);
+    void addSOTImpl(tag::matrix, A&& a, int i, int j, bool sym);
 
   protected:
     /// FiniteElemSpace for matrix rows and element vector

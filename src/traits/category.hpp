@@ -125,20 +125,17 @@ namespace AMDiS
     struct category< const T > : category< T > {};
 
     // -------------------------------------------------------------------------
-    template <class T, class S, class Enable = void>
-    struct is_convertible : std::is_convertible<T, S> {};
     
+    template <class T, class S, class Enable = void>
+    struct IsConvertible : std::is_convertible<T, S> {};
+     
     template <class T, class S>
-    struct is_convertible<T, S, typename enable_if< 
-				  and_< is_vector<T>, is_vector<S> >
-				>::type > 
-      : std::is_convertible<typename T::value_type, typename S::value_type> {};
+    struct IsConvertible<T, S, Requires_t<and_< is_vector<T>, is_vector<S> >> >
+      : std::is_convertible<Value_t<T>, Value_t<S>> {};
       
     template <class T, class S>
-    struct is_convertible<T, S, typename enable_if< 
-				  and_< is_matrix<T>, is_matrix<S> >
-				>::type > 
-      : std::is_convertible<typename T::value_type, typename S::value_type> {};
+    struct IsConvertible<T, S, Requires_t<and_< is_matrix<T>, is_matrix<S> >> >
+      : std::is_convertible<Value_t<T>, Value_t<S>> {};
     
   } // end namespace traits
 

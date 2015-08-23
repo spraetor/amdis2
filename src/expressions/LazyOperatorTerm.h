@@ -4,7 +4,7 @@
 
 #include "AMDiS_fwd.h"
 #include "Traits.h"
-#include <traits/concepts.hpp>
+#include <traits/basic.hpp>
 
 namespace AMDiS 
 {
@@ -71,7 +71,9 @@ namespace AMDiS
     using Self = LazyOperatorTerms;
     std::tuple<Terms...> terms;
     
-    template <class... Terms_, class = typename enable_if< concepts::Term<Terms_...> >::type>
+    template <class... Terms_, 
+      class = Requires_t< traits::IsCompatible<Types<Terms...>, Types<Terms_...>>> >
+    //class = typename enable_if< concepts::Term<Terms_...> >::type>
     constexpr LazyOperatorTerms(Terms_&&... terms_)
       : terms(std::forward<Terms_>(terms_)...) {}
     

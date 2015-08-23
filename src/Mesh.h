@@ -488,17 +488,17 @@ namespace AMDiS
     {
       switch (dim) {
       case 1:
-	return FILL_ANY_1D;
-	break;
+        return FILL_ANY_1D;
+        break;
       case 2:
-	return FILL_ANY_2D;
-	break;
+        return FILL_ANY_2D;
+        break;
       case 3:
-	return FILL_ANY_3D;
-	break;
+        return FILL_ANY_3D;
+        break;
       default:
-	ERROR_EXIT("invalid dim\n");
-	return FILL_ANY_1D;
+        ERROR_EXIT("invalid dim\n");
+        return FILL_ANY_1D;
       }
     }
 
@@ -526,7 +526,7 @@ namespace AMDiS
       FUNCNAME_DBG("Mesh::getPeriodicAssociations()");
 
       TEST_EXIT_DBG(periodicAssociations.count(b) == 1)
-	("There are no periodic assoications for boundary type %d!\n", b);
+        ("There are no periodic assoications for boundary type %d!\n", b);
 
       return (*(periodicAssociations[b]));
     }
@@ -664,9 +664,9 @@ namespace AMDiS
   protected:
     ///
     bool findElementAtPointRecursive(ElInfo *elinfo,
-				     const DimVec<double>& lambda,
-				     int outside,
-				     ElInfo *final_el_info);
+                                     const DimVec<double>& lambda,
+                                     int outside,
+                                     ElInfo *final_el_info);
 
 #ifdef HAVE_PARALLEL_DOMAIN_AMDIS
     /** \brief
@@ -688,8 +688,8 @@ namespace AMDiS
      *                                    otherwise.
      */
     void checkParallelMacroFile(std::string &macroFilename, 
-				std::string &periodicFilename,
-				int check);
+                                std::string &periodicFilename,
+                                int check);
 #endif
 
   protected:
@@ -854,8 +854,8 @@ namespace AMDiS
     friend class MacroInfo;
     friend class io::MacroReader;
     friend struct io::MacroWriter;
-    friend class MacroElement;
-    friend class Element;
+//     friend class MacroElement;
+//     friend class Element;
   };
 
 } // end namespace AMDiS

@@ -4,7 +4,6 @@
 
 namespace AMDiS 
 {
-
   /** \ingroup Common
    * \brief
    * The Flag class encapsulates flags which represents simple information.

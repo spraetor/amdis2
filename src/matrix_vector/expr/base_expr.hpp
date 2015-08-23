@@ -28,48 +28,25 @@ namespace AMDiS
     template <class M> struct category<BaseExpr<M> > : category<M> {}; 
     template <class M> struct category<VectorExpr<M> > : category<M> {};
     template <class M> struct category<MatrixExpr<M> > : category<M> {};
-    
-    // define element access for the expressions
-    template <class M> struct at<BaseExpr<M> > : at<M> {};
-    template <class M> struct at<VectorExpr<M> > : at<M> {};
-    template <class M> struct at<MatrixExpr<M> > : at<M> {};
-    
-    // define size of an expression
-    template <class M> struct size<BaseExpr<M> > : size<M> {};
-    template <class M> struct size<VectorExpr<M> > : size<M> {};
-    template <class M> struct size<MatrixExpr<M> > : size<M> {};
-    
-    // define number of rows of an expressions
-    template <class M> struct num_rows<BaseExpr<M> > : num_rows<M> {};
-    template <class M> struct num_rows<VectorExpr<M> > : num_rows<M> {};
-    template <class M> struct num_rows<MatrixExpr<M> > : num_rows<M> {};
-    
-    // define number of columns for an expression
-    template <class M> struct num_cols<BaseExpr<M> > : num_cols<M> {};
-    template <class M> struct num_cols<VectorExpr<M> > : num_cols<M> {};
-    template <class M> struct num_cols<MatrixExpr<M> > : num_cols<M> {};
     /// \endcond
   }
   
   
-  
   template <class M>
-  size_t inline num_cols(const VectorExpr<M>& t)
-  {
-      return num_cols(t.sub());
-  }
+  inline size_t num_cols(const VectorExpr<M>& t) { return num_cols(t.sub()); }
+  template <class M>
+  inline size_t num_cols(const MatrixExpr<M>& t) { return num_cols(t.sub()); }
   
   template <class T>
-  size_t inline num_rows(const VectorExpr<T>& t)
-  {
-      return num_rows(t.sub());
-  }
+  inline size_t num_rows(const VectorExpr<T>& t) { return num_rows(t.sub()); }
+  template <class T>
+  inline size_t num_rows(const MatrixExpr<T>& t) { return num_rows(t.sub()); }
   
   template <class T>
-  size_t inline size(const VectorExpr<T>& t)
-  {
-      return size(t.sub());
-  }
+  inline size_t size(const VectorExpr<T>& t) { return size(t.sub()); }
+  template <class T>
+  inline size_t size(const MatrixExpr<T>& t) { return size(t.sub()); }
+  
   
   // determine shape of expression
   template <class Sub, class Model, class Enable = void>
@@ -82,6 +59,8 @@ namespace AMDiS
 			 MatrixExpr<Model>,
 			 BaseExpr<Model> > >;
   };
-
+  
+  template <class Sub, class Model>
+  using ShapedExpr_t = typename ShapedExpr<Sub, Model>::type;
   
 } // end namespace AMDiS

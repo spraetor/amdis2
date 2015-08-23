@@ -133,7 +133,7 @@ namespace AMDiS
   
 
   int ElInfo1d::worldToCoord(const WorldVector<double>& x,
-				   DimVec<double>* lambda) const
+				   DimVec<double>& lambda) const
   {
     FUNCNAME("ElInfo1d::worldToCoord()");
 
@@ -144,7 +144,6 @@ namespace AMDiS
 
     static DimVec<double> vec(dim);
 
-    TEST_EXIT_DBG(lambda)("lambda must not be NULL\n");
     TEST_EXIT_DBG(dim == 1)("dim!=1\n");
     TEST_EXIT_DBG(dimOfWorld == dim)("not yet for DIM != DIM_OF_WORLD\n");
 
@@ -153,17 +152,17 @@ namespace AMDiS
       return 0;
     }
 
-    (*lambda)[1] = (x[0] - a) / length;
-    (*lambda)[0] = 1.0 - (*lambda)[1];
+    lambda[1] = (x[0] - a) / length;
+    lambda[0] = 1.0 - lambda[1];
 
     int k = -1;
     lmin = 0.0;
     for (int i = 0; i <= dim; i++) {
-      if ((*lambda)[i] < -1.E-5) {
-	if ((*lambda)[i] < lmin) {
-	  k = i;
-	  lmin = (*lambda)[i];
-	}
+      if (lambda[i] < -1.E-5) {
+        if (lambda[i] < lmin) {
+          k = i;
+          lmin = lambda[i];
+        }
       }
     }
 

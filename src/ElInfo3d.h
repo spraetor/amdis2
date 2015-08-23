@@ -53,7 +53,7 @@ namespace AMDiS
     virtual void fillMacroInfo(const MacroElement *) override;
 
     /// 3-dimensional realisation of ElInfo's worldToCoord method.
-    virtual int worldToCoord(const WorldVector<double>& w, DimVec<double>* l) const override;
+    virtual int worldToCoord(const WorldVector<double>& w, DimVec<double>& l) const override;
 
     /// 3-dimensional realisation of ElInfo's calcGrdLambda method.
     virtual double calcGrdLambda(DimVec<WorldVector<double> >& grd_lam) override;

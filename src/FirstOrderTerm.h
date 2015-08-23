@@ -69,12 +69,12 @@ namespace AMDiS
   
   
   /// FirstOrder OperatorTerm for expressions: < 1 * expr() * grad(u), v >
-  template <class Expr>
-  struct GenericFirstOrderTerm_1 : public GenericOperatorTerm<Expr, 1>
+  template <class Term>
+  struct GenericFirstOrderTerm_1 : public GenericOperatorTerm<Term, 1>
   {
-    template <class Expr_>
-    GenericFirstOrderTerm_1(Expr_&& expr_)
-      : GenericOperatorTerm<Expr, 1>(std::forward<Expr_>(expr_)) 
+    template <class Term_>
+    GenericFirstOrderTerm_1(Term_&& term_)
+      : GenericOperatorTerm<Term, 1>(std::forward<Term_>(term_)) 
     { }
 
   private:
@@ -85,19 +85,19 @@ namespace AMDiS
 
 
   /// FirstOrder OperatorTerm for expressions: < e_i * expr() * grad(u), v >
-  template <int I, class Expr>
-  struct GenericFirstOrderTerm_i : public GenericOperatorTerm<Expr, 1>
+  template <int I, class Term>
+  struct GenericFirstOrderTerm_i : public GenericOperatorTerm<Term, 1>
   {
-    template <class Expr_>
-    GenericFirstOrderTerm_i(Expr_&& expr_)
-      : GenericOperatorTerm<Expr, 1>(std::forward<Expr_>(expr_)) 
+    template <class Term_>
+    GenericFirstOrderTerm_i(Term_&& term_)
+      : GenericOperatorTerm<Term, 1>(std::forward<Term_>(term_)) 
     {
       this->FirstOrderTerm::bOne = I;
     }
     
-    template <class Expr_>
-    GenericFirstOrderTerm_i(Expr_&& expr_, int I0)
-      : GenericOperatorTerm<Expr, 1>(std::forward<Expr_>(expr_))  
+    template <class Term_>
+    GenericFirstOrderTerm_i(Term_&& term_, int I0)
+      : GenericOperatorTerm<Term, 1>(std::forward<Term_>(term_))  
     {
       this->FirstOrderTerm::bOne = I0;
       TEST_EXIT_DBG( I < 0 && I0 >= 0 )
@@ -111,13 +111,13 @@ namespace AMDiS
   };
 
 
-  /// FirstOrder OperatorTerm for expressions: < Expr() * grad(u), v >
-  template <class Expr>
-  struct GenericFirstOrderTerm_b : public GenericOperatorTerm<Expr, 1>
+  /// FirstOrder OperatorTerm for expressions: < Term() * grad(u), v >
+  template <class Term>
+  struct GenericFirstOrderTerm_b : public GenericOperatorTerm<Term, 1>
   {
-    template <class Expr_>
-    GenericFirstOrderTerm_b(Expr_&& expr_)
-      : GenericOperatorTerm<Expr, 1>(std::forward<Expr_>(expr_))
+    template <class Term_>
+    GenericFirstOrderTerm_b(Term_&& term_)
+      : GenericOperatorTerm<Term, 1>(std::forward<Term_>(term_))
     { }
 
   private:
@@ -130,8 +130,8 @@ namespace AMDiS
   /* ----- IMPLEMENTATION DETAILS ------------------------------------------- */
   
   
-  template <class Expr>
-  void GenericFirstOrderTerm_1<Expr>::getLbImpl(
+  template <class Term>
+  void GenericFirstOrderTerm_1<Term>::getLbImpl(
       	  const ElInfo *elInfo,
       	  std::vector<DenseVector<double> >& Lb) const
   {
@@ -143,8 +143,8 @@ namespace AMDiS
   }
   
 
-  template <int I, class Expr>
-  void GenericFirstOrderTerm_i<I, Expr>::getLbImpl(
+  template <int I, class Term>
+  void GenericFirstOrderTerm_i<I, Term>::getLbImpl(
       	  const ElInfo *elInfo,
       	  std::vector<DenseVector<double> >& Lb) const
   {
@@ -156,8 +156,8 @@ namespace AMDiS
   }
     
     
-  template <class Expr>
-  void GenericFirstOrderTerm_b<Expr>::getLbImpl(
+  template <class Term>
+  void GenericFirstOrderTerm_b<Term>::getLbImpl(
       	  const ElInfo *elInfo,
       	  std::vector<DenseVector<double> >& Lb) const
   {

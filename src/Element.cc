@@ -78,19 +78,19 @@ namespace AMDiS
 
     if (setDofs) {
       for (int i = 0; i < mesh->getGeo(VERTEX); i++)
-	dof[i] = mesh->getDof(VERTEX);
+        dof[i] = mesh->getDof(VERTEX);
 
       if (mesh->getNumberOfDofs(EDGE)) 
-	for (int i = 0; i < mesh->getGeo(EDGE); i++)
-	  dof[mesh->getNode(EDGE) + i] = mesh->getDof(EDGE);
+        for (int i = 0; i < mesh->getGeo(EDGE); i++)
+          dof[mesh->getNode(EDGE) + i] = mesh->getDof(EDGE);
 
       if (mesh->getDim() == 3 && mesh->getNumberOfDofs(FACE)) 
-	for (int i = 0; i < mesh->getGeo(FACE); i++)
-	  dof[mesh->getNode(FACE) + i] = mesh->getDof(FACE);
+        for (int i = 0; i < mesh->getGeo(FACE); i++)
+          dof[mesh->getNode(FACE) + i] = mesh->getDof(FACE);
 
       if (mesh->getNumberOfDofs(CENTER)) 
-	for (int i = 0; i < mesh->getGeo(CENTER); i++)
-	  dof[mesh->getNode(CENTER) + i] = mesh->getDof(CENTER);
+        for (int i = 0; i < mesh->getGeo(CENTER); i++)
+          dof[mesh->getNode(CENTER) + i] = mesh->getDof(CENTER);
     }
   }
 
@@ -99,13 +99,13 @@ namespace AMDiS
   {
     if (elementData) {
       if (elementData->isOfType(typeID)) {
-	ElementData *tmp = elementData;
-	elementData = elementData->getDecorated();
-	delete tmp;
-	tmp = NULL;
-	return true;
-      } else {
-	return elementData->deleteDecorated(typeID);
+        ElementData *tmp = elementData;
+        elementData = elementData->getDecorated();
+        delete tmp;
+        tmp = NULL;
+        return true;
+            } else {
+        return elementData->deleteDecorated(typeID);
       }
     }
     return false;
@@ -122,19 +122,19 @@ namespace AMDiS
       int ndof = 0;
      
       for (int i = 0; i < mesh->getNumberOfDOFAdmin(); i++)
-	ndof += mesh->getDofAdmin(i).getNumberOfDofs(position);
+        ndof += mesh->getDofAdmin(i).getNumberOfDofs(position);
 
       if (ndof > 0) {
-	for (int i = 0; i < mesh->getGeo(position); i++) {
-	  if (dof[j]) {
-	    if (deletedDOFs.count(dof[j]) == 0) {
-	      deletedDOFs[dof[j]] = true;
-// 	      delete [] dof[j];
-	      mesh->freeDof(dof[j], position);
-	    }
-	  }  
-	  j++;
-	}
+        for (int i = 0; i < mesh->getGeo(position); i++) {
+          if (dof[j]) {
+            if (deletedDOFs.count(dof[j]) == 0) {
+              deletedDOFs[dof[j]] = true;
+      // 	      delete [] dof[j];
+              mesh->freeDof(dof[j], position);
+            }
+          }  
+          j++;
+        }
       }
     }
 
@@ -147,7 +147,7 @@ namespace AMDiS
   }
 
 
-  Element* Element::cloneWithDOFs()
+  Element* Element::cloneWithDOFs(std::map<std::pair<DegreeOfFreedom, int>, DegreeOfFreedom*>& serializedDOFs)
   {
     Element *el;
     
@@ -180,36 +180,36 @@ namespace AMDiS
       int ndof = 0;
 
       for (int i = 0; i < mesh->getNumberOfDOFAdmin(); i++)
-	ndof += mesh->getDofAdmin(i).getNumberOfDofs(position);
+        ndof += mesh->getDofAdmin(i).getNumberOfDofs(position);
 
       if (ndof > 0) {
-	for (int i = 0; i < mesh->getGeo(position); i++) {
-	  if (dof[j] != NULL) {
-	    std::pair<DegreeOfFreedom, int> idx = std::make_pair(dof[j][0], pos);
+        for (int i = 0; i < mesh->getGeo(position); i++) {
+          if (dof[j] != NULL) {
+            std::pair<DegreeOfFreedom, int> idx = std::make_pair(dof[j][0], pos);
 
-	    if (Mesh::serializedDOFs[idx] == NULL) {
-	      el->dof[j] = new DegreeOfFreedom[ndof];
-	      for (int k = 0; k < ndof; k++)
-		el->dof[j][k] = dof[j][k];
+            if (serializedDOFs[idx] == NULL) {
+              el->dof[j] = new DegreeOfFreedom[ndof];
+              for (int k = 0; k < ndof; k++)
+                el->dof[j][k] = dof[j][k];
 
-	      Mesh::serializedDOFs[idx] = el->dof[j];
-	    } else {
-	      el->dof[j] = Mesh::serializedDOFs[idx];
-	    }
-	  } else {
-	    el->dof[j] = NULL;
-	  }
-	  j++;
-	}
+              serializedDOFs[idx] = el->dof[j];
+            } else {
+              el->dof[j] = serializedDOFs[idx];
+            }
+          } else {
+            el->dof[j] = NULL;
+          }
+          j++;
+        }
       }
     }
     
     /* =========== And clone the children ============= */
 
     if (child[0]) 
-      el->child[0] = child[0]->cloneWithDOFs();
+      el->child[0] = child[0]->cloneWithDOFs(serializedDOFs);
     if (child[1])
-      el->child[1] = child[1]->cloneWithDOFs();
+      el->child[1] = child[1]->cloneWithDOFs(serializedDOFs);
 
     return el;
   }
@@ -221,7 +221,7 @@ namespace AMDiS
   /*  should be used only at the end of dof_compress()!!!!!                   */
   /****************************************************************************/
 
-  void Element::newDofFct1(const DOFAdmin* admin, std::vector<DegreeOfFreedom>& newDofIndex)
+  void Element::newDofFct1(MeshAccessor, const DOFAdmin* admin, std::vector<DegreeOfFreedom>& newDofIndex)
   {
     int n0, nd, nd0;
 
@@ -230,26 +230,26 @@ namespace AMDiS
       nd0 = admin->getNumberOfPreDofs(VERTEX);
       n0 = admin->getMesh()->getNode(VERTEX);
       for (int i = 0; i < vertices; i++)
-	changeDofs1(admin, newDofIndex, n0, nd0, nd, i);
+        changeDofs1(admin, newDofIndex, n0, nd0, nd, i);
     }
 
     if (mesh->getDim() > 1) {
       if ((nd = admin->getNumberOfDofs(EDGE)))  {
-	int edges = mesh->getGeo(EDGE); 
-	nd0 = admin->getNumberOfPreDofs(EDGE);
-	n0 = admin->getMesh()->getNode(EDGE);
-	for (int i = 0; i < edges; i++)
-	  changeDofs1(admin, newDofIndex, n0, nd0, nd, i);
+        int edges = mesh->getGeo(EDGE); 
+        nd0 = admin->getNumberOfPreDofs(EDGE);
+        n0 = admin->getMesh()->getNode(EDGE);
+        for (int i = 0; i < edges; i++)
+          changeDofs1(admin, newDofIndex, n0, nd0, nd, i);
       }
     }
 
     if (mesh->getDim() == 3) {
       if ((nd = admin->getNumberOfDofs(FACE)))  {
-	int faces = mesh->getGeo(FACE);
-	nd0 = admin->getNumberOfPreDofs(FACE);
-	n0 = admin->getMesh()->getNode(FACE);
-	for (int i = 0; i < faces; i++)
-	  changeDofs1(admin, newDofIndex, n0, nd0, nd, i);
+        int faces = mesh->getGeo(FACE);
+        nd0 = admin->getNumberOfPreDofs(FACE);
+        n0 = admin->getMesh()->getNode(FACE);
+        for (int i = 0; i < faces; i++)
+          changeDofs1(admin, newDofIndex, n0, nd0, nd, i);
       }
     }
 
@@ -261,7 +261,7 @@ namespace AMDiS
   }
 
 
-  void Element::newDofFct2(const DOFAdmin* admin)
+  void Element::newDofFct2(MeshAccessor, const DOFAdmin* admin)
   {
     int n0, nd0;
 
@@ -271,28 +271,28 @@ namespace AMDiS
       nd0 = admin->getNumberOfPreDofs(VERTEX);
       n0 = admin->getMesh()->getNode(VERTEX);
       for (int i = 0; i < vertices; i++)
-	changeDofs2(n0, nd0, nd, i);
+        changeDofs2(n0, nd0, nd, i);
     }
 
     if (mesh->getDim() > 1) {
       nd = admin->getNumberOfDofs(EDGE);
       if (nd) {
-	int edges = mesh->getGeo(EDGE); 
-	nd0 = admin->getNumberOfPreDofs(EDGE);
-	n0 = admin->getMesh()->getNode(EDGE);
-	for (int i = 0; i < edges; i++)
-	  changeDofs2(n0, nd0, nd, i);
+        int edges = mesh->getGeo(EDGE); 
+        nd0 = admin->getNumberOfPreDofs(EDGE);
+        n0 = admin->getMesh()->getNode(EDGE);
+        for (int i = 0; i < edges; i++)
+          changeDofs2(n0, nd0, nd, i);
       }
     }
 
     if (mesh->getDim() == 3) {
       nd = admin->getNumberOfDofs(FACE);
       if (nd) {
-	int faces = mesh->getGeo(FACE);
-	nd0 = admin->getNumberOfPreDofs(FACE);
-	n0 = admin->getMesh()->getNode(FACE);
-	for (int i = 0; i < faces; i++)
-	  changeDofs2(n0, nd0, nd, i);
+        int faces = mesh->getGeo(FACE);
+        nd0 = admin->getNumberOfPreDofs(FACE);
+        n0 = admin->getMesh()->getNode(FACE);
+        for (int i = 0; i < faces; i++)
+          changeDofs2(n0, nd0, nd, i);
       }
     }
 
@@ -313,7 +313,7 @@ namespace AMDiS
     for (int j = 0; j < nd; j++) {
       DegreeOfFreedom k = ldof[j];
       if (k >= 0)
-	ldof[j] = -newDofIndex[k] - 1;
+        ldof[j] = -newDofIndex[k] - 1;
     }
   }
   
@@ -324,7 +324,7 @@ namespace AMDiS
     for (int j = 0; j < nd; j++) {
       DegreeOfFreedom k = ldof[j];
       if (k < 0)
-	ldof[j] = -k - 1;      
+        ldof[j] = -k - 1;      
     }
   }
 
@@ -345,15 +345,15 @@ namespace AMDiS
 
     for (int i = 0; i < vertices; i++) {
       if (nv < i - 1)  
-	return(-1);
+        return(-1);
 
       for (int j = 0; j < dim; j++) {
-	if (dof[i] == pdof[j]) {
-	  // i is a common vertex 
-	  ov += i;
-	  nv++;
-	  break;
-	}
+        if (dof[i] == pdof[j]) {
+          // i is a common vertex 
+          ov += i;
+          nv++;
+          break;
+        }
       }
 
     }
@@ -403,17 +403,17 @@ namespace AMDiS
       nextTraverseElements.clear();
 
       for (unsigned int i = 0; i < traverseElements.size(); i++) {
-	graphNodes.push_back(traverseElements[i]->getIndex());
+        graphNodes.push_back(traverseElements[i]->getIndex());
 
-	if (!traverseElements[i]->isLeaf() && 
-	    (maxLevels == -1 || nLevels + 1 < maxLevels)) {
-	  graphEdges.push_back(std::make_pair(traverseElements[i]->getIndex(),
-					      traverseElements[i]->getChild(0)->getIndex()));
-	  graphEdges.push_back(std::make_pair(traverseElements[i]->getIndex(),
-					      traverseElements[i]->getChild(1)->getIndex()));
-	  nextTraverseElements.push_back(traverseElements[i]->getChild(0));
-	  nextTraverseElements.push_back(traverseElements[i]->getChild(1));
-	}
+        if (!traverseElements[i]->isLeaf() && 
+            (maxLevels == -1 || nLevels + 1 < maxLevels)) {
+          graphEdges.push_back(std::make_pair(traverseElements[i]->getIndex(),
+                      traverseElements[i]->getChild(0)->getIndex()));
+          graphEdges.push_back(std::make_pair(traverseElements[i]->getIndex(),
+                      traverseElements[i]->getChild(1)->getIndex()));
+          nextTraverseElements.push_back(traverseElements[i]->getChild(0));
+          nextTraverseElements.push_back(traverseElements[i]->getChild(1));
+        }
       }
 
       traverseElements = nextTraverseElements;
@@ -441,10 +441,10 @@ namespace AMDiS
 
 
   void Element::getAllDofs(const FiniteElemSpace* feSpace, 
-			   BoundaryObject bound, 
-			   DofContainer& dofs,
-			   bool baseDofPtr,
-			   std::vector<GeoIndex>* dofGeoIndex)
+                           BoundaryObject bound, 
+                           DofContainer& dofs,
+                           bool baseDofPtr,
+                           std::vector<GeoIndex>* dofGeoIndex)
   {
     FUNCNAME_DBG("Element::getAllDofs()");
 
@@ -455,7 +455,7 @@ namespace AMDiS
       // vertex DOFs.
       dofGeoIndex->resize(dofs.size());
       for (unsigned int i = 0; i < dofs.size(); i++)
-	(*dofGeoIndex)[i] = VERTEX;
+        (*dofGeoIndex)[i] = VERTEX;
     }
 
     if (feSpace->getBasisFcts()->getDegree() > 1)
@@ -463,7 +463,7 @@ namespace AMDiS
 
     if (dofGeoIndex) {
       TEST_EXIT_DBG(dofs.size() == dofGeoIndex->size())
-	("Arrays do not fit together: %d %d\n", dofs.size(), dofGeoIndex->size());
+        ("Arrays do not fit together: %d %d\n", dofs.size(), dofGeoIndex->size());
     }
   }
 

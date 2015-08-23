@@ -24,7 +24,7 @@ namespace AMDiS
   {
   public:
     /// Creates a SurfaceOperator conforming to operat for the given \ref coords.
-    SurfaceOperator(Operator *operat, 
+    SurfaceOperator(Operator const& operat, 
 		                VectorOfFixVecs<DimVec<double> > &coords);
 
     /// Adapt surface quadratures to \ref coords.

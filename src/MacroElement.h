@@ -115,10 +115,10 @@ namespace AMDiS
     void setElement(Element* el) 
     {
       if (!element) {
-	element = el; 
+        element = el; 
       } else {
-	if (element != el) 
-	  ERROR("Trying to change element in MacroElement\n");   
+        if (element != el) 
+          ERROR("Trying to change element in MacroElement\n");   
       }
     }
 
@@ -200,7 +200,7 @@ namespace AMDiS
 
     friend class MacroInfo;
     friend class io::MacroReader;
-    friend class ElInfo;
+//     friend class ElInfo;
     friend class ElInfo1d;
     friend class ElInfo2d;
     friend class ElInfo3d;
