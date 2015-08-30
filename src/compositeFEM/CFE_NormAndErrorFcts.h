@@ -5,7 +5,7 @@
  * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
  * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
  *
- * Authors: 
+ * Authors:
  * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
  *
  * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
@@ -15,7 +15,7 @@
  * This file is part of AMDiS
  *
  * See also license.opensource.txt in the distribution.
- * 
+ *
  ******************************************************************************/
 
 
@@ -35,32 +35,33 @@
 #include "SubPolytope.h"
 
 
-namespace compositeFEM {
-  
+namespace compositeFEM
+{
+
   using namespace AMDiS;
-  
+
   class ElementNorm
   {
   public:
     /// Constructor.
-    ElementNorm(Quadrature *q_)
+    ElementNorm(Quadrature* q_)
       : q(q_),
-	nQPts(0)
+        nQPts(0)
     {
       if (q)
-	nQPts = q->getNumPoints();
+        nQPts = q->getNumPoints();
     }
 
     /// Destructor.
     virtual ~ElementNorm() {}
 
     /// Calculates element norm on elInfo.
-    virtual double calcElNorm(ElInfo *elInfo, 
-			      const double &det, 
-			      const double &fac = 1.0) = 0;
+    virtual double calcElNorm(ElInfo* elInfo,
+                              const double& det,
+                              const double& fac = 1.0) = 0;
 
     /// Sets quadrature to q_.
-    inline void setQuadrature(Quadrature *q_) 
+    inline void setQuadrature(Quadrature* q_)
     {
       q = q_;
       nQPts = q->getNumPoints();
@@ -68,7 +69,7 @@ namespace compositeFEM {
 
   protected:
     /// Quadrature formula.
-    Quadrature *q;
+    Quadrature* q;
 
     /// Number of quadrature points.
     int nQPts;
@@ -78,62 +79,62 @@ namespace compositeFEM {
   {
   public:
     /// Constructor.
-    ElementL1Norm_Analyt(Quadrature *q_, 
-			 AbstractFunction<double, WorldVector<double> > *f_)
+    ElementL1Norm_Analyt(Quadrature* q_,
+                         AbstractFunction<double, WorldVector<double>>* f_)
       : ElementNorm(q_),
-	f(f_)
+        f(f_)
     {}
 
     /// Calculates element norm on elInfo.
-    double calcElNorm(ElInfo *elInfo, 
-		      const double &det,
-		      const double &fac = 1.0);
+    double calcElNorm(ElInfo* elInfo,
+                      const double& det,
+                      const double& fac = 1.0);
 
   protected:
     /// Abstract function for which norm is calculated.
-    AbstractFunction<double, WorldVector<double> > *f;
+    AbstractFunction<double, WorldVector<double>>* f;
   };
 
   class ElementL2Norm_Analyt : public ElementNorm
   {
   public:
     /// Constructor.
-    ElementL2Norm_Analyt(Quadrature *q_, 
-			 AbstractFunction<double, WorldVector<double> > *f_)
+    ElementL2Norm_Analyt(Quadrature* q_,
+                         AbstractFunction<double, WorldVector<double>>* f_)
       : ElementNorm(q_),
-	f(f_)
+        f(f_)
     {}
 
     /// Calculates element norm on elInfo.
-    double calcElNorm(ElInfo *elInfo, 
-		      const double &det,
-		      const double &fac = 1.0);
+    double calcElNorm(ElInfo* elInfo,
+                      const double& det,
+                      const double& fac = 1.0);
 
   protected:
     /// Abstract function for which norm is calculated.
-    AbstractFunction<double, WorldVector<double> > *f;
+    AbstractFunction<double, WorldVector<double>>* f;
   };
 
   class ElementH1Norm_Analyt : public ElementNorm
   {
   public:
     /// Constructor.
-    ElementH1Norm_Analyt(Quadrature *q_, 
-			 AbstractFunction<WorldVector<double>, WorldVector<double> > *grd_,
-			 int dim_)
+    ElementH1Norm_Analyt(Quadrature* q_,
+                         AbstractFunction<WorldVector<double>, WorldVector<double>>* grd_,
+                         int dim_)
       : ElementNorm(q_),
-	grd(grd_),
-	dim(dim_)
+        grd(grd_),
+        dim(dim_)
     {}
 
     /// Calculates element norm on elInfo.
-    double calcElNorm(ElInfo *elInfo, 
-		      const double &det,
-		      const double &fac = 1.0);
+    double calcElNorm(ElInfo* elInfo,
+                      const double& det,
+                      const double& fac = 1.0);
 
   protected:
     /// Abstract function for which norm is calculated.
-    AbstractFunction<WorldVector<double>, WorldVector<double> > *grd; 
+    AbstractFunction<WorldVector<double>, WorldVector<double>>* grd;
 
     /// Mesh dimension.
     int dim;
@@ -143,58 +144,58 @@ namespace compositeFEM {
   {
   public:
     /// Constructor.
-    ElementL1Norm_DOF(Quadrature *q_, DOFVector<double> *dofVec_)
+    ElementL1Norm_DOF(Quadrature* q_, DOFVector<double>* dofVec_)
       : ElementNorm(q_),
-	dofVec(dofVec_)
+        dofVec(dofVec_)
     {}
 
     /// Calculates element norm on elInfo.
-    double calcElNorm(ElInfo *elInfo, 
-		      const double &det,
-		      const double &fac = 1.0);
+    double calcElNorm(ElInfo* elInfo,
+                      const double& det,
+                      const double& fac = 1.0);
 
   protected:
     /// DOF vector for which norm is calculated.
-    DOFVector<double> *dofVec;
+    DOFVector<double>* dofVec;
   };
 
   class ElementL2Norm_DOF : public ElementNorm
   {
   public:
     /// Constructor.
-    ElementL2Norm_DOF(Quadrature *q_, DOFVector<double> *dofVec_)
+    ElementL2Norm_DOF(Quadrature* q_, DOFVector<double>* dofVec_)
       : ElementNorm(q_),
-	dofVec(dofVec_)
+        dofVec(dofVec_)
     {}
 
     /// Calculates element norm on elInfo.
-    double calcElNorm(ElInfo *elInfo, 
-		      const double &det,
-		      const double &fac = 1.0);
+    double calcElNorm(ElInfo* elInfo,
+                      const double& det,
+                      const double& fac = 1.0);
 
   protected:
     /// DOF vector for which norm is calculated.
-    DOFVector<double> *dofVec;
+    DOFVector<double>* dofVec;
   };
 
   class ElementH1Norm_DOF : public ElementNorm
   {
   public:
     /// Constructor.
-    ElementH1Norm_DOF(Quadrature *q_, DOFVector<double> *dofVec_, int dim_)
+    ElementH1Norm_DOF(Quadrature* q_, DOFVector<double>* dofVec_, int dim_)
       : ElementNorm(q_),
-	dofVec(dofVec_),
-	dim(dim_)
+        dofVec(dofVec_),
+        dim(dim_)
     {}
 
     /// Calculates element norm on elInfo.
-    double calcElNorm(ElInfo *elInfo, 
-		      const double &det,
-		      const double &fac = 1.0);
+    double calcElNorm(ElInfo* elInfo,
+                      const double& det,
+                      const double& fac = 1.0);
 
   protected:
     /// DOF vector for which norm is calculated.
-    DOFVector<double> *dofVec;
+    DOFVector<double>* dofVec;
 
     /// Mesh dimension.
     int dim;
@@ -204,34 +205,34 @@ namespace compositeFEM {
   {
   public:
     /// Constructor.
-    ElementL2Err(Quadrature *q_, 
-		 AbstractFunction<double, WorldVector<double> > *u_,
-		 DOFVector<double> *uh_,
-		 int relErr_)
+    ElementL2Err(Quadrature* q_,
+                 AbstractFunction<double, WorldVector<double>>* u_,
+                 DOFVector<double>* uh_,
+                 int relErr_)
       : ElementNorm(q_),
-	u(u_),
-	uh(uh_),
-	relErr(relErr_),
-	nrmU(0.0)
+        u(u_),
+        uh(uh_),
+        relErr(relErr_),
+        nrmU(0.0)
     {}
 
     /// Calculates element error on elInfo.
-    double calcElNorm(ElInfo *elInfo, 
-		      const double &det,
-		      const double &fac = 1.0);
+    double calcElNorm(ElInfo* elInfo,
+                      const double& det,
+                      const double& fac = 1.0);
 
     /// Get norm of u.
-    inline double getNormU() const 
+    inline double getNormU() const
     {
       return nrmU;
     }
 
   protected:
     /// Abstract function for which error is calculated.
-    AbstractFunction<double, WorldVector<double> > *u;
+    AbstractFunction<double, WorldVector<double>>* u;
 
     /// DOF vector for which error is calculated.
-    DOFVector<double> *uh;
+    DOFVector<double>* uh;
 
     /// Indicates whether relative (1) or absolute error (0) is calculated.
     int relErr;
@@ -244,36 +245,36 @@ namespace compositeFEM {
   {
   public:
     /// Constructor.
-    ElementH1Err(Quadrature *q_, 
-		 AbstractFunction<WorldVector<double>, WorldVector<double> > *grdu_,
-		 DOFVector<double> *uh_,
-		 int relErr_,
-		 int dim_)
+    ElementH1Err(Quadrature* q_,
+                 AbstractFunction<WorldVector<double>, WorldVector<double>>* grdu_,
+                 DOFVector<double>* uh_,
+                 int relErr_,
+                 int dim_)
       : ElementNorm(q_),
-	grdu(grdu_),
-	uh(uh_),
-	relErr(relErr_),
-	nrmGrdU(0.0),
-	dim(dim_)
+        grdu(grdu_),
+        uh(uh_),
+        relErr(relErr_),
+        nrmGrdU(0.0),
+        dim(dim_)
     {}
 
     /// Calculates element error on elInfo.
-    double calcElNorm(ElInfo *elInfo, 
-		      const double &det,
-		      const double &fac = 1.0);
+    double calcElNorm(ElInfo* elInfo,
+                      const double& det,
+                      const double& fac = 1.0);
 
     /// Get norm of grdu.
-    inline double getNormGrdU() const 
+    inline double getNormGrdU() const
     {
       return nrmGrdU;
     }
 
   protected:
     /// Abstract function for which norm is calculated.
-    AbstractFunction<WorldVector<double>, WorldVector<double> > *grdu; 
+    AbstractFunction<WorldVector<double>, WorldVector<double>>* grdu;
 
     /// DOF vector for which error is calculated.
-    DOFVector<double> *uh;
+    DOFVector<double>* uh;
 
     /// Indicates whether relative (1) or absolute error (0) is calculated.
     int relErr;
@@ -306,56 +307,56 @@ namespace compositeFEM {
     //       0 : all elements cut by the zero level set
     //       1 : complete mesh
     // ========================================================================
-    static double L1Norm_Analyt(AbstractFunction<double, WorldVector<double> > *f,
-				ElementLevelSet *elLS,
-				int domainFlag,
-				int deg = 1,
-				Quadrature* q = NULL);
-    static double L2Norm_Analyt(AbstractFunction<double, WorldVector<double> > *f,
-				ElementLevelSet *elLS,
-				int domainFlag,
-				int deg = 2,
-				Quadrature* q = NULL);
-    static double L2NormSquare_Analyt(AbstractFunction<double, WorldVector<double> > *f,
-				      ElementLevelSet *elLS,
-				      int domainFlag,
-				      int deg = 2,
-				      Quadrature* q = NULL);
-    static double H1Norm_Analyt(AbstractFunction<WorldVector<double>, WorldVector<double> > *grd,
-				ElementLevelSet *elLS,
-				int domainFlag,
-				int deg = 0,
-				Quadrature* q = NULL);
-    static double H1NormSquare_Analyt(AbstractFunction<WorldVector<double>, WorldVector<double> > *grd,
-				      ElementLevelSet *elLS,
-				      int domainFlag,
-				      int deg = 0,
-				      Quadrature* q = NULL);
-    static double L1Norm_DOF(DOFVector<double> *dof,
-			     ElementLevelSet *elLS,
-			     int domainFlag,
-			     int deg = 1,
-			     Quadrature* q = NULL);
-    static double L2Norm_DOF(DOFVector<double> *dof,
-			     ElementLevelSet *elLS,
-			     int domainFlag,
-			     int deg = 2,
-			     Quadrature* q = NULL);
-    static double L2NormSquare_DOF(DOFVector<double> *dof,
-				   ElementLevelSet *elLS,
-				   int domainFlag,
-				   int deg = 2,
-				   Quadrature* q = NULL);
-    static double H1Norm_DOF(DOFVector<double> *dof,
-			     ElementLevelSet *elLS,
-			     int domainFlag,
-			     int deg = 0,
-			     Quadrature* q = NULL);
-    static double H1NormSquare_DOF(DOFVector<double> *dof,
-				   ElementLevelSet *elLS,
-				   int domainFlag,
-				   int deg = 0,
-				   Quadrature* q = NULL);
+    static double L1Norm_Analyt(AbstractFunction<double, WorldVector<double>>* f,
+                                ElementLevelSet* elLS,
+                                int domainFlag,
+                                int deg = 1,
+                                Quadrature* q = NULL);
+    static double L2Norm_Analyt(AbstractFunction<double, WorldVector<double>>* f,
+                                ElementLevelSet* elLS,
+                                int domainFlag,
+                                int deg = 2,
+                                Quadrature* q = NULL);
+    static double L2NormSquare_Analyt(AbstractFunction<double, WorldVector<double>>* f,
+                                      ElementLevelSet* elLS,
+                                      int domainFlag,
+                                      int deg = 2,
+                                      Quadrature* q = NULL);
+    static double H1Norm_Analyt(AbstractFunction<WorldVector<double>, WorldVector<double>>* grd,
+                                ElementLevelSet* elLS,
+                                int domainFlag,
+                                int deg = 0,
+                                Quadrature* q = NULL);
+    static double H1NormSquare_Analyt(AbstractFunction<WorldVector<double>, WorldVector<double>>* grd,
+                                      ElementLevelSet* elLS,
+                                      int domainFlag,
+                                      int deg = 0,
+                                      Quadrature* q = NULL);
+    static double L1Norm_DOF(DOFVector<double>* dof,
+                             ElementLevelSet* elLS,
+                             int domainFlag,
+                             int deg = 1,
+                             Quadrature* q = NULL);
+    static double L2Norm_DOF(DOFVector<double>* dof,
+                             ElementLevelSet* elLS,
+                             int domainFlag,
+                             int deg = 2,
+                             Quadrature* q = NULL);
+    static double L2NormSquare_DOF(DOFVector<double>* dof,
+                                   ElementLevelSet* elLS,
+                                   int domainFlag,
+                                   int deg = 2,
+                                   Quadrature* q = NULL);
+    static double H1Norm_DOF(DOFVector<double>* dof,
+                             ElementLevelSet* elLS,
+                             int domainFlag,
+                             int deg = 0,
+                             Quadrature* q = NULL);
+    static double H1NormSquare_DOF(DOFVector<double>* dof,
+                                   ElementLevelSet* elLS,
+                                   int domainFlag,
+                                   int deg = 0,
+                                   Quadrature* q = NULL);
 
     // ========================================================================
     //  Calculation of error between
@@ -376,21 +377,21 @@ namespace compositeFEM {
     //       0 : all elements cut by the zero level set
     //       1 : complete mesh
     // ========================================================================
-    static double L2Err(AbstractFunction<double, WorldVector<double> > *u,
-			DOFVector<double> *uh,
-			ElementLevelSet *elLS,
-			int domainFlag,
-			int relErr = 0,
-			int deg = 2,
-			Quadrature *q = NULL);
+    static double L2Err(AbstractFunction<double, WorldVector<double>>* u,
+                        DOFVector<double>* uh,
+                        ElementLevelSet* elLS,
+                        int domainFlag,
+                        int relErr = 0,
+                        int deg = 2,
+                        Quadrature* q = NULL);
     static double H1Err(
-			AbstractFunction<WorldVector<double>, WorldVector<double> > *grdU,
-			DOFVector<double> *uh,
-			ElementLevelSet *elLS,
-			int domainFlag,
-			int relErr = 0,
-			int deg = 0,
-			Quadrature *q = NULL);
+      AbstractFunction<WorldVector<double>, WorldVector<double>>* grdU,
+      DOFVector<double>* uh,
+      ElementLevelSet* elLS,
+      int domainFlag,
+      int relErr = 0,
+      int deg = 0,
+      Quadrature* q = NULL);
 
     /**
      * Get absolute L2 error.
@@ -414,7 +415,7 @@ namespace compositeFEM {
 
     /**
      * Get L2 norm of solution u.
-     * (If relative L2 error is calculated, the L2 norm of the solution u is 
+     * (If relative L2 error is calculated, the L2 norm of the solution u is
      *  also calculated and stored in L2_u_norm).
      */
     inline static double getL2_U_Norm()
@@ -424,7 +425,7 @@ namespace compositeFEM {
 
     /**
      * Get H1 norm of solution u.
-     * (If relative H1 error is calculated, the H1 norm of the solution u is 
+     * (If relative H1 error is calculated, the H1 norm of the solution u is
      *  also calculated and stored in H1_u_norm).
      */
     inline static double getH1_U_Norm()
@@ -433,38 +434,38 @@ namespace compositeFEM {
     }
 
   protected:
-    static double Norm_IntNoBound(ElementNorm *elNorm,
-				  ElementLevelSet *elLS,
-				  Flag fillFlag,
-				  int deg,
-				  Quadrature* q);
-    static double Norm_IntBound(ElementNorm *elNorm,
-				ElementLevelSet *elLS,
-				Flag fillFlag,
-				int deg,
-				Quadrature* q);
-    static double Norm_Int(ElementNorm *elNorm,
-			   ElementLevelSet *elLS,
-			   Flag fillFlag,
-			   int deg,
-			   Quadrature* q);
-    static double Norm_Bound(ElementNorm *elNorm,
-			     ElementLevelSet *elLS,
-			     Flag fillFlag,
-			     int deg,
-			     Quadrature* q);
-    static double Norm_Complete(ElementNorm *elNorm,
-				ElementLevelSet *elLS,
-				Flag fillFlag,
-				int deg,
-				Quadrature* q);
+    static double Norm_IntNoBound(ElementNorm* elNorm,
+                                  ElementLevelSet* elLS,
+                                  Flag fillFlag,
+                                  int deg,
+                                  Quadrature* q);
+    static double Norm_IntBound(ElementNorm* elNorm,
+                                ElementLevelSet* elLS,
+                                Flag fillFlag,
+                                int deg,
+                                Quadrature* q);
+    static double Norm_Int(ElementNorm* elNorm,
+                           ElementLevelSet* elLS,
+                           Flag fillFlag,
+                           int deg,
+                           Quadrature* q);
+    static double Norm_Bound(ElementNorm* elNorm,
+                             ElementLevelSet* elLS,
+                             Flag fillFlag,
+                             int deg,
+                             Quadrature* q);
+    static double Norm_Complete(ElementNorm* elNorm,
+                                ElementLevelSet* elLS,
+                                Flag fillFlag,
+                                int deg,
+                                Quadrature* q);
 
     /// Calculate norm on subpolytope.
-    static double calcSubPolNorm(ElInfo *elInfo,
-				 SubPolytope *subPolytope,
-				 ElementNorm *elNorm,
-				 ScalableQuadrature *scalQuad,
-				 const double &subPolFac = 1.0);
+    static double calcSubPolNorm(ElInfo* elInfo,
+                                 SubPolytope* subPolytope,
+                                 ElementNorm* elNorm,
+                                 ScalableQuadrature* scalQuad,
+                                 const double& subPolFac = 1.0);
 
   protected:
     /// Absolute L2 error (last L2 error calculation !).

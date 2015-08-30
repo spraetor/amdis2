@@ -9,11 +9,12 @@
 #include "Estimator.h"
 #include "FixVec.h"
 
-namespace AMDiS {
+namespace AMDiS
+{
 
   /**
    * \ingroup Estimator
-   * 
+   *
    * \brief
    * Simple Residual estimator.
    *
@@ -28,47 +29,47 @@ namespace AMDiS {
     class Creator : public EstimatorCreator
     {
     public:
-      Creator() 
-	: EstimatorCreator() 
+      Creator()
+        : EstimatorCreator()
       {}
 
-      virtual ~Creator() 
+      virtual ~Creator()
       {}
 
       /// Returns a new ODirSolver object.
-      Estimator* create() 
-      { 
-	return new SimpleResidualEstimator(name);
+      Estimator* create()
+      {
+        return new SimpleResidualEstimator(name);
       }
     };
-  
+
     /// Constructor.
     SimpleResidualEstimator(std::string name);
 
     /// Init the error estimator.
     void init(double);
 
-    /// Run estimator on one element. 
+    /// Run estimator on one element.
     /// \param[in]   elInfo      Info object for the element to be estimated.
     /// \param[in]   dualElInfo  Not used here. In general, this may be used for
     ///                          estimating with the multi-mesh technique.
-    void estimateElement(ElInfo *elInfo, DualElInfo *dualElInfo = NULL);
+    void estimateElement(ElInfo* elInfo, DualElInfo* dualElInfo = NULL);
 
     /// Finalize the error estimator, i.e., delete all temporary data structures.
     void exit(bool output = true);
 
     /// Returns pow(det,2.0/dim).
-    inline double h2_from_det(double det, int dim) 
+    inline double h2_from_det(double det, int dim)
     {
       return std::pow(det, 2.0 / dim);
     }
 
   protected:
     /// Computes the element residual for a given element.
-    double computeElementResidual(ElInfo *elInfo);
+    double computeElementResidual(ElInfo* elInfo);
 
     /// Computes the jump residual for a given element.
-    double computeJumpResidual(ElInfo *elInfo);
+    double computeJumpResidual(ElInfo* elInfo);
 
     /** \brief
      * Returns residual square at quadrature point. Not Member of
@@ -82,22 +83,22 @@ namespace AMDiS {
      * \param[in]  A        Matrix that contains the left hand side operators.
      * \param[in]  fh       Vector that contains the right hand side operators.
      * \param[in]  quad     Object for numerical quadrature.
-     * \param[out] result   Vector containing the residual on the quadrature 
+     * \param[out] result   Vector containing the residual on the quadrature
      *                      points.
      */
-    void r(const ElInfo *elInfo,
-	   int nPoints,
-	   const DenseVector<double>& uhIq,
-	   const DenseVector<WorldMatrix<double> > &D2UhIq,
-	   DOFMatrix *A, 
-	   DOFVector<double> *fh,
-	   Quadrature *quad,
-	   DenseVector<double>& result);
- 
+    void r(const ElInfo* elInfo,
+           int nPoints,
+           const DenseVector<double>& uhIq,
+           const DenseVector<WorldMatrix<double>>& D2UhIq,
+           DOFMatrix* A,
+           DOFVector<double>* fh,
+           Quadrature* quad,
+           DenseVector<double>& result);
+
   protected:
     /// Constant in front of element residual.
     double C0;
- 
+
     /// Constant in front of edge/face residual.
     double C1;
 
@@ -111,13 +112,13 @@ namespace AMDiS {
     int degree;
 
     /// Object for numerical quadrature
-    Quadrature *quad;
+    Quadrature* quad;
 
     /// Object for fast numerical quadrature
-    FastQuadrature *quadFast;
+    FastQuadrature* quadFast;
 
     /// Pointer to the basis functions of the FE space.
-    const BasisFunction *basFcts;
+    const BasisFunction* basFcts;
 
     /// Vector that stores all global DOFs of one element.
     DenseVector<double> uhEl;
@@ -128,36 +129,36 @@ namespace AMDiS {
     /// Vector that stores values on all quadrature points (QP) on one element.
     DenseVector<double> uhQP;
 
-    DenseVector<WorldVector<double> > grdUhQp;
+    DenseVector<WorldVector<double>> grdUhQp;
 
     /// Matrix that stores the second derivations on all quadrature points
     /// on one element.
-    DenseVector<WorldMatrix<double> > D2UhQp;
+    DenseVector<WorldMatrix<double>> D2UhQp;
 
-    /// Stores the element residual computed at the quadrature points of 
+    /// Stores the element residual computed at the quadrature points of
     /// the element.
     DenseVector<double> riq;
 
     /// Pointer to the information object of some neighbouring element.
-    ElInfo *neighInfo;
+    ElInfo* neighInfo;
 
     /// Surface quadrature object, used for computing the jump residual.
-    Quadrature *surfaceQuad;
+    Quadrature* surfaceQuad;
 
     /// Number of quadrature points of the surface quadrature object.
     int nPointsSurface;
 
     /// Stores on all surface quadrature points the gradient of a function.
-    std::vector<WorldVector<double> > grdUhEl;
+    std::vector<WorldVector<double>> grdUhEl;
 
     /// Stores on all surface quadrature points the gradient of a function.
-    std::vector<WorldVector<double> > grdUhNeigh;
+    std::vector<WorldVector<double>> grdUhNeigh;
 
     /// Stores on all surface quadrature points the jump of a function.
-    std::vector<WorldVector<double> > jump;
+    std::vector<WorldVector<double>> jump;
 
     /// Stores on all surface quadrature points the jump of a function.
-    std::vector<WorldVector<double> > localJump;
+    std::vector<WorldVector<double>> localJump;
 
     /// Vector to store, for a given element, all its neighbouring element indices.
     WorldVector<int> faceIndEl;
@@ -165,9 +166,9 @@ namespace AMDiS {
     /// Vector to store, for a given element, all its neighbouring element indices.
     WorldVector<int> faceIndNeigh;
 
-    DimVec<WorldVector<double> > *lambdaNeigh;
-    
-    DimVec<double> *lambda;
+    DimVec<WorldVector<double>>* lambdaNeigh;
+
+    DimVec<double>* lambda;
 
     /// Maximal number of neighbours an element may have in the used dimension.
     int nNeighbours;

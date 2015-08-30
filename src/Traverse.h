@@ -16,23 +16,23 @@
 #include "Global.h"
 #include "AMDiS_fwd.h"
 
-namespace AMDiS 
+namespace AMDiS
 {
   /** \ingroup Traverse
    * \brief
-   * Mesh refinement and coarsening routines are examples of functions which 
+   * Mesh refinement and coarsening routines are examples of functions which
    * need a non-recursive access to the mesh elements.
-   * The implementation of the non-recursive mesh traversal routines uses a 
-   * stack to save the tree path from a macro element to the current element. 
+   * The implementation of the non-recursive mesh traversal routines uses a
+   * stack to save the tree path from a macro element to the current element.
    * TraverseStack holds such information. Before calling the non-recursive mesh
-   * traversal routines, such a stack must be allocated. The stack is 
+   * traversal routines, such a stack must be allocated. The stack is
    * initialized by each call to \ref traverseFirst().
    */
-  class TraverseStack 
+  class TraverseStack
   {
   public:
     /// Creates an empty TraverseStack
-    TraverseStack() 
+    TraverseStack()
       : limitedToMacroElement(-1),
         traverse_mel(NULL),
         stack_size(0),
@@ -48,14 +48,14 @@ namespace AMDiS
   public:
     /// Returns the first ElInfo of a non recursive traversal which fullfills the
     /// selection criterion specified by level and fill_flag and initializes the
-    /// stack. After a call of traverseFirst the next Elements are traversed via 
-    /// \ref traverseNext(). 
+    /// stack. After a call of traverseFirst the next Elements are traversed via
+    /// \ref traverseNext().
     ElInfo* traverseFirst(Mesh* mesh, int level, Flag fill_flag);
 
     /// Works in the same way as \ref traverseFirst defined above, but limits the
     /// traversal to one macro mesh only.
-    ElInfo* traverseFirstOneMacro(Mesh* mesh, int macroIndex, int level, 
-				                          Flag fill_flag);
+    ElInfo* traverseFirstOneMacro(Mesh* mesh, int macroIndex, int level,
+                                  Flag fill_flag);
 
     /// Returns the next ElInfo in a traversal initiated by \ref traverseFirst()
     ///  If NULL is returned, the traversal is finished.
@@ -88,18 +88,18 @@ namespace AMDiS
     void fillRefinementPath(ElInfo& elInfo, ElInfo const& upperElInfo);
 
     /// Is used for parallel mesh traverse.
-    void setMyThreadId(int n) 
+    void setMyThreadId(int n)
     {
       myThreadId = n;
     }
 
     /// Is used for parallel mesh traverse.
-    void setMaxThreads(int n) 
+    void setMaxThreads(int n)
     {
       maxThreads = n;
     }
 
-    int getStackData(std::vector<ElInfo*>& elInfos, std::vector<int>& infos) 
+    int getStackData(std::vector<ElInfo*>& elInfos, std::vector<int>& infos)
     {
       elInfos = elinfo_stack;
       infos = info_stack;
@@ -116,7 +116,7 @@ namespace AMDiS
         return NULL;
 
       TEST_EXIT_DBG(elinfo_stack.size() > static_cast<size_t>(stack_used))
-        ("Should not happen!\n");
+      ("Should not happen!\n");
 
       return elinfo_stack[stack_used];
     }
@@ -141,7 +141,7 @@ namespace AMDiS
 
     /// Avoids copy of a traverse stack. If copy should be possible
     /// the operator must be implemented (deep copy not flat copy!)
-    void operator=(TraverseStack const& /*rhs*/) 
+    void operator=(TraverseStack const& /*rhs*/)
     {
       FUNCNAME("TraverseStack::operator=()");
       ERROR_EXIT("not implemented");
@@ -149,7 +149,7 @@ namespace AMDiS
 
     /// Avoids copy of a traverse stack. If copy should be possible
     /// the operator must be implemented (deep copy not flat copy!)
-    TraverseStack(TraverseStack const&) 
+    TraverseStack(TraverseStack const&)
     {
       FUNCNAME("TraverseStack::TraverseStack()");
       ERROR_EXIT("not implemented");
@@ -173,7 +173,7 @@ namespace AMDiS
     /// If -1, the whole mesh is traversed. Otherwise, only the macro element
     /// with the given element index is traversed.
     int limitedToMacroElement;
-  
+
     /// current macro element
     MacroElement const* traverse_mel;
 
@@ -186,10 +186,10 @@ namespace AMDiS
     ///
     std::vector<ElInfo*> elinfo_stack;
 
-    /// Stores for all level, which children of this element was already 
+    /// Stores for all level, which children of this element was already
     /// visited. If 0, no children were visited (this status occurs only
     /// in intermediate computations). If 1, only the first was vistied.
-    /// If 2, both children of the element on this level were already 
+    /// If 2, both children of the element on this level were already
     /// visited.
     std::vector<int> info_stack;
 

@@ -7,33 +7,34 @@
 #include "Boundary.h"
 #include "VertexVector.h"
 
-namespace AMDiS 
+namespace AMDiS
 {
   std::vector<PeriodicDOFMapping*> PeriodicDOFMapping::mappings;
 
 
-  PeriodicDOFMapping* 
-  PeriodicDOFMapping::providePeriodicDOFMapping(const BasisFunction *fcts)
+  PeriodicDOFMapping*
+  PeriodicDOFMapping::providePeriodicDOFMapping(const BasisFunction* fcts)
   {
-    for (std::vector<PeriodicDOFMapping*>::iterator it = mappings.begin(); 
-	 it != mappings.end(); ++it)
+    for (std::vector<PeriodicDOFMapping*>::iterator it = mappings.begin();
+         it != mappings.end(); ++it)
       if ((*it)->basFcts == fcts)
-	return *it;
+        return *it;
 
-    PeriodicDOFMapping *newMapping = new PeriodicDOFMapping(fcts);
+    PeriodicDOFMapping* newMapping = new PeriodicDOFMapping(fcts);
     mappings.push_back(newMapping);
     return newMapping;
   }
 
 
-  PeriodicDOFMapping::PeriodicDOFMapping(const BasisFunction *fcts) 
-    : basFcts(fcts) 
+  PeriodicDOFMapping::PeriodicDOFMapping(const BasisFunction* fcts)
+    : basFcts(fcts)
   {
     FUNCNAME("PeriodicDOFMapping::PeriodicDOFMapping()");
-    TEST_EXIT(basFcts->getDim() > 1)("dim == 1\n");  
+    TEST_EXIT(basFcts->getDim() > 1)("dim == 1\n");
     int nBasFcts = basFcts->getNumber();
-    DimVec<double> *lambda;
-    for (int i = 0; i < nBasFcts; i++) {
+    DimVec<double>* lambda;
+    for (int i = 0; i < nBasFcts; i++)
+    {
       lambda = basFcts->getCoords(i);
       indexOfCoords[*lambda] = i;
     }
@@ -42,40 +43,43 @@ namespace AMDiS
 
   PeriodicDOFMapping::~PeriodicDOFMapping()
   {
-    std::map<DimVec<int>, DegreeOfFreedom*, DimVecLess<int> >::iterator it;
+    std::map<DimVec<int>, DegreeOfFreedom*, DimVecLess<int>>::iterator it;
     for (it = dofPermutation.begin(); it != dofPermutation.end(); ++it)
       if (it->second)
-	delete [] it->second;
+        delete [] it->second;
   }
 
 
-  const DegreeOfFreedom *PeriodicDOFMapping::getDOFPermutation(const DimVec<int> &vertexPermutation)
+  const DegreeOfFreedom* PeriodicDOFMapping::getDOFPermutation(const DimVec<int>& vertexPermutation)
   {
     FUNCNAME("PeriodicDOFMapping::getDOFPermutation()");
 
-    if (dofPermutation[vertexPermutation] == NULL) {
+    if (dofPermutation[vertexPermutation] == NULL)
+    {
       int dim = basFcts->getDim();
       int nBasFcts = basFcts->getNumber();
       int sum = 0;
-      for (int i = 0; i < dim + 1; i++) {
-	sum += i - vertexPermutation[i];
-	TEST_EXIT(vertexPermutation[i] < dim + 1)
-	  ("invalid vertexPermuation\n");
+      for (int i = 0; i < dim + 1; i++)
+      {
+        sum += i - vertexPermutation[i];
+        TEST_EXIT(vertexPermutation[i] < dim + 1)
+        ("invalid vertexPermuation\n");
       }
       TEST_EXIT(sum == 0)("invalid vertexPermutation\n");
 
       // create dof permutation
-      DimVec<double> *lambda;
+      DimVec<double>* lambda;
       DimVec<double> newLambda(dim);
 
-      DegreeOfFreedom *mapping = new DegreeOfFreedom[nBasFcts]; 
+      DegreeOfFreedom* mapping = new DegreeOfFreedom[nBasFcts];
 
-      for (int i = 0; i < nBasFcts; i++) {
-	lambda = basFcts->getCoords(i);
-	for (int j = 0; j < dim + 1; j++) 
-	  newLambda[vertexPermutation[j]] = (*lambda)[j];
+      for (int i = 0; i < nBasFcts; i++)
+      {
+        lambda = basFcts->getCoords(i);
+        for (int j = 0; j < dim + 1; j++)
+          newLambda[vertexPermutation[j]] = (*lambda)[j];
 
-	mapping[i] = indexOfCoords[newLambda];
+        mapping[i] = indexOfCoords[newLambda];
       }
 
       dofPermutation[vertexPermutation] = mapping;
@@ -85,15 +89,15 @@ namespace AMDiS
   }
 
 
-  PeriodicBC::PeriodicBC(BoundaryType type, const FiniteElemSpace *rowSpace) 
+  PeriodicBC::PeriodicBC(BoundaryType type, const FiniteElemSpace* rowSpace)
     : BoundaryCondition(type, rowSpace, NULL),
       masterMatrix(NULL)
   {
     if (rowFeSpace->getMesh()->getDim() > 1)
-      periodicDOFMapping = 
-	PeriodicDOFMapping::providePeriodicDOFMapping(rowFeSpace->getBasisFcts());
+      periodicDOFMapping =
+        PeriodicDOFMapping::providePeriodicDOFMapping(rowFeSpace->getBasisFcts());
     else
-      periodicDOFMapping = NULL;    
+      periodicDOFMapping = NULL;
   }
 
 
@@ -105,83 +109,91 @@ namespace AMDiS
   {
     FUNCNAME("PeriodicBC::initMatrix()");
 
-    if (!masterMatrix) {
+    if (!masterMatrix)
+    {
       masterMatrix = matrix;
-      Mesh *mesh = matrix->getRowFeSpace()->getMesh();
+      Mesh* mesh = matrix->getRowFeSpace()->getMesh();
       associated = mesh->getPeriodicAssociations()[boundaryType];
-      
+
       TEST_EXIT(associated)
-	("No associations for periodic boundary condition %d!\n", boundaryType);
+      ("No associations for periodic boundary condition %d!\n", boundaryType);
     }
   }
 
 
-  void PeriodicBC::fillBoundaryCondition(DOFMatrix *matrix,
-					 ElInfo *elInfo,
-					 const DegreeOfFreedom *dofIndices,
-					 const BoundaryType *localBound,
-					 int nBasFcts)
+  void PeriodicBC::fillBoundaryCondition(DOFMatrix* matrix,
+                                         ElInfo* elInfo,
+                                         const DegreeOfFreedom* dofIndices,
+                                         const BoundaryType* localBound,
+                                         int nBasFcts)
   {
     FUNCNAME_DBG("PeriodicBC::fillBoundaryCondition()");
 
     if (matrix != masterMatrix)
       return;
-  
+
     int dim = rowFeSpace->getMesh()->getDim();
     if (dim == 1)
       return;
-    
-    DOFAdmin *admin = rowFeSpace->getAdmin();
+
+    DOFAdmin* admin = rowFeSpace->getAdmin();
     FixVec<int, WORLD> elFace(dim);
     FixVec<int, WORLD> neighFace(dim);
     DimVec<int> vertexPermutation(dim);
-    const BasisFunction *basFcts = rowFeSpace->getBasisFcts();
+    const BasisFunction* basFcts = rowFeSpace->getBasisFcts();
     int num = basFcts->getNumber();
-    Element *element = elInfo->getElement();
+    Element* element = elInfo->getElement();
     DimVec<DegreeOfFreedom> periodicDOFs(dim - 1);
     GeoIndex sideGeoIndex = INDEX_OF_DIM(dim - 1, dim);
     std::vector<DegreeOfFreedom> neighIndices(num);
-    
-    for (int side = 0; side <= dim; side++) {      
-      if (elInfo->getBoundary(sideGeoIndex, side) == boundaryType) {	
-	for (int vertex = 0; vertex < dim; vertex++) {
-	  int index = element->getVertexOfPosition(sideGeoIndex, side, vertex);
-	  periodicDOFs[vertex] = (*associated)[dofIndices[index]];
-	}
-	
-	Element *neigh = elInfo->getNeighbour(side);
-	TEST_EXIT_DBG(neigh)("Wrong neighbour information at side %d!\n", side);
-	
-	basFcts->getLocalIndices(neigh, admin, neighIndices);
-	
-	int oppVertex = 0;
-	for (int i = 0; i < dim + 1; i++) {
-	  // get vertex permutation
-	  if (i == side) {
-	    vertexPermutation[i] = 0;
-	  } else {
-	    DegreeOfFreedom periodicDOF = 
-	      periodicDOFs[element->getPositionOfVertex(side, i)];
-	    
-	    int j = 0;
-	    for (; j < dim + 1; j++)
-	      if (neigh->getDof(j, 0) == periodicDOF) 
-		break;
-	    
-	    vertexPermutation[i] = j;
-	  }
-	  oppVertex += i - vertexPermutation[i];
-	}
-	vertexPermutation[side] = oppVertex;
-	
-	// get DOF permutation
-	const DegreeOfFreedom *dofPermutation = 
-	  periodicDOFMapping->getDOFPermutation(vertexPermutation);
-	
-	// set associated dofs
-	for (int i = 0; i < num; i++)
-	  if ((*(basFcts->getCoords(i)))[side] == 0)
-	    (*associated)[dofIndices[i]] = neighIndices[dofPermutation[i]];
+
+    for (int side = 0; side <= dim; side++)
+    {
+      if (elInfo->getBoundary(sideGeoIndex, side) == boundaryType)
+      {
+        for (int vertex = 0; vertex < dim; vertex++)
+        {
+          int index = element->getVertexOfPosition(sideGeoIndex, side, vertex);
+          periodicDOFs[vertex] = (*associated)[dofIndices[index]];
+        }
+
+        Element* neigh = elInfo->getNeighbour(side);
+        TEST_EXIT_DBG(neigh)("Wrong neighbour information at side %d!\n", side);
+
+        basFcts->getLocalIndices(neigh, admin, neighIndices);
+
+        int oppVertex = 0;
+        for (int i = 0; i < dim + 1; i++)
+        {
+          // get vertex permutation
+          if (i == side)
+          {
+            vertexPermutation[i] = 0;
+          }
+          else
+          {
+            DegreeOfFreedom periodicDOF =
+              periodicDOFs[element->getPositionOfVertex(side, i)];
+
+            int j = 0;
+            for (; j < dim + 1; j++)
+              if (neigh->getDof(j, 0) == periodicDOF)
+                break;
+
+            vertexPermutation[i] = j;
+          }
+          oppVertex += i - vertexPermutation[i];
+        }
+        vertexPermutation[side] = oppVertex;
+
+        // get DOF permutation
+        const DegreeOfFreedom* dofPermutation =
+          periodicDOFMapping->getDOFPermutation(vertexPermutation);
+
+        // set associated dofs
+        for (int i = 0; i < num; i++)
+          if ((*(basFcts->getCoords(i)))[side] == 0)
+            (*associated)[dofIndices[i]] = neighIndices[dofPermutation[i]];
       }
     }
   }
@@ -196,7 +208,7 @@ namespace AMDiS
     TEST_EXIT(associated)("No associated vector!\n");
 
     if (matrix == masterMatrix)
-      masterMatrix = NULL;    
+      masterMatrix = NULL;
 
     using namespace mtl;
 
@@ -207,7 +219,7 @@ namespace AMDiS
 
     // Compute reorder matrix (newRow and newCol yields transposed!!!)
     matrix::traits::reorder<>::type R= matrix::reorder(dofMap);
-    DOFMatrix::base_matrix_type &A= matrix->getBaseMatrix(), C;
+    DOFMatrix::base_matrix_type& A= matrix->getBaseMatrix(), C;
 
     C = R * A * trans(R) + A;
     A = 0.5 * C;
@@ -217,17 +229,19 @@ namespace AMDiS
   void PeriodicBC::exitVector(DOFVectorBase<double>* vector)
   {
     DOFIterator<double> vecIt(vector, USED_DOFS);
-    Mesh *mesh = vector->getFeSpace()->getMesh();
-    VertexVector *associated = mesh->getPeriodicAssociations()[boundaryType];
+    Mesh* mesh = vector->getFeSpace()->getMesh();
+    VertexVector* associated = mesh->getPeriodicAssociations()[boundaryType];
 
-    for (vecIt.reset(); !vecIt.end(); ++vecIt) {
+    for (vecIt.reset(); !vecIt.end(); ++vecIt)
+    {
       DegreeOfFreedom dof = vecIt.getDOFIndex();
       DegreeOfFreedom newDOF = (*associated)[dof];
 
-      if (dof < newDOF) {
-	double entry = ((*vector)[dof] + (*vector)[newDOF]) * 0.5;
-	(*vector)[dof] = entry;
-	(*vector)[newDOF] = entry;
+      if (dof < newDOF)
+      {
+        double entry = ((*vector)[dof] + (*vector)[newDOF]) * 0.5;
+        (*vector)[dof] = entry;
+        (*vector)[newDOF] = entry;
       }
     }
   }

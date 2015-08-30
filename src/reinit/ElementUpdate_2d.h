@@ -5,7 +5,7 @@
  * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
  * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
  *
- * Authors: 
+ * Authors:
  * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
  *
  * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
@@ -15,7 +15,7 @@
  * This file is part of AMDiS
  *
  * See also license.opensource.txt in the distribution.
- * 
+ *
  ******************************************************************************/
 
 
@@ -28,27 +28,28 @@
 #include "ElementUpdate.h"
 #include "VelocityExt.h"
 
-namespace reinit {
-
-using namespace AMDiS;
-
-class ElementUpdate_2d : public ElementUpdate
+namespace reinit
 {
-public:
-  ElementUpdate_2d(VelocityExt *velExt_ = NULL)
-    : ElementUpdate(velExt_)
-  {}
 
-  /** \brief
-   * Realization of ElementUpdate::calcElementUpdate. Calculates the Bornemann 
-   * update for an element.
-   */
-  double calcElementUpdate(const FixVec<WorldVector<double> *, VERTEX> &vert,
-			   FixVec<double, VERTEX> &uhVal);
+  using namespace AMDiS;
 
-private:
-  WorldVector<double> xhminusYh, zhminusYh, xhminusZh;
-};
+  class ElementUpdate_2d : public ElementUpdate
+  {
+  public:
+    ElementUpdate_2d(VelocityExt* velExt_ = NULL)
+      : ElementUpdate(velExt_)
+    {}
+
+    /** \brief
+     * Realization of ElementUpdate::calcElementUpdate. Calculates the Bornemann
+     * update for an element.
+     */
+    double calcElementUpdate(const FixVec<WorldVector<double> *, VERTEX>& vert,
+                             FixVec<double, VERTEX>& uhVal);
+
+  private:
+    WorldVector<double> xhminusYh, zhminusYh, xhminusZh;
+  };
 
 }
 

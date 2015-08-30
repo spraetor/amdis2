@@ -9,39 +9,41 @@
 #include "DOFIndexed.h"
 #include "ProblemStatBase.h"   // => MESH_COARSENED
 
-namespace AMDiS {
+namespace AMDiS
+{
 
-  Flag CoarseningManager1d::coarsenMesh(Mesh *aMesh)
+  Flag CoarseningManager1d::coarsenMesh(Mesh* aMesh)
   {
     mesh = aMesh;
 
     std::deque<MacroElement*>::const_iterator mel;
     int n_elements = mesh->getNumberOfLeaves();
 
-    for (mel = mesh->firstMacroElement(); 
-	 mel != mesh->endOfMacroElements(); 
-	 mel++) 
-      {
-	coarsenRecursive(dynamic_cast<Line*>(const_cast<Element*>((*mel)->getElement())));
-      }
+    for (mel = mesh->firstMacroElement();
+         mel != mesh->endOfMacroElements();
+         mel++)
+    {
+      coarsenRecursive(dynamic_cast<Line*>(const_cast<Element*>((*mel)->getElement())));
+    }
 
     return(mesh->getNumberOfLeaves() < n_elements ? MESH_COARSENED : Flag(0));
   }
 
-  int CoarseningManager1d::coarsenRecursive(Line *parent)
+  int CoarseningManager1d::coarsenRecursive(Line* parent)
   {
     FUNCNAME("CoarseningManager1d::coarsenRecursive");
     int  mark;
 
     INFO(0,2)("\n");
-    if (parent->isLeaf())  // leaf element, clean element marker
-      {
-	mark = parent->getMark();
-	parent->setMark(0);
-	return(mark);
-      }
-    else {                 // no leaf element, first coarse children
-      Line *child[2];
+    if (parent->isLeaf())   // leaf element, clean element marker
+    {
+      mark = parent->getMark();
+      parent->setMark(0);
+      return(mark);
+    }
+    else                   // no leaf element, first coarse children
+    {
+      Line* child[2];
 
       int  mark0 = coarsenRecursive(dynamic_cast<Line*>(const_cast<Element*>(parent->getChild(0))));
       int  mark1 = coarsenRecursive(dynamic_cast<Line*>(const_cast<Element*>( parent->getChild(1))));
@@ -49,34 +51,38 @@ namespace AMDiS {
       mark = std::max(mark0, mark1);
 
       child[0] = dynamic_cast<Line*>(const_cast<Element*>( parent->getChild(0)));
-      child[1] = dynamic_cast<Line*>(const_cast<Element*>( parent->getChild(1))); 
+      child[1] = dynamic_cast<Line*>(const_cast<Element*>( parent->getChild(1)));
 
-      if (mark >= 0) {     // element must not be coarsend
-	parent->setMark(0);
-	if (child[0]) {
-	  child[0]->setMark(0);
-	  child[1]->setMark(0);
-	}
+      if (mark >= 0)       // element must not be coarsend
+      {
+        parent->setMark(0);
+        if (child[0])
+        {
+          child[0]->setMark(0);
+          child[1]->setMark(0);
+        }
 
-	return(0);
+        return(0);
       }
 
       /*--------------------------------------------------------------------------*/
       /*--- and now coarsen child[0] and child[1] into parent                  ---*/
       /*--------------------------------------------------------------------------*/
-  
+
       /*--------------------------------------------------------------------------*/
       /*--- hand DOFs from children to parent, and add DOF at center           ---*/
       /*--------------------------------------------------------------------------*/
 
-      if (mesh->getNumberOfDofs(VERTEX) && !mesh->queryCoarseDOFs()) {
-	int node = mesh->getNode(VERTEX);
-	parent->setDof(node+0, const_cast<DegreeOfFreedom*>( child[0]->getDof(node+0)));
-	parent->setDof(node+1, const_cast<DegreeOfFreedom*>( child[1]->getDof(node+1)));
+      if (mesh->getNumberOfDofs(VERTEX) && !mesh->queryCoarseDOFs())
+      {
+        int node = mesh->getNode(VERTEX);
+        parent->setDof(node+0, const_cast<DegreeOfFreedom*>( child[0]->getDof(node+0)));
+        parent->setDof(node+1, const_cast<DegreeOfFreedom*>( child[1]->getDof(node+1)));
       }
 
-      if (mesh->getNumberOfDofs(CENTER) && !mesh->queryCoarseDOFs()) {
-	parent->setDof(mesh->getNode(CENTER), mesh->getDof(CENTER));
+      if (mesh->getNumberOfDofs(CENTER) && !mesh->queryCoarseDOFs())
+      {
+        parent->setDof(mesh->getNode(CENTER), mesh->getDof(CENTER));
       }
 
       /*--------------------------------------------------------------------------*/
@@ -88,29 +94,30 @@ namespace AMDiS {
       coarsenList.setElement(0, parent);
       int iadmin;
       int nrAdmin = mesh->getNumberOfDOFAdmin();
-      for(iadmin = 0; iadmin < nrAdmin; iadmin++) {
-	std::list<DOFIndexedBase*>::iterator it;
-	DOFAdmin* admin = const_cast<DOFAdmin*>(&(mesh->getDofAdmin(iadmin)));
-	std::list<DOFIndexedBase*>::iterator end = admin->endDOFIndexed();
-	for(it = admin->beginDOFIndexed(); it != end; ++it)
-	  (*it)->coarseRestrict(coarsenList, 1);
+      for(iadmin = 0; iadmin < nrAdmin; iadmin++)
+      {
+        std::list<DOFIndexedBase*>::iterator it;
+        DOFAdmin* admin = const_cast<DOFAdmin*>(&(mesh->getDofAdmin(iadmin)));
+        std::list<DOFIndexedBase*>::iterator end = admin->endDOFIndexed();
+        for(it = admin->beginDOFIndexed(); it != end; ++it)
+          (*it)->coarseRestrict(coarsenList, 1);
       }
- 
+
 
       /*--------------------------------------------------------------------------*/
       /*--- remove all DOFs of children that are not used anymore              ---*/
       /*--------------------------------------------------------------------------*/
 
       if (mesh->getNumberOfDofs(VERTEX))    /*---  midpoint of parent          ---*/
-	{
-	  mesh->freeDof(const_cast<DegreeOfFreedom*>( child[1]->getDof(mesh->getNode(VERTEX))), VERTEX);
-	}
+      {
+        mesh->freeDof(const_cast<DegreeOfFreedom*>( child[1]->getDof(mesh->getNode(VERTEX))), VERTEX);
+      }
 
       if (mesh->getNumberOfDofs(CENTER))    /*--- center of the children       ---*/
-	{
-	  mesh->freeDof(const_cast<DegreeOfFreedom*>( child[0]->getDof(mesh->getNode(CENTER))), CENTER);
-	  mesh->freeDof(const_cast<DegreeOfFreedom*>( child[1]->getDof(mesh->getNode(CENTER))), CENTER);
-	}
+      {
+        mesh->freeDof(const_cast<DegreeOfFreedom*>( child[0]->getDof(mesh->getNode(CENTER))), CENTER);
+        mesh->freeDof(const_cast<DegreeOfFreedom*>( child[1]->getDof(mesh->getNode(CENTER))), CENTER);
+      }
 
       parent->coarsenElementData(child[0], child[1]);
 

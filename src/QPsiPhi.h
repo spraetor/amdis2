@@ -7,7 +7,7 @@
 #include "AMDiS_fwd.h"
 #include "DOFAdmin.h"
 
-namespace AMDiS 
+namespace AMDiS
 {
   /**
    * \ingroup Integration
@@ -20,12 +20,12 @@ namespace AMDiS
   {
   public:
     /// Constructor.
-    compareQPsiPhi(const BasisFunction* psi_, 
-            		   const BasisFunction* phi_, 
-            		   const Quadrature* quad_) 
-      : psi(psi_), 
-      	phi(phi_), 
-      	quadrature(quad_)
+    compareQPsiPhi(const BasisFunction* psi_,
+                   const BasisFunction* phi_,
+                   const Quadrature* quad_)
+      : psi(psi_),
+        phi(phi_),
+        quadrature(quad_)
     {}
 
     /// Returns true, if *q is equivalent to *this.
@@ -33,13 +33,13 @@ namespace AMDiS
     {
       return (q->psi == psi) && (q->phi == phi) && (q->quadrature == quadrature);
     }
-  
+
   private:
     /// Basis functions of QPsiPhi.
-    const BasisFunction *psi, *phi;
+    const BasisFunction* psi, *phi;
 
     /// Quadrature of QPsiPhi.
-    const Quadrature *quadrature;
+    const Quadrature* quadrature;
   };
 
 
@@ -54,9 +54,9 @@ namespace AMDiS
   {
   public:
     /// Constructor.
-    compareQPsi(const BasisFunction* psi_, 
-            		const Quadrature* quad_) 
-      : psi(psi_), 
+    compareQPsi(const BasisFunction* psi_,
+                const Quadrature* quad_)
+      : psi(psi_),
         quadrature(quad_)
     {}
 
@@ -65,56 +65,56 @@ namespace AMDiS
     {
       return (q->psi == psi) && (q->quadrature == quadrature);
     }
-  
+
   private:
     /// Basis functions of the QPsi object.
-    const BasisFunction *psi;
+    const BasisFunction* psi;
 
     /// Quadrature of the QPsi object.
-    const Quadrature *quadrature;
+    const Quadrature* quadrature;
   };
 
 
   /** \ingroup Integration
    * \brief
-   * Calculates element stiffness matrices by preevaluated integrals over the 
-   * the reference element (integral of the product of the derivatives of psi 
+   * Calculates element stiffness matrices by preevaluated integrals over the
+   * the reference element (integral of the product of the derivatives of psi
    * and phi).
    */
   class Q11PsiPhi
   {
   protected:
     /// Constructor
-    Q11PsiPhi(const BasisFunction *psi,
-      	      const BasisFunction *phi, 
-      	      const Quadrature *q);
+    Q11PsiPhi(const BasisFunction* psi,
+              const BasisFunction* phi,
+              const Quadrature* q);
 
   public:
     /// Destructor
     ~Q11PsiPhi();
 
     /// Returns a Q11PsiPhi object.
-    static const Q11PsiPhi* provideQ11PsiPhi(const BasisFunction *,
-                              					     const BasisFunction *, 
-                              					     const Quadrature*);
-    
+    static const Q11PsiPhi* provideQ11PsiPhi(const BasisFunction*,
+        const BasisFunction*,
+        const Quadrature*);
+
     /// Compares two Q11PsiPhi objects.
     bool operator==(const Q11PsiPhi&) const;
 
     /// Compares two Q11PsiPhi objects.
     bool operator!=(const Q11PsiPhi& q11pp) const
-    { 
+    {
       return !(operator==(q11pp));
     }
-    
+
     /// Returns \ref values[i][j][k]
     double getValue(unsigned int i,
-            		    unsigned int j,
-            		    unsigned int v) const 
+                    unsigned int j,
+                    unsigned int v) const
     {
-      if (values && values[i] && values[i][j] && 
-      	  (static_cast<int>(v) < nrEntries[i][j]))
-      	return values[i][j][v];
+      if (values && values[i] && values[i][j] &&
+          (static_cast<int>(v) < nrEntries[i][j]))
+        return values[i][j][v];
 
       return 0.0;
     }
@@ -122,24 +122,24 @@ namespace AMDiS
     /// Returns \ref nrEntries[i][j]
     int getNumberEntries(unsigned int i, unsigned int j) const
     {
-      if (nrEntries && nrEntries[i]) 
+      if (nrEntries && nrEntries[i])
         return nrEntries[i][j];
 
       return 0;
     }
 
     /// Returns \ref nrEntries
-    const int** getNumberEntries() const 
+    const int** getNumberEntries() const
     {
       return const_cast<const int**>(nrEntries);
     }
 
     /// Returns \ref k[i1][i2][i3]
-    int getK(unsigned int i1, 
-      	     unsigned int i2, 
-      	     unsigned int i3) const
+    int getK(unsigned int i1,
+             unsigned int i2,
+             unsigned int i3) const
     {
-      if (k && k[i1] && k[i1][i2] && (static_cast<int>(i3) < nrEntries[i1][i2])) 
+      if (k && k[i1] && k[i1][i2] && (static_cast<int>(i3) < nrEntries[i1][i2]))
         return k[i1][i2][i3];
 
       return 0;
@@ -155,27 +155,27 @@ namespace AMDiS
     }
 
     /// Returns \values[i][j]
-    const double *getValVec(unsigned int i, unsigned int j) const 
+    const double* getValVec(unsigned int i, unsigned int j) const
     {
-      if (values && values[i] && values[i][j]) 
+      if (values && values[i] && values[i][j])
         return values[i][j];
 
       return NULL;
     }
 
     /// Returns \ref k[i][j]
-    const int *getKVec(unsigned int i, unsigned int j) const 
+    const int* getKVec(unsigned int i, unsigned int j) const
     {
-      if (k && k[i] && k[i][j]) 
+      if (k && k[i] && k[i][j])
         return k[i][j];
 
       return NULL;
     }
 
-    /// Returns \ref l[i][j] 
-    const int *getLVec(unsigned int i, unsigned int j) const 
+    /// Returns \ref l[i][j]
+    const int* getLVec(unsigned int i, unsigned int j) const
     {
-      if (l && l[i] && l[i][j]) 
+      if (l && l[i] && l[i][j])
         return l[i][j];
 
       return NULL;
@@ -186,115 +186,115 @@ namespace AMDiS
     static std::list<Q11PsiPhi*> preList;
 
     /// Pointer to the first set of basis functions.
-    const BasisFunction *psi;
+    const BasisFunction* psi;
 
     /// Pointer to the second set of basis functions.
-    const BasisFunction *phi;
+    const BasisFunction* phi;
 
     /// Pointer to the Quadrature which is used for the integration.
-    const Quadrature *quadrature;
-  
+    const Quadrature* quadrature;
+
     /** \brief
-     * Matrix of size psi->getNumber() * phi->getNumber() storing the count of 
-     * non zero integrals; nrEntries[i][j] is the count of non zero values of 
+     * Matrix of size psi->getNumber() * phi->getNumber() storing the count of
+     * non zero integrals; nrEntries[i][j] is the count of non zero values of
      * \f$ \hat{Q}_{ij,kl}^{11} \f$
-     * (0 <= k,l <= DIM) for the pair (psi[i], phi[j]), 0 <= i < 
+     * (0 <= k,l <= DIM) for the pair (psi[i], phi[j]), 0 <= i <
      * psi->getNumber(), 0 <= j < phi->getNumber()
      */
-    int **nrEntries;
+    int** nrEntries;
 
     /** \brief
      * tensor storing the non zero integrals; values[i][j] is a vector of length
-     * \ref nrEntries[i][j] storing the non zero values for the pair (psi[i], 
+     * \ref nrEntries[i][j] storing the non zero values for the pair (psi[i],
      * phi[j])
      */
-    double ***values;
+    double*** values;
 
     /// Tensor storing the indices k of the non zero integrals.
-    int ***k;
+    int*** k;
 
     /// Tensor storing the indices l of the non zero integrals.
-    int ***l;
+    int*** l;
 
     /// Number of non zero entries.
     int allEntries;
 
     /// Pointer to an array in values.
-    double *val_vec;
+    double* val_vec;
 
     /// Pointer to an array in k.
-    int *k_vec;
+    int* k_vec;
 
     /// Pointer to an array in l.
-    int *l_vec;
+    int* l_vec;
 
     friend class compareQPsiPhi<Q11PsiPhi>;
   };
 
 
-  /** \ingroup Integration 
+  /** \ingroup Integration
    * \brief
-   * Calculates element stiffness matrices by preevaluated integrals over the 
-   * the reference element (integral of the product of the derivative of psi 
+   * Calculates element stiffness matrices by preevaluated integrals over the
+   * the reference element (integral of the product of the derivative of psi
    * and phi).
    */
   class Q10PsiPhi
   {
   protected:
     /// Constructor
-    Q10PsiPhi(const BasisFunction *psi,
-      	      const BasisFunction *phi, 
-      	      const Quadrature *q);
+    Q10PsiPhi(const BasisFunction* psi,
+              const BasisFunction* phi,
+              const Quadrature* q);
 
   public:
     /// Destructor
     ~Q10PsiPhi();
 
     /// Returns a Q10PsiPhi object.
-    static const Q10PsiPhi* provideQ10PsiPhi(const BasisFunction *,
-                              					     const BasisFunction *, 
-                              					     const Quadrature*);
-    
+    static const Q10PsiPhi* provideQ10PsiPhi(const BasisFunction*,
+        const BasisFunction*,
+        const Quadrature*);
+
     /// Compares two Q10PsiPhi objects.
     bool operator==(const Q10PsiPhi&) const;
 
     /// Compares two Q10PsiPhi objects.
     bool operator!=(const Q10PsiPhi& q10pp) const
-    { 
+    {
       return !(operator==(q10pp));
     }
 
     /// Returns \ref values[i][j][k]
     double getValue(unsigned int i,
-          				  unsigned int j,
-          				  unsigned int v) const 
+                    unsigned int j,
+                    unsigned int v) const
     {
-      if (values && values[i] && values[i][j] && 
-      	  (static_cast<int>(v) < nrEntries[i][j])) 
-      	return values[i][j][v];
+      if (values && values[i] && values[i][j] &&
+          (static_cast<int>(v) < nrEntries[i][j]))
+        return values[i][j][v];
 
       return 0.0;
     }
 
     /// Returns \ref nrEntries[i][j]
-    int getNumberEntries(unsigned int i, unsigned int j) const 
+    int getNumberEntries(unsigned int i, unsigned int j) const
     {
-      if (nrEntries && nrEntries[i]) 
+      if (nrEntries && nrEntries[i])
         return nrEntries[i][j];
 
       return 0;
     }
 
     /// Returns \ref nrEntries
-    const int** getNumberEntries() const 
+    const int** getNumberEntries() const
     {
       return const_cast<const int**>(nrEntries);
     }
 
     /// Returns \ref k[i1][i2][i3]
-    int getK(unsigned int i1, 
-    			   unsigned int i2, 
-    			   unsigned int i3) const 
+    int getK(unsigned int i1,
+             unsigned int i2,
+             unsigned int i3) const
     {
       if (k && k[i1] && k[i1][i2] && (static_cast<int>(i3) < nrEntries[i1][i2]))
         return k[i1][i2][i3];
@@ -303,7 +303,7 @@ namespace AMDiS
     }
 
     /// Returns \values[i][j]
-    const double *getValVec(unsigned int i, unsigned int j) const 
+    const double* getValVec(unsigned int i, unsigned int j) const
     {
       if (values && values[i] && values[i][j])
         return values[i][j];
@@ -312,9 +312,9 @@ namespace AMDiS
     }
 
     /// Returns \ref k[i][j]
-    const int *getKVec(unsigned int i, unsigned int j) const 
+    const int* getKVec(unsigned int i, unsigned int j) const
     {
-      if (k && k[i] && k[i][j]) 
+      if (k && k[i] && k[i][j])
         return k[i][j];
 
       return NULL;
@@ -325,49 +325,49 @@ namespace AMDiS
     static std::list<Q10PsiPhi*> preList;
 
     /// Pointer to the first set of basis functions
-    const BasisFunction *psi;
+    const BasisFunction* psi;
 
     /// Pointer to the second set of basis functions
-    const BasisFunction *phi;
+    const BasisFunction* phi;
 
     /// Pointer to the Quadrature which is used for the integration
-    const Quadrature *quadrature;
-  
+    const Quadrature* quadrature;
+
     /** \brief
-     * Matrix of size psi->getNumber() * phi->getNumber() storing the count of 
-     * non zero integrals; nrEntries[i][j] is the count of non zero values of 
+     * Matrix of size psi->getNumber() * phi->getNumber() storing the count of
+     * non zero integrals; nrEntries[i][j] is the count of non zero values of
      * \f$ \hat{Q}_{ij,kl}^{11} \f$
-     * (0 <= k,l <= DIM) for the pair (psi[i], phi[j]), 0 <= i < 
+     * (0 <= k,l <= DIM) for the pair (psi[i], phi[j]), 0 <= i <
      * psi->getNumber(), 0 <= j < phi->getNumber()
      */
-    int **nrEntries;
+    int** nrEntries;
 
     /** \brief
      * tensor storing the non zero integrals; values[i][j] is a vector of length
-     * \ref nrEntries[i][j] storing the non zero values for the pair (psi[i], 
+     * \ref nrEntries[i][j] storing the non zero values for the pair (psi[i],
      * phi[j])
      */
-    double ***values;
+    double*** values;
 
     /// Tensor storing the indices k of the non zero integrals;
-    int ***k;
+    int*** k;
 
     /// Number of all non zero entries.
     int allEntries;
 
     /// Pointer to an array in values.
-    double *val_vec;
+    double* val_vec;
 
     /// Pointer to an array in k.
-    int *k_vec;
+    int* k_vec;
 
     friend class compareQPsiPhi<Q10PsiPhi>;
   };
 
 
-  /** \ingroup Integration 
+  /** \ingroup Integration
    * \brief
-   * Calculates element stiffness matrices by preevaluated integrals over the 
+   * Calculates element stiffness matrices by preevaluated integrals over the
    * the reference element (integral of the product of psi and the derivative
    * of phi).
    */
@@ -375,36 +375,36 @@ namespace AMDiS
   {
   protected:
     /// Constructor
-    Q01PsiPhi(const BasisFunction *psi,
-      	      const BasisFunction *phi, 
-      	      const Quadrature *q);
+    Q01PsiPhi(const BasisFunction* psi,
+              const BasisFunction* phi,
+              const Quadrature* q);
 
   public:
     /// Destructor
     ~Q01PsiPhi();
 
     /// Returns a Q01PsiPhi object.
-    static const Q01PsiPhi* provideQ01PsiPhi(const BasisFunction *,
-                              					     const BasisFunction *, 
-                              					     const Quadrature*);
-    
+    static const Q01PsiPhi* provideQ01PsiPhi(const BasisFunction*,
+        const BasisFunction*,
+        const Quadrature*);
+
     /// Compares two Q01PsiPhi objects.
     bool operator==(const Q01PsiPhi&) const;
 
     /// Compares two Q01PsiPhi objects.
-    bool operator!=(const Q01PsiPhi& q01pp) const 
-    { 
+    bool operator!=(const Q01PsiPhi& q01pp) const
+    {
       return !(operator==(q01pp));
     }
 
     /// Returns \ref values[i][j][k]
     double getValue(unsigned int i,
-          				  unsigned int j,
-          				  unsigned int v) const
+                    unsigned int j,
+                    unsigned int v) const
     {
-      if (values && values[i] && values[i][j] && 
-      	  (static_cast<int>(v) < nrEntries[i][j])) 
-      	return values[i][j][v];
+      if (values && values[i] && values[i][j] &&
+          (static_cast<int>(v) < nrEntries[i][j]))
+        return values[i][j][v];
 
       return 0.0;
     }
@@ -412,48 +412,48 @@ namespace AMDiS
     /// Returns \ref nrEntries[i][j]
     int getNumberEntries(unsigned int i, unsigned int j) const
     {
-      if (nrEntries && nrEntries[i]) 
-      	return nrEntries[i][j];
+      if (nrEntries && nrEntries[i])
+        return nrEntries[i][j];
 
       return 0;
     }
 
     /// Returns \ref nrEntries
-    const int** getNumberEntries() const 
+    const int** getNumberEntries() const
     {
       return const_cast<const int**>(nrEntries);
     }
 
     /// Returns \ref k[i1][i2][i3]
-    inline int getK(unsigned int i1, 
-            			  unsigned int i2, 
-            			  unsigned int i3) const;
+    inline int getK(unsigned int i1,
+                    unsigned int i2,
+                    unsigned int i3) const;
 
     /// Returns \values[i][j]
-    const double *getValVec(unsigned int i, unsigned int j) const 
+    const double* getValVec(unsigned int i, unsigned int j) const
     {
-      if (values && values[i] && values[i][j]) 
-      	return values[i][j];
+      if (values && values[i] && values[i][j])
+        return values[i][j];
 
       return NULL;
     }
 
     /// Returns \ref k[i][j]
-    const int *getLVec(unsigned int i, unsigned int j) const 
+    const int* getLVec(unsigned int i, unsigned int j) const
     {
-      if (l && l[i] && l[i][j]) 
-      	return l[i][j];
+      if (l && l[i] && l[i][j])
+        return l[i][j];
 
       return NULL;
     }
 
     /// Returns \ref k[i][j][v]
-    int getL(unsigned int i, 
-      			 unsigned int j, 
-      			 unsigned int v) const
+    int getL(unsigned int i,
+             unsigned int j,
+             unsigned int v) const
     {
-      if (l && l[i] && l[i][j] && (static_cast<int>(v) < nrEntries[i][j])) 
-      	return l[i][j][v];
+      if (l && l[i] && l[i][j] && (static_cast<int>(v) < nrEntries[i][j]))
+        return l[i][j][v];
 
       return 0;
     }
@@ -463,41 +463,41 @@ namespace AMDiS
     static std::list<Q01PsiPhi*> preList;
 
     /// Pointer to the first set of basis functions
-    const BasisFunction *psi;
+    const BasisFunction* psi;
 
     /// Pointer to the second set of basis functions
-    const BasisFunction *phi;
+    const BasisFunction* phi;
 
     /// Pointer to the Quadrature which is used for the integration
-    const Quadrature *quadrature;
-  
+    const Quadrature* quadrature;
+
     /** \brief
-     * Matrix of size psi->getNumber() * phi->getNumber() storing the count of 
-     * non zero integrals; nrEntries[i][j] is the count of non zero values of 
+     * Matrix of size psi->getNumber() * phi->getNumber() storing the count of
+     * non zero integrals; nrEntries[i][j] is the count of non zero values of
      * \f$ \hat{Q}_{ij,kl}^{11} \f$
-     * (0 <= k,l <= DIM) for the pair (psi[i], phi[j]), 0 <= i < 
+     * (0 <= k,l <= DIM) for the pair (psi[i], phi[j]), 0 <= i <
      * psi->getNumber(), 0 <= j < phi->getNumber()
      */
-    int **nrEntries;
+    int** nrEntries;
 
     /** \brief
      * tensor storing the non zero integrals; values[i][j] is a vector of length
-     * \ref nrEntries[i][j] storing the non zero values for the pair (psi[i], 
+     * \ref nrEntries[i][j] storing the non zero values for the pair (psi[i],
      * phi[j])
      */
-    double ***values;
+    double*** values;
 
     /// Tensor storing the indices l of the non zero integrals;
-    int ***l;
+    int*** l;
 
     /// Number of all non zero entries.
     int allEntries;
 
     /// Pointer to an array in values
-    double *val_vec;
+    double* val_vec;
 
     /// Pointer to an array in l.
-    int *l_vec;
+    int* l_vec;
 
     friend class compareQPsiPhi<Q01PsiPhi>;
   };
@@ -505,7 +505,7 @@ namespace AMDiS
 
   /** \ingroup Integration
    * \brief
-   * Calculates element stiffness matrices by preevaluated integrals over the 
+   * Calculates element stiffness matrices by preevaluated integrals over the
    * the reference element (integral of the product of psi and phi).
    */
   class Q00PsiPhi
@@ -514,13 +514,13 @@ namespace AMDiS
     static std::list<Q00PsiPhi*> preList;
 
     /// Pointer to the first set of basis functions
-    const BasisFunction *psi;
+    const BasisFunction* psi;
 
     /// Pointer to the second set of basis functions
-    const BasisFunction *phi;
+    const BasisFunction* phi;
 
     /// Pointer to the Quadrature which is used for the integration
-    const Quadrature *quadrature;
+    const Quadrature* quadrature;
 
     /** \brief
      * Matrix storing the integrals
@@ -528,22 +528,22 @@ namespace AMDiS
      * \overline{\phi}^j) \f]
      * for the pair (psi[i], phi[j]), 0 <= i <= psi->getNumber(),
      * 0 <= j <= phi->getNumber()
-     */  
-    double **values;
-  
+     */
+    double** values;
+
   protected:
     /// Constructor
-    Q00PsiPhi(const BasisFunction *, const BasisFunction *, const Quadrature*);
+    Q00PsiPhi(const BasisFunction*, const BasisFunction*, const Quadrature*);
 
   public:
     /// Destructor
     ~Q00PsiPhi();
 
     /// Returns a Q00PsiPhi object.
-    static Q00PsiPhi* provideQ00PsiPhi(const BasisFunction *,
-                        				       const BasisFunction *, 
-                        				       const Quadrature*);
-  
+    static Q00PsiPhi* provideQ00PsiPhi(const BasisFunction*,
+                                       const BasisFunction*,
+                                       const Quadrature*);
+
     /// Compares two Q00PsiPhi objects.
     bool operator==(const Q00PsiPhi& q00pp) const
     {
@@ -551,29 +551,29 @@ namespace AMDiS
     }
 
     /// Compares two Q00PsiPhi objects.
-    bool operator!=(const Q00PsiPhi& q00pp) const 
-    { 
+    bool operator!=(const Q00PsiPhi& q00pp) const
+    {
       return !(operator==(q00pp));
     }
-  
+
     /// Returns \ref values[i][j]
     double getValue(unsigned int i, unsigned int j) const;
 
     /// Returns \ref values[i]
-    const double *getValVec(unsigned int i) const;  
+    const double* getValVec(unsigned int i) const;
 
     friend class compareQPsiPhi<Q00PsiPhi>;
   };
-  
-  
-  
+
+
+
   inline double Q00PsiPhi::getValue(unsigned int i,unsigned  int j) const
   {
     if ((values)&&(values[i])) return values[i][j];
     return 0.;
   }
 
-  inline const double *Q00PsiPhi::getValVec(unsigned int i) const
+  inline const double* Q00PsiPhi::getValVec(unsigned int i) const
   {
     if ((values)&&(values[i])) return values[i];
     return NULL;
@@ -591,25 +591,25 @@ namespace AMDiS
     static std::list<Q0Psi*> preList;
 
     /// Pointer to the first set of basis functions
-    const BasisFunction *psi;
+    const BasisFunction* psi;
 
     /// Pointer to the Quadrature which is used for the integration
-    const Quadrature *quadrature;
+    const Quadrature* quadrature;
 
     /// Vector storing the integrals
     double* values;
-  
+
   protected:
     /// Constructor
-    Q0Psi(const BasisFunction *, const Quadrature*);
+    Q0Psi(const BasisFunction*, const Quadrature*);
 
   public:
     /// Destructor
     ~Q0Psi();
 
     /// Returns a Q0Psi object.
-    static Q0Psi* provideQ0Psi(const BasisFunction *, const Quadrature*);
-  
+    static Q0Psi* provideQ0Psi(const BasisFunction*, const Quadrature*);
+
     /// Compares two Q0Psi objects.
     bool operator==(const Q0Psi& q0p) const
     {
@@ -617,22 +617,22 @@ namespace AMDiS
     }
 
     /// Compares two Q0Psi objects.
-    bool operator!=(const Q0Psi& q0p) const 
-    { 
+    bool operator!=(const Q0Psi& q0p) const
+    {
       return !(operator==(q0p));
     }
-  
+
     /// Returns \ref value
-    double getValue(int i) const 
-    { 
-      return values[i]; 
+    double getValue(int i) const
+    {
+      return values[i];
     }
 
     /// Returns \ref values[i]
-    const double *getValVec() const 
+    const double* getValVec() const
     {
       return values;
-    } 
+    }
 
     friend class compareQPsi<Q0Psi>;
   };
@@ -646,7 +646,7 @@ namespace AMDiS
   {
   protected:
     /// Constructor
-    Q1Psi(const BasisFunction *psi, const Quadrature *q);
+    Q1Psi(const BasisFunction* psi, const Quadrature* q);
 
 
   public:
@@ -654,24 +654,24 @@ namespace AMDiS
     ~Q1Psi();
 
     /// Returns a Q1Psi object.
-    static const Q1Psi* provideQ1Psi(const BasisFunction *,
-                        				     const Quadrature*);
-    
+    static const Q1Psi* provideQ1Psi(const BasisFunction*,
+                                     const Quadrature*);
+
     /// Compares two Q1Psi objects.
     bool operator==(const Q1Psi&) const;
 
     /// Compares two Q1Psi objects.
-    bool operator!=(const Q1Psi& q1p) const 
-    { 
+    bool operator!=(const Q1Psi& q1p) const
+    {
       return !(operator==(q1p));
     }
-    
+
     /// Returns \ref values[i][j]
     double getValue(unsigned int i,
-				 unsigned int j) const 
+                    unsigned int j) const
     {
       if (values && values[i] && (static_cast<int>(j) < nrEntries[i]))
-      	return values[i][j];
+        return values[i][j];
 
       return 0.0;
     }
@@ -682,8 +682,8 @@ namespace AMDiS
       return (nrEntries ? nrEntries[i] : 0);
     }
 
-    /// Returns \ref nrEntries   
-    const int* getNumberEntries() const 
+    /// Returns \ref nrEntries
+    const int* getNumberEntries() const
     {
       return const_cast<const int*>(nrEntries);
     }
@@ -691,26 +691,26 @@ namespace AMDiS
     /// Returns \ref k[i1][i2]
     int getK(unsigned int i1, unsigned int i2) const
     {
-      if (k && k[i1] && (static_cast<int>(i2) < nrEntries[i1])) 
-      	return k[i1][i2];
+      if (k && k[i1] && (static_cast<int>(i2) < nrEntries[i1]))
+        return k[i1][i2];
 
       return 0;
     }
 
     /// Returns \ref k[i]
-    const int *getKVec(unsigned int i) const 
+    const int* getKVec(unsigned int i) const
     {
-      if (k && k[i]) 
-      	return k[i];
+      if (k && k[i])
+        return k[i];
 
       return NULL;
     }
 
     /// Returns \values[i]
-    const double *getValVec(unsigned int i) const 
+    const double* getValVec(unsigned int i) const
     {
-      if (values && values[i]) 
-      	return values[i];
+      if (values && values[i])
+        return values[i];
 
       return NULL;
     }
@@ -720,34 +720,34 @@ namespace AMDiS
     static std::list<Q1Psi*> preList;
 
     /// Pointer to the first set of basis functions
-    const BasisFunction *psi;
+    const BasisFunction* psi;
 
     /// Pointer to the Quadrature which is used for the integration
-    const Quadrature *quadrature;
-  
+    const Quadrature* quadrature;
+
     /** \brief
-     * Array of size psi->getNumber() storing the count of 
-     * non zero integrals; nrEntries[i] is the count of non zero values of 
+     * Array of size psi->getNumber() storing the count of
+     * non zero integrals; nrEntries[i] is the count of non zero values of
      * \f$ \hat{Q}_{i,kl}^{11} \f$
      * (0 <= k <= DIM) for psi[i], 0 <= i < psi->getNumber().
      */
-    int *nrEntries;
+    int* nrEntries;
 
     /// Number of all non zero entries.
     int allEntries;
 
     /// Tensor storing the non zero integrals; values[i] is a vector of length
     /// \ref nrEntries[i] storing the non zero values for psi[i].
-    double **values;
+    double** values;
 
     /// Matrix storing the indices k of the non zero integrals;
-    int **k;
+    int** k;
 
     /// Pointer to an array in values.
-    double *val_vec;
+    double* val_vec;
 
     /// Pointer to an array in k.
-    int *k_vec;
+    int* k_vec;
 
     friend class compareQPsi<Q1Psi>;
   };

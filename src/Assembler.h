@@ -18,11 +18,11 @@
 #include "FirstOrderAssembler.h"
 #include "SecondOrderAssembler.h"
 
-namespace AMDiS 
+namespace AMDiS
 {
   /**
    * \ingroup Assembler
-   * 
+   *
    * \brief
    * Assembles element matrices and vectors for a given Operator. Uses
    * one SubAssembler for all second order terms of the Operator, one for all
@@ -32,57 +32,57 @@ namespace AMDiS
   {
   public:
     /// Constructor
-    Assembler(Operator *op,
-      	      const FiniteElemSpace *rowFeSpace,
-      	      const FiniteElemSpace *colFeSpace = NULL);
+    Assembler(Operator* op,
+              const FiniteElemSpace* rowFeSpace,
+              const FiniteElemSpace* colFeSpace = NULL);
 
     /// Destructor
     virtual ~Assembler() {};
 
     /// Assembles the element matrix for the given ElInfo
-    void calculateElementMatrix(const ElInfo *elInfo, 
-                        				ElementMatrix& userMat, 
-                        				double factor = 1.0);
+    void calculateElementMatrix(const ElInfo* elInfo,
+                                ElementMatrix& userMat,
+                                double factor = 1.0);
 
     /// Assembles the element vector for the given ElInfo
-    void calculateElementVector(const ElInfo *elInfo, 
-                        				DenseVector<double>& userVec, 
-                        				double factor = 1.0);
+    void calculateElementVector(const ElInfo* elInfo,
+                                DenseVector<double>& userVec,
+                                double factor = 1.0);
 
     /// Returns \ref rowFeSpace.
     const FiniteElemSpace* getRowFeSpace() const
-    { 
-      return rowFeSpace; 
+    {
+      return rowFeSpace;
     }
 
     /// Returns \ref colFeSpace.
     const FiniteElemSpace* getColFeSpace() const
-    { 
-      return colFeSpace; 
+    {
+      return colFeSpace;
     }
 
     /// Returns \ref nRow.
     int getNRow() const
-    { 
-      return nRow; 
+    {
+      return nRow;
     }
 
     /// Returns \ref nCol.
     int getNCol() const
-    { 
-      return nCol; 
+    {
+      return nCol;
     }
 
     /// Sets \ref rememberElMat.
-    void rememberElementMatrix(bool rem) 
-    { 
-      rememberElMat = rem; 
+    void rememberElementMatrix(bool rem)
+    {
+      rememberElMat = rem;
     }
 
     /// Sets \ref rememberElVec.
-    void rememberElementVector(bool rem) 
-    { 
-      rememberElVec = rem; 
+    void rememberElementVector(bool rem)
+    {
+      rememberElVec = rem;
     }
 
     /// Returns \ref zeroOrderAssembler.
@@ -98,8 +98,8 @@ namespace AMDiS
     FirstOrderAssembler* getFirstOrderAssembler(FirstOrderType type = GRD_PSI) const
     {
       return (type == GRD_PSI)
-      	? firstOrderAssemblerGrdPsi
-      	: firstOrderAssemblerGrdPhi;
+             ? firstOrderAssemblerGrdPsi
+             : firstOrderAssemblerGrdPhi;
     }
 
     /// Returns \ref secondOrderAssembler.
@@ -110,40 +110,44 @@ namespace AMDiS
 
     /// Returns \ref operat;
     Operator* getOperator() const
-    { 
-      return operat; 
+    {
+      return operat;
     }
 
     /// Initialisation for the given ElInfo. The call is deligated to the sub assemblers.
-    void initElement(const ElInfo *smallElInfo,
-            		     const ElInfo *largeElInfo = NULL,
-            		     Quadrature *quad = NULL);
+    void initElement(const ElInfo* smallElInfo,
+                     const ElInfo* largeElInfo = NULL,
+                     Quadrature* quad = NULL);
 
     /// Sets quadratures of all sub assemblers.
-    void setQuadratures(Quadrature *quad2,
-                  			Quadrature *quad1GrdPsi,
-                  			Quadrature *quad1GrdPhi,
-                  			Quadrature *quad0) 
+    void setQuadratures(Quadrature* quad2,
+                        Quadrature* quad1GrdPsi,
+                        Quadrature* quad1GrdPhi,
+                        Quadrature* quad0)
     {
-      if (secondOrderAssembler) {
-      	TEST_EXIT(!secondOrderAssembler->getQuadrature())
-      	  ("quadrature already existing\n");
-      	secondOrderAssembler->setQuadrature(quad2);
+      if (secondOrderAssembler)
+      {
+        TEST_EXIT(!secondOrderAssembler->getQuadrature())
+        ("quadrature already existing\n");
+        secondOrderAssembler->setQuadrature(quad2);
       }
-      if (firstOrderAssemblerGrdPsi) {
-      	TEST_EXIT(!firstOrderAssemblerGrdPsi->getQuadrature())
-      	  ("quadrature already existing\n");
-      	firstOrderAssemblerGrdPsi->setQuadrature(quad1GrdPsi);
+      if (firstOrderAssemblerGrdPsi)
+      {
+        TEST_EXIT(!firstOrderAssemblerGrdPsi->getQuadrature())
+        ("quadrature already existing\n");
+        firstOrderAssemblerGrdPsi->setQuadrature(quad1GrdPsi);
       }
-      if (firstOrderAssemblerGrdPhi) {
-      	TEST_EXIT(!firstOrderAssemblerGrdPhi->getQuadrature())
-      	  ("quadrature already existing\n");
-      	firstOrderAssemblerGrdPhi->setQuadrature(quad1GrdPhi);
+      if (firstOrderAssemblerGrdPhi)
+      {
+        TEST_EXIT(!firstOrderAssemblerGrdPhi->getQuadrature())
+        ("quadrature already existing\n");
+        firstOrderAssemblerGrdPhi->setQuadrature(quad1GrdPhi);
       }
-      if (zeroOrderAssembler) {
-      	TEST_EXIT(!zeroOrderAssembler->getQuadrature())
-      	  ("quadrature already existing\n");
-      	zeroOrderAssembler->setQuadrature(quad0);
+      if (zeroOrderAssembler)
+      {
+        TEST_EXIT(!zeroOrderAssembler->getQuadrature())
+        ("quadrature already existing\n");
+        zeroOrderAssembler->setQuadrature(quad0);
       }
     }
 
@@ -152,10 +156,10 @@ namespace AMDiS
 
   protected:
     /** \brief
-     * Vector assembling by element matrix-vector multiplication. 
+     * Vector assembling by element matrix-vector multiplication.
      * Usefull if an element matrix was already calculated.
      */
-    void matVecAssemble(const ElInfo *elInfo, DenseVector<double>& vec);
+    void matVecAssemble(const ElInfo* elInfo, DenseVector<double>& vec);
 
     /** \brief
      * Checks whether quadratures for subassemblers are already set.
@@ -165,13 +169,13 @@ namespace AMDiS
 
   protected:
     /// Operator this Assembler belongs to.
-    Operator *operat;
+    Operator* operat;
 
     /// Row FiniteElemSpace.
-    const FiniteElemSpace *rowFeSpace;
+    const FiniteElemSpace* rowFeSpace;
 
     /// Column FiniteElemSpace.
-    const FiniteElemSpace *colFeSpace;
+    const FiniteElemSpace* colFeSpace;
 
     /// Number of rows.
     int nRow;
@@ -180,16 +184,16 @@ namespace AMDiS
     int nCol;
 
     /// SubAssembler for the second order terms
-    SecondOrderAssembler *secondOrderAssembler;
+    SecondOrderAssembler* secondOrderAssembler;
 
     /// SubAssembler for the first order terms (grdPsi)
-    FirstOrderAssembler *firstOrderAssemblerGrdPsi;
+    FirstOrderAssembler* firstOrderAssemblerGrdPsi;
 
     /// SubAssembler for the first order terms (grdPhi)
-    FirstOrderAssembler *firstOrderAssemblerGrdPhi;  
+    FirstOrderAssembler* firstOrderAssemblerGrdPhi;
 
     /// SubAssembler for the zero order terms
-    ZeroOrderAssembler *zeroOrderAssembler;
+    ZeroOrderAssembler* zeroOrderAssembler;
 
     ///
     bool remember;
@@ -208,7 +212,7 @@ namespace AMDiS
 
     ///
     ElementMatrix tmpMat;
-  
+
     /// Used to check whether \ref initElement() must be called, because
     /// a new Element is visited.
     Element* lastMatEl;
@@ -219,11 +223,6 @@ namespace AMDiS
 
     /// Used to check for new traverse.
     int lastTraverseId;
-
-    friend class SubAssembler;
-    friend class ZeroOrderAssembler;
-    friend class FirstOrderAssembler;
-    friend class SecondOrderAssembler;
   };
 
   /**
@@ -236,13 +235,13 @@ namespace AMDiS
   {
   public:
     /// Constructor
-    StandardAssembler(Operator *op,
-            		      Quadrature *quad2,
-            		      Quadrature *quad1GrdPsi,
-            		      Quadrature *quad1GrdPhi,
-            		      Quadrature *quad0,
-            		      const FiniteElemSpace *rowFeSpace,
-            		      const FiniteElemSpace *colFeSpace = NULL);
+    StandardAssembler(Operator* op,
+                      Quadrature* quad2,
+                      Quadrature* quad1GrdPsi,
+                      Quadrature* quad1GrdPhi,
+                      Quadrature* quad0,
+                      const FiniteElemSpace* rowFeSpace,
+                      const FiniteElemSpace* colFeSpace = NULL);
   };
 
   /**
@@ -255,13 +254,13 @@ namespace AMDiS
   {
   public:
     /// Constructor
-    OptimizedAssembler(Operator *op,
-            		       Quadrature *quad2,
-            		       Quadrature *quad1GrdPsi,
-            		       Quadrature *quad1GrdPhi,
-            		       Quadrature *quad0,
-            		       const FiniteElemSpace *rowFeSpace,
-            		       const FiniteElemSpace *colFeSpace = NULL);
+    OptimizedAssembler(Operator* op,
+                       Quadrature* quad2,
+                       Quadrature* quad1GrdPsi,
+                       Quadrature* quad1GrdPhi,
+                       Quadrature* quad0,
+                       const FiniteElemSpace* rowFeSpace,
+                       const FiniteElemSpace* colFeSpace = NULL);
   };
 
 } // end namespace AMDiS

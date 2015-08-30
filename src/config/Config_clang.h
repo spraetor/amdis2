@@ -29,43 +29,43 @@ typedef size_t aligned_size_t   __attribute__ ((aligned(CACHE_LINE)));
 
 // __has_feature(cxx_rvalue_references)
 #if CLANG_VERSION >= 20900
-  #define HAS_VARIADIC_TEMPLATES 1
+#define HAS_VARIADIC_TEMPLATES 1
 #endif
 
 #if CLANG_VERSION >= 30000
-  #define HAS_ALIAS_TEMPLATES 1
+#define HAS_ALIAS_TEMPLATES 1
 #endif
 
 #if CLANG_VERSION >= 20900
-  #define HAS_DECLTYPE 1
+#define HAS_DECLTYPE 1
 #endif
 
 #if CLANG_VERSION >= 30100
-  #define HAS_CONSTEXPR 1
+#define HAS_CONSTEXPR 1
 #endif
 
 #if CLANG_VERSION >= 30000
-  #define HAS_DELEGATING_CONSTRUCTORS 1
+#define HAS_DELEGATING_CONSTRUCTORS 1
 #endif
 
 #if CLANG_VERSION >= 30000
-  #define HAS_RANGE_BASED_FOR 1
+#define HAS_RANGE_BASED_FOR 1
 #endif
 
 #if CLANG_VERSION >= 30100
-  #define HAS_INITIALIZER_LISTS 1
+#define HAS_INITIALIZER_LISTS 1
 #endif
 
 #if CLANG_VERSION >= 30000
-  #define HAS_OVERRIDE 1
+#define HAS_OVERRIDE 1
 #endif
 
 #if CLANG_VERSION >= 20900
-  #define HAS_TYPED_ENUMS 1
+#define HAS_TYPED_ENUMS 1
 #endif
 
 #if CLANG_VERSION >= 20900
-  #define HAS_RVALUE_REFERENCES 1
+#define HAS_RVALUE_REFERENCES 1
 #endif
 
 #endif

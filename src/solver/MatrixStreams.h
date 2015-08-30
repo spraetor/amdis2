@@ -5,7 +5,7 @@
  * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
  * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
  *
- * Authors: 
+ * Authors:
  * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
  *
  * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
@@ -15,7 +15,7 @@
  * This file is part of AMDiS
  *
  * See also license.opensource.txt in the distribution.
- * 
+ *
  ******************************************************************************/
 
 
@@ -32,22 +32,25 @@
 #include "traits/inserter.h"
 #include "traits/category.hpp"
 
-namespace AMDiS {
-  
+namespace AMDiS
+{
+
   // TODO reduce dependencies and remove using namespace
   using namespace mtl::operations;
-  
-  template< typename VecT, typename CurMap, 
-	    typename Updater = update_store<typename traits::category<VecT>::value_type> >
-  struct VecMap {
+
+  template<typename VecT, typename CurMap,
+           typename Updater = update_store<typename traits::category<VecT>::value_type>>
+  struct VecMap
+  {
     VecT& vec;
     CurMap& mapper;
     VecMap(VecT& vec, CurMap& mapper):
       vec(vec),mapper(mapper) {}
   };
 
-  template< typename MatT, typename CurMap >
-  struct MatMap {
+  template<typename MatT, typename CurMap>
+  struct MatMap
+  {
     MatT& mat;
     CurMap& mapper;
     MatMap(MatT& mat, CurMap& m):
@@ -55,10 +58,10 @@ namespace AMDiS {
   };
 
   // requires MatrixType to have an inserter
-  template< typename MatrixType, typename Mapper >
-  void operator<<(MatrixType& matrix, MatMap<const Matrix<DOFMatrix*>, Mapper >& Asolver)
+  template<typename MatrixType, typename Mapper>
+  void operator<<(MatrixType& matrix, MatMap<const Matrix<DOFMatrix*>, Mapper>& Asolver)
   {
-    const Matrix< DOFMatrix* >& A = Asolver.mat;
+    const Matrix<DOFMatrix*>& A = Asolver.mat;
     int ns = A.getNumRows();
 
     Mapper& mapper(Asolver.mapper);
@@ -68,36 +71,38 @@ namespace AMDiS {
     for (int rb = 0; rb < ns; ++rb)
       for (int cb = 0; cb < ns; ++cb)
         if (A[rb][cb])
-	  nnz += A[rb][cb]->getBaseMatrix().nnz();	  
-      
+          nnz += A[rb][cb]->getBaseMatrix().nnz();
+
     {
-      typedef typename Mapper::template Inserter< typename Collection<MatrixType>::Inserter >::type MappedInserter;
+      typedef typename Mapper::template Inserter<typename Collection<MatrixType>::Inserter>::type MappedInserter;
       MappedInserter ins(matrix, mapper, int(1.2 * nnz / matrix.dim1()));
-      for (int rb = 0; rb < ns; ++rb) {
+      for (int rb = 0; rb < ns; ++rb)
+      {
         mapper.setRow(rb);
-        for (int cb = 0; cb < ns; ++cb) {
-	  mapper.setCol(cb);
+        for (int cb = 0; cb < ns; ++cb)
+        {
+          mapper.setCol(cb);
           if (A[rb][cb])
-	    ins << A[rb][cb]->getBaseMatrix();
+            ins << A[rb][cb]->getBaseMatrix();
         }
       }
     }
   }
 
   // requires MatrixType to have an inserter
-  template< typename MatrixType, typename Mapper >
-  void operator<<(MatrixType& matrix, MatMap<const SolverMatrix<Matrix<DOFMatrix* > >, Mapper >& Asolver)
+  template<typename MatrixType, typename Mapper>
+  void operator<<(MatrixType& matrix, MatMap<const SolverMatrix<Matrix<DOFMatrix*>>, Mapper>& Asolver)
   {
-    MatMap<const Matrix<DOFMatrix* >, Mapper> mapMat(*Asolver.mat.getOriginalMat(), Asolver.mapper);
+    MatMap<const Matrix<DOFMatrix*>, Mapper> mapMat(*Asolver.mat.getOriginalMat(), Asolver.mapper);
     matrix << mapMat;
   }
-  
-  
+
+
   // requires MatrixType to have an inserter
-  template< typename MatrixType, typename Mapper >
-  void operator<<(MatrixType& matrix, MatMap<const Matrix<MatrixType* >, Mapper >& Asolver)
+  template<typename MatrixType, typename Mapper>
+  void operator<<(MatrixType& matrix, MatMap<const Matrix<MatrixType*>, Mapper>& Asolver)
   {
-    Matrix< MatrixType* >& A = *(Asolver.mat);
+    Matrix<MatrixType*>& A = *(Asolver.mat);
     int ns = A.getNumRows();
 
     Mapper& mapper(Asolver.mapper);
@@ -107,23 +112,25 @@ namespace AMDiS {
     for (int rb = 0; rb < ns; ++rb)
       for (int cb = 0; cb < ns; ++cb)
         if (A[rb][cb])
-	  nnz += A[rb][cb]->nnz();	  
-      
+          nnz += A[rb][cb]->nnz();
+
     {
-      typedef typename Mapper::template Inserter< typename Collection<MatrixType>::Inserter >::type MappedInserter;
+      typedef typename Mapper::template Inserter<typename Collection<MatrixType>::Inserter>::type MappedInserter;
       MappedInserter ins(matrix, mapper, int(1.2 * nnz / matrix.dim1()));
-      for (int rb = 0; rb < ns; ++rb) {
+      for (int rb = 0; rb < ns; ++rb)
+      {
         mapper.setRow(rb);
-        for (int cb = 0; cb < ns; ++cb) {
-	  mapper.setCol(cb);
+        for (int cb = 0; cb < ns; ++cb)
+        {
+          mapper.setCol(cb);
           if (A[rb][cb])
-	    ins << (*A[rb][cb]);
+            ins << (*A[rb][cb]);
         }
       }
     }
   }
 
-  template< typename Vector, typename CurMap, typename Updater >
+  template<typename Vector, typename CurMap, typename Updater>
   void operator<<(Vector& dest, VecMap<const DOFVector<double>, CurMap, Updater>& rhs)
   {
     DOFConstIterator<double> it_x(&rhs.vec, USED_DOFS);
@@ -134,27 +141,29 @@ namespace AMDiS {
     typedef mtl::vector::mapped_inserter<Inserter, CurMap> MappedInserter;
     MappedInserter ins(swapIns, rhs.mapper);
 
-    for (it_x.reset(); !it_x.end(); ++it_x) {
+    for (it_x.reset(); !it_x.end(); ++it_x)
+    {
       ins[counter] << *it_x;
       counter++;
     }
   }
 
-  template< typename Vector, typename CurMap, typename Updater >
+  template<typename Vector, typename CurMap, typename Updater>
   inline void operator>>(const Vector& dest, VecMap<DOFVector<double>, CurMap, Updater>& rhs)
   {
     DOFVector<double>::Iterator it_x(&rhs.vec, USED_DOFS);
     size_t counter(0);
     {
-      mtl::vector::extracter< Vector > extracter(dest);
-      for (it_x.reset(); !it_x.end(); ++it_x) {
-	extracter[rhs.mapper.row(counter)] >> *it_x ;
-	counter++;
+      mtl::vector::extracter<Vector> extracter(dest);
+      for (it_x.reset(); !it_x.end(); ++it_x)
+      {
+        extracter[rhs.mapper.row(counter)] >> *it_x ;
+        counter++;
       }
     }
   }
 
-  template< typename Vector, typename CurMap, typename Updater >
+  template<typename Vector, typename CurMap, typename Updater>
   void operator<<(Vector& dest, VecMap<const SystemVector, CurMap, Updater>& rhs)
   {
     int ns = rhs.vec.getSize();  // Number of systems.
@@ -164,27 +173,30 @@ namespace AMDiS {
     Inserter swapInserter(dest);
     typedef mtl::vector::mapped_inserter<Inserter, CurMap> MappedInserter;
     MappedInserter ins(swapInserter, rhs.mapper);
-    for (int i = 0; i < ns; i++) {
+    for (int i = 0; i < ns; i++)
+    {
       DOFConstIterator<double> it_source(rhs.vec.getDOFVector(i), USED_DOFS);
       size_t counter(0);
       rhs.mapper.setRow(i);
-      for (it_source.reset(); !it_source.end(); ++it_source) {
+      for (it_source.reset(); !it_source.end(); ++it_source)
+      {
         ins[counter] << *it_source;
         counter++;
       }
     }
   }
 
-  template< typename Vector, typename CurMap, typename Updater >
-  void operator>>(const Vector& dest, VecMap<SystemVector, CurMap, Updater>& rhs) 
+  template<typename Vector, typename CurMap, typename Updater>
+  void operator>>(const Vector& dest, VecMap<SystemVector, CurMap, Updater>& rhs)
   {
     int ns = rhs.vec.getSize();  // Number of systems.
 
     // Copy vectors
-    for (int i = 0; i < ns; i++) {
-      DOFVector< double >& dofvec(*(rhs.vec.getDOFVector(i)));
+    for (int i = 0; i < ns; i++)
+    {
+      DOFVector<double>& dofvec(*(rhs.vec.getDOFVector(i)));
       rhs.mapper.setRow(i);
-      VecMap< DOFVector< double >, CurMap > swap(dofvec, rhs.mapper);
+      VecMap<DOFVector<double>, CurMap> swap(dofvec, rhs.mapper);
       dest >> swap;
     }
   }

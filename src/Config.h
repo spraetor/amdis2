@@ -19,34 +19,38 @@
 #endif
 
 #if defined(__clang__)					// Clang/LLVM.
-  #include "config/Config_clang.h"
-  
+#include "config/Config_clang.h"
+
 #elif defined(__ICC) || defined(__INTEL_COMPILER)	// Intel ICC/ICPC. 
-  #include "config/Config_intel.h"
-  
+#include "config/Config_intel.h"
+
 #elif defined(__GNUC__) || defined(__GNUG__)		// GNU GCC/G++.
-  #include "config/Config_gcc.h"
-  
+#include "config/Config_gcc.h"
+
 #elif defined(__HP_cc) || defined(__HP_aCC)
-  error: not supported compiler
-  
+error:
+not supported compiler
+
 #elif defined(__IBMC__) || defined(__IBMCPP__)
-  error: not supported compiler
-  
+error:
+not supported compiler
+
 #elif defined(_MSC_VER)					// Microsoft Visual Studio. 
-  #include "config/Config_msc.h"
-  
+#include "config/Config_msc.h"
+
 #elif defined(__PGI)					// Portland Group PGCC/PGCPP.
-  error: not supported compiler
-//   #include "Config_pgi.h"  
+error:
+not supported compiler
+//   #include "Config_pgi.h"
 
 #elif defined(__SUNPRO_C) || defined(__SUNPRO_CC)
-  error: not supported compiler
+error:
+not supported compiler
 #endif
 
 #include "config/Config_defaults.h"
 
-typedef unsigned char small_t;   // only allow small matrices
+typedef unsigned short small_t;   // only allow small matrices
 
 // some workarounds for mtl (since the namespace has changed)
 #define MTL_VEC mtl::vector

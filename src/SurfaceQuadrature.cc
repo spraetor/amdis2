@@ -3,23 +3,24 @@
 #include "SurfaceQuadrature.h"
 #include "Quadrature.h"
 
-namespace AMDiS 
+namespace AMDiS
 {
-  SurfaceQuadrature::SurfaceQuadrature(Quadrature *q,
-				       VectorOfFixVecs<DimVec<double> > &c)
+  SurfaceQuadrature::SurfaceQuadrature(Quadrature* q,
+                                       VectorOfFixVecs<DimVec<double>>& c)
     : Quadrature((q->getName() + " surface").c_str(),
-      q->getDegree(),
-      q->getDim() + 1,
-      q->getNumPoints(),
-      NULL,
-      q->getWeight()), 
+                 q->getDegree(),
+                 q->getDim() + 1,
+                 q->getNumPoints(),
+                 NULL,
+                 q->getWeight()),
       quad(q),
       coords(c)
   {
-    lambda = new VectorOfFixVecs<DimVec<double> >(dim, n_points, NO_INIT);
+    lambda = new VectorOfFixVecs<DimVec<double>>(dim, n_points, NO_INIT);
 
     // for each integration point
-    for (int i = 0; i < n_points; i++) {
+    for (int i = 0; i < n_points; i++)
+    {
       // get coords of quadrature point in dim-1
       DimVec<double> const& origin = quad->getLambda(i);
 
@@ -32,14 +33,15 @@ namespace AMDiS
     }
   }
 
-  void SurfaceQuadrature::scaleSurfaceQuadrature(VectorOfFixVecs<DimVec<double> >&c)
+  void SurfaceQuadrature::scaleSurfaceQuadrature(VectorOfFixVecs<DimVec<double>>& c)
   {
     // copy coords NOTE: why???
     for (int i = 0; i < dim; i++)
       coords[i] = c[i];
-  
+
     // for each integration point
-    for (int i = 0; i < n_points; i++) {
+    for (int i = 0; i < n_points; i++)
+    {
       // get coords of quadrature point in dim-1
       DimVec<double> const& origin = quad->getLambda(i);
 
@@ -47,8 +49,8 @@ namespace AMDiS
         (*lambda)[i][j] = 0.0;
 
       for (int j = 0; j < dim; j++)
-      	for (int k = 0; k < dim+1; k++)
-      	  (*lambda)[i][k] += origin[j] * coords[j][k];
+        for (int k = 0; k < dim+1; k++)
+          (*lambda)[i][k] += origin[j] * coords[j][k];
     }
   }
 

@@ -5,7 +5,7 @@
  * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
  * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
  *
- * Authors: 
+ * Authors:
  * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
  *
  * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
@@ -15,7 +15,7 @@
  * This file is part of AMDiS
  *
  * See also license.opensource.txt in the distribution.
- * 
+ *
  ******************************************************************************/
 
 
@@ -29,29 +29,30 @@
 #include "ElementLevelSet.h"
 #include "BoundaryElementDist.h"
 
-namespace reinit {
-
-using namespace AMDiS;
-
-class BoundaryElementLevelSetDist : public BoundaryElementDist
+namespace reinit
 {
-public:
 
-  BoundaryElementLevelSetDist(ElementLevelSet *elLS_, int dim_)
-    : BoundaryElementDist(elLS_, dim_)
-  {}
+  using namespace AMDiS;
 
-  /**
-   * Calculates distance from the interface for all vertices of a boundary 
-   * element.
-   * Distance is here the value of the level set function at boundary
-   * vertices..
-   *
-   * Return value: Status of element elInfo.
-   */
-  int calcDistOnBoundaryElement(ElInfo *elInfo,
-				FixVec<double, VERTEX> &dVec);
-};
+  class BoundaryElementLevelSetDist : public BoundaryElementDist
+  {
+  public:
+
+    BoundaryElementLevelSetDist(ElementLevelSet* elLS_, int dim_)
+      : BoundaryElementDist(elLS_, dim_)
+    {}
+
+    /**
+     * Calculates distance from the interface for all vertices of a boundary
+     * element.
+     * Distance is here the value of the level set function at boundary
+     * vertices..
+     *
+     * Return value: Status of element elInfo.
+     */
+    int calcDistOnBoundaryElement(ElInfo* elInfo,
+                                  FixVec<double, VERTEX>& dVec);
+  };
 
 }
 

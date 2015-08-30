@@ -11,51 +11,51 @@
 #include "Projection.h"
 #include "FixVec.h"
 
-namespace AMDiS 
+namespace AMDiS
 {
 
   /** \ingroup Triangulation
    * \brief
    * MacroElements form the macro triangulation of a Mesh. In a MacroElement
    * geometrical information are stored, which are used in mesh traversal,
-   * to calculate the desired information and fill it in an ElInfo object. 
-   */ 
+   * to calculate the desired information and fill it in an ElInfo object.
+   */
   class MacroElement
   {
   public:
     /// Creates a new MacroElement. The mesh is needed only to get the dimension
-    MacroElement(int dim); 
+    MacroElement(int dim);
 
     /// Destructor.
     virtual ~MacroElement();
 
     ///
-    MacroElement& operator=(const MacroElement &el);
+    MacroElement& operator=(const MacroElement& el);
 
     /** \name getting methods
      * \{
      */
 
     /// Returns \ref index.
-    int getIndex() const 
+    int getIndex() const
     {
-      return index; 
+      return index;
     }
 
-    /// Returns ref projection[i]. 
-    Projection *getProjection(int i) const 
+    /// Returns ref projection[i].
+    Projection* getProjection(int i) const
     {
       return projection[i];
     }
 
     /// Returns \ref el
-    Element* getElement() const 
+    Element* getElement() const
     {
-      return element; 
+      return element;
     }
 
     /// Returns the i-th neighbour of this MacroElement \ref neighbour[i]
-    MacroElement* getNeighbour(int i) const 
+    MacroElement* getNeighbour(int i) const
     {
       return neighbour[i];
     }
@@ -64,39 +64,49 @@ namespace AMDiS
     /// Uses the inverse neighbour relation in graph-structured meshes where
     /// elements can have more than one neighbour
     /// If [b] is neighbour of [a], then is [a] neighbour_inv of [b]
-    MacroElement* getNeighbourInv(int i) const 
+    MacroElement* getNeighbourInv(int i) const
     {
       return neighbour_inv[i];
     }
 
     /// Returns the i-th opp-vertex of this MacroElement \ref oppVertex[i]
-    int getOppVertex(int i) const 
+    int getOppVertex(int i) const
     {
       return oppVertex[i];
     }
 
     /// Returns \ref coord[i]
-    WorldVector<double>& getCoord(int i) 
+    WorldVector<double>& getCoord(int i)
     {
-      return coord[i];    
+      return coord[i];
+    }
+
+    WorldVector<double> const& getCoord(int i) const
+    {
+      return coord[i];
     }
 
     /// Returns \ref coord
-    FixVec<WorldVector<double>, VERTEX>& getCoord() 
+    FixVec<WorldVector<double>, VERTEX>& getCoord()
     {
-      return coord;    
+      return coord;
+    }
+
+    FixVec<WorldVector<double>, VERTEX> const& getCoord() const
+    {
+      return coord;
     }
 
     /// Returns \ref boundary[i]
-    BoundaryType getBoundary(int i) const 
+    BoundaryType getBoundary(int i) const
     {
-      return boundary[i]; 
+      return boundary[i];
     }
 
     /// Returns \ref elType
-    int getElType() const 
+    int getElType() const
     {
-      return elType; 
+      return elType;
     }
 
     /** \} */
@@ -106,36 +116,39 @@ namespace AMDiS
      */
 
     /// Sets \ref index
-    void setIndex(int n) 
+    void setIndex(int n)
     {
-      index = n ; 
+      index = n ;
     }
 
     /// Sets \ref element if not yet set.
-    void setElement(Element* el) 
+    void setElement(Element* el)
     {
-      if (!element) {
-        element = el; 
-      } else {
-        if (element != el) 
-          ERROR("Trying to change element in MacroElement\n");   
+      if (!element)
+      {
+        element = el;
+      }
+      else
+      {
+        if (element != el)
+          ERROR("Trying to change element in MacroElement\n");
       }
     }
 
     /// Sets \ref elType
-    void setElType(int typ) 
+    void setElType(int typ)
     {
-      elType = typ; 
+      elType = typ;
     }
 
     /// Sets \ref projection[i] = p.
-    void setProjection(int i, Projection *p) 
+    void setProjection(int i, Projection* p)
     {
       projection[i] = p;
     }
 
     /// Sets the i-th Neighbour to n
-    void setNeighbour(int i, MacroElement *n) 
+    void setNeighbour(int i, MacroElement* n)
     {
       neighbour[i] = n;
     }
@@ -147,13 +160,13 @@ namespace AMDiS
     }
 
     /// Sets \ref boundary[i] to b
-    void setBoundary(int i, BoundaryType b) 
+    void setBoundary(int i, BoundaryType b)
     {
-      boundary[i] = b; 
+      boundary[i] = b;
     }
 
     ///
-    void setCoord(int i, const WorldVector<double> c) 
+    void setCoord(int i, const WorldVector<double> c)
     {
       coord[i] = c;
     }
@@ -161,14 +174,14 @@ namespace AMDiS
     /** \} */
 
     ///
-    void writeNeighboursTo(std::vector<int> *indices) 
+    void writeNeighboursTo(std::vector<int>* indices)
     {
       deserializedNeighbourIndices = indices;
     }
 
   protected:
     /// Element of this MacroElement.
-    Element *element;
+    Element* element;
 
     /// Coordinates of the vertices.
     FixVec<WorldVector<double>, VERTEX> coord;
@@ -179,31 +192,27 @@ namespace AMDiS
     /// Boundary projection to curved boundaries or element projections.
     FixVec<Projection*, PROJECTION> projection;
 
-    /// Pointers to all neighbours of this MacroElement 
+    /// Pointers to all neighbours of this MacroElement
     FixVec<MacroElement*, NEIGH> neighbour;
 
-    /// Pointers to all neighbours of this MacroElement 
+    /// Pointers to all neighbours of this MacroElement
     FixVec<MacroElement*, NEIGH> neighbour_inv;
-    
+
     /// opp vertices of this MacroElement
     FixVec<int, NEIGH> oppVertex;
 
     /// index of this MacroElement
-    int index;  
+    int index;
 
     /// Element type of the MacroElement
-    int elType;  
+    int elType;
 
     ///
-    std::vector<int> *deserializedNeighbourIndices;
+    std::vector<int>* deserializedNeighbourIndices;
 
 
     friend class MacroInfo;
     friend class io::MacroReader;
-//     friend class ElInfo;
-    friend class ElInfo1d;
-    friend class ElInfo2d;
-    friend class ElInfo3d;
   };
 
 } // end namespace AMDiS

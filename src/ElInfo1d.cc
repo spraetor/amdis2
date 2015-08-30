@@ -12,41 +12,47 @@
 #include "FixVec.h"
 #include "DOFVector.h"
 
-namespace AMDiS 
+namespace AMDiS
 {
-  
-  double ElInfo1d::mat_d1_val[2][2] = {{1.0, 0.0}, 
-				       {0.0, 1.0}};
+
+  double ElInfo1d::mat_d1_val[2][2] = {{1.0, 0.0},
+    {0.0, 1.0}
+  };
   mtl::dense2D<double> ElInfo1d::mat_d1(mat_d1_val);
 
-  double ElInfo1d::mat_d1_left_val[2][2] = {{1.0, 0.5}, 
-					    {0.0, 0.5}};
+  double ElInfo1d::mat_d1_left_val[2][2] = {{1.0, 0.5},
+    {0.0, 0.5}
+  };
   mtl::dense2D<double> ElInfo1d::mat_d1_left(mat_d1_left_val);
 
-  double ElInfo1d::mat_d1_right_val[2][2] = {{0.5, 0.0}, 
-					     {0.5, 1.0}};
+  double ElInfo1d::mat_d1_right_val[2][2] = {{0.5, 0.0},
+    {0.5, 1.0}
+  };
   mtl::dense2D<double> ElInfo1d::mat_d1_right(mat_d1_right_val);
 
   double ElInfo1d::mat_d2_val[3][3] = {{1.0, 0.0, 0.0},
-				       {0.0, 1.0, 0.0},
-				       {0.0, 0.0, 1.0}};
+    {0.0, 1.0, 0.0},
+    {0.0, 0.0, 1.0}
+  };
   mtl::dense2D<double> ElInfo1d::mat_d2(mat_d2_val);
 
   double ElInfo1d::mat_d2_left_val[3][3] = {{1.0, 0.375, 0.0},
-					    {0.0, 0.75, 1.0},
-					    {0.0, -0.125, 0.0}};
+    {0.0, 0.75, 1.0},
+    {0.0, -0.125, 0.0}
+  };
   mtl::dense2D<double> ElInfo1d::mat_d2_left(mat_d2_left_val);
-  
-  double ElInfo1d::mat_d2_right_val[3][3] = {{0.0, -0.125, 0.0},
-					     {1.0, 0.75, 0.0},
-					     {0.0, 0.375, 1.0}};
-  mtl::dense2D<double> ElInfo1d::mat_d2_right(mat_d2_right_val);
- 
 
-  void ElInfo1d::fillMacroInfo(const MacroElement * mel)
+  double ElInfo1d::mat_d2_right_val[3][3] = {{0.0, -0.125, 0.0},
+    {1.0, 0.75, 0.0},
+    {0.0, 0.375, 1.0}
+  };
+  mtl::dense2D<double> ElInfo1d::mat_d2_right(mat_d2_right_val);
+
+
+  void ElInfo1d::fillMacroInfo(const MacroElement* mel)
   {
-    Element *nb;
-    MacroElement *mnb;
+    Element* nb;
+    MacroElement* mnb;
 
     macroElement = const_cast<MacroElement*>(mel);
     element = const_cast<Element*>(mel->getElement());
@@ -56,51 +62,63 @@ namespace AMDiS
     int vertices = mesh->getGeo(VERTEX);
 
     if (fillFlag.isSet(Mesh::FILL_COORDS) || fillFlag.isSet(Mesh::FILL_DET) ||
-	fillFlag.isSet(Mesh::FILL_GRD_LAMBDA)) {
-      
+        fillFlag.isSet(Mesh::FILL_GRD_LAMBDA))
+    {
+
       for (int i = 0; i < vertices; i++)
-	coord[i] = mel->coord[i];
+        coord[i] = mel->getCoord(i);
     }
 
-    if (fillFlag.isSet(Mesh::FILL_NEIGH) || fillFlag.isSet(Mesh::FILL_OPP_COORDS)) {
+    if (fillFlag.isSet(Mesh::FILL_NEIGH) || fillFlag.isSet(Mesh::FILL_OPP_COORDS))
+    {
       WorldVector<double> oppC;
-      
+
       int neighbours =  mesh->getGeo(NEIGH);
-      for (int i = 0; i < neighbours; i++) {
-	nb = NULL;
-	if ((mnb = const_cast<MacroElement*>(mel->getNeighbour(i)))) {
-	  if (fillFlag.isSet(Mesh::FILL_OPP_COORDS)) {
-	    oppC = mnb->coord[i];
-	  }
+      for (int i = 0; i < neighbours; i++)
+      {
+        nb = NULL;
+        if ((mnb = const_cast<MacroElement*>(mel->getNeighbour(i))))
+        {
+          if (fillFlag.isSet(Mesh::FILL_OPP_COORDS))
+          {
+            oppC = mnb->getCoord(i);
+          }
 
-	  nb = const_cast<Element*>(mnb->getElement());
+          nb = const_cast<Element*>(mnb->getElement());
 
-	  while (!(nb->isLeaf())) { // make nb nearest element
-	    if (fillFlag.isSet(Mesh::FILL_OPP_COORDS)) {
-	      if (nb->isNewCoordSet()) {
-		oppC = *(nb->getNewCoord());
-	      } else {
-		oppC = (mel->coord[i] + oppC) * 0.5;
-	      }
-	    }
-	    nb = const_cast<Element*>(nb->getChild(1-i));
-	  }
+          while (!(nb->isLeaf()))   // make nb nearest element
+          {
+            if (fillFlag.isSet(Mesh::FILL_OPP_COORDS))
+            {
+              if (nb->isNewCoordSet())
+              {
+                oppC = *(nb->getNewCoord());
+              }
+              else
+              {
+                oppC = (mel->getCoord(i) + oppC) * 0.5;
+              }
+            }
+            nb = const_cast<Element*>(nb->getChild(1-i));
+          }
 
-	  if (fillFlag.isSet(Mesh::FILL_OPP_COORDS)) {
-	    oppCoord[i] = oppC;
-	  }
-	}
-	neighbour[i] = nb;
-	oppVertex[i] = nb ? i : -1;
+          if (fillFlag.isSet(Mesh::FILL_OPP_COORDS))
+          {
+            oppCoord[i] = oppC;
+          }
+        }
+        neighbour[i] = nb;
+        oppVertex[i] = nb ? i : -1;
       }
     }
 
-    if (fillFlag.isSet(Mesh::FILL_BOUND) ) {
+    if (fillFlag.isSet(Mesh::FILL_BOUND) )
+    {
       for (int i = 0; i < vertices; i++)
-	boundary[i] = mel->getBoundary(i);
+        boundary[i] = mel->getBoundary(i);
 
       for (int i = 0; i < element->getGeo(PROJECTION); i++)
-	projection[i] = mel->getProjection(i);
+        projection[i] = mel->getProjection(i);
     }
   }
 
@@ -109,31 +127,34 @@ namespace AMDiS
   /*  value of the determinante from the transformation to the reference      */
   /*  element                                                                 */
   /****************************************************************************/
-  double ElInfo1d::calcGrdLambda(DimVec<WorldVector<double> >& grd_lam)
+  double ElInfo1d::calcGrdLambda(DimVec<WorldVector<double>>& grd_lam)
   {
     FUNCNAME("ElInfo1d::calcGrdLambda()");
 
     testFlag(Mesh::FILL_COORDS);
 
     WorldVector<double> e;
-    e = coord[1]; 
+    e = coord[1];
     e -= coord[0];
     double adet2 = e * e;
 
-    if (adet2 < 1.0E-15) {
+    if (adet2 < 1.0E-15)
+    {
       MSG("det*det = %g\n", adet2);
       grd_lam[0] = grd_lam[1] = 0.0;
-    } else {
+    }
+    else
+    {
       grd_lam[1] = e * (1.0 / adet2);
       grd_lam[0] = grd_lam[1] * -1.0;
     }
 
     return std::sqrt(adet2);
   }
-  
+
 
   int ElInfo1d::worldToCoord(const WorldVector<double>& x,
-				   DimVec<double>& lambda) const
+                             DimVec<double>& lambda) const
   {
     FUNCNAME("ElInfo1d::worldToCoord()");
 
@@ -147,7 +168,8 @@ namespace AMDiS
     TEST_EXIT_DBG(dim == 1)("dim!=1\n");
     TEST_EXIT_DBG(dimOfWorld == dim)("not yet for DIM != DIM_OF_WORLD\n");
 
-    if (math::abs(length) < DBL_TOL) {
+    if (math::abs(length) < DBL_TOL)
+    {
       ERROR_EXIT("length = %le; abort\n", length);
       return 0;
     }
@@ -157,9 +179,12 @@ namespace AMDiS
 
     int k = -1;
     lmin = 0.0;
-    for (int i = 0; i <= dim; i++) {
-      if (lambda[i] < -1.E-5) {
-        if (lambda[i] < lmin) {
+    for (int i = 0; i <= dim; i++)
+    {
+      if (lambda[i] < -1.E-5)
+      {
+        if (lambda[i] < lmin)
+        {
           k = i;
           lmin = lambda[i];
         }
@@ -174,7 +199,7 @@ namespace AMDiS
   /*  coord; return the absulute value of the determinant from the           */
   /*  transformation to the reference element                                 */
   /****************************************************************************/
-  double ElInfo1d::getNormal(int side, WorldVector<double> &normal) const
+  double ElInfo1d::getNormal(int side, WorldVector<double>& normal) const
   {
     FUNCNAME_DBG("ElInfo::getNormal()");
     normal = coord[side] - coord[(side + 1) % 2];
@@ -191,12 +216,12 @@ namespace AMDiS
   /*  return the absulute value of the determinant from the                   */
   /*  transformation to the reference element                                 */
   /****************************************************************************/
-  double ElInfo1d::getElementNormal(WorldVector<double> &elementNormal) const
+  double ElInfo1d::getElementNormal(WorldVector<double>& elementNormal) const
   {
     FUNCNAME_DBG("ElInfo::getElementNormal()");
 
     TEST_EXIT_DBG(dimOfWorld == 2)
-      (" element normal only well defined for  DIM_OF_WORLD = DIM + 1 !!");
+    (" element normal only well defined for  DIM_OF_WORLD = DIM + 1 !!");
 
     elementNormal[0] = coord[1][1] - coord[0][1];
     elementNormal[1] = coord[0][0] - coord[1][0];
@@ -206,17 +231,17 @@ namespace AMDiS
     TEST_EXIT_DBG(det > 1.e-30)("det = 0");
 
     elementNormal *= 1.0 / det;
-    
+
     return det;
   }
 
 
-  void ElInfo1d::fillElInfo(int ichild, const ElInfo *elInfoOld)
+  void ElInfo1d::fillElInfo(int ichild, const ElInfo* elInfoOld)
   {
     FUNCNAME_DBG("ElInfo1d::fillElInfo()");
 
-    Element *nb;
-    Element *elem = elInfoOld->getElement();
+    Element* nb;
+    Element* elem = elInfoOld->getElement();
 
     TEST_EXIT_DBG(elem->getChild(0))("no children?\n");
     element = const_cast<Element*>(elem->getChild(ichild));
@@ -226,68 +251,78 @@ namespace AMDiS
     macroElement = elInfoOld->getMacroElement();
     fillFlag = elInfoOld->getFillFlag();
     parent = elem;
-    level = elInfoOld->level + 1;
+    level = elInfoOld->getLevel() + 1;
     iChild = ichild;
 
     int neighbours = mesh->getGeo(NEIGH);
 
     if (fillFlag.isSet(Mesh::FILL_COORDS) || fillFlag.isSet(Mesh::FILL_DET) ||
-	fillFlag.isSet(Mesh::FILL_GRD_LAMBDA)) {
+        fillFlag.isSet(Mesh::FILL_GRD_LAMBDA))
+    {
 
-      const FixVec<WorldVector<double>, VERTEX> *old_coord = &(elInfoOld->coord);
+      auto const& old_coord = elInfoOld->getCoords();
 
-      coord[ichild] = (*old_coord)[ichild];
+      coord[ichild] = old_coord[ichild];
       if (elem->isNewCoordSet())
-	coord[1 - ichild] = *(elem->getNewCoord());
+        coord[1 - ichild] = *(elem->getNewCoord());
       else
-	coord[1 - ichild] = ((*old_coord)[0] + (*old_coord)[1]) * 0.5;
+        coord[1 - ichild] = (old_coord[0] + old_coord[1]) * 0.5;
     }
 
-    if (fillFlag.isSet(Mesh::FILL_NEIGH) || fillFlag.isSet(Mesh::FILL_OPP_COORDS)) {
+    if (fillFlag.isSet(Mesh::FILL_NEIGH) || fillFlag.isSet(Mesh::FILL_OPP_COORDS))
+    {
       WorldVector<double> oppC;
-      
+
       TEST_EXIT_DBG(fillFlag.isSet(Mesh::FILL_COORDS))
-	("FILL_OPP_COORDS only with FILL_COORDS\n");
-      
-      for (int i = 0; i < neighbours; i++) {
-	if (i != ichild) {
-	  nb = const_cast<Element*>(elem->getChild(1-ichild));  
-	  if (fillFlag.isSet(Mesh::FILL_OPP_COORDS))
-	    oppC = elInfoOld->coord[i];
-	} else {
-	  nb = const_cast<Element*>(elInfoOld->getNeighbour(i));
+      ("FILL_OPP_COORDS only with FILL_COORDS\n");
 
-	  if (nb && fillFlag.isSet(Mesh::FILL_OPP_COORDS))
-	    oppC = elInfoOld->oppCoord[i];
-	}
+      for (int i = 0; i < neighbours; i++)
+      {
+        if (i != ichild)
+        {
+          nb = const_cast<Element*>(elem->getChild(1-ichild));
+          if (fillFlag.isSet(Mesh::FILL_OPP_COORDS))
+            oppC = elInfoOld->getCoord(i);
+        }
+        else
+        {
+          nb = const_cast<Element*>(elInfoOld->getNeighbour(i));
 
-	if (nb) {
-	  while (nb->getChild(0)) {  // make nb nearest element
-	    if (fillFlag.isSet(Mesh::FILL_OPP_COORDS)) {
-	      if (nb->isNewCoordSet())
-		oppC = *(nb->getNewCoord());
-	      else
-		oppC = (coord[i] + oppC) * 0.5;
-	    }
-	    nb = const_cast<Element*>(nb->getChild(1-i));
-	  }
+          if (nb && fillFlag.isSet(Mesh::FILL_OPP_COORDS))
+            oppC = elInfoOld->getOppCoord(i);
+        }
 
-	  if (fillFlag.isSet(Mesh::FILL_OPP_COORDS))
-	    oppCoord[i] = oppC;
-	}
-	neighbour[i] = nb;
-	oppVertex[i] = nb ? i : -1;
+        if (nb)
+        {
+          while (nb->getChild(0))    // make nb nearest element
+          {
+            if (fillFlag.isSet(Mesh::FILL_OPP_COORDS))
+            {
+              if (nb->isNewCoordSet())
+                oppC = *(nb->getNewCoord());
+              else
+                oppC = (coord[i] + oppC) * 0.5;
+            }
+            nb = const_cast<Element*>(nb->getChild(1-i));
+          }
+
+          if (fillFlag.isSet(Mesh::FILL_OPP_COORDS))
+            oppCoord[i] = oppC;
+        }
+        neighbour[i] = nb;
+        oppVertex[i] = nb ? i : -1;
       }
     }
 
-    if (fillFlag.isSet(Mesh::FILL_BOUND)) {
+    if (fillFlag.isSet(Mesh::FILL_BOUND))
+    {
       boundary[ichild] = elInfoOld->getBoundary(ichild);
       boundary[1 - ichild] = INTERIOR;
 
-      if (elInfoOld->getProjection(0) && 
-	  elInfoOld->getProjection(0)->getType() == VOLUME_PROJECTION)
-	projection[0] = elInfoOld->getProjection(0);      
-    }   
+      if (elInfoOld->getProjection(0) &&
+          elInfoOld->getProjection(0)->getType() == VOLUME_PROJECTION)
+        projection[0] = elInfoOld->getProjection(0);
+    }
   }
 
 
@@ -297,47 +332,57 @@ namespace AMDiS
 
     using namespace mtl;
 
-    if (subElemMatrices[degree].count(std::make_pair(refinementPathLength, refinementPath)) == 0) {
-      switch (degree) {
+    if (subElemMatrices[degree].count(std::make_pair(refinementPathLength, refinementPath)) == 0)
+    {
+      switch (degree)
+      {
       case 1:
-	{
-	  dense2D<double> mat(mat_d1);
-	  dense2D<double> tmpMat(num_rows(mat), num_rows(mat));
-	  
-	  for (int i = 0; i < refinementPathLength; i++) {
-	    if (refinementPath & (1 << i)) {
-	      tmpMat = mat * mat_d1_right;
-	      mat = tmpMat;
-	    } else  {
-	      tmpMat = mat * mat_d1_left;
-	      mat = tmpMat;
-	    }
-	  }
+      {
+        dense2D<double> mat(mat_d1);
+        dense2D<double> tmpMat(num_rows(mat), num_rows(mat));
 
-	  subElemMatrices[1][std::make_pair(refinementPathLength, refinementPath)] = mat;
-	}
-	
-	break;	
+        for (int i = 0; i < refinementPathLength; i++)
+        {
+          if (refinementPath & (1 << i))
+          {
+            tmpMat = mat * mat_d1_right;
+            mat = tmpMat;
+          }
+          else
+          {
+            tmpMat = mat * mat_d1_left;
+            mat = tmpMat;
+          }
+        }
+
+        subElemMatrices[1][std::make_pair(refinementPathLength, refinementPath)] = mat;
+      }
+
+      break;
       case 2:
-	{
-	  dense2D<double> mat(mat_d2);
-	  dense2D<double> tmpMat(num_rows(mat), num_rows(mat));
-	  
-	  for (int i = 0; i < refinementPathLength; i++) {
-	    if (refinementPath & (1 << i)) {
-	      tmpMat = mat * mat_d2_right;
-	      mat = tmpMat;
-	    } else  {
-	      tmpMat = mat * mat_d2_left;
-	      mat = tmpMat;
-	    }
-	  }
+      {
+        dense2D<double> mat(mat_d2);
+        dense2D<double> tmpMat(num_rows(mat), num_rows(mat));
 
-	  subElemMatrices[2][std::make_pair(refinementPathLength, refinementPath)] = mat;  
-	}
-	break;
+        for (int i = 0; i < refinementPathLength; i++)
+        {
+          if (refinementPath & (1 << i))
+          {
+            tmpMat = mat * mat_d2_right;
+            mat = tmpMat;
+          }
+          else
+          {
+            tmpMat = mat * mat_d2_left;
+            mat = tmpMat;
+          }
+        }
+
+        subElemMatrices[2][std::make_pair(refinementPathLength, refinementPath)] = mat;
+      }
+      break;
       default:
-	ERROR_EXIT("Not supported for basis function degree: %d\n", degree);
+        ERROR_EXIT("Not supported for basis function degree: %d\n", degree);
       }
     }
 

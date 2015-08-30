@@ -5,7 +5,7 @@
  * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
  * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
  *
- * Authors: 
+ * Authors:
  * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
  *
  * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
@@ -15,7 +15,7 @@
  * This file is part of AMDiS
  *
  * See also license.opensource.txt in the distribution.
- * 
+ *
  ******************************************************************************/
 
 // Written by Thomas Witkowski
@@ -26,17 +26,19 @@
 
 #include <boost/numeric/mtl/concept/collection.hpp>
 
-namespace itl {
+namespace itl
+{
 
   /// Minimal Residual method
-  template < typename Matrix, typename Vector,
-	    typename LeftPreconditioner, typename RightPreconditioner, 
-	    typename Iteration >
-  int minres(const Matrix &A, Vector &x, const Vector &b, 
-	    const LeftPreconditioner &L, const RightPreconditioner &R, 
-	    Iteration& iter)
+  template <typename Matrix, typename Vector,
+            typename LeftPreconditioner, typename RightPreconditioner,
+            typename Iteration>
+  int minres(const Matrix& A, Vector& x, const Vector& b,
+             const LeftPreconditioner& L, const RightPreconditioner& R,
+             Iteration& iter)
   {
-    using std::abs; using math::reciprocal;
+    using std::abs;
+    using math::reciprocal;
     typedef typename mtl::Collection<Vector>::value_type Scalar;
 
     if (size(b) == 0)
@@ -50,7 +52,8 @@ namespace itl {
     Scalar gamma1(sqrt(dot(z1, v1))), gamma2(zero), eta(gamma1);
     Scalar sigma1(one), alpha0(zero), alpha1(zero), alpha2(zero), alpha3(zero);
 
-    while (!iter.finished(abs(eta))) {
+    while (!iter.finished(abs(eta)))
+    {
       z1 *= reciprocal(gamma1);
       v2 = A * z1;
       sigma1 = dot(v2, z1);

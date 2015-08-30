@@ -7,11 +7,11 @@
 #include "AMDiS_fwd.h"
 #include "SubAssembler.h"
 
-namespace AMDiS 
+namespace AMDiS
 {
   /**
    * \ingroup Assembler
-   * 
+   *
    * \brief
    * SubAssembler for zero order terms.
    */
@@ -20,39 +20,39 @@ namespace AMDiS
   public:
     /** \brief
      * Creates and returns the ZeroOrderAssembler for Operator op and
-     * the given assembler. If all terms are piecewise constant precalculated 
-     * integrals can be used while assembling and the returned 
+     * the given assembler. If all terms are piecewise constant precalculated
+     * integrals can be used while assembling and the returned
      * ZeroOrderAssembler is of type PrecalcZOA. Otherwise a FastQuadZOA
      * object will be returned.
      */
     static ZeroOrderAssembler* getSubAssembler(Operator* op,
-                              					       Assembler* assembler,
-                              					       Quadrature* quadrat,
-                              					       bool optimized);
+        Assembler* assembler,
+        Quadrature* quadrat,
+        bool optimized);
 
   protected:
     /// Constructor.
-    ZeroOrderAssembler(Operator* op, 
-            		       Assembler* assembler, 
-            		       Quadrature* quadrat,
-            		       bool optimized);
+    ZeroOrderAssembler(Operator* op,
+                       Assembler* assembler,
+                       Quadrature* quadrat,
+                       bool optimized);
 
   protected:
     /// List of all yet created optimized SubAssembler objects.
-    static ThreadPrivate<std::vector<SubAssembler*> > optimizedSubAssemblers;
+    static ThreadPrivate<std::vector<SubAssembler*>> optimizedSubAssemblers;
 
     /// List of all yet created standard SubAssembler objects.
-    static ThreadPrivate<std::vector<SubAssembler*> > standardSubAssemblers;
+    static ThreadPrivate<std::vector<SubAssembler*>> standardSubAssemblers;
   };
 
 
   /**
    * \ingroup Assembler
-   * 
+   *
    * \brief
    * Standard zero order assembler.
    */
-  class StandardZOA :  public ZeroOrderAssembler 
+  class StandardZOA :  public ZeroOrderAssembler
   {
   public:
     /// Constructor.
@@ -67,7 +67,7 @@ namespace AMDiS
   };
 
 
-  /** 
+  /**
    * \ingroup Assembler
    *
    * \brief
@@ -93,7 +93,7 @@ namespace AMDiS
 
   /**
    * \ingroup Assembler
-   * 
+   *
    * \brief
    * Zero order assembler using precaculated integrals.
    */
@@ -101,7 +101,7 @@ namespace AMDiS
   {
   public:
     /// Constructor.
-    PrecalcZOA(Operator *op, Assembler *assembler, Quadrature *quad);
+    PrecalcZOA(Operator* op, Assembler* assembler, Quadrature* quad);
 
   private:
     /// Implements SubAssembler::calculateElementMatrix().
@@ -112,10 +112,10 @@ namespace AMDiS
 
   protected:
     /// Integral of the product of psi and phi.
-    const Q00PsiPhi *q00;
+    const Q00PsiPhi* q00;
 
     /// Integral of psi.
-    const Q0Psi *q0;
+    const Q0Psi* q0;
   };
 
 } // end namespace AMDiS

@@ -9,11 +9,12 @@
 #include "parallel/MpiHelper.h"
 #endif
 
-namespace AMDiS {
+namespace AMDiS
+{
 
   AdaptStationary::AdaptStationary(std::string name,
-                        				   ProblemIterationInterface& prob,
-                        				   AdaptInfo& adaptInfo) 
+                                   ProblemIterationInterface& prob,
+                                   AdaptInfo& adaptInfo)
     : AdaptBase(name, &prob, &adaptInfo)
   {
     Parameters::get(name + "->info", info);
@@ -23,11 +24,12 @@ namespace AMDiS {
   int AdaptStationary::adapt()
   {
 #if HAVE_PARALLEL_DOMAIN_AMDIS
-    Parallel::MeshDistributor::globalMeshDistributor->initParallelization(); 
+    Parallel::MeshDistributor::globalMeshDistributor->initParallelization();
 #endif
 
     // initial iteration
-    if (adaptInfo->getSpaceIteration() == -1) {
+    if (adaptInfo->getSpaceIteration() == -1)
+    {
       problemIteration->beginIteration(adaptInfo);
       problemIteration->oneIteration(adaptInfo, NO_ADAPTION);
       problemIteration->endIteration(adaptInfo);
@@ -35,9 +37,10 @@ namespace AMDiS {
     }
 
     // adaption loop
-    while (!adaptInfo->spaceToleranceReached() && 
-	   (adaptInfo->getSpaceIteration() < adaptInfo->getMaxSpaceIteration() || 
-	    adaptInfo->getMaxSpaceIteration() < 0) ) {
+    while (!adaptInfo->spaceToleranceReached() &&
+           (adaptInfo->getSpaceIteration() < adaptInfo->getMaxSpaceIteration() ||
+            adaptInfo->getMaxSpaceIteration() < 0) )
+    {
 
       problemIteration->beginIteration(adaptInfo);
       Flag adapted = problemIteration->oneIteration(adaptInfo, FULL_ITERATION);
@@ -49,7 +52,7 @@ namespace AMDiS {
 #endif
       if (isAdapted == 0)
         break;
-      
+
       adaptInfo->incSpaceIteration();
     }
 

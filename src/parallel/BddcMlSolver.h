@@ -5,7 +5,7 @@
  * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
  * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
  *
- * Authors: 
+ * Authors:
  * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
  *
  * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
@@ -15,7 +15,7 @@
  * This file is part of AMDiS
  *
  * See also license.opensource.txt in the distribution.
- * 
+ *
  ******************************************************************************/
 
 
@@ -28,49 +28,52 @@
 #include "AMDiS_fwd.h"
 #include "parallel/ParallelSolver.h"
 
-namespace AMDiS { namespace Parallel {
+namespace AMDiS
+{
+  namespace Parallel
+  {
 
 #ifdef HAVE_BDDC_ML
 
-  class BddcMlSolver : public ParallelSolver
-  {
-  public:
-    /// Creator class
-    class Creator : public LinearSolverCreator
+    class BddcMlSolver : public ParallelSolver
     {
     public:
-      virtual ~Creator() {}
+      /// Creator class
+      class Creator : public LinearSolverCreator
+      {
+      public:
+        virtual ~Creator() {}
 
-      /// Returns a new PetscSolver object.
-      LinearSolverInterface* create() 
-      { 
-	return new BddcMlSolver(this->name); 
-      }
+        /// Returns a new PetscSolver object.
+        LinearSolverInterface* create()
+        {
+          return new BddcMlSolver(this->name);
+        }
+      };
+
+      BddcMlSolver(std::string name)
+        : ParallelSolver(name, true) {}
+
+    protected:
+      /// Implementation of \ref LinearSolverInterface::solveLinearSystem()
+      virtual int solveLinearSystem(const SolverMatrix<Matrix<DOFMatrix*>>& A,
+                                    SystemVector& x,
+                                    SystemVector& b,
+                                    bool createMatrixData,
+                                    bool storeMatrixData);
+
+      void addDofMatrix(const DOFMatrix* mat,
+                        std::vector<int>& i_sparse,
+                        std::vector<int>& j_sparse,
+                        std::vector<double>& a_sparse,
+                        int nComponents,
+                        int ithRowComponent,
+                        int ithColComponent);
     };
-    
-    BddcMlSolver(std::string name)
-    : ParallelSolver(name, true) {}
-
-  protected:
-    /// Implementation of \ref LinearSolverInterface::solveLinearSystem()
-    virtual int solveLinearSystem(const SolverMatrix<Matrix<DOFMatrix*> >& A,
-				  SystemVector& x,
-				  SystemVector& b,
-				  bool createMatrixData,
-				  bool storeMatrixData);
-    
-    void addDofMatrix(const DOFMatrix* mat, 
-		      std::vector<int>& i_sparse, 
-		      std::vector<int>& j_sparse,
-		      std::vector<double>& a_sparse,
-		      int nComponents,
-		      int ithRowComponent,
-		      int ithColComponent);
-  };
 
 #endif
 
-} // end namespace Parallel
+  } // end namespace Parallel
 } // end namespace AMDiS
 
 #endif

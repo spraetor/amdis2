@@ -5,7 +5,7 @@
  * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
  * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
  *
- * Authors: 
+ * Authors:
  * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
  *
  * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
@@ -15,7 +15,7 @@
  * This file is part of AMDiS
  *
  * See also license.opensource.txt in the distribution.
- * 
+ *
  ******************************************************************************/
 
 
@@ -31,38 +31,39 @@
 #include "AdaptInstationary.h"
 #include "CreatorMap.h"
 
-namespace AMDiS {
+namespace AMDiS
+{
 
   class RosenbrockAdaptInstationary : public AdaptInstationary
   {
   public:
     /** \brief
      * Creates a AdaptInstationary object for Rosenbrock method
-     * with the given name for the time 
+     * with the given name for the time
      * dependent problem problemInstat. TODO: Make obsolete!
      */
-    RosenbrockAdaptInstationary(std::string name, 
-				RosenbrockStationary *problemStat,
-				AdaptInfo *info,
-				ProblemTimeInterface *problemInstat,
-				AdaptInfo *initialInfo,
-				std::time_t initialTimestamp = 0);
+    RosenbrockAdaptInstationary(std::string name,
+                                RosenbrockStationary* problemStat,
+                                AdaptInfo* info,
+                                ProblemTimeInterface* problemInstat,
+                                AdaptInfo* initialInfo,
+                                std::time_t initialTimestamp = 0);
 
     /** \brief
      * Creates a AdaptInstationary object for Rosenbrock method
-     * with the given name for the time 
-     * dependent problem problemInstat. 
+     * with the given name for the time
+     * dependent problem problemInstat.
      */
-    RosenbrockAdaptInstationary(std::string name, 
-				RosenbrockStationary &problemStat,
-				AdaptInfo &info,
-				ProblemTimeInterface &problemInstat,
-				AdaptInfo &initialInfo,
-				std::time_t initialTimestamp = 0);
+    RosenbrockAdaptInstationary(std::string name,
+                                RosenbrockStationary& problemStat,
+                                AdaptInfo& info,
+                                ProblemTimeInterface& problemInstat,
+                                AdaptInfo& initialInfo,
+                                std::time_t initialTimestamp = 0);
 
     /// Runs the Rosenbrock loop until one timestep is accepted.
     void oneTimestep();
-    
+
     virtual double getTimeEst(AdaptInfo* adaptInfo);
 
     /** \brief
@@ -71,16 +72,16 @@ namespace AMDiS {
      * removed, remove also this function.
      * TODO: Remove if obsolete constructor will be removed.
      */
-    void initConstructor(RosenbrockStationary *problemStat);
+    void initConstructor(RosenbrockStationary* problemStat);
 
     void reset();
 
   protected:
     /// Pointer to the Rosenbrock method that should be used.
-    RosenbrockMethod *rosenbrockMethod;
+    RosenbrockMethod* rosenbrockMethod;
 
     /// Pointer to the stationary problem;
-    RosenbrockStationary *rosenbrockStat;
+    RosenbrockStationary* rosenbrockStat;
 
     /// Indicates, if this is the very first timestep.
     bool firstTimestep;
@@ -91,14 +92,14 @@ namespace AMDiS {
 
     /// If true, more than one of the last timesteps were rejected.
     bool succRejection;
-    
+
     /// Maximal nr. of rejected timesteps due to a solver error
     int maxRejectedSolverError;
 
     /// If greater than 0, than for the first given number of timesteps the timestep
     /// will be not changed and is set to the very first one.
     int fixFirstTimesteps;
-    
+
     /// Timestep of the last accepted time iteration.
     double tauAcc;
 
@@ -114,12 +115,12 @@ namespace AMDiS {
     /// Current timestep.
     double tau;
 
-    /// The value tau * gamma, where gamma is a value of the used 
+    /// The value tau * gamma, where gamma is a value of the used
     /// Rosenbrock method.
     double tauGamma, minusTauGamma, invTauGamma, minusInvTauGamma;
 
-    /// If true, the first timestep is calculated with different timesteps. 
-    /// This is usually used to make a study how the time error estimator 
+    /// If true, the first timestep is calculated with different timesteps.
+    /// This is usually used to make a study how the time error estimator
     /// behavous for different timesteps.
     bool dbgTimestepStudy;
 
@@ -127,7 +128,7 @@ namespace AMDiS {
     /// timesteps for which the first timestep should be calculated.
     std::vector<double> dbgTimesteps;
   };
- 
+
 }
 
 #endif // AMDIS_ROSENBROCKADAPTINSTATIONARY_H

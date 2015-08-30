@@ -10,25 +10,25 @@
 #include "AMDiS_base.h"
 
 #ifdef HAVE_PARALLEL_PETSC
-  #include "petsc.h"		// PetscError
+#include "petsc.h"		// PetscError
 #endif
 
-namespace AMDiS 
+namespace AMDiS
 {
 
-  const char *funcName = NULL;
+  const char* funcName = NULL;
 
 #ifdef HAVE_PARALLEL_DOMAIN_AMDIS
   bool Msg::outputMainRank = true;
 #endif
 
-  ThreadPrivate<const char *> Msg::oldFuncName(NULL);
+  ThreadPrivate<const char*> Msg::oldFuncName(NULL);
   std::ostream* Msg::out = NULL;
   std::ostream* Msg::error = NULL;
   int Msg::msgInfo = 10;
   bool Msg::msgWait = true;
-  
-// some macros used internally
+
+  // some macros used internally
 #if SUPPRESS_OUTPUT
 #define PRINT_LINE(stream, line)
 #else
@@ -43,7 +43,8 @@ namespace AMDiS
   {
     FUNCNAME("Msg::wait()");
 
-    if (w) {
+    if (w)
+    {
       std::string line;
       MSG("wait for <enter> ...");
       std::cin >> line;
@@ -53,75 +54,78 @@ namespace AMDiS
 
   // void Msg::change_out(std::ostream  *fp)
   // {
-//     FUNCNAME("Msg::change_out()");
-//   
-//     if (fp) {
-//       if (out && *out != std::cout && *out != std::cerr) {
-//         dynamic_cast< std::ofstream*>(out)->close();
-//         delete out;
-//       }
-// 
-//       out = fp;
-//     } else {
-//       ERROR("file pointer is pointer to nil;\n");
-//       ERROR("use previous stream for errors furthermore\n");
-//     } 
+  //     FUNCNAME("Msg::change_out()");
+  //
+  //     if (fp) {
+  //       if (out && *out != std::cout && *out != std::cerr) {
+  //         dynamic_cast< std::ofstream*>(out)->close();
+  //         delete out;
+  //       }
+  //
+  //       out = fp;
+  //     } else {
+  //       ERROR("file pointer is pointer to nil;\n");
+  //       ERROR("use previous stream for errors furthermore\n");
+  //     }
   // }
 
 
   // void Msg::change_error_out(std::ofstream *fp)
   // {
-//     FUNCNAME("Msg::change_error_out()");
-// 
-//     if (fp) {
-//       if (error && *error != std::cout && *error != std::cerr) {
-//         dynamic_cast< std::ofstream*>(error)->close();
-//         delete error;
-//       }
-//       
-//       error = fp;
-//     } else {
-//       ERROR("file pointer is pointer to nil;\n");
-//       ERROR("use previous stream for errors furthermore\n");
-//     }
+  //     FUNCNAME("Msg::change_error_out()");
+  //
+  //     if (fp) {
+  //       if (error && *error != std::cout && *error != std::cerr) {
+  //         dynamic_cast< std::ofstream*>(error)->close();
+  //         delete error;
+  //       }
+  //
+  //       error = fp;
+  //     } else {
+  //       ERROR("file pointer is pointer to nil;\n");
+  //       ERROR("use previous stream for errors furthermore\n");
+  //     }
   // }
 
 
   // void Msg::open_error_file(const char *filename, OPENMODE type)
   // {
-//     FUNCNAME("Msg::open_error_file()");
-//     std::ofstream *fp;
-// 
-//     if (filename && (fp = new std::ofstream(filename, type))) {
-//       if (error && *error != std::cout && *error != std::cerr) {
-// 	dynamic_cast< std::ofstream*>(error)->close();
-// 	delete error;
-//       }
-// 
-//       error = fp;
-//     } else {
-//       if (filename)
-// 	ERROR("can not open %s;\n", filename);
-//       else
-// 	ERROR("no filename specified;\n");
-//       ERROR("use previous stream for errors furthermore\n");
-//     }
+  //     FUNCNAME("Msg::open_error_file()");
+  //     std::ofstream *fp;
+  //
+  //     if (filename && (fp = new std::ofstream(filename, type))) {
+  //       if (error && *error != std::cout && *error != std::cerr) {
+  // 	dynamic_cast< std::ofstream*>(error)->close();
+  // 	delete error;
+  //       }
+  //
+  //       error = fp;
+  //     } else {
+  //       if (filename)
+  // 	ERROR("can not open %s;\n", filename);
+  //       else
+  // 	ERROR("no filename specified;\n");
+  //       ERROR("use previous stream for errors furthermore\n");
+  //     }
   // }
 
 
-  void Msg::print_funcname(const char *funcName)
+  void Msg::print_funcname(const char* funcName)
   {
 #ifdef HAVE_PARALLEL_DOMAIN_AMDIS
     if (outputMainRank && MPI::COMM_WORLD.Get_rank() != 0)
       return;
 #endif
 
-    if (!out) 
+    if (!out)
       out = &std::cout;
 
-    if (funcName &&  oldFuncName.get() != funcName) {
+    if (funcName &&  oldFuncName.get() != funcName)
+    {
       PRINT_LINE((*out), funcName << ":" << std::endl);
-    } else if (!funcName) {
+    }
+    else if (!funcName)
+    {
       PRINT_LINE((*out), "*unknown function*" << std::endl);
     }
     PRINT_LINE((*out), "               ");
@@ -130,26 +134,31 @@ namespace AMDiS
   }
 
 
-  void Msg::print_error_funcname(const char *funcName, const char *file, int line)
+  void Msg::print_error_funcname(const char* funcName, const char* file, int line)
   {
     static int old_line = -1;
 
-    if (!error) 
+    if (!error)
       error = &std::cerr;
 
     std::stringstream oss;
 
-    if (funcName && oldFuncName.get() != funcName) {
+    if (funcName && oldFuncName.get() != funcName)
+    {
       oss << funcName << ": ";
-    } else if (!funcName) {
-      if (line-old_line > 5) 
+    }
+    else if (!funcName)
+    {
+      if (line-old_line > 5)
         oss << "*unknown function*";
     }
 
-    if (oldFuncName.get() != funcName) {
+    if (oldFuncName.get() != funcName)
+    {
       oss << "ERROR in " << file << ", line " << line << std::endl;;
       oldFuncName.set(funcName);
-    } else if (line - old_line > 5)
+    }
+    else if (line - old_line > 5)
       oss << "ERROR in " << file << ", line " << line << "\n" << std::endl;
 
     PRINT_LINE((*error), oss.str());
@@ -157,12 +166,12 @@ namespace AMDiS
   }
 
 
-  void Msg::print_error_exit(const char *format, ...)
+  void Msg::print_error_exit(const char* format, ...)
   {
     va_list arg;
     char buff[255];
 
-    if (!error) 
+    if (!error)
       error = &std::cerr;
 
     va_start(arg, format);
@@ -170,11 +179,11 @@ namespace AMDiS
     PRINT_LINE((*error), buff);
     va_end(arg);
 #if defined HAVE_PARALLEL_DOMAIN_AMDIS && !defined HAVE_PARALLEL_MTL4 && (DEBUG == 0 || defined NDEBUG)
-  #if (PETSC_VERSION_MINOR >= 5)
+#if (PETSC_VERSION_MINOR >= 5)
     PetscError(MPI_COMM_WORLD, __LINE__, "Msg::print_error_exit", "Global.cc", 1, PETSC_ERROR_INITIAL, buff);
-  #else
+#else
     PetscError(MPI_COMM_WORLD, __LINE__, "Msg::print_error_exit", "Global.cc", "src/", 1, PETSC_ERROR_INITIAL, buff);
-  #endif
+#endif
 #else
     throw std::runtime_error(buff);
 #endif
@@ -182,13 +191,13 @@ namespace AMDiS
   }
 
 
-  void Msg::print_error(const char *format, ...)
+  void Msg::print_error(const char* format, ...)
   {
     va_list arg;
     char buff[255];
 
 
-    if (!error) 
+    if (!error)
       error = &std::cerr;
 
     va_start(arg, format);
@@ -198,9 +207,9 @@ namespace AMDiS
   }
 
 
-  void Msg::print_warn_funcname(const char *funcName,
-				const char *file, 
-				int line)
+  void Msg::print_warn_funcname(const char* funcName,
+                                const char* file,
+                                int line)
   {
 #ifdef HAVE_PARALLEL_DOMAIN_AMDIS
 #if (DEBUG == 0)
@@ -211,32 +220,38 @@ namespace AMDiS
 
     static int old_line = -1;
 
-    if (!out) 
+    if (!out)
       out = &std::cout;
 
     std::stringstream oss;
 
-    if (funcName  &&  oldFuncName.get() != funcName) {
+    if (funcName  &&  oldFuncName.get() != funcName)
+    {
       oss << funcName << ": ";
-    } else if (!funcName) {
+    }
+    else if (!funcName)
+    {
       oss << "*unknown function*";
     }
 
-    if (oldFuncName.get() != funcName) {
+    if (oldFuncName.get() != funcName)
+    {
       oss << "WARNING in " << file << ", line " << line << std::endl;
       oldFuncName.set(funcName);
-    } else if (line - old_line > 5) {
+    }
+    else if (line - old_line > 5)
+    {
       oss << "WARNING in " << file << ", line " << line << std::endl;
     }
 
-    if (oss.str() != "") 
+    if (oss.str() != "")
       PRINT_LINE((*out), oss.str());
-    
+
     old_line = line;
   }
 
 
-  void Msg::print_warn(const char *format, ...)
+  void Msg::print_warn(const char* format, ...)
   {
 #ifdef HAVE_PARALLEL_DOMAIN_AMDIS
 #if (DEBUG == 0)
@@ -247,7 +262,7 @@ namespace AMDiS
     va_list arg;
     char buff[255];
 
-    if (!out) 
+    if (!out)
       out = &std::cout;
 
     va_start(arg, format);
@@ -257,7 +272,7 @@ namespace AMDiS
   }
 
 
-  void Msg::print(const char *format, ...)
+  void Msg::print(const char* format, ...)
   {
 #ifndef SUPPRESS_OUTPUT
 #ifdef HAVE_PARALLEL_DOMAIN_AMDIS
@@ -268,7 +283,7 @@ namespace AMDiS
     va_list arg;
     char buff[255];
 
-    if (!out) 
+    if (!out)
       out = &std::cout;
 
     va_start(arg, format);
@@ -293,34 +308,35 @@ namespace AMDiS
     using std::ios_base;
     using std::ifstream;
     using std::string;
-    
+
     vm_usage     = 0.0;
     resident_set = 0.0;
-    
-    // 'file' stat seems to give the most reliable results    
+
+    // 'file' stat seems to give the most reliable results
     ifstream stat_stream("/proc/self/stat",ios_base::in);
-    
+
     // dummy vars for leading entries in stat that we don't care about
     string pid, comm, state, ppid, pgrp, session, tty_nr;
     string tpgid, flags, minflt, cminflt, majflt, cmajflt;
     string utime, stime, cutime, cstime, priority, nice;
     string O, itrealvalue, starttime;
-    
-    // the two fields we want    
+
+    // the two fields we want
     unsigned long vsize;
     long rss;
-    
-    stat_stream >> pid >> comm >> state >> ppid >> pgrp >> session >> tty_nr
-		>> tpgid >> flags >> minflt >> cminflt >> majflt >> cmajflt
-		>> utime >> stime >> cutime >> cstime >> priority >> nice
-		>> O >> itrealvalue >> starttime >> vsize >> rss;
 
-    // in case x86-64 is configured to use 2MB pages    
+    stat_stream >> pid >> comm >> state >> ppid >> pgrp >> session >> tty_nr
+                >> tpgid >> flags >> minflt >> cminflt >> majflt >> cmajflt
+                >> utime >> stime >> cutime >> cstime >> priority >> nice
+                >> O >> itrealvalue >> starttime >> vsize >> rss;
+
+    // in case x86-64 is configured to use 2MB pages
     long page_size_kb = sysconf(_SC_PAGE_SIZE) / 1024;
     vm_usage = vsize / 1024.0;
     resident_set = rss * page_size_kb;
 
-    if (inMegaByte) {
+    if (inMegaByte)
+    {
       vm_usage /= 1024.0;
       resident_set /= 1024.0;
     }

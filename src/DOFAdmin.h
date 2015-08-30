@@ -17,13 +17,13 @@
 #include "Global.h"
 #include "MatrixVector.h"
 
-namespace AMDiS 
+namespace AMDiS
 {
   /** \ingroup DOFAdministration
    * \brief
    * Holds all data about one set of DOFs. It includes information about used and
    * unused DOF indices, as well as lists of DOFIndexed objects and DOFContainer
-   * objects, that are automatically resized and resorted during mesh changes. 
+   * objects, that are automatically resized and resorted during mesh changes.
    */
   class DOFAdmin
   {
@@ -43,7 +43,7 @@ namespace AMDiS
     ~DOFAdmin();
 
     /** \brief
-     * Enlarges the number of DOFs that can be managed at least to minsize by 
+     * Enlarges the number of DOFs that can be managed at least to minsize by
      * a step size of \ref sizeIncrement.
      */
     void enlargeDofLists(int minsize = 0);
@@ -55,11 +55,11 @@ namespace AMDiS
     bool operator==(const DOFAdmin&) const;
 
     /// Compares two DOFAdmins by their names.
-    bool operator!=(const DOFAdmin& ad) const 
+    bool operator!=(const DOFAdmin& ad) const
     {
       return !(ad == *this);
     }
-  
+
     /** \brief
      * Adds a DOFIndexedBase object to the DOFAdmin. This object will be
      * managed by DOFAdmin from now on.
@@ -82,16 +82,16 @@ namespace AMDiS
      * compression. This method is usually called after mesh adaption involving
      * higher order elements or coarsening.
      */
-    void compress(std::vector<DegreeOfFreedom> &newDofIndex);
+    void compress(std::vector<DegreeOfFreedom>& newDofIndex);
 
     /// Returns an iterator to the begin of \ref dofIndexedList
-    std::list<DOFIndexedBase*>::iterator beginDOFIndexed() 
+    std::list<DOFIndexedBase*>::iterator beginDOFIndexed()
     {
       return dofIndexedList.begin();
     }
 
     /// Returns an iterator to the end of \ref dofIndexedList
-    std::list<DOFIndexedBase*>::iterator endDOFIndexed() 
+    std::list<DOFIndexedBase*>::iterator endDOFIndexed()
     {
       return dofIndexedList.end();
     }
@@ -101,73 +101,78 @@ namespace AMDiS
      */
 
     /// Returns \ref sizeUsed.
-    DofIndex::size_type getUsedSize() const 
-    { 
-      return sizeUsed; 
+    DofIndex::size_type getUsedSize() const
+    {
+      return sizeUsed;
     }
 
     /// Returns \ref size
     DofIndex::size_type getSize() const
-    { 
-      return size; 
+    {
+      return size;
     }
 
     /// Returns \ref usedCount
-    DofIndex::size_type getUsedDofs() const 
-    { 
-      return usedCount; 
+    DofIndex::size_type getUsedDofs() const
+    {
+      return usedCount;
     }
 
     /// Returns \ref holeCount
-    DofIndex::size_type getHoleCount() const 
-    { 
-      return holeCount; 
+    DofIndex::size_type getHoleCount() const
+    {
+      return holeCount;
     }
 
     /// Returns \ref name
-    std::string getName() const 
-    { 
-      return name; 
+    std::string getName() const
+    {
+      return name;
     }
 
     /// Returns \ref nDof[i], i.e., the number of DOFs for the position i.
-    int getNumberOfDofs(int i) const 
+    int getNumberOfDofs(int i) const
     {
       return nDof[i];
     }
- 
+
     /// Returns \ref nDof
-    const DimVec<int>& getNumberOfDofs() const 
-    { 
-      return nDof; 
+    const DimVec<int>& getNumberOfDofs() const
+    {
+      return nDof;
     }
- 
+
     /// Returns \ref nPreDof[i]
-    int getNumberOfPreDofs(int i) const 
+    int getNumberOfPreDofs(int i) const
     {
       return nPreDof[i];
     }
- 
+
     /// Returns \ref nPreDof
-    const DimVec<int>& getNumberOfPreDofs() const 
-    { 
-      return nPreDof; 
+    const DimVec<int>& getNumberOfPreDofs() const
+    {
+      return nPreDof;
     }
 
-    /// Returns \ref mesh 
-    const Mesh* getMesh() const 
-    { 
-      return mesh; 
+    /// Returns \ref mesh
+    const Mesh* getMesh() const
+    {
+      return mesh;
     }
 
     /// Returns \ref dofFree, the array denoting DOFs to be either free or used.
-    const std::vector<bool>& getDofFree() const 
-    { 
-      return dofFree; 
+    const std::vector<bool>& getDofFree() const
+    {
+      return dofFree;
+    }
+
+    std::vector<bool>& getDofFree()
+    {
+      return dofFree;
     }
 
     /// Returns if the given DOF is free.
-    bool isDofFree(DofIndex::size_type i) const 
+    bool isDofFree(DofIndex::size_type i) const
     {
       return dofFree[i];
     }
@@ -177,7 +182,7 @@ namespace AMDiS
     {
       dofFree[i] = b;
     }
-    
+
     /// Sets \ref usedSize.
     void setUsedSize(DofIndex::size_type i)
     {
@@ -217,19 +222,19 @@ namespace AMDiS
     void setNumberOfPreDofs(int i, int v);
 
     /// Sets \ref name = n
-    void setName(std::string n) 
-    { 
-      name = n; 
+    void setName(std::string n)
+    {
+      name = n;
     }
 
     /// Sets \ref mesh = m
-    void setMesh(Mesh* m) 
-    { 
-      mesh = m; 
+    void setMesh(Mesh* m)
+    {
+      mesh = m;
     }
 
     int calcMemoryUsage() const;
-    
+
     void reset()
     {
       init();
@@ -237,31 +242,31 @@ namespace AMDiS
 
     /** \} */
 
+    /** \brief
+     * Adds one index to all DOF lists. Used by Mesh::getDof() to provide
+     * DOFS for a specific position
+     */
+    DegreeOfFreedom getDOFIndex(MeshAccessor const&);
+
+    /// Frees index DOF. Used by Mesh::getDof()
+    void freeDofIndex(MeshAccessor const&, DegreeOfFreedom dof);
+
   protected:
     /// Initializes this DOFAdmin
     void init();
-
-    /** \brief
-     * Adds one index to all DOF lists. Used by Mesh::getDof() to provide 
-     * DOFS for a specific position
-     */
-    DegreeOfFreedom getDOFIndex();
-
-    /// Frees index DOF. Used by Mesh::getDof()
-    void freeDofIndex(DegreeOfFreedom dof);
 
   protected:
     /// name of this DOFAdmin
     std::string name;
 
     /// the mesh this DOFAdmin belongs to
-    Mesh *mesh;
+    Mesh* mesh;
 
     /// The dofFree vector stores for each index whether it is used or not
     std::vector<bool> dofFree;
 
     /// index of the first free value in \ref dofFree
-    DegreeOfFreedom firstHole;   
+    DegreeOfFreedom firstHole;
 
     /// allocated size of managed vectors and matrices
     DofIndex::size_type size;
@@ -276,7 +281,7 @@ namespace AMDiS
     DofIndex::size_type sizeUsed;
 
     /** \brief
-     * Number of dofs for each position, i.e., vertex, edge, ..., center, 
+     * Number of dofs for each position, i.e., vertex, edge, ..., center,
      * for this DOFAdmin.
      */
     DimVec<int> nDof;
@@ -291,10 +296,7 @@ namespace AMDiS
     std::list<DOFContainer*> dofContainerList;
 
     /// Size increment used by \ref enlargeDOFLists.
-    static const int sizeIncrement; 
-
-    friend class DOFIteratorBase;
-    friend class Mesh;
+    static const int sizeIncrement;
   };
 
 } // end namespace AMDiS

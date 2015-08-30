@@ -1,13 +1,14 @@
 #include "ElementData.h"
 
-namespace AMDiS 
+namespace AMDiS
 {
-  void ElementData::coarsenElementData(Element* parent, 
-				       Element* thisChild,
-				       Element* otherChild,
-				       int elTypeParent) 
+  void ElementData::coarsenElementData(Element* parent,
+                                       Element* thisChild,
+                                       Element* otherChild,
+                                       int elTypeParent)
   {
-    if (decorated) {
+    if (decorated)
+    {
       decorated->coarsenElementData(parent, thisChild, otherChild, elTypeParent);
       delete decorated;
       decorated = NULL;
@@ -16,28 +17,33 @@ namespace AMDiS
 
   bool ElementData::deleteDecorated(int typeID)
   {
-    if (decorated) {
-      if (decorated->isOfType(typeID)) {
-	ElementData *tmp = decorated;
-	decorated = decorated->decorated;
-	delete tmp;
-	tmp = NULL;
-	return true;
-      } else {
-	return decorated->deleteDecorated(typeID);
+    if (decorated)
+    {
+      if (decorated->isOfType(typeID))
+      {
+        ElementData* tmp = decorated;
+        decorated = decorated->decorated;
+        delete tmp;
+        tmp = NULL;
+        return true;
       }
-    } 
-    return false;    
+      else
+      {
+        return decorated->deleteDecorated(typeID);
+      }
+    }
+    return false;
   }
 
   void ElementData::deleteDecorated()
   {
-    if (decorated) {
+    if (decorated)
+    {
       decorated->deleteDecorated();
       delete decorated;
     }
   }
-  
+
   ElementData::~ElementData()
   {
   }

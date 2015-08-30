@@ -11,79 +11,85 @@
 #include <traits/mult_type.hpp>
 #include <Math.h>
 
-namespace AMDiS 
+namespace AMDiS
 {
   /// Expression with two arguments
   template <class E1, class E2, class Functor>
   struct VectorBinaryExpr
-      : public VectorExpr< VectorBinaryExpr<E1, E2, Functor> >
+    : public VectorExpr<VectorBinaryExpr<E1, E2, Functor>>
   {
     using Self       = VectorBinaryExpr;
     using expr_base  = VectorExpr<Self>;
-    
+
     using value_type = Value_t<E1>;
     using size_type  = traits::max_size_type<E1,E2>;
     using expr1_type = E1;
     using expr2_type = E2;
-    
+
     constexpr static int _SIZE = math::max(E1::_SIZE, E2::_SIZE);
     constexpr static int _ROWS = math::max(E1::_ROWS, E2::_ROWS);
     constexpr static int _COLS = math::max(E1::_COLS, E2::_COLS);
-    
+
   public:
     /// constructor takes two expressions
-    VectorBinaryExpr(expr1_type const& A, expr2_type const& B) 
-      : expr1(A), expr2(B) 
-    { 
+    VectorBinaryExpr(expr1_type const& A, expr2_type const& B)
+      : expr1(A), expr2(B)
+    {
       assert( size(A) == size(B) );
     }
-    
+
     /// access the elements of an expr.
     value_type operator()(size_type i) const
-    { 
+    {
       return Functor::apply( i, expr1, expr2 );
     }
-    
+
     /// access the elements of a matrix-expr.
     value_type operator()(size_type i, size_type j) const
-    { 
+    {
       return Functor::apply( i, j, expr1, expr2 );
     }
-    
-    expr1_type const& get_first() const { return expr1; }
-    expr2_type const& get_second() const { return expr2; }
-    
+
+    expr1_type const& get_first() const
+    {
+      return expr1;
+    }
+    expr2_type const& get_second() const
+    {
+      return expr2;
+    }
+
   private:
     expr1_type const& expr1;
     expr2_type const& expr2;
   };
-  
+
   /// Size of VectorBinaryExpr
   template <class E1, class E2, class F>
   inline size_t size(VectorBinaryExpr<E1, E2, F> const& expr)
   {
     return size(expr.get_first());
   }
-  
+
   /// number of rows of VectorBinaryExpr
   template <class E1, class E2, class F>
   inline size_t num_rows(VectorBinaryExpr<E1, E2, F> const& expr)
   {
     return num_rows(expr.get_first());
   }
-  
+
   /// number of columns of VectorBinaryExpr
   template <class E1, class E2, class F>
   inline size_t num_cols(VectorBinaryExpr<E1, E2, F> const& expr)
   {
     return num_cols(expr.get_first());
   }
-  
-  namespace traits 
+
+  namespace traits
   {
     /// \cond HIDDEN_SYMBOLS
     template <class E1, class E2, class F>
-    struct category<VectorBinaryExpr<E1,E2,F> > 
+    struct category<VectorBinaryExpr<E1,E2,F>>
     {
       using value_type = Value_t<VectorBinaryExpr<E1,E2,F>>;
       using size_type  = Value_t<VectorBinaryExpr<E1,E2,F>>;
@@ -91,5 +97,5 @@ namespace AMDiS
     };
     /// \endcond
   }
-  
+
 } // end namespace AMDiS

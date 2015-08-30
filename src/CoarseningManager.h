@@ -5,22 +5,22 @@
 #include "AMDiS_fwd.h"
 #include "Flag.h"
 
-namespace AMDiS 
+namespace AMDiS
 {
   /** \ingroup Adaption
    * \brief
    * Base class of CoarseningManager1d, CoarseningManager2d, CoarseningManager3d.
    * A CoarseningManager contains all functionality to perform coarsening
-   * operations on the mesh. 
+   * operations on the mesh.
    */
   class CoarseningManager
   {
   public:
-    /// Constructs a CoarseningManager which belongs to aMesh 
-    CoarseningManager() 
-      : mesh(NULL), 
-      	stack(NULL), 
-      	doMore(0) 
+    /// Constructs a CoarseningManager which belongs to aMesh
+    CoarseningManager()
+      : mesh(NULL),
+        stack(NULL),
+        doMore(0)
     {}
 
     /// destructor
@@ -28,35 +28,35 @@ namespace AMDiS
 
     /// Returns the Mesh the CoarseningManager belongs to.
     Mesh* getMesh() const
-    { 
-      return mesh; 
+    {
+      return mesh;
     }
 
     /** \brief
      * Tries to coarsen every element of mesh at least mark times. First
      * all elements are marked for coarsening and then coarsenMesh will
-     * be called. 
+     * be called.
      */
-    Flag globalCoarsen(Mesh *aMesh, int mark);
-  
+    Flag globalCoarsen(Mesh* aMesh, int mark);
+
     /** \brief
      * Traversal routine for recursiv coarsening of a triangulation. It has
      * a default definition in CoarseningManager but it can be overriden
      * by sub classes (like in CoarseningManager1d), if another implementation
-     * is needed. 
+     * is needed.
      */
-    virtual Flag coarsenMesh(Mesh *aMesh);
+    virtual Flag coarsenMesh(Mesh* aMesh);
 
 
   protected:
     /// Defines the way how one element of the mesh is coarsen.
-    virtual void coarsenFunction(ElInfo *) {}
+    virtual void coarsenFunction(ElInfo*) {}
 
     /** \brief
      *  Propagate coarsening information over the whole hierarchy
-     *  by POSTORDER traversal of the hierarchy tree.       
-     *  leaves:      'increment' coarsening mark,            
-     *  inner nodes: set coarsening mark to                
+     *  by POSTORDER traversal of the hierarchy tree.
+     *  leaves:      'increment' coarsening mark,
+     *  inner nodes: set coarsening mark to
      *               min(0,child[0].mark+1,child[1].mark+1)
      */
     void spreadCoarsenMark();
@@ -66,10 +66,10 @@ namespace AMDiS
 
   protected:
     /// The Mesh this CoarseningManager belongs to.
-    Mesh *mesh;
+    Mesh* mesh;
 
     /// Used for non recursive mesh traversal.
-    TraverseStack *stack;
+    TraverseStack* stack;
 
     /// Spezifies whether the coarsening operation is still in progress
     bool doMore;

@@ -11,7 +11,7 @@
 
 #include "Flag.h"
 
-namespace AMDiS 
+namespace AMDiS
 {
   // Flags for controling which part of the problem should be initialized
 
@@ -19,7 +19,7 @@ namespace AMDiS
   const Flag INIT_FE_SPACE         = 0X01L;
   const Flag INIT_MESH             = 0X02L;
   const Flag CREATE_MESH           = 0X04L;
-  const Flag INIT_SYSTEM           = 0X08L; 
+  const Flag INIT_SYSTEM           = 0X08L;
   const Flag INIT_SOLVER           = 0X10L;
   const Flag INIT_ESTIMATOR        = 0X20L;
   const Flag INIT_MARKER           = 0X40L;
@@ -49,12 +49,12 @@ namespace AMDiS
   class AdaptInfo;
 
   /**
-   * \ingroup Problem 
+   * \ingroup Problem
    *
    * \brief
    * Interface for time independent problems. Concrete problems must override
    * all pure virtual methods. The method \ref adaptMethodStat() should
-   * initiate the adaption loop which in turn uses the other pure virtual 
+   * initiate the adaption loop which in turn uses the other pure virtual
    * functions. The default stationary adaption loop is implemented in the class
    * AdaptStationary.
    */
@@ -64,38 +64,38 @@ namespace AMDiS
     virtual ~ProblemStatBase() {}
 
     /// Marks mesh elements for refinement and coarsening.
-    virtual Flag markElements(AdaptInfo *adaptInfo) = 0;
+    virtual Flag markElements(AdaptInfo* adaptInfo) = 0;
 
     /// Assembling of system matrices and vectors before refinement.
-    virtual void buildBeforeRefine(AdaptInfo *adaptInfo, Flag flag) = 0;
+    virtual void buildBeforeRefine(AdaptInfo* adaptInfo, Flag flag) = 0;
 
     /// Assembling of system matrices and vectors before coarsening.
-    virtual void buildBeforeCoarsen(AdaptInfo *adaptInfo, Flag flag) = 0;
+    virtual void buildBeforeCoarsen(AdaptInfo* adaptInfo, Flag flag) = 0;
 
     /** \brief
      * Assembling of system matrices and vectors after coarsening.
      * By the last two parameters, assembling can be restricted to either
      * matrices or vectors only.
      */
-    virtual void buildAfterCoarsen(AdaptInfo *adaptInfo, Flag flag, 
-				                           bool assembleMatrix, bool assembleVector) = 0;
-  
+    virtual void buildAfterCoarsen(AdaptInfo* adaptInfo, Flag flag,
+                                   bool assembleMatrix, bool assembleVector) = 0;
+
     /// Refinement of the mesh.
-    virtual Flag refineMesh(AdaptInfo *adaptInfo) = 0;
+    virtual Flag refineMesh(AdaptInfo* adaptInfo) = 0;
 
     /// Coarsening of the mesh.
-    virtual Flag coarsenMesh(AdaptInfo *adaptInfo) = 0;
+    virtual Flag coarsenMesh(AdaptInfo* adaptInfo) = 0;
 
-    /** \brief 
+    /** \brief
      * Solves the assembled system. The result is an approximative solution.
      * The last two boolean arguments can be used to controll successive
      * solutions of systems with the same matrix.
      *
      * \param  adaptInfo          Pointer to an \ref AdaptInfo object.
      * \param  createMatrixData   If false, the solver assumes that all of its
-     *                            internal data structures for the system 
+     *                            internal data structures for the system
      *                            matrix are already created. This is the case,
-     *                            if we solve different systems but with the 
+     *                            if we solve different systems but with the
      *                            same matrix. After the first call to this
      *                            function (with this parameter set to true),
      *                            all other calls may set it to false.
@@ -104,16 +104,16 @@ namespace AMDiS
      *                            can be used for next solutions with the same
      *                            system matrix.
      */
-    virtual void solve(AdaptInfo *adaptInfo,
-            		       bool createMatrixData = true,
-            		       bool storeMatrixData = false) = 0;
+    virtual void solve(AdaptInfo* adaptInfo,
+                       bool createMatrixData = true,
+                       bool storeMatrixData = false) = 0;
 
     /** \brief
      * A posteriori error estimation of the calculated solution. Should store
      * a local error estimation at each elements leaf data and return the
      * total error sum.
      */
-    virtual void estimate(AdaptInfo *adaptInfo) = 0;
+    virtual void estimate(AdaptInfo* adaptInfo) = 0;
 
     /// Returns the name of the problem.
     virtual std::string getName() const = 0;

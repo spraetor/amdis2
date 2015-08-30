@@ -4,23 +4,23 @@
 
 #include "DOFVector.h"
 
-namespace AMDiS 
+namespace AMDiS
 {
 
   class VertexVector : public DOFVectorDOF
   {
   public:
-    struct Iterator : public DOFIterator<DegreeOfFreedom> 
+    struct Iterator : public DOFIterator<DegreeOfFreedom>
     {
       Iterator(VertexVector* c, DOFIteratorType type)
-      	: DOFIterator<DegreeOfFreedom>(const_cast<DOFAdmin*>(c->getAdmin()), 
-                        				       dynamic_cast<DOFIndexed<DegreeOfFreedom>*>(c), 
-                        				       type)
-      {}   
+        : DOFIterator<DegreeOfFreedom>(const_cast<DOFAdmin*>(c->getAdmin()),
+                                       dynamic_cast<DOFIndexed<DegreeOfFreedom>*>(c),
+                                       type)
+      {}
     };
 
     /// Constructor
-    VertexVector(const DOFAdmin *admin, std::string name);
+    VertexVector(const DOFAdmin* admin, std::string name);
 
     /// Destructor, calls \ref removeDOFIndexed and \ref removeDOFContainer on \ref admin.
     ~VertexVector();
@@ -33,9 +33,9 @@ namespace AMDiS
       vec[dof] = dof;
     }
 
-    const DOFAdmin *getAdmin() const
-    { 
-      return admin; 
+    const DOFAdmin* getAdmin() const
+    {
+      return admin;
     }
 
     void resize(int size);
@@ -47,7 +47,7 @@ namespace AMDiS
     void changeDofIndices(std::map<DegreeOfFreedom, DegreeOfFreedom>& dofIndexMap);
 
   protected:
-    const DOFAdmin *admin;
+    const DOFAdmin* admin;
   };
-  
+
 } // end namespace AMDiS

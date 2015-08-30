@@ -5,7 +5,7 @@
  * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
  * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
  *
- * Authors: 
+ * Authors:
  * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
  *
  * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
@@ -15,7 +15,7 @@
  * This file is part of AMDiS
  *
  * See also license.opensource.txt in the distribution.
- * 
+ *
  ******************************************************************************/
 
 
@@ -28,7 +28,8 @@
 #include "Estimator.h"
 #include "Recovery.h"
 
-namespace AMDiS {
+namespace AMDiS
+{
 
   /// Error estimator using the recovery gradient of the finite element solution.
   class RecoveryEstimator : public Estimator
@@ -45,12 +46,12 @@ namespace AMDiS {
       /// Returns a new Estimator object.
       virtual Estimator* create()
       {
-	return new RecoveryEstimator(name, uh, row);
+        return new RecoveryEstimator(name, uh, row);
       }
     };
 
     /// constructor
-    RecoveryEstimator(std::string name, DOFVector<double> *uh_, int r = -1);
+    RecoveryEstimator(std::string name, DOFVector<double>* uh_, int r = -1);
 
     /// destructor.
     virtual ~RecoveryEstimator() {}
@@ -59,37 +60,37 @@ namespace AMDiS {
     virtual void init(double ts);
 
     /// implements \ref Estimator::estimateElement(ElInfo*, DualElInfo*).
-    virtual void estimateElement(ElInfo *elInfo, DualElInfo *dualElInfo = NULL);
+    virtual void estimateElement(ElInfo* elInfo, DualElInfo* dualElInfo = NULL);
 
     /// implements \ref Estimator::exit(bool).
     virtual void exit(bool output = true);
 
     /// Sets uh.
-    inline void setUh(DOFVector<double> *uh_)
+    inline void setUh(DOFVector<double>* uh_)
     {
       uh = uh_;
     }
 
     /// Sets f.
-    inline void setFct(AbstractFunction<double, WorldVector<double> > *fct)
+    inline void setFct(AbstractFunction<double, WorldVector<double>>* fct)
     {
       f_vec = fct;
     }
 
     ///
-    inline void setFct(AbstractFunction<double, double> *fct)
+    inline void setFct(AbstractFunction<double, double>* fct)
     {
       f_scal = fct;
     }
 
     /// Sets auxiliar vector.
-    inline void setAuxVec(DOFVector<double> *uh)
+    inline void setAuxVec(DOFVector<double>* uh)
     {
       aux_vec = uh;
     }
 
     /// Gets recovery gradient.
-    inline DOFVector<WorldVector<double> >* getRecGrd()
+    inline DOFVector<WorldVector<double>>* getRecGrd()
     {
       return rec_grd;
     }
@@ -101,9 +102,9 @@ namespace AMDiS {
     }
 
 
-  protected:   
+  protected:
     /// finite element solution
-    DOFVector<double> *uh;
+    DOFVector<double>* uh;
 
     /// absolute or relative error?
     int relative;
@@ -115,44 +116,44 @@ namespace AMDiS {
     int method;
 
     /// Working finite element space
-    const FiniteElemSpace *feSpace;
+    const FiniteElemSpace* feSpace;
 
     /// Degree of corresponding basic functions
     int degree;
 
     /// Basis functions for recovery vector.
-    const BasisFunction *rec_basFcts;
+    const BasisFunction* rec_basFcts;
 
     /// Recovery gradient
-    DOFVector<WorldVector<double> > *rec_grd;
+    DOFVector<WorldVector<double>>* rec_grd;
 
     /// Higher-order recovery solution
-    DOFVector<double> *rec_uh;
+    DOFVector<double>* rec_uh;
 
     /// Diffusion coefficient (for flux recovery)
-    AbstractFunction<double, WorldVector<double> > *f_vec;
-    AbstractFunction<double, double> *f_scal;
+    AbstractFunction<double, WorldVector<double>>* f_vec;
+    AbstractFunction<double, double>* f_scal;
 
     /// auxiliar vector
-    DOFVector<double> *aux_vec;
+    DOFVector<double>* aux_vec;
 
     /// Recovery structure.
-    Recovery *rec_struct;
+    Recovery* rec_struct;
 
     /// Number of quadrature points.
     int nPoints;
 
-    Quadrature *quad;
-    FastQuadrature *quadFast, *rec_quadFast;
+    Quadrature* quad;
+    FastQuadrature* quadFast, *rec_quadFast;
 
-    /// Basis functions 
-    const BasisFunction *basFcts;
-    
+    /// Basis functions
+    const BasisFunction* basFcts;
+
     double h1Norm2;
 
     WorldVector<double> quad_pt;
-    mtl::dense_vector<WorldVector<double> > grdAtQP;
-    mtl::dense_vector<WorldVector<double> > recoveryGrdAtQP;
+    mtl::dense_vector<WorldVector<double>> grdAtQP;
+    mtl::dense_vector<WorldVector<double>> recoveryGrdAtQP;
     mtl::dense_vector<double> uhAtQP;
     mtl::dense_vector<double> recoveryUhAtQP;
   };

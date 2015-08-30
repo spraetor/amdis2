@@ -1,6 +1,6 @@
 // #include "Expressions.h"
 
-namespace AMDiS 
+namespace AMDiS
 {
   template <class C>
   void Operator::addZOTImpl(C&& c)
@@ -8,11 +8,11 @@ namespace AMDiS
     using C_ = Decay_t<C>;
     GenericZeroOrderTerm<C_>* term = new GenericZeroOrderTerm<C_>(std::forward<C>(c));
     zeroOrder.push_back(term);
-    term->operat = this;
+    term->setOperator(this);
     c.insertFeSpaces(auxFeSpaces);
   }
-  
-  
+
+
   template <class B>
   void Operator::addFOTImpl(tag::scalar, B&& b, FirstOrderType type, int i)
   {
@@ -22,33 +22,33 @@ namespace AMDiS
       term = new GenericFirstOrderTerm_i<-1,B_>(std::forward<B>(b), i);
     else
       term = new GenericFirstOrderTerm_1<B_>(std::forward<B>(b));
-    
+
     if (type == GRD_PSI)
       firstOrderGrdPsi.push_back(term);
     else
       firstOrderGrdPhi.push_back(term);
-    
-    term->operat = this;
+
+    term->setOperator(this);
     b.insertFeSpaces(auxFeSpaces);
   }
-  
-  
+
+
   template <class B>
   void Operator::addFOTImpl(tag::vector, B&& b, FirstOrderType type, int i)
   {
     using B_ = Decay_t<B>;
     GenericOperatorTerm<B_, 1>* term = new GenericFirstOrderTerm_b<B_>(std::forward<B>(b));
-    
+
     if (type == GRD_PSI)
       firstOrderGrdPsi.push_back(term);
     else
       firstOrderGrdPhi.push_back(term);
-    
-    term->operat = this;
+
+    term->setOperator(this);
     b.insertFeSpaces(auxFeSpaces);
   }
-  
-  
+
+
   template <class A>
   void Operator::addSOTImpl(tag::scalar, A&& a, int i, int j, bool sym)
   {
@@ -58,13 +58,13 @@ namespace AMDiS
       term = new GenericSecondOrderTerm_ij<-1,-1,A_>(std::forward<A>(a), i, j);
     else
       term = new GenericSecondOrderTerm_1<A_>(std::forward<A>(a));
-    
+
     secondOrder.push_back(term);
-    term->operat = this;
+    term->setOperator(this);
     a.insertFeSpaces(auxFeSpaces);
   }
-  
-  
+
+
   template <class A>
   void Operator::addSOTImpl(tag::matrix, A&& a, int i, int j, bool sym)
   {
@@ -74,10 +74,45 @@ namespace AMDiS
       term = new GenericSecondOrderTerm_A<A_, true>(std::forward<A>(a));
     else
       term = new GenericSecondOrderTerm_A<A_, false>(std::forward<A>(a));
-    
+
     secondOrder.push_back(term);
-    term->operat = this;
+    term->setOperator(this);
     a.insertFeSpaces(auxFeSpaces);
   }
-  
+
+#if 0
+  template <class T>
+  Operator& Operator::operator+=(ZOTWrapper<T> wrapper)
+  {
+    ZeroOrderTerm* ot = wrapper.getOperatorTerm();
+    zeroOrder.push_back(ot);
+    ot->operat = this;
+    wrapper.getTerm().insertFeSpaces(auxFeSpaces);
+    return *this;
+  }
+
+  template <class T>
+  Operator& Operator::operator+=(FOTWrapper<T> wrapper)
+  {
+    FirstOrderTerm* ot = wrapper.getOperatorTerm();
+    if (wrapper.getType() == GRD_PSI)
+      firstOrderGrdPsi.push_back(ot);
+    else
+      firstOrderGrdPhi.push_back(ot);
+
+    ot->operat = this;
+    wrapper.getTerm().insertFeSpaces(auxFeSpaces);
+    return *this;
+  }
+
+  template <class T>
+  Operator& Operator::operator+=(SOTWrapper<T> wrapper)
+  {
+    SecondOrderTerm* ot = wrapper.getOperatorTerm();
+    secondOrder.push_back(ot);
+    ot->operat = this;
+    wrapper.getTerm().insertFeSpaces(auxFeSpaces);
+    return *this;
+  }
+#endif
 } // end namespace AMDiS

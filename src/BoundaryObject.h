@@ -8,28 +8,28 @@
 #include "Boundary.h"
 #include "GeoIndex.h"
 
-namespace AMDiS 
+namespace AMDiS
 {
-  using ExcludeList = std::vector<std::pair<GeoIndex, int> >;
+  using ExcludeList = std::vector<std::pair<GeoIndex, int>>;
 
   /// Defines the geometrical objects that forms the boundary;
-  struct BoundaryObject 
+  struct BoundaryObject
   {
     BoundaryObject();
 
-    BoundaryObject(Element *e, 
-            		   int eType, 
-            		   GeoIndex sObj, 
-            		   int iObj, 
-            		   bool rMode = false);
+    BoundaryObject(Element* e,
+                   int eType,
+                   GeoIndex sObj,
+                   int iObj,
+                   bool rMode = false);
 
-    static bool computeReverseMode(BoundaryObject &obj0,
-                        				   BoundaryObject &obj1,
-                        				   const FiniteElemSpace *feSpace,
-                        				   BoundaryType boundary);
-    
+    static bool computeReverseMode(BoundaryObject& obj0,
+                                   BoundaryObject& obj1,
+                                   const FiniteElemSpace* feSpace,
+                                   BoundaryType boundary);
+
     bool operator==(const BoundaryObject& other) const;
-    
+
     bool operator!=(const BoundaryObject& other) const;
 
     bool operator<(const BoundaryObject& other) const;
@@ -44,7 +44,7 @@ namespace AMDiS
     int elType;
 
     /// Defines the geometrical object at the boundary. It must be "a part" of
-    /// the macro element \ref el, i.e., either 1 (a vertex), 2 (an edge) or 3 
+    /// the macro element \ref el, i.e., either 1 (a vertex), 2 (an edge) or 3
     /// (a face).
     GeoIndex subObj;
 
@@ -62,10 +62,10 @@ namespace AMDiS
     bool reverseMode;
 
     /** \brief
-     * In many situations it may be necessary to exclude some parts of the 
-     * element to be part of the boundary. In 3d, when a face is part of the 
+     * In many situations it may be necessary to exclude some parts of the
+     * element to be part of the boundary. In 3d, when a face is part of the
      * boundary, an edge or an vertex may be exludeded. In 2d only vertices may
-     * be exluded to be part of an edge boundary. This list contains pairs of 
+     * be exluded to be part of an edge boundary. This list contains pairs of
      * exludeded structures. The first component of every pair denotes if it is
      * a vertex or an edge, and the second component denotes the local index of
      * the structure.
@@ -75,11 +75,11 @@ namespace AMDiS
 
 
 
-  /** \brief 
+  /** \brief
    * Defines one atomic part of the boundary, i.e., two boundary objects where
    * the boundary goes through.
    */
-  struct AtomicBoundary 
+  struct AtomicBoundary
   {
     AtomicBoundary()
       : type(INTERIOR),
@@ -96,7 +96,7 @@ namespace AMDiS
     /// The object on the other side of the boundary.
     BoundaryObject neighObj;
 
-    /// Integer flag that is used to distinguish between different types of 
+    /// Integer flag that is used to distinguish between different types of
     /// boundaries. Till now it is used only for periodic boundaries, which are
     /// also handles as interior boundaries.
     BoundaryType type;

@@ -8,43 +8,43 @@
 #include "Global.h"
 #include "FixVec.h"
 
-namespace AMDiS 
+namespace AMDiS
 {
-  namespace debug 
+  namespace debug
   {
-    struct DofPtrSortFct 
+    struct DofPtrSortFct
     {
-      bool operator()(const DegreeOfFreedom *dof0, const DegreeOfFreedom *dof1) const
+      bool operator()(const DegreeOfFreedom* dof0, const DegreeOfFreedom* dof1) const
       {
-      	return (*dof0 < *dof1);
+        return (*dof0 < *dof1);
       }
     };
 
     typedef std::map<int, DofContainer> ElementIdxToDofs;
-    typedef std::map<int, FixVec<WorldVector<double>, VERTEX> > ElementIdxToCoords;
+    typedef std::map<int, FixVec<WorldVector<double>, VERTEX>> ElementIdxToCoords;
 
 #ifdef HAVE_PARALLEL_DOMAIN_AMDIS
-    void writeLocalElementDofs(int rank, 
-                  			       int elIdx, 
-                  			       const FiniteElemSpace *feSpace);
-    
-    void writeMesh(const FiniteElemSpace *feSpace, 
-            		   int rank, 
-            		   std::string filename);
-    
+    void writeLocalElementDofs(int rank,
+                               int elIdx,
+                               const FiniteElemSpace* feSpace);
+
+    void writeMesh(const FiniteElemSpace* feSpace,
+                   int rank,
+                   std::string filename);
+
     /** \brief
      * Writes a vtu file with the mesh, where all DOFs are set to zero, and only
      * one given DOF is set to one. This can be used to easily identify DOFs in
      * a mesh.
      *
      * \param[in]  rank     If set to -1, the vtu files are written on all ranks.
-     *                      Otherwise, only on the given rank the mesh is written. 
+     *                      Otherwise, only on the given rank the mesh is written.
      * \param[in]  dof      Defines the DOF, which value is set to one in the mesh file.
      * \param[in]  feSpace  The FE space to be used.
      */
-    void writeDofMesh(int rank, 
-            		      DegreeOfFreedom dof, 
-            		      const FiniteElemSpace *feSpace);
+    void writeDofMesh(int rank,
+                      DegreeOfFreedom dof,
+                      const FiniteElemSpace* feSpace);
 #endif
 
     /** \brief
@@ -54,13 +54,13 @@ namespace AMDiS
      * \param[in]  feSpace   The FE space to be used.
      * \param[in]  filename  Name of the VTU file
      */
-    void writeDofIndexMesh(const FiniteElemSpace *feSpace, 
-			   std::string filename = "dofindex.vtu");
+    void writeDofIndexMesh(const FiniteElemSpace* feSpace,
+                           std::string filename = "dofindex.vtu");
 
-    void colorEdgeInMesh(const FiniteElemSpace *feSpace,
-			 Element *el, 
-			 int localEdgeNo, 
-			 std::string filename);
+    void colorEdgeInMesh(const FiniteElemSpace* feSpace,
+                         Element* el,
+                         int localEdgeNo,
+                         std::string filename);
 
     /** \brief
      * Creates a vtu file where all elements in the mesh are colored by the
@@ -72,9 +72,9 @@ namespace AMDiS
      *                       the output file, otherwise the elements with the
      *                       given level.
      */
-    void writeElementIndexMesh(Mesh *mesh, 
-			       std::string filename, 
-			       int level = -1);
+    void writeElementIndexMesh(Mesh* mesh,
+                               std::string filename,
+                               int level = -1);
 
     /** \brief
      * Creates a vtu file where all elements in the mesh are colored by the
@@ -83,44 +83,44 @@ namespace AMDiS
      * \param[in]  feSpace   The FE space to be used.
      * \param[in]  filename  Name of the file.
      */
-    void writeMacroElementIndexMesh(Mesh *mesh,
-				    std::string filename);
+    void writeMacroElementIndexMesh(Mesh* mesh,
+                                    std::string filename);
 
-    void highlightElementIndexMesh(Mesh *mesh, int idx, std::string filename);
+    void highlightElementIndexMesh(Mesh* mesh, int idx, std::string filename);
 
-    void colorMeshByMacroIndex(Mesh *mesh, std::string filename);
+    void colorMeshByMacroIndex(Mesh* mesh, std::string filename);
 
-    void colorDofVectorByLocalElementDofs(DOFVector<double>& vec, Element *el);
-    
-    bool colorDofVectorByLocalElementDofs(DOFVector<double>& vec, 
-					  Mesh *mesh, 
-					  int elIndex);
-    
-    Element* getDofIndexElement(const FiniteElemSpace *feSpace, 
-				DegreeOfFreedom dof);
-    
-    Element* getLevel0ParentElement(Mesh *mesh, Element *el);
+    void colorDofVectorByLocalElementDofs(DOFVector<double>& vec, Element* el);
 
-    Element* getLevel0ParentElement(Mesh *mesh, int elIndex);
+    bool colorDofVectorByLocalElementDofs(DOFVector<double>& vec,
+                                          Mesh* mesh,
+                                          int elIndex);
 
-    Element* getParentElement(Mesh *mesh, Element *el);
+    Element* getDofIndexElement(const FiniteElemSpace* feSpace,
+                                DegreeOfFreedom dof);
 
-    Element* getParentElement(Mesh *mesh, int elIndex);
+    Element* getLevel0ParentElement(Mesh* mesh, Element* el);
 
-    Element* getElement(Mesh *mesh, int elIndex);
+    Element* getLevel0ParentElement(Mesh* mesh, int elIndex);
 
-    void printElementInfo(Element *el);
+    Element* getParentElement(Mesh* mesh, Element* el);
 
-    void printElementCoords(const FiniteElemSpace *feSpace, Element *el);
-    
-    void printInfoByDof(const FiniteElemSpace *feSpace, DegreeOfFreedom dof);
+    Element* getParentElement(Mesh* mesh, int elIndex);
 
-    void printMatValuesStatistics(Matrix<DOFMatrix*> *mat);
+    Element* getElement(Mesh* mesh, int elIndex);
 
-    void printAllDofCoords(const FiniteElemSpace *feSpace);
+    void printElementInfo(Element* el);
 
-    void getAllDofs(const FiniteElemSpace *feSpace, 
-		    std::set<const DegreeOfFreedom*>& dofs);
+    void printElementCoords(const FiniteElemSpace* feSpace, Element* el);
+
+    void printInfoByDof(const FiniteElemSpace* feSpace, DegreeOfFreedom dof);
+
+    void printMatValuesStatistics(Matrix<DOFMatrix*>* mat);
+
+    void printAllDofCoords(const FiniteElemSpace* feSpace);
+
+    void getAllDofs(const FiniteElemSpace* feSpace,
+                    std::set<const DegreeOfFreedom*>& dofs);
 
     /** \brief
      * Creates a text file storing the value of a sparse matrix. Each line of the file
@@ -131,53 +131,53 @@ namespace AMDiS
      * \param[in]  mat       The matrix which is used the write the text file.
      * \param[in]  filename  Name of the file to be created.
      */
-    void writeMatlabMatrix(DOFMatrix &mat, std::string filename);
+    void writeMatlabMatrix(DOFMatrix& mat, std::string filename);
 
     /** \brief
      * Creates a text file storing the value of a sparse matrix. Each line of the file
      * has three columns:
      *    row  col  value
-     * This file can be used in Matlab using the command "spconvert". The function 
+     * This file can be used in Matlab using the command "spconvert". The function
      * works only for a matrix of DOFMatrices, that are all defined from the same
      * FE spaces.
      *
      * \param[in]  mat       The matrix which is used the write the text file.
-     * \param[in]  filename  Name of the file to be created.     
+     * \param[in]  filename  Name of the file to be created.
      */
-    void writeMatlabMatrix(Matrix<DOFMatrix*> &mat, std::string filename);
+    void writeMatlabMatrix(Matrix<DOFMatrix*>& mat, std::string filename);
 
     /** \brief
      *
      */
-    void writeMatlabVector(DOFVector<double> &vec, std::string filename);
+    void writeMatlabVector(DOFVector<double>& vec, std::string filename);
 
-    void writeMatlabVector(SystemVector &vec, std::string filename);
+    void writeMatlabVector(SystemVector& vec, std::string filename);
 
-    void writeCoordsFile(const FiniteElemSpace *feSpace, std::string filename);
+    void writeCoordsFile(const FiniteElemSpace* feSpace, std::string filename);
 
-    void printElementHierarchie(Mesh *mesh, int elIndex);    
+    void printElementHierarchie(Mesh* mesh, int elIndex);
 
-    void printElementRefinementSequence(Mesh *mesh, Element *el);
+    void printElementRefinementSequence(Mesh* mesh, Element* el);
 
-    int getLocalNeighbourIndex(Mesh *mesh, int elIndex, int neighIndex);
+    int getLocalNeighbourIndex(Mesh* mesh, int elIndex, int neighIndex);
 
     void importDofVectorByCoords(DOFVector<double>* vec, std::string filename);
 
-    void exportDofVectorByCoords(const DOFVector<double>* vec, 
-				 std::string filename);
+    void exportDofVectorByCoords(const DOFVector<double>* vec,
+                                 std::string filename);
 
-    void createNodeCoords(Mesh *mesh, ElementIdxToCoords& coords);
-    
+    void createNodeCoords(Mesh* mesh, ElementIdxToCoords& coords);
+
     void testNodeCoords(Mesh* mesh, ElementIdxToCoords& coords);
-    
+
     /** \brief
-     * Traverse a mesh and store for each element all its vertex DOFs in local sorted 
+     * Traverse a mesh and store for each element all its vertex DOFs in local sorted
      * order (by values).
      *
      * \param[in]   mesh    Mesh to be traversed.
      * \param[out]  elMap   Stores to each element the vertex DOFs in sorted order.
      */
-    void createSortedDofs(Mesh *mesh, ElementIdxToDofs &elMap);
+    void createSortedDofs(Mesh* mesh, ElementIdxToDofs& elMap);
 
     /** \brief
      * Takes a map from element indices to lists of DOFs. Checks, if for each element
@@ -195,24 +195,24 @@ namespace AMDiS
      * \param[in]  elMap  Map from element indices to lists of DOFs. It is used to check
      *                    the validaty as described above.
      */
-    void testSortedDofs(Mesh *mesh, ElementIdxToDofs &elMap);
+    void testSortedDofs(Mesh* mesh, ElementIdxToDofs& elMap);
 
     /// Takes tree dofs and returns a list with the dofs sorted by their values.
     void sortDofs(const DegreeOfFreedom* dof0,
-		  const DegreeOfFreedom* dof1,
-		  const DegreeOfFreedom* dof2,
-		  DofContainer &vec);
+                  const DegreeOfFreedom* dof1,
+                  const DegreeOfFreedom* dof2,
+                  DofContainer& vec);
 
     /// Takes four dofs and returns a list with the dofs sorted by their values.
     void sortDofs(const DegreeOfFreedom* dof0,
-		  const DegreeOfFreedom* dof1,
-		  const DegreeOfFreedom* dof2,
-		  const DegreeOfFreedom* dof3,
-		  DofContainer &vec);    
+                  const DegreeOfFreedom* dof1,
+                  const DegreeOfFreedom* dof2,
+                  const DegreeOfFreedom* dof3,
+                  DofContainer& vec);
 
     /** \brief
      * Takes to vectors of DOF indices and tests if they pairwise equal. To test
-     * for equality, coordinates are checked. This makes it possible to test 
+     * for equality, coordinates are checked. This makes it possible to test
      * internal algorithms that manipulate the mesh having two DOFs at the same
      * geometrical position.
      *
@@ -224,9 +224,9 @@ namespace AMDiS
      * \param[in]   dofs0     First DOF container.
      * \paran[in]   dofs1     Second DOF container.
      */
-    void testDofsByCoords(const FiniteElemSpace *feSpace,
-			  DofContainer &dofs0, 
-			  DofContainer &dofs1);
+    void testDofsByCoords(const FiniteElemSpace* feSpace,
+                          DofContainer& dofs0,
+                          DofContainer& dofs1);
 
     /** \brief
      * Works in the same way as described above, but the calling function
@@ -237,9 +237,9 @@ namespace AMDiS
      * \param[in]   dofs0     First DOF container.
      * \paran[in]   dofs1     Second DOF container.
      */
-    void testDofsByCoords(DOFVector<WorldVector<double> > &coords,
-			  DofContainer &dofs0, 
-			  DofContainer &dofs1); 
+    void testDofsByCoords(DOFVector<WorldVector<double>>& coords,
+                          DofContainer& dofs0,
+                          DofContainer& dofs1);
   }
-  
+
 } // end namespace AMDiS

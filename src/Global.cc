@@ -7,19 +7,20 @@
 #include "Triangle.h"
 #include "Tetrahedron.h"
 
-namespace AMDiS 
+namespace AMDiS
 {
 #if !FIXED_SIZE || !defined(DOW)
   int Global::dimOfWorld = 0;
 #endif
-  std::vector<std::vector<int> > Global::geoIndexTable;
+  std::vector<std::vector<int>> Global::geoIndexTable;
 
-  Element *Global::referenceElement[4] = 
-    { NULL, 
-      new Line(NULL), 
-      new Triangle(NULL), 
-      new Tetrahedron(NULL) 
-    };
+  Element* Global::referenceElement[4] =
+  {
+    NULL,
+    new Line(NULL),
+    new Triangle(NULL),
+    new Tetrahedron(NULL)
+  };
 
   void Global::init()
   {
@@ -36,7 +37,8 @@ namespace AMDiS
     dimOfWorld = d;
 #else
     static_assert( DOW == 1 || DOW ==2 || DOW == 3, "Invalid world dimension" );
-    if (d != -1 && DOW != d) {
+    if (d != -1 && DOW != d)
+    {
       WARNING("dimOfWorld given in init-file != DOW\n");
     }
 #endif
@@ -44,10 +46,11 @@ namespace AMDiS
     // prepare geoIndex-Table
     int geoTableSize = abs(static_cast<int>(MINPART)) + MAXPART + 1;
     geoIndexTable.resize(4);
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < 4; i++)
+    {
       geoIndexTable[i].resize(geoTableSize);
       for (int j = 0; j < geoTableSize; j++)
-        geoIndexTable[i][j] = 0;      
+        geoIndexTable[i][j] = 0;
     }
 
     geoIndexTable[0][PARTS - MINPART] = 1;
@@ -56,7 +59,8 @@ namespace AMDiS
     geoIndexTable[0][FACE - MINPART] = 0;
     geoIndexTable[0][WORLD - MINPART] = dimOfWorld;
 
-    for (int i = 1; i < 4; i++) {
+    for (int i = 1; i < 4; i++)
+    {
       geoIndexTable[i][CENTER - MINPART] = referenceElement[i]->getGeo(CENTER);
       geoIndexTable[i][VERTEX - MINPART] = referenceElement[i]->getGeo(VERTEX);
       geoIndexTable[i][EDGE - MINPART] = referenceElement[i]->getGeo(EDGE);

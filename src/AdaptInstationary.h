@@ -9,34 +9,35 @@
 #include "AMDiS_fwd.h"
 #include "AdaptBase.h"
 
-namespace AMDiS {
+namespace AMDiS
+{
 
-  /** \ingroup Adaption  
+  /** \ingroup Adaption
    * \brief
-   * AdaptInstationary implements the adaptive procdure for time dependent 
+   * AdaptInstationary implements the adaptive procdure for time dependent
    * problems (see ProblemInstat). It contains a pointer to a ProblemInstat
    * object.
    */
   class AdaptInstationary : public AdaptBase
   {
   public:
-    /// Creates a AdaptInstationary object with the given name for the time 
+    /// Creates a AdaptInstationary object with the given name for the time
     /// dependent problem problemInstat.
-    AdaptInstationary(std::string name, 
-            		      ProblemIterationInterface &problemStat,
-            		      AdaptInfo &info,
-            		      ProblemTimeInterface &problemInstat,
-            		      AdaptInfo &initialInfo,
+    AdaptInstationary(std::string name,
+                      ProblemIterationInterface& problemStat,
+                      AdaptInfo& info,
+                      ProblemTimeInterface& problemInstat,
+                      AdaptInfo& initialInfo,
                       std::time_t initialTimestampSet = 0);
 
     /// Sets \ref strategy to aStrategy
-    void setStrategy(int aStrategy) 
-    { 
-      strategy = aStrategy; 
+    void setStrategy(int aStrategy)
+    {
+      strategy = aStrategy;
     }
 
     /// Returns \ref strategy
-    int getStrategy() const 
+    int getStrategy() const
     {
       return strategy;
     }
@@ -46,12 +47,12 @@ namespace AMDiS {
 
   protected:
     /** \brief
-     * Implements one (maybe adaptive) timestep. Both the explicit and the 
-     * implicit time strategy are implemented. The semi-implicit strategy 
-     * is only a special case of the implicit strategy with a limited number of 
+     * Implements one (maybe adaptive) timestep. Both the explicit and the
+     * implicit time strategy are implemented. The semi-implicit strategy
+     * is only a special case of the implicit strategy with a limited number of
      * iterations (exactly one).
      * The routine uses the parameter \ref strategy to select the strategy:
-     * strategy 0: Explicit strategy, 
+     * strategy 0: Explicit strategy,
      * strategy 1: Implicit strategy.
      */
     virtual void oneTimestep();
@@ -66,7 +67,7 @@ namespace AMDiS {
     virtual void implicitTimeStrategy();
 
     /** \brief
-     * This iteration strategy allows the timestep and the mesh to be adapted 
+     * This iteration strategy allows the timestep and the mesh to be adapted
      * after each timestep solution. There are no inner loops for mesh adaption and
      * no refused timesteps.
      */
@@ -74,7 +75,7 @@ namespace AMDiS {
 
   protected:
     /// Strategy for choosing one timestep
-    int strategy; 
+    int strategy;
 
     /// Parameter \f$ \delta_1 \f$ used in time step reduction
     double timeDelta1;

@@ -3,7 +3,7 @@
 /**
  * \defgroup Solver Solver module
  * @{ <img src="solver.png"> @}
- * 
+ *
  * \brief
  * Contains all classes needed for solving linear and non linear equation
  * systems.
@@ -25,8 +25,9 @@
 #include "parallel/ParallelMapper.h"
 #endif
 
-namespace AMDiS {
-  
+namespace AMDiS
+{
+
   /// Non-templated base-class for Preconditioner types
   struct PreconditionerInterface
   {
@@ -39,23 +40,23 @@ namespace AMDiS {
   {
     // virtual destructor
     virtual ~RunnerInterface() {}
-    
+
     virtual void exit() {}
-    
+
     virtual PreconditionerInterface* getLeftPrecon()
     {
       return NULL;
-    }    
-    
+    }
+
     virtual PreconditionerInterface* getRightPrecon()
     {
       return NULL;
     }
   };
-  
+
   /**
    * \ingroup Solver
-   * 
+   *
    *\brief
    * Solver for linear equation systems.
    */
@@ -63,19 +64,19 @@ namespace AMDiS {
   {
   public:
     /// The constructor reads needed parameters and sets solvers \ref name.
-    LinearSolverInterface(std::string name_) 
+    LinearSolverInterface(std::string name_)
       : name(name_),
-      	tolerance(DBL_TOL),
-      	relative(0),
-      	max_iter(1000),
-      	info(0),
-      	residual(-1.0),
-      	rel_residual(-1.0),
-      	print_cycle(100),
-      	iterations(-1),
-      	error(-1),
-      	breakTolNotReached(true)
-    {      
+        tolerance(DBL_TOL),
+        relative(0),
+        max_iter(1000),
+        info(0),
+        residual(-1.0),
+        rel_residual(-1.0),
+        print_cycle(100),
+        iterations(-1),
+        error(-1),
+        breakTolNotReached(true)
+    {
       Parameters::get(name + "->tolerance", tolerance);
       Parameters::get(name + "->relative tolerance", relative);
       Parameters::get(name + "->max iteration", max_iter);
@@ -88,68 +89,76 @@ namespace AMDiS {
     virtual ~LinearSolverInterface() { }
 
 
-    int solveSystem(const SolverMatrix<Matrix<DOFMatrix*> >& A,
-            		    SystemVector& x,
-            		    SystemVector& b,
-            		    bool createMatrixData,
-            		    bool storeMatrixData)
-    { FUNCNAME("LinearSolverInterface::solveSystem()");
+    int solveSystem(const SolverMatrix<Matrix<DOFMatrix*>>& A,
+                    SystemVector& x,
+                    SystemVector& b,
+                    bool createMatrixData,
+                    bool storeMatrixData)
+    {
+      FUNCNAME("LinearSolverInterface::solveSystem()");
       MSG("LinearSolverInterface::solveSystem()\n");
-    
+
       residual = -1.0;
       rel_residual = -1.0;
       int error_code = solveLinearSystem(A, x, b, createMatrixData, storeMatrixData);
-      
+
       // calculate and print resiual
-      if (info > 0) {
-      	if (residual >= 0.0 && rel_residual >= 0.0) {
-      	  MSG("Residual norm: ||b-Ax|| = %e, ||b-Ax||/||b|| = %e\n", residual, rel_residual);
-      	} else if (residual >= 0.0) {
-      	  MSG("Residual norm: ||b-Ax|| = %e\n", residual);
-      	}
-      	
+      if (info > 0)
+      {
+        if (residual >= 0.0 && rel_residual >= 0.0)
+        {
+          MSG("Residual norm: ||b-Ax|| = %e, ||b-Ax||/||b|| = %e\n", residual, rel_residual);
+        }
+        else if (residual >= 0.0)
+        {
+          MSG("Residual norm: ||b-Ax|| = %e\n", residual);
+        }
+
 #if DEBUG != 0
-      	if (getIterations() > 0) {
-      	  MSG("Nr. of iterations needed = %d\n", getIterations());
-      	}
-      	
-      	if (error_code != 0) {
-      	  MSG("ERROR-Code = %d\n", error_code);
-      	}
-      	
-      	if (!isNumber(residual) || !isNumber(rel_residual)) {
-      	  MSG("Residual or relative residual is NaN/Inf!\n");
-      	}
+        if (getIterations() > 0)
+        {
+          MSG("Nr. of iterations needed = %d\n", getIterations());
+        }
+
+        if (error_code != 0)
+        {
+          MSG("ERROR-Code = %d\n", error_code);
+        }
+
+        if (!isNumber(residual) || !isNumber(rel_residual))
+        {
+          MSG("Residual or relative residual is NaN/Inf!\n");
+        }
 #endif
-      
-      	// test for absolute tolerance
-      	TEST_EXIT((isNumber(residual) && (residual < 0.0  || tolerance < 1.e-30 || residual <= tolerance))
-      		  || !breakTolNotReached)
-      	  ("Tolerance tol = %e could not be reached!\n Set tolerance by '->solver->tolerance:' \n", tolerance);
-      	  
-      	// test for relative tolerance
-      	TEST_EXIT((isNumber(rel_residual) && (rel_residual < 0.0  || relative < 1.e-30 || rel_residual <= relative))
-      		  || (residual < 1.e-30) || !breakTolNotReached)
-      	  ("Relative tolerance rtol = %e could not be reached!\n Set tolerance by '->solver->relative tolerance:' \n", relative);
+
+        // test for absolute tolerance
+        TEST_EXIT((isNumber(residual) && (residual < 0.0  || tolerance < 1.e-30 || residual <= tolerance))
+                  || !breakTolNotReached)
+        ("Tolerance tol = %e could not be reached!\n Set tolerance by '->solver->tolerance:' \n", tolerance);
+
+        // test for relative tolerance
+        TEST_EXIT((isNumber(rel_residual) && (rel_residual < 0.0  || relative < 1.e-30 || rel_residual <= relative))
+                  || (residual < 1.e-30) || !breakTolNotReached)
+        ("Relative tolerance rtol = %e could not be reached!\n Set tolerance by '->solver->relative tolerance:' \n", relative);
       }
       return error_code;
     }
 
     /** \name getting methods
-     * \{ 
+     * \{
      */
 
     /// Returns solvers \ref name.
     std::string getName() const
-    { 
-      return name; 
+    {
+      return name;
     }
 
     /// Returns \ref tolerance
     double getTolerance() const
     {
       return tolerance;
-    }  
+    }
 
     /// Returns \ref max_iter
     int getMaxIterations() const
@@ -158,13 +167,13 @@ namespace AMDiS {
     }
 
     /// Returns number of iterations in last run of an iterative solver
-    int getIterations() 
+    int getIterations()
     {
       return iterations;
     }
 
     /// Returns error code in last run of an iterative solver
-    int getErrorCode() 
+    int getErrorCode()
     {
       return error;
     }
@@ -193,21 +202,21 @@ namespace AMDiS {
       return relative;
     }
 
-    
+
     virtual PreconditionerInterface* getLeftPrecon()
     {
       FUNCNAME("LinearSolverInterface::getLeftPrecon()");
       ERROR("no left preconditioner provided!\n");
       return NULL;
     }
-    
+
     virtual PreconditionerInterface* getRightPrecon()
     {
       FUNCNAME("LinearSolverInterface::getRightPrecon()");
       ERROR("no right preconditioner provided!\n");
       return NULL;
     }
-    
+
     virtual RunnerInterface* getRunner()
     {
       FUNCNAME("LinearSolverInterface::getRunner()");
@@ -215,14 +224,14 @@ namespace AMDiS {
       return NULL;
     }
 
-    /** \} */ 
+    /** \} */
 
     /** \name setting methods
-     * \{ 
+     * \{
      */
 
     /// Sets \ref tolerance
-    void setTolerance(double tol) 
+    void setTolerance(double tol)
     {
       tolerance = tol;
     }
@@ -233,7 +242,7 @@ namespace AMDiS {
     }
 
     /// Sets \ref relative
-    void setRelative(double rel) 
+    void setRelative(double rel)
     {
       relative = rel;
     }
@@ -244,7 +253,7 @@ namespace AMDiS {
     }
 
     /// Sets \ref max_iter
-    void setMaxIterations(int i) 
+    void setMaxIterations(int i)
     {
       max_iter = i;
     }
@@ -259,31 +268,31 @@ namespace AMDiS {
     {
       error=code;
     }
-  
+
     /// Sets \ref info
-    void setInfo(int i) 
+    void setInfo(int i)
     {
       info = i;
     }
 
     /** \} */
-    
+
   protected:
     /// main methods that all solvers must implement
-    virtual int solveLinearSystem(const SolverMatrix<Matrix<DOFMatrix*> >& A,
-				  SystemVector& x,
-				  SystemVector& b,
-				  bool createMatrixData,
-				  bool storeMatrixData) = 0;
+    virtual int solveLinearSystem(const SolverMatrix<Matrix<DOFMatrix*>>& A,
+                                  SystemVector& x,
+                                  SystemVector& b,
+                                  bool createMatrixData,
+                                  bool storeMatrixData) = 0;
 
   protected:
     /// solvers name.
     std::string name;
 
-    /// Solver tolerance |r|. Set in LinearSolverInterface's constructor. 
+    /// Solver tolerance |r|. Set in LinearSolverInterface's constructor.
     double tolerance;
 
-    /// Relative solver tolerance |r|/|r0|. Set in LinearSolverInterface's constructor. 
+    /// Relative solver tolerance |r|/|r0|. Set in LinearSolverInterface's constructor.
     double relative;
 
     /// maximal number of iterations. Set in LinearSolverInterface's constructor.
@@ -294,7 +303,7 @@ namespace AMDiS {
 
     /// current absolute residual norm.
     double residual;
-    
+
     /// current relative residual norm.
     double rel_residual;
 
@@ -306,12 +315,12 @@ namespace AMDiS {
 
     /// Error code  in last solver (not set by UmfPack)
     int error;
-    
+
     /// break if residual norm > prescribed tolerance
     bool breakTolNotReached;
   };
-  
-  
+
+
   typedef CreatorInterfaceName<LinearSolverInterface> LinearSolverCreator;
-  
+
 } // end namespace AMDiS

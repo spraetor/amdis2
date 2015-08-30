@@ -5,7 +5,7 @@
  * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
  * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
  *
- * Authors: 
+ * Authors:
  * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
  *
  * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
@@ -15,7 +15,7 @@
  * This file is part of AMDiS
  *
  * See also license.opensource.txt in the distribution.
- * 
+ *
  ******************************************************************************/
 
 
@@ -24,10 +24,11 @@
 #include "io/Reader.h"
 using namespace std;
 
-namespace AMDiS {
+namespace AMDiS
+{
 
-  void ProblemImplicit::readDofVec(const std::string& filename, DOFVector<double>* vec, 
-                                       Mesh* mesh) 
+  void ProblemImplicit::readDofVec(const std::string& filename, DOFVector<double>* vec,
+                                   Mesh* mesh)
   {
 #if 0
     long size = mesh->getNumberOfVertices();
@@ -35,12 +36,13 @@ namespace AMDiS {
     TEST_EXIT(vec->getSize()>=size)("dofvector smaller than vertex data vector\n");
     std::string buf;
     getline(in, buf);
-    while (!in.eof() && buf != "vertex values: solution") 
+    while (!in.eof() && buf != "vertex values: solution")
       getline(in, buf);
 
     TEST_EXIT(!in.eof())("no vertex data\n");
 
-    for (long i = 0; i < size ; ++i) {
+    for (long i = 0; i < size ; ++i)
+    {
       in >> buf;
       (*vec)[i] = atof(buf.c_str());
     }
@@ -49,8 +51,8 @@ namespace AMDiS {
   }
 
 
-  void ProblemImplicit::readR(const std::string& inStream, double eps, 
-	                          Mesh* mesh, int implMesh , int comp) 
+  void ProblemImplicit::readR(const std::string& inStream, double eps,
+                              Mesh* mesh, int implMesh , int comp)
   {
     FUNCNAME("ProblemImplicit::readR()");
 
@@ -64,14 +66,15 @@ namespace AMDiS {
     TEST_EXIT(phi2 != NULL)("no phasefield2 vector\n");
     TEST_EXIT(levelSet != NULL)("no levelSet vector\n");
 
-    bool checkSize = r->getSize() == phi1->getSize() && 
-      r->getSize() == phi2->getSize();
+    bool checkSize = r->getSize() == phi1->getSize() &&
+                     r->getSize() == phi2->getSize();
 
     TEST_EXIT(checkSize)("something went wrong\n");
-    
+
     readDofVec(inStream, r, mesh);
 
-    for (int i = r->getSize() - 1; i >= 0; --i) {
+    for (int i = r->getSize() - 1; i >= 0; --i)
+    {
       (*phi1)[i] = Phi1((*r)[i], eps);
       (*phi2)[i] = Phi2((*r)[i], eps);
       (*levelSet)[i] = LevelSet((*r)[i]);
@@ -79,37 +82,9 @@ namespace AMDiS {
   }
 
 
-  void ProblemImplicit::readPhi1(const std::string& inStream, double eps, 
-                                     Mesh* mesh, int implMesh, int comp)
+  void ProblemImplicit::readPhi1(const std::string& inStream, double eps,
+                                 Mesh* mesh, int implMesh, int comp)
   {
-    DOFVector<double>* r = getSignedDistance(implMesh, comp);
-    DOFVector<double>* phi1 = getPhi1(implMesh, comp);
-    DOFVector<double>* phi2 = getPhi2(implMesh, comp);
-    DOFVector<double>* levelSet = getLevelset(implMesh, comp);
-
-    TEST_EXIT(r != NULL)("no signed distance vector\n");
-    TEST_EXIT(phi1 != NULL)("no phasefield1 vector\n");
-    TEST_EXIT(phi2 != NULL)("no phasefield2 vector\n");
-    TEST_EXIT(levelSet != NULL)("no levelSet vector\n");
-
-    bool checkSize = r->getSize() == phi1->getSize() && 
-      r->getSize() == phi2->getSize();
-
-    TEST_EXIT(checkSize)("something went wrong\n");
-
-    readDofVec(inStream, phi1, mesh);
-
-    for (int i = r->getSize() - 1; i>= 0; --i) {
-      (*r)[i] = Phi1ToR((*phi1)[i], eps);
-      (*phi2)[i] = 1 - (*phi1)[i];
-      (*levelSet)[i] = LevelSet((*r)[i]);
-    }
-  }
-
-
-  void ProblemImplicit::readPhi2(const std::string& inStream, double eps, 
-	                             Mesh* mesh, int implMesh, int comp)
-  { 
     DOFVector<double>* r = getSignedDistance(implMesh, comp);
     DOFVector<double>* phi1 = getPhi1(implMesh, comp);
     DOFVector<double>* phi2 = getPhi2(implMesh, comp);
@@ -121,44 +96,75 @@ namespace AMDiS {
     TEST_EXIT(levelSet != NULL)("no levelSet vector\n");
 
     bool checkSize = r->getSize() == phi1->getSize() &&
-      r->getSize() == phi2->getSize();
+                     r->getSize() == phi2->getSize();
+
+    TEST_EXIT(checkSize)("something went wrong\n");
+
+    readDofVec(inStream, phi1, mesh);
+
+    for (int i = r->getSize() - 1; i>= 0; --i)
+    {
+      (*r)[i] = Phi1ToR((*phi1)[i], eps);
+      (*phi2)[i] = 1 - (*phi1)[i];
+      (*levelSet)[i] = LevelSet((*r)[i]);
+    }
+  }
+
+
+  void ProblemImplicit::readPhi2(const std::string& inStream, double eps,
+                                 Mesh* mesh, int implMesh, int comp)
+  {
+    DOFVector<double>* r = getSignedDistance(implMesh, comp);
+    DOFVector<double>* phi1 = getPhi1(implMesh, comp);
+    DOFVector<double>* phi2 = getPhi2(implMesh, comp);
+    DOFVector<double>* levelSet = getLevelset(implMesh, comp);
+
+    TEST_EXIT(r != NULL)("no signed distance vector\n");
+    TEST_EXIT(phi1 != NULL)("no phasefield1 vector\n");
+    TEST_EXIT(phi2 != NULL)("no phasefield2 vector\n");
+    TEST_EXIT(levelSet != NULL)("no levelSet vector\n");
+
+    bool checkSize = r->getSize() == phi1->getSize() &&
+                     r->getSize() == phi2->getSize();
     TEST_EXIT(checkSize)("something went wrong\n");
 
     readDofVec(inStream, phi2, mesh);
 
-    for (int i = r->getSize() - 1; i >= 0; --i) {
+    for (int i = r->getSize() - 1; i >= 0; --i)
+    {
       (*r)[i] = Phi2ToR((*r)[i], eps);
       (*phi1)[i] = 1 - (*phi2)[i];
       (*levelSet)[i] = LevelSet((*r)[i]);
     }
   }
-  
+
 
   std::string ProblemImplicit::getDofFilename(std::string path, int implMesh)
   {
     FUNCNAME("ProblemImplicit::getDofFilename()");
-    std::string suffix = "[" + 
-      std::to_string(implMesh) +
-      "]";
+    std::string suffix = "[" +
+                         std::to_string(implMesh) +
+                         "]";
 
     std::string dofFilename("");
     Parameters::get(path + "dof file" + suffix, dofFilename);
     TEST_EXIT(dofFilename.length() == 0)("dof file was changed to \"arh file\" and reads an arh file now");
     Parameters::get(path + "arh file" + suffix, dofFilename);
-    if (implMesh == 0 && dofFilename.length() == 0) {
+    if (implMesh == 0 && dofFilename.length() == 0)
+    {
       Parameters::get(path + "dof file", dofFilename);
       TEST_EXIT(dofFilename.length() == 0)("dof file was changed to \"arh file\" and reads an arh file now");
       Parameters::get(path + "arh file", dofFilename);
     }
-    return dofFilename;    
+    return dofFilename;
   }
 
 
   double ProblemImplicit::getEpsilon(std::string path, int implMesh)
   {
-    std::string suffix = "[" + 
-      std::to_string(implMesh) +
-      "]";
+    std::string suffix = "[" +
+                         std::to_string(implMesh) +
+                         "]";
 
     double eps(-1);
     Parameters::get(path + "eps" + suffix, eps);
@@ -170,9 +176,9 @@ namespace AMDiS {
 
   int ProblemImplicit::getType(std::string path, int implMesh)
   {
-    std::string suffix = "[" + 
-      std::to_string(implMesh) +
-      "]";
+    std::string suffix = "[" +
+                         std::to_string(implMesh) +
+                         "]";
     int serType(-1);
     Parameters::get(path + "type" + suffix, serType);
     if (implMesh == 0 && serType < 0)
@@ -181,11 +187,11 @@ namespace AMDiS {
   }
 
 
-  DOFVector<double>* ProblemImplicit::getSignedDistance(unsigned int im , unsigned int m) 
-  { 
+  DOFVector<double>* ProblemImplicit::getSignedDistance(unsigned int im , unsigned int m)
+  {
     if (m >= r.size() || im >= r[m].size())
       return NULL;
-    return (r[m])[im]; 
+    return (r[m])[im];
   }
 
 
@@ -229,10 +235,10 @@ namespace AMDiS {
   }
 
 
-  bool ProblemImplicit::createImplicitMesh(int p) 
+  bool ProblemImplicit::createImplicitMesh(int p)
   {
-    std::string path = name + "->implicit mesh[" 
-      + std::to_string(p) + "]->";
+    std::string path = name + "->implicit mesh["
+                       + std::to_string(p) + "]->";
     int nImplMeshes(0);
     Parameters::get(path + "nr meshes", nImplMeshes);
     if (nImplMeshes == 0)
@@ -242,19 +248,20 @@ namespace AMDiS {
     phi2[p].resize(nImplMeshes, NULL);
     levelSet[p].resize(nImplMeshes, NULL);
 
-    for ( int i = 0; i < nImplMeshes ; ++i ) {
-      (r[p])[i] = new DOFVector< double >(getFeSpace(p), "r");
-      (phi1[p])[i] = new DOFVector< double >(getFeSpace(p), "phi1");
-      (phi2[p])[i] = new DOFVector< double >(getFeSpace(p), "phi2");
-      (levelSet[p])[i] = new DOFVector< double >(getFeSpace(p), "levelSet");
+    for ( int i = 0; i < nImplMeshes ; ++i )
+    {
+      (r[p])[i] = new DOFVector<double>(getFeSpace(p), "r");
+      (phi1[p])[i] = new DOFVector<double>(getFeSpace(p), "phi1");
+      (phi2[p])[i] = new DOFVector<double>(getFeSpace(p), "phi2");
+      (levelSet[p])[i] = new DOFVector<double>(getFeSpace(p), "levelSet");
       createImplicitMesh(path, i, p);
     }
     return true;
   }
-  
 
-  bool ProblemImplicit::createImplicitMesh(std::string path, int implMesh, 
-					   int comp)
+
+  bool ProblemImplicit::createImplicitMesh(std::string path, int implMesh,
+      int comp)
   {
     FUNCNAME("ProblemImplicit::createImplicitMesh()");
 
@@ -270,8 +277,9 @@ namespace AMDiS {
       return false;
 
     TEST_EXIT(meshes[comp] != NULL)("the mesh was not created\n");
-    
-    switch (serType) {
+
+    switch (serType)
+    {
     case 0:
       readR(dofFilename, eps, meshes[comp], implMesh, comp);
       break;
@@ -293,30 +301,33 @@ namespace AMDiS {
     ProblemStat::createMesh();
 #if 0
     implMesh.resize(meshes.size());
-    for (unsigned int i = 0 ; i < meshes.size() ; ++i ) {
+    for (unsigned int i = 0 ; i < meshes.size() ; ++i )
+    {
       std::string path = name + "->implicit mesh[" +
-	std::to_string(i) + "]";
+                         std::to_string(i) + "]";
       std::string meshFilename("");
       Parameters::get(path + "->macro file name", meshFilename);
       std::string serFilename("");
       Parameters::get(path + "->serialization file name", serFilename);
       implMesh[i] = true;
       if (meshFilename.length() > 0)
-	meshes[i]->setName(path);
-      else if (serFilename.length() > 0) {
-	std::ifstream inStream(serFilename.c_str());
-	meshes[i]->deserialize(inStream);
-	inStream.close();
-      } else
-	implMesh[i] = false;
+        meshes[i]->setName(path);
+      else if (serFilename.length() > 0)
+      {
+        std::ifstream inStream(serFilename.c_str());
+        meshes[i]->deserialize(inStream);
+        inStream.close();
+      }
+      else
+        implMesh[i] = false;
     }
-#endif    
+#endif
   }
 
 
-  void ProblemImplicit::initialize(Flag initFlag, 
-				   ProblemStatSeq* adaptProblem, 
-				   Flag adoptFlag)
+  void ProblemImplicit::initialize(Flag initFlag,
+                                   ProblemStatSeq* adaptProblem,
+                                   Flag adoptFlag)
   {
     ProblemStat::initialize(initFlag);
     if ( initFlag.isSet(INIT_IMPLICIT_MESH) )
@@ -325,19 +336,20 @@ namespace AMDiS {
 
   ProblemImplicit::~ProblemImplicit()
   {
-    for ( unsigned int p(0); p < meshes.size(); ++p ) {
+    for ( unsigned int p(0); p < meshes.size(); ++p )
+    {
       for ( unsigned int i = 0; i < r[p].size() ; ++i )
-	  if ( r[p][i] != NULL)
-	    delete r[p][i];
-       for ( unsigned int i(0); i < phi1[p].size(); ++i )
-	 if ( phi1[p][i] != NULL)
-	    delete phi1[p][i];
-       for ( unsigned int i(0); i < phi2[p].size(); ++i )
-	 if ( phi2[p][i] != NULL)
-	    delete phi2[p][i];
-       for ( unsigned int i(0); i < levelSet[p].size(); ++i )
-	 if ( levelSet[p][i] != NULL)
-	    delete levelSet[p][i];
+        if ( r[p][i] != NULL)
+          delete r[p][i];
+      for ( unsigned int i(0); i < phi1[p].size(); ++i )
+        if ( phi1[p][i] != NULL)
+          delete phi1[p][i];
+      for ( unsigned int i(0); i < phi2[p].size(); ++i )
+        if ( phi2[p][i] != NULL)
+          delete phi2[p][i];
+      for ( unsigned int i(0); i < levelSet[p].size(); ++i )
+        if ( levelSet[p][i] != NULL)
+          delete levelSet[p][i];
     }
 
   }

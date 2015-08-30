@@ -5,9 +5,9 @@
 #include "BasisFunction.h"
 #include "FiniteElemSpace.h"
 
-namespace AMDiS 
+namespace AMDiS
 {
-  
+
   ElementDofIterator::ElementDofIterator(const FiniteElemSpace* feSpace, bool inOrderPos)
     : admin(feSpace->getAdmin()),
       basisFcts(feSpace->getBasisFcts()),
@@ -15,9 +15,9 @@ namespace AMDiS
       dim(mesh->getDim()),
       inOrder(inOrderPos)
   { }
-  
-  
-  const DegreeOfFreedom* 
+
+
+  const DegreeOfFreedom*
   ElementDofIterator::getDofPtr() const
   {
     if (inOrder)
@@ -25,23 +25,23 @@ namespace AMDiS
     else
       return &dofs[node0 + elementPos][n0 + dofPos];
   }
-  
-  
-  DegreeOfFreedom 
+
+
+  DegreeOfFreedom
   ElementDofIterator::getDof() const
   {
-    if (inOrder) 
+    if (inOrder)
       return dofs[node0 + elementPos][n0 + orderPosition[dofPos]];
     else
       return dofs[node0 + elementPos][n0 + dofPos];
   }
-  
+
   void ElementDofIterator::reset(const Element* el)
   {
     FUNCNAME_DBG("ElementDofIterator::reset()");
 
     TEST_EXIT_DBG(el->getMesh() == mesh)
-      ("Mesh and element does not fit together!\n");
+    ("Mesh and element does not fit together!\n");
     TEST_EXIT_DBG(el)("No element!\n");
 
     element = el;
@@ -59,7 +59,7 @@ namespace AMDiS
 
     TEST_EXIT_DBG(nDofs != 0)("Mh, I've to think about this situation!\n");
 
-    // Calculate displacement. Is used if there is more than one DOF admin 
+    // Calculate displacement. Is used if there is more than one DOF admin
     // on the mesh.
     n0 = admin->getNumberOfPreDofs(posIndex);
     // Get first DOF index position for vertices.
@@ -77,12 +77,14 @@ namespace AMDiS
     // First iterate over the DOFs of one element (vertex, edge, face).
     dofPos++;
 
-    if (dofPos >= nDofs) {
+    if (dofPos >= nDofs)
+    {
       // We are finished with all DOFs of on element. Go to the next one.
       dofPos = 0;
       elementPos++;
 
-      if (elementPos >= nElements) {
+      if (elementPos >= nElements)
+      {
         // We are finished with all element.
         elementPos = 0;
 
@@ -92,22 +94,25 @@ namespace AMDiS
 
         // Increase position, i.e., go from vertices to edges to faces and search
         // for the next position with DOFs.
-        do {
+        do
+        {
           pos++;
           // Get geo index posistion.
           posIndex = INDEX_OF_DIM(pos, dim);
           // Get number of DOFs in this position.
           nDofs = admin->getNumberOfDofs(posIndex);
-        } while (nDofs == 0 && pos < dim);
+        }
+        while (nDofs == 0 && pos < dim);
 
-        if (nDofs > 0 && pos <= dim) {
+        if (nDofs > 0 && pos <= dim)
+        {
           // We have found on more position with DOFs.
 
-          // Get number of elements in this position, i.e, the number of 
+          // Get number of elements in this position, i.e, the number of
           // vertices, edges and faces in the given dimension.
           nElements = Global::getGeo(posIndex, dim);
 
-          // Calculate displacement. Is used if there is more than one DOF 
+          // Calculate displacement. Is used if there is more than one DOF
           // admin on the mesh.
           n0 = admin->getNumberOfPreDofs(posIndex);
 
@@ -118,19 +123,23 @@ namespace AMDiS
             orderPosition =
               basisFcts->orderOfPositionIndices(element, posIndex, 0);
 
-        } else {
+        }
+        else
+        {
           // That's all, we jave traversed all DOFs of the mesh element.
           return false;
         }
 
-      } else {
+      }
+      else
+      {
         if (inOrder)
-          orderPosition = 
+          orderPosition =
             basisFcts->orderOfPositionIndices(element, posIndex, elementPos);
       }
     }
 
     return true;
   }
-  
+
 } // end namespace AMDiS

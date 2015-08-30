@@ -2,18 +2,20 @@
 
 #pragma once
 
-namespace AMDiS {
+namespace AMDiS
+{
 
   /// Flag to denote interior boundaryies.
-  typedef enum {
+  typedef enum
+  {
     INTERIOR = 0
   } BoundaryConstants;
 
-  /// Type specifier for the different boundary types 
+  /// Type specifier for the different boundary types
   using BoundaryType = signed int;
 
   BoundaryType newBound(BoundaryType oldBound, BoundaryType newBound);
-  
+
   struct BoundaryTypeContainer
   {
     BoundaryTypeContainer(BoundaryType b) : b(b) {}

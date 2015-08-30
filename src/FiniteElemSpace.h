@@ -11,7 +11,7 @@
 
 #include "AMDiS_fwd.h"
 
-namespace AMDiS 
+namespace AMDiS
 {
 
   /** \ingroup FEMSpace
@@ -28,51 +28,51 @@ namespace AMDiS
     ~FiniteElemSpace() {}
 
     ///
-    static FiniteElemSpace *provideFeSpace(DOFAdmin *admin,
-					   const BasisFunction *basFcts,
-					   Mesh *mesh,
-					   std::string name = "");
+    static FiniteElemSpace* provideFeSpace(DOFAdmin* admin,
+                                           const BasisFunction* basFcts,
+                                           Mesh* mesh,
+                                           std::string name = "");
 
     static void destroyFeSpaces();
 
 #if DEBUG
-    /// For debugging it may be useful to get some FE space for a given mesh at a 
+    /// For debugging it may be useful to get some FE space for a given mesh at a
     /// position in code where it is not possible to access the FE space directly. The
     /// function assumes that there is only one FE space defined for the mesh.
 
-    static FiniteElemSpace *provideFeSpace(Mesh *mesh);
+    static FiniteElemSpace* provideFeSpace(Mesh* mesh);
 #endif
-    
+
     FiniteElemSpace& operator=(const FiniteElemSpace& feSpace);
 
     /// Returns \ref name.
-    std::string getName() const 
-    { 
+    std::string getName() const
+    {
       return name;
     }
 
     /// Returns \ref admin.
-    DOFAdmin* getAdmin() const 
-    { 
+    DOFAdmin* getAdmin() const
+    {
       return admin;
     }
 
     /// Set a new DOF admin.
-    void setAdmin(DOFAdmin* a) 
+    void setAdmin(DOFAdmin* a)
     {
       admin = a;
     }
 
     /// Returns \ref basFcts
-    const BasisFunction* getBasisFcts() const 
-    { 
+    const BasisFunction* getBasisFcts() const
+    {
       return basFcts;
     }
 
     /// Returns \ref mesh
-    Mesh* getMesh() const 
-    { 
-      return mesh; 
+    Mesh* getMesh() const
+    {
+      return mesh;
     }
 
     int calcMemoryUsage();
@@ -81,16 +81,16 @@ namespace AMDiS
 
     /// Returns for a set of FE spaces that FE space having basis functions with
     /// the highest degree.
-    static const FiniteElemSpace* 
+    static const FiniteElemSpace*
     getHighest(std::vector<const FiniteElemSpace*>& feSpaces);
-  
+
   protected:
     /// Constructs a FiniteElemSpace with name name_ and the given DOFAdmin,
     /// BasisFunction and Mesh.
     FiniteElemSpace(DOFAdmin* admin,
-		    const BasisFunction* basisFcts, 
-		    Mesh* mesh,
-		    std::string name = "");
+                    const BasisFunction* basisFcts,
+                    Mesh* mesh,
+                    std::string name = "");
 
   protected:
     /// Name of this FiniteElemSpace.

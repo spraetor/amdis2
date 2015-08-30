@@ -5,7 +5,7 @@
  * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
  * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
  *
- * Authors: 
+ * Authors:
  * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
  *
  * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
@@ -15,7 +15,7 @@
  * This file is part of AMDiS
  *
  * See also license.opensource.txt in the distribution.
- * 
+ *
  ******************************************************************************/
 
 /** \file FileWriterInterface.cc */
@@ -27,18 +27,23 @@
 
 #include <boost/filesystem.hpp>
 
-namespace AMDiS {
+namespace AMDiS
+{
 
-  bool FileWriterInterface::doWriteTimestep(AdaptInfo *adaptInfo, bool force)
+  bool FileWriterInterface::doWriteTimestep(AdaptInfo* adaptInfo, bool force)
   {
-    if (!force) {
-      if (timeModulo > 0.0) {
-	if (lastWriteTime > adaptInfo->getStartTime()
-	    && adaptInfo->getTime() < lastWriteTime + timeModulo)
-	  return false;
-      } else {
-	if (adaptInfo->getTimestepNumber() % tsModulo != 0) 
-	  return false;
+    if (!force)
+    {
+      if (timeModulo > 0.0)
+      {
+        if (lastWriteTime > adaptInfo->getStartTime()
+            && adaptInfo->getTime() < lastWriteTime + timeModulo)
+          return false;
+      }
+      else
+      {
+        if (adaptInfo->getTimestepNumber() % tsModulo != 0)
+          return false;
       }
     }
 
@@ -46,7 +51,7 @@ namespace AMDiS {
     return true;
   }
 
-  
+
   void FileWriterInterface::readParameters(std::string name)
   {
     Parameters::get(name + "->filename", filename);
@@ -55,12 +60,12 @@ namespace AMDiS {
     Parameters::get(name + "->index decimals", indexDecimals);
     Parameters::get(name + "->write every i-th timestep", tsModulo);
     Parameters::get(name + "->write after timestep", timeModulo);
-    
+
     Parameters::get(name + "->ParaView create subdirectory", createSubDir);
     if (createSubDir < 0)
       Parameters::get(name + "->create subdirectory", createSubDir);
   }
-  
+
 #ifdef HAVE_PARALLEL_DOMAIN_AMDIS
   void FileWriterInterface::getFilename(AdaptInfo* adaptInfo, std::string& fn, std::string& paraFilename, std::string& postfix)
 #else
@@ -68,18 +73,21 @@ namespace AMDiS {
 #endif
   {
     fn = filename;
-      
-    if (createSubDir > 0) {
+
+    if (createSubDir > 0)
+    {
       using namespace boost::filesystem;
       path vtu_path = fn;
       path data_basedir("data");
       path vtu_filename = vtu_path.filename();
       vtu_path.remove_filename() /= data_basedir;
-      try {
-	create_directory(vtu_path); 
-	vtu_path /= vtu_filename;	  
-	fn = vtu_path.string();
-      } catch (...) {}
+      try
+      {
+        create_directory(vtu_path);
+        vtu_path /= vtu_filename;
+        fn = vtu_path.string();
+      }
+      catch (...) {}
     }
 
 #if HAVE_PARALLEL_DOMAIN_AMDIS
@@ -88,11 +96,12 @@ namespace AMDiS {
     postfix = "";
 #endif
 
-    if (appendIndex) {
+    if (appendIndex)
+    {
       TEST_EXIT(indexLength <= 99)("index lenght > 99\n");
       TEST_EXIT(indexDecimals <= 97)("index decimals > 97\n");
       TEST_EXIT(indexDecimals < indexLength)("index length <= index decimals\n");
-    
+
       char formatStr[9];
       char timeStr[20];
 

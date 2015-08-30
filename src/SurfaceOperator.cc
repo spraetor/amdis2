@@ -3,11 +3,11 @@
 #include "FiniteElemSpace.h"
 #include "Mesh.h"
 
-namespace AMDiS 
+namespace AMDiS
 {
-  SurfaceOperator::SurfaceOperator(Operator const& operat, 
-				   VectorOfFixVecs<DimVec<double> > &coords) 
-    : Operator(operat), 
+  SurfaceOperator::SurfaceOperator(Operator const& operat,
+                                   VectorOfFixVecs<DimVec<double>>& coords)
+    : Operator(operat),
       coords_(coords),
       quad2(NULL),
       quad1GrdPsi(NULL),
@@ -20,27 +20,31 @@ namespace AMDiS
     int degree;
 
     // create surface quadratures
-    if (secondOrder.size() > 0) {
+    if (secondOrder.size() > 0)
+    {
       degree = getQuadratureDegree(2);
-      quad2 = 
+      quad2 =
         new SurfaceQuadrature(Quadrature::provideQuadrature(dim - 1, degree), coords);
     }
 
-    if (firstOrderGrdPsi.size() > 0) {
+    if (firstOrderGrdPsi.size() > 0)
+    {
       degree = getQuadratureDegree(1, GRD_PSI);
-      quad1GrdPsi = 
+      quad1GrdPsi =
         new SurfaceQuadrature(Quadrature::provideQuadrature(dim - 1, degree), coords);
     }
 
-    if (firstOrderGrdPhi.size() > 0) {
+    if (firstOrderGrdPhi.size() > 0)
+    {
       degree = getQuadratureDegree(1, GRD_PHI);
-      quad1GrdPhi = 
+      quad1GrdPhi =
         new SurfaceQuadrature(Quadrature::provideQuadrature(dim - 1, degree), coords);
     }
 
-    if (zeroOrder.size() > 0) {
+    if (zeroOrder.size() > 0)
+    {
       degree = getQuadratureDegree(0);
-      quad0 = 
+      quad0 =
         new SurfaceQuadrature(Quadrature::provideQuadrature(dim - 1, degree), coords);
     }
 
@@ -49,8 +53,8 @@ namespace AMDiS
     initAssembler(quad2, quad1GrdPsi, quad1GrdPhi, quad0);
   }
 
-  
-  void SurfaceOperator::adaptSurfaceOperator(VectorOfFixVecs<DimVec<double> > &coords)
+
+  void SurfaceOperator::adaptSurfaceOperator(VectorOfFixVecs<DimVec<double>>& coords)
   {
     coords_ = coords;
 
@@ -64,10 +68,10 @@ namespace AMDiS
       quad0->scaleSurfaceQuadrature(coords);
   }
 
-  
-  void SurfaceOperator::getElementMatrix(const ElInfo *elInfo, 
-                              					 ElementMatrix& userMat, 
-                              					 double factor = 1.0)
+
+  void SurfaceOperator::getElementMatrix(const ElInfo* elInfo,
+                                         ElementMatrix& userMat,
+                                         double factor = 1.0)
   {
     int dim = rowFeSpace->getMesh()->getDim();
     double origDet = elInfo->getDet();
@@ -88,10 +92,10 @@ namespace AMDiS
     const_cast<ElInfo*>(elInfo)->setDet(origDet);
   }
 
-  
-  void SurfaceOperator::getElementVector(const ElInfo *elInfo, 
-                              					 DenseVector<double>& userVec, 
-                              					 double factor = 1.0)
+
+  void SurfaceOperator::getElementVector(const ElInfo* elInfo,
+                                         DenseVector<double>& userVec,
+                                         double factor = 1.0)
   {
     int dim = rowFeSpace->getMesh()->getDim();
     double origDet = elInfo->getDet();
@@ -110,5 +114,5 @@ namespace AMDiS
 
     const_cast<ElInfo*>(elInfo)->setDet(origDet);
   }
-  
+
 } // end namespace AMDiS

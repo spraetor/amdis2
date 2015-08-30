@@ -5,7 +5,7 @@
  * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
  * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
  *
- * Authors: 
+ * Authors:
  * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
  *
  * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
@@ -15,57 +15,62 @@
  * This file is part of AMDiS
  *
  * See also license.opensource.txt in the distribution.
- * 
+ *
  ******************************************************************************/
 
 
 #include <mpi.h>
 #include "MpiHelper.h"
 
-namespace AMDiS { namespace Parallel {
+namespace AMDiS
+{
+  namespace Parallel
+  {
 
-  namespace mpi {
+    namespace mpi
+    {
 
-    void globalAdd(MPI::Intracomm &mpiComm, double &value)
-    {
-      double valCopy = value;
-      mpiComm.Allreduce(&valCopy, &value, 1, MPI_DOUBLE, MPI_SUM);
-    }
+      void globalAdd(MPI::Intracomm& mpiComm, double& value)
+      {
+        double valCopy = value;
+        mpiComm.Allreduce(&valCopy, &value, 1, MPI_DOUBLE, MPI_SUM);
+      }
 
-    void globalAdd(MPI::Intracomm &mpiComm, int &value)
-    {
-      int valCopy = value;
-      mpiComm.Allreduce(&valCopy, &value, 1, MPI_INT, MPI_SUM);
-    }
-    
-    void globalMin(double &value)
-    {
-      double valCopy = value;
-      MPI::COMM_WORLD.Allreduce(&valCopy, &value, 1, MPI_DOUBLE, MPI_MIN);
-    }
+      void globalAdd(MPI::Intracomm& mpiComm, int& value)
+      {
+        int valCopy = value;
+        mpiComm.Allreduce(&valCopy, &value, 1, MPI_INT, MPI_SUM);
+      }
 
-    void globalMin(int &value)
-    {
-      int valCopy = value;
-      MPI::COMM_WORLD.Allreduce(&valCopy, &value, 1, MPI_INT, MPI_MIN);
-    }
-    
-    void globalMax(double &value)
-    {
-      double valCopy = value;
-      MPI::COMM_WORLD.Allreduce(&valCopy, &value, 1, MPI_DOUBLE, MPI_MAX);
-    }
+      void globalMin(double& value)
+      {
+        double valCopy = value;
+        MPI::COMM_WORLD.Allreduce(&valCopy, &value, 1, MPI_DOUBLE, MPI_MIN);
+      }
 
-    void globalMax(int &value)
-    {
-      int valCopy = value;
-      MPI::COMM_WORLD.Allreduce(&valCopy, &value, 1, MPI_INT, MPI_MAX);
-    }
+      void globalMin(int& value)
+      {
+        int valCopy = value;
+        MPI::COMM_WORLD.Allreduce(&valCopy, &value, 1, MPI_INT, MPI_MIN);
+      }
 
-    void startRand()
-    {
-      srand(time(0) * (MPI::COMM_WORLD.Get_rank() + 1));
+      void globalMax(double& value)
+      {
+        double valCopy = value;
+        MPI::COMM_WORLD.Allreduce(&valCopy, &value, 1, MPI_DOUBLE, MPI_MAX);
+      }
+
+      void globalMax(int& value)
+      {
+        int valCopy = value;
+        MPI::COMM_WORLD.Allreduce(&valCopy, &value, 1, MPI_INT, MPI_MAX);
+      }
+
+      void startRand()
+      {
+        srand(time(0) * (MPI::COMM_WORLD.Get_rank() + 1));
+      }
     }
   }
-} }
+}
 

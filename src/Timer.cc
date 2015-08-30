@@ -3,12 +3,12 @@
 #include <mpi.h>
 #endif
 
-namespace AMDiS 
+namespace AMDiS
 {
-  Timer::Timer() 
+  Timer::Timer()
     : first_seq(std::chrono::system_clock::now())
 #ifdef HAVE_PARALLEL_DOMAIN_AMDIS
-     ,first_mpi(MPI::Wtime())
+    ,first_mpi(MPI::Wtime())
 #endif
   { }
 
@@ -31,5 +31,5 @@ namespace AMDiS
     return elapsed_seconds.count() / 1.e6;
 #endif
   }
-  
+
 } // end namespace AMDiS

@@ -15,12 +15,12 @@
 
 
 /** \brief Expressions provide an easy way of automated generation of
- * 'arbitrary' operator-terms out of some elementary operations, by using a 
- * recursive definition of the term. All necessary data will be initialized 
+ * 'arbitrary' operator-terms out of some elementary operations, by using a
+ * recursive definition of the term. All necessary data will be initialized
  * when an expression as part of the term uses this data.
  * Since no virtual functions, like in the AbstractFunction classes, are used
  * the overhead of a vtable is removed.
- * 
+ *
  * A Term is a componation of elementary terms by + - * /
  *  - constant(value) / value  ... a constant value
  *  - valueOf(DOFVector)       ... values of a DOFVector at QP
@@ -32,26 +32,26 @@
  *  - Exp(Term)                ... exponential function of a term
  *  - function_<F>(Term)       ... evaluates F()(Term(iq))
  *  - function_(F f, Term)     ... evaluates f(Term(iq))
- * 
- * 
+ *
+ *
  * with F a functor that implements
  *   typedef (...) result_type;
  *   int getDegree(int d0);
  *   result_type operator()(const T0& v0) const;
- * 
+ *
  * respective
  *   int getDegree(int d0, int d1);
  *   result_type operator()(const T0& v0, const T1& v1) const;
- * 
+ *
  * respective
  *   int getDegree(int d0, int d1, int d2);
  *   result_type operator()(const T0& v0, const T1& v1, const T2& v2) const;
- * 
+ *
  * where the d0, d1, d2 give the polynomial degrees of the v0, v1, v2 terms.
  * */
 
 
-namespace AMDiS 
+namespace AMDiS
 {
 
   /// Integrate an expression over a domain.
@@ -60,16 +60,16 @@ namespace AMDiS
   inline typename boost::enable_if<traits::is_expr<Expr>, typename Expr::value_type>::type
   integrate(Expr expr, Mesh* mesh_ = NULL);
 
-  
+
   /* ----- ACCUMULATION OF AND EXPRESSION OVER DOFS ------------------------- */
 
-  
+
   /// Accumulate the values of an expression at the Degrees of freedom
   template <class Expr, class Functor>
   inline typename boost::enable_if<traits::is_expr<Expr>, typename Expr::value_type>::type
   accumulate(Expr expr, Functor f, typename Expr::value_type value0);
 
-  
+
   /// Maximum of an expression at DOFs, using the \ref accumulate function.
   template <class Expr>
   inline typename boost::enable_if<traits::is_expr<Expr>, typename Expr::value_type>::type
@@ -77,13 +77,13 @@ namespace AMDiS
   {
     typename Expr::value_type value0 = std::numeric_limits<typename Expr::value_type>::min();
     value0 = accumulate(expr, functors::max<typename Expr::value_type>(), value0);
-    
+
 #ifdef HAVE_PARALLEL_DOMAIN_AMDIS
     Parallel::mpi::globalMax(value0);
 #endif
     return value0;
   }
-  
+
 
   /// Minimum of an expression at DOFs, using the \ref accumulate function.
   template <class Expr>
@@ -92,13 +92,13 @@ namespace AMDiS
   {
     typename Expr::value_type value0 = std::numeric_limits<typename Expr::value_type>::max();
     value0 = accumulate(expr, functors::min<typename Expr::value_type>(), value0);
-    
+
 #ifdef HAVE_PARALLEL_DOMAIN_AMDIS
     Parallel::mpi::globalMin(value0);
 #endif
     return value0;
   }
-  
+
 
   /// Maximum of  absolute values of an expression at DOFs, using the \ref accumulate function.
   template <class Expr>
@@ -107,14 +107,14 @@ namespace AMDiS
   {
     typename Expr::value_type value0 = 0;
     value0 = accumulate(expr, functors::abs_max<typename Expr::value_type>(), value0);
-    
+
 #ifdef HAVE_PARALLEL_DOMAIN_AMDIS
     Parallel::mpi::globalMax(value0);
 #endif
     return value0;
   }
 
-  
+
   /// Minimum of  absolute values of an expression at DOFs, using the \ref accumulate function.
   template <class Expr>
   inline typename boost::enable_if<traits::is_expr<Expr>, typename Expr::value_type>::type
@@ -122,66 +122,66 @@ namespace AMDiS
   {
     typename Expr::value_type value0 = std::numeric_limits<typename Expr::value_type>::max();
     value0 = accumulate(expr, functors::abs_min<typename Expr::value_type>(), value0);
-    
+
 #ifdef HAVE_PARALLEL_DOMAIN_AMDIS
     Parallel::mpi::globalMin(value0);
 #endif
     return value0;
   }
-  
-  
+
+
   /* ------ ASSIGNMENT OF AN EXRESION TO A DOFVECTOR ------------------------ */
 
-  
+
   /// Assign an expression to a DOFVector
   template <class T, class Expr>
-  Requires_t<and_<traits::is_expr<Expr>, traits::IsConvertible<Value_t<Expr>, T>> >
+  Requires_t<and_<traits::is_expr<Expr>, traits::IsConvertible<Value_t<Expr>, T>>>
   inline transformDOF(Expr expr, DOFVector<T>* result);
 
-  
-  /// \brief Assign an expression to a DOFVector 
+
+  /// \brief Assign an expression to a DOFVector
   /// (using multi-mesh if \ref expr and \ref result vector are on different meshes)
   template <class T, class Expr>
-  Requires_t<and_<traits::is_expr<Expr>, traits::IsConvertible<Value_t<Expr>, T>> >
+  Requires_t<and_<traits::is_expr<Expr>, traits::IsConvertible<Value_t<Expr>, T>>>
   inline transformDOF_mm(Expr expr, DOFVector<T>* result);
 
-  
+
   /// Assign an expression to a DOFVector
   template <class T, class Expr>
-  Requires_t<and_<traits::is_expr<Expr>, traits::IsConvertible<Value_t<Expr>, T>>, >
-    DOFVector<T>& >
-  inline operator<<(DOFVector<T>& result, const Expr& expr)
+  Requires_t<and_<traits::is_expr<Expr>, traits::IsConvertible<Value_t<Expr>, T>>,>
+      DOFVector<T>& >
+      inline operator<<(DOFVector<T>& result, const Expr& expr)
   {
     transformDOF(expr, &result);
     return result;
   }
 
-  
+
   /* ----- CONVERT EXPRESSION TO STRING ------------------------------------- */
 
-  
+
   /// Print an expression to an output stream
   template <class Expr>
-  Requires_t<traits::is_expr<Expr>, 
-    std::ostream& >
-  inline operator<<(std::ostream& result, const Expr& expr)
+  Requires_t<traits::is_expr<Expr>,
+             std::ostream&>
+             inline operator<<(std::ostream& result, const Expr& expr)
   {
     result << expr.str();
     return result;
   }
-  
-  
+
+
   /* ----- IMPLEMENTATION OF DOFVECTOR::INTERPOL METHODS --------------------- */
-  
+
 
   template <class T>
-    template <class Expr>
+  template <class Expr>
   void DOFVector<T>::interpol(Expr expr)
   {
     using ToExpr = typename traits::to_expr<Expr>::to;
     transformDOF(ToExpr::get(expr), this);
   }
-  
+
   template <class T>
   void DOFVector<T>::interpol(std::function<T(WorldVector<double>)> f)
   {
@@ -189,7 +189,7 @@ namespace AMDiS
   }
 
   template <class T>
-  void DOFVector<T>::interpol(DOFVector<T> *v, double factor)
+  void DOFVector<T>::interpol(DOFVector<T>* v, double factor)
   {
     this->interpol(factor * valueOf(v));
   }

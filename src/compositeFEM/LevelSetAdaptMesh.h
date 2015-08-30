@@ -5,7 +5,7 @@
  * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
  * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
  *
- * Authors: 
+ * Authors:
  * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
  *
  * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
@@ -15,7 +15,7 @@
  * This file is part of AMDiS
  *
  * See also license.opensource.txt in the distribution.
- * 
+ *
  ******************************************************************************/
 
 
@@ -33,168 +33,169 @@
 
 #include "ElementLevelSet.h"
 
-namespace compositeFEM {
-
-using namespace AMDiS;
-
-class LevelSetAdaptMesh 
+namespace compositeFEM
 {
-public:
-  /// Constructor.
-  LevelSetAdaptMesh(ProblemStatBase *prob_,
-		    Mesh *mesh_,
-		    ElementLevelSet *elLS_,
-		    double sizeInterf_,
-		    double sizeNegLs_,
-		    double sizePosLs_,
-		    bool onlyInterfRef_ = false,
-		    bool bandAtInterf_ = false,
-		    double bandSize_ = -1.0)
-    : prob(prob_),
-      mesh(mesh_),
-      elLS(elLS_),
-      sizeInterf(sizeInterf_),
-      sizeNegLs(sizeNegLs_),
-      sizePosLs(sizePosLs_),
-      onlyInterfRef(onlyInterfRef_),
-      bandAtInterf(bandAtInterf_),
-      bandSize(bandSize_),
-      dim(mesh->getDim())
-  {}
 
-  /**
-   * Calculates sizes sizeInterf, sizeNegLs, sizePosLs and bandSize 
-   * from number of refinements additional to initial global refinements
-   * read from init file.
-   */
-  static void getElementSizesFromInit(const std::string probName,
-				      double &sizeInterf_,
-				      double &sizeNegLs_,
-				      double &sizePosLs_,
-				      double &bandSize_);
+  using namespace AMDiS;
 
-  /// Sets sizeInterf, sizeNegLs, sizePosLs and bandSize.
-  void setElementSizes(double &sizeInterf_,
-		       double &sizeNegLs_,
-		       double &sizePosLs_,
-		       double bandSize_ = -1.0)
+  class LevelSetAdaptMesh
   {
-    FUNCNAME("LevelSetAdaptMesh::setElementSizes()");
+  public:
+    /// Constructor.
+    LevelSetAdaptMesh(ProblemStatBase* prob_,
+                      Mesh* mesh_,
+                      ElementLevelSet* elLS_,
+                      double sizeInterf_,
+                      double sizeNegLs_,
+                      double sizePosLs_,
+                      bool onlyInterfRef_ = false,
+                      bool bandAtInterf_ = false,
+                      double bandSize_ = -1.0)
+      : prob(prob_),
+        mesh(mesh_),
+        elLS(elLS_),
+        sizeInterf(sizeInterf_),
+        sizeNegLs(sizeNegLs_),
+        sizePosLs(sizePosLs_),
+        onlyInterfRef(onlyInterfRef_),
+        bandAtInterf(bandAtInterf_),
+        bandSize(bandSize_),
+        dim(mesh->getDim())
+    {}
 
-    sizeInterf = sizeInterf_;
-    sizeNegLs = sizeNegLs_;
-    sizePosLs = sizePosLs_;
-    bandSize = bandSize_;
+    /**
+     * Calculates sizes sizeInterf, sizeNegLs, sizePosLs and bandSize
+     * from number of refinements additional to initial global refinements
+     * read from init file.
+     */
+    static void getElementSizesFromInit(const std::string probName,
+                                        double& sizeInterf_,
+                                        double& sizeNegLs_,
+                                        double& sizePosLs_,
+                                        double& bandSize_);
 
-    TEST_EXIT(bandSize > 0 || bandAtInterf == false)("illegal band size!\n");
-  }
+    /// Sets sizeInterf, sizeNegLs, sizePosLs and bandSize.
+    void setElementSizes(double& sizeInterf_,
+                         double& sizeNegLs_,
+                         double& sizePosLs_,
+                         double bandSize_ = -1.0)
+    {
+      FUNCNAME("LevelSetAdaptMesh::setElementSizes()");
 
-  /// Sets bandSize.
-  void setBandSize(double &bandSize_)
-  {
-    FUNCNAME("LevelSetAdaptMesh::setBandSize()");
+      sizeInterf = sizeInterf_;
+      sizeNegLs = sizeNegLs_;
+      sizePosLs = sizePosLs_;
+      bandSize = bandSize_;
 
-    TEST_EXIT(bandSize_ > 0)("illegal bandSize !\n");
+      TEST_EXIT(bandSize > 0 || bandAtInterf == false)("illegal band size!\n");
+    }
 
-    bandAtInterf = true;
-    bandSize = bandSize_;
-  }
+    /// Sets bandSize.
+    void setBandSize(double& bandSize_)
+    {
+      FUNCNAME("LevelSetAdaptMesh::setBandSize()");
 
-  /// Adapts mesh to the appropriate element sizes. 
-  void adaptMesh(AdaptInfo *adaptInfo);
+      TEST_EXIT(bandSize_ > 0)("illegal bandSize !\n");
 
-  /// Get sizeInterf.
-  inline double getSizeInterf() 
-  {
-    return sizeInterf;
-  }
+      bandAtInterf = true;
+      bandSize = bandSize_;
+    }
 
- protected:
-  /// Element mark function in case no band around the interface is used.
-  void markElement_noBand(ElInfo *elInfo);
+    /// Adapts mesh to the appropriate element sizes.
+    void adaptMesh(AdaptInfo* adaptInfo);
 
-  /// Element mark function in case a band around the interface is used.
-  void markElement_Band(ElInfo *elInfo);
+    /// Get sizeInterf.
+    inline double getSizeInterf()
+    {
+      return sizeInterf;
+    }
 
-  /**
-   * Checks whether element size elSize corresponds to the prescribed size
-   * sizeWanted and sets a mark for refinement/coarsening if needed.
-   */
-  void markElement(ElInfo *elInfo, double elSize, double sizeWanted);
+  protected:
+    /// Element mark function in case no band around the interface is used.
+    void markElement_noBand(ElInfo* elInfo);
 
-  /**
-   * Determines the position of element with respect to the band around
-   * the zero level set.
-   */
-  int calculateElementStatusBand(ElInfo *elInfo);
+    /// Element mark function in case a band around the interface is used.
+    void markElement_Band(ElInfo* elInfo);
 
- protected:
-  /// Problem for mesh adaption which gives refinement and coarsening manager.
-  ProblemStatBase *prob;
+    /**
+     * Checks whether element size elSize corresponds to the prescribed size
+     * sizeWanted and sets a mark for refinement/coarsening if needed.
+     */
+    void markElement(ElInfo* elInfo, double elSize, double sizeWanted);
 
-  /// Mesh to be adapted.
-  Mesh *mesh;
+    /**
+     * Determines the position of element with respect to the band around
+     * the zero level set.
+     */
+    int calculateElementStatusBand(ElInfo* elInfo);
 
-  /// Holds the level set function and functionalities on intersection point calculation.
-  ElementLevelSet *elLS;
+  protected:
+    /// Problem for mesh adaption which gives refinement and coarsening manager.
+    ProblemStatBase* prob;
 
-  /**
-   * Mesh element size after mesh adaption.
-   *    sizeInterf - elements cut by zero level set and - if bandAtInterf 
-   *                 is true - elements with at most distance bandSize to
-   *                 the zero level set
-   *    sizeNegLs  - elements in domain with negative level set function
-   *                 values (and not within band at interface)
-   *    sizePosLs  - elements in domain with positive level set function
-   *                 values (and not within band at interface)
-   */
-  double sizeInterf;
-  double sizeNegLs;
-  double sizePosLs;
+    /// Mesh to be adapted.
+    Mesh* mesh;
 
-  /**
-   * Indicates whether only interface elements or elements within a
-   * band around the interface are refined (true) or refinement/coarsening
-   * on the complete mesh is done (false).
-   */
-  bool onlyInterfRef;
+    /// Holds the level set function and functionalities on intersection point calculation.
+    ElementLevelSet* elLS;
 
-  /**
-   * Indicates whether band around interface/zero level set is used (true)
-   * or not (false). 
-   * If band is used, elements with at most distance bandSize to the
-   * zero level set are refined to size sizeInterf.
-   */
-  bool bandAtInterf;
+    /**
+     * Mesh element size after mesh adaption.
+     *    sizeInterf - elements cut by zero level set and - if bandAtInterf
+     *                 is true - elements with at most distance bandSize to
+     *                 the zero level set
+     *    sizeNegLs  - elements in domain with negative level set function
+     *                 values (and not within band at interface)
+     *    sizePosLs  - elements in domain with positive level set function
+     *                 values (and not within band at interface)
+     */
+    double sizeInterf;
+    double sizeNegLs;
+    double sizePosLs;
 
-  /// Defines bandwidth if band around interface is used.
-  double bandSize;
+    /**
+     * Indicates whether only interface elements or elements within a
+     * band around the interface are refined (true) or refinement/coarsening
+     * on the complete mesh is done (false).
+     */
+    bool onlyInterfRef;
 
-  /**
-   * Constants to describe the position of an element with respect to a band 
-   * around the interface.
-   *    INTERIOR - in domain with negative level set function values and
-   *               not in band
-   *    IN_BAND  - at least on vertex of element has distance smaller than
-   *               bandSize to the zero level set; the absolute value of
-   *               the level set function is taken as the distance to
-   *               the zero level set
-   *    EXTERIOR - in domain with positive level set function values and
-   *               not in band
-   */
-  static const int LS_ADAPT_MESH_INTERIOR = -1;
-  static const int LS_ADAPT_MESH_IN_BAND = 0;
-  static const int LS_ADAPT_MESH_EXTERIOR = 1;
+    /**
+     * Indicates whether band around interface/zero level set is used (true)
+     * or not (false).
+     * If band is used, elements with at most distance bandSize to the
+     * zero level set are refined to size sizeInterf.
+     */
+    bool bandAtInterf;
 
-  /// Dimension of the mesh.
-  int dim;
+    /// Defines bandwidth if band around interface is used.
+    double bandSize;
 
-  /// Variables used in adaptMesh(), markElement_Band() and  markElement_noBand().
-  bool doRefine;
-  bool doCoarsen;
-  bool refinementMarkIsSet;
-  bool coarseningMarkIsSet;
-};
+    /**
+     * Constants to describe the position of an element with respect to a band
+     * around the interface.
+     *    INTERIOR - in domain with negative level set function values and
+     *               not in band
+     *    IN_BAND  - at least on vertex of element has distance smaller than
+     *               bandSize to the zero level set; the absolute value of
+     *               the level set function is taken as the distance to
+     *               the zero level set
+     *    EXTERIOR - in domain with positive level set function values and
+     *               not in band
+     */
+    static const int LS_ADAPT_MESH_INTERIOR = -1;
+    static const int LS_ADAPT_MESH_IN_BAND = 0;
+    static const int LS_ADAPT_MESH_EXTERIOR = 1;
+
+    /// Dimension of the mesh.
+    int dim;
+
+    /// Variables used in adaptMesh(), markElement_Band() and  markElement_noBand().
+    bool doRefine;
+    bool doCoarsen;
+    bool refinementMarkIsSet;
+    bool coarseningMarkIsSet;
+  };
 
 }
 

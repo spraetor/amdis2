@@ -5,7 +5,7 @@
  * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
  * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
  *
- * Authors: 
+ * Authors:
  * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
  *
  * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
@@ -15,7 +15,7 @@
  * This file is part of AMDiS
  *
  * See also license.opensource.txt in the distribution.
- * 
+ *
  ******************************************************************************/
 
 /** \file MtlFetiPrimalSolver.h */
@@ -29,35 +29,38 @@
 #include "parallel/PetscSolver.h"
 
 
-namespace AMDiS { namespace Parallel {
-
-/// Solver for the primal nodes based on MTL
-class MtlFetiPrimalSolver
-  : public PetscSolver
+namespace AMDiS
 {
-  public:
-    /// Creator class
-    class Creator : public LinearSolverCreator
+  namespace Parallel
+  {
+
+    /// Solver for the primal nodes based on MTL
+    class MtlFetiPrimalSolver
+      : public PetscSolver
     {
     public:
-      virtual ~Creator() {}
+      /// Creator class
+      class Creator : public LinearSolverCreator
+      {
+      public:
+        virtual ~Creator() {}
 
-      /// Returns a new PetscSolver object.
-      LinearSolverInterface* create() 
-      { 
-	return new MtlFetiPrimalSolver(this->name); 
-      }
+        /// Returns a new PetscSolver object.
+        LinearSolverInterface* create()
+        {
+          return new MtlFetiPrimalSolver(this->name);
+        }
+      };
+
+      /// Constructor of FETI-DP solver class.
+      explicit MtlFetiPrimalSolver(string name)
+        : LinearSolverInterface(name)
+      {}
+
     };
 
-    /// Constructor of FETI-DP solver class.
-    explicit MtlFetiPrimalSolver(string name)
-      : LinearSolverInterface(name)
-    {}
 
-};
-
-
-}
-} // namespace AMDiS 
+  }
+} // namespace AMDiS
 
 #endif // AMDIS_MTL_FETI_PRIMAL_SOLVER_H

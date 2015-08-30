@@ -6,7 +6,7 @@
 #include "Global.h"
 #include "Mesh.h"
 
-namespace AMDiS 
+namespace AMDiS
 {
   /** \brief
    * This class implements an iterator to iterate over all DOFs of one element
@@ -42,7 +42,7 @@ namespace AMDiS
 
     /// Returns the DOF index of the current DOF.
     DegreeOfFreedom getDof() const;
-    
+
     /// Returns a pointer to the current DOF.
     const DegreeOfFreedom* getDofPtr() const;
 
@@ -53,7 +53,7 @@ namespace AMDiS
       return dofs[node0 + elementPos];
     }
 
-    /// Returns \ref pos, the current position (vertex, edge, face) of 
+    /// Returns \ref pos, the current position (vertex, edge, face) of
     /// the traverse.
     int getCurrentPos() const
     {
@@ -66,7 +66,7 @@ namespace AMDiS
       return node0;
     }
 
-    /// Returns \ref elementPos, the number of vertex, edge or face that 
+    /// Returns \ref elementPos, the number of vertex, edge or face that
     /// is traversed.
     int getCurrentElementPos() const
     {
@@ -78,7 +78,7 @@ namespace AMDiS
       return posIndex;
     }
 
-      
+
   protected:
     /// The DOF admin for which DOFs should be traversed.
     const DOFAdmin* admin;
@@ -86,7 +86,7 @@ namespace AMDiS
     const BasisFunction* basisFcts;
 
     /// Pointer to the DOFs that should be traversed.
-    const DegreeOfFreedom **dofs;
+    const DegreeOfFreedom** dofs;
 
     /// Mesh on which the element is defined.
     Mesh* mesh;
@@ -106,19 +106,19 @@ namespace AMDiS
     /// Dimension dependent geo index of the current position in traverse.
     GeoIndex posIndex;
 
-    /// Number of DOFs at the current traverse position. Examples: independent of 
-    /// dimension and  degree of basis functions there is only one DOF per vertex. 
-    /// But in 2D and with 3rd degree lagrange basis functions there are two 
+    /// Number of DOFs at the current traverse position. Examples: independent of
+    /// dimension and  degree of basis functions there is only one DOF per vertex.
+    /// But in 2D and with 3rd degree lagrange basis functions there are two
     /// DOFs per edge.
     int nDofs;
 
-    /// Displacement of DOF indices. Used if more than one DOF admin is defined 
+    /// Displacement of DOF indices. Used if more than one DOF admin is defined
     /// on the mesh.
     int n0;
 
     /// DOF index of the first DOF at this geo index position.
     int node0;
-    
+
     /// Number of elements in the current geo position. Examples: 3 vertices in
     /// 2d, 1 face in 2d, 4 faces in 3d, etc.
     int nElements;
@@ -129,5 +129,5 @@ namespace AMDiS
     /// Currrent DOF that is traversed on the current element;
     int dofPos;
   };
-  
+
 } // end namespace AMDiS

@@ -13,21 +13,22 @@
 #include <boost/numeric/itl/itl.hpp>
 #include <boost/numeric/mtl/mtl.hpp>
 
-namespace AMDiS {
+namespace AMDiS
+{
 
-  struct Hypre_Runner : public RunnerBase< MTLTypes::MTLMatrix, MTLTypes::MTLVector >
-  {       
+  struct Hypre_Runner : public RunnerBase<MTLTypes::MTLMatrix, MTLTypes::MTLVector>
+  {
     typedef MTLTypes::MTLMatrix                   MatrixType;
     typedef MTLTypes::MTLVector                   VectorType;
-    typedef RunnerBase< MatrixType, VectorType >  super;
-    
+    typedef RunnerBase<MatrixType, VectorType>  super;
+
     /** Interface to the HYPRE BoomerAMG solver [...]
      * Parameters provided by AMDiS:
-     * 
-     * [solver]->cycle mode: 
+     *
+     * [solver]->cycle mode:
      * 	1...V-cycle
      *	2...W-cycle
-     * 
+     *
      * [solver]->interpolation type:
      *  0...classical modified interpolation
      *	1...LS interpolation (for use with GSMG)
@@ -45,13 +46,13 @@ namespace AMDiS {
      * 	12..FF interpolation
      * 	13..FF1 interpolation
      * 	14..extended interpolation
-     * 
-     *  [solver]->info: 
-     * 	0...no printout (default) 
-     * 	1...print setup information 
-     * 	2...print solve information 
+     *
+     *  [solver]->info:
+     * 	0...no printout (default)
+     * 	1...print setup information
+     * 	2...print solve information
      * 	3...print both setup and solve information
-     * 
+     *
      *  [solver]->relax type:
      * 	0...Jacobi
      * 	1...Gauss-Seidel, sequential (very slow!)
@@ -64,14 +65,14 @@ namespace AMDiS {
      * */
     Hypre_Runner(LinearSolverInterface* oemPtr)
       : oem(*oemPtr),
-      	useTransposed(false),
-      	solverCreated(false)
-    { 
+        useTransposed(false),
+        solverCreated(false)
+    {
       int cycleMode = -1, interpolation = -1, relaxation = -1;
       Parameters::get(oem.getName() + "->cycle mode", cycleMode);
       Parameters::get(oem.getName() + "->interpolation type", interpolation);
       Parameters::get(oem.getName() + "->relax type", relaxation);
-            
+
       config.maxIter(oem.getMaxIterations());
       config.interpolationType(interpolation);
       config.relaxType(relaxation);
@@ -79,14 +80,14 @@ namespace AMDiS {
       config.tolerance(oem.getRelative());
       config.printLevel(oem.getInfo());
     }
-    
+
     ~Hypre_Runner()
     {
       exit();
-    }      
-    
+    }
+
     /// Implementation of \ref RunnerBase::init()
-    virtual void init(const SolverMatrix<Matrix<DOFMatrix*> >& A, 
+    virtual void init(const SolverMatrix<Matrix<DOFMatrix*>>& A,
                       const MatrixType& mtlMatrix) override
     {
       setTransposed(typename MatrixType::orientation());
@@ -94,74 +95,74 @@ namespace AMDiS {
       hypreMatrix.init(mtlMatrix);
       HYPRE_IJMatrixGetObject(hypreMatrix, (void**) &matrix);
       HYPRE_BoomerAMGCreate(&solver);
-      
+
       mtl::dense_vector<double> swap(1, 0.0);
       mtl::HypreParVector x(swap);
       HYPRE_BoomerAMGSetup(solver, matrix, x, x);
-      
+
       solverCreated = true;
     }
-        
+
     /// Implementation of \ref RunnerBase::solve()
-    virtual int solve(const MatrixType& A , 
-                      VectorType& mtlX, 
+    virtual int solve(const MatrixType& A ,
+                      VectorType& mtlX,
                       const VectorType& mtlB) override
-    {      
+    {
       mtl::HypreParVector x(mtlX);
       mtl::HypreParVector b(mtlB);
       config(solver);
       int error = 0;
       if(useTransposed)
-	       error = HYPRE_BoomerAMGSolveT(solver, matrix, b, x);
+        error = HYPRE_BoomerAMGSolveT(solver, matrix, b, x);
       else
-	       error = HYPRE_BoomerAMGSolve(solver, matrix, b, x);
+        error = HYPRE_BoomerAMGSolve(solver, matrix, b, x);
       mtl::convert(x.getHypreVector(), mtlX);
-      
+
       int num_iter = 0;
       HYPRE_BoomerAMGGetNumIterations(solver, &num_iter);
       oem.setIterations(num_iter);
-      
+
       double rel_resid = 0.0;
       HYPRE_BoomerAMGGetFinalRelativeResidualNorm(solver, &rel_resid);
       oem.setRelativeResidual(rel_resid);
-      
+
       oem.setErrorCode(error);
       return error;
     }
-    
+
     /// Implementation of \ref RunnerInterface::exit()
     virtual void exit() override
     {
       if (solverCreated)
-	       HYPRE_BoomerAMGDestroy(solver);
+        HYPRE_BoomerAMGDestroy(solver);
       solverCreated = false;
     }
-    
+
   private:
     void setTransposed(mtl::row_major)
-    { 
+    {
       useTransposed = false;
     }
-    
+
     void setTransposed(mtl::col_major)
-    { 
+    {
       useTransposed = true;
     }
-    
+
   protected:
     LinearSolverInterface& oem;
-    
+
   private:
     HYPRE_Solver solver;
     HYPRE_ParCSRMatrix matrix;
     mtl::HypreMatrix hypreMatrix;
-    
+
     mtl::AMGConfigurator config;
-    
+
     bool useTransposed;
     bool solverCreated;
   };
-  
+
 
   /**
    * \ingroup Solver
@@ -169,7 +170,7 @@ namespace AMDiS {
    * \brief
    * Wrapper for the external HYPRE-AMG solver
    */
-  typedef LinearSolver< MTLTypes::MTLMatrix, MTLTypes::MTLVector, Hypre_Runner > HypreSolver;
+  typedef LinearSolver<MTLTypes::MTLMatrix, MTLTypes::MTLVector, Hypre_Runner> HypreSolver;
 
 } // end namespace AMDiS
 

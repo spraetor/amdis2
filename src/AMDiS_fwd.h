@@ -6,42 +6,43 @@
 #include "OpenMP.h"
 #include "Config.h"
 
-namespace AMDiS 
+namespace AMDiS
 {
   class AdaptInfo;
   class AdaptStationary;
   class Assembler;
-  class BasisFunction; 
+  class BasisFunction;
   struct BlockMTLMatrix;
   class BoundaryManager;
-//   class CGSolver;
+  //   class CGSolver;
   class CoarseningManager;
   class CouplingIterationInterface;
-//   class DiagonalPreconditioner; 
-  class DOFAdmin; 
+  //   class DiagonalPreconditioner;
+  class DOFAdmin;
   class DOFContainer;
   class DOFIndexedBase;
   class DOFMatrix;
   class DOFVectorDOF;
   class Element;
   class ElementDofIterator;
-  class ElInfo; 
+  class ElInfo;
   class ElMatrixInfo;
   class Estimator;
   class FastQuadrature;
-  class FillInfo; 
+  class FillInfo;
   class FileWriterInterface;
-  class FiniteElemSpace; 
+  class FiniteElemSpace;
   class Flag;
-//   class IdentityPreconditioner; 
-//  class Parallel::InteriorBoundary;
+  //   class IdentityPreconditioner;
+  //  class Parallel::InteriorBoundary;
   class LeafDataPeriodic;
   class LevelAdmin;
   class Line;
   class MacroElement;
   class MacroInfo;
   class Marker;
-  class Mesh; 
+  class Mesh;
+  class MeshAccessor;
   class MeshStructure;
   class LinearSolverInterface;
   class Operator;
@@ -57,7 +58,7 @@ namespace AMDiS
   class ProblemTimeInterface;
   class Projection;
   class PreconditionerScal;
-  class Quadrature; 
+  class Quadrature;
   class Q00PsiPhi;
   class Q0Psi;
   class Q10PsiPhi;
@@ -77,8 +78,9 @@ namespace AMDiS
   class Triangle;
   struct VertexInfo;
   class VertexVector;
-  
-  namespace io {
+
+  namespace io
+  {
     class ElementFileWriter;
     class GNUPlotWriter;
     class MacroReader;
@@ -89,7 +91,8 @@ namespace AMDiS
   }
 
 #ifdef HAVE_PARALLEL_DOMAIN_AMDIS
-  namespace Parallel {
+  namespace Parallel
+  {
     class ElementObjectDatabase;
     class FeSpaceDofMap;
     class MatrixNnzStructure;
@@ -110,38 +113,36 @@ namespace AMDiS
 
   struct BoundaryObject;
   struct AtomicBoundary;
-  
+
   template<typename T>                                 class DOFIndexed;
   template<typename T>                                 class DOFVectorBase;
   template<typename T>                                 class DOFVector;
   template<typename T>                                 class DirichletBC;
-//   template<typename ITLSolver>                         class ITL_LinearSolverInterface;
-  template<typename T, typename MatT, typename VecT >  class ITL_Preconditioner;
+  //   template<typename ITLSolver>                         class ITL_LinearSolverInterface;
+  template<typename T, typename MatT, typename VecT>  class ITL_Preconditioner;
   template<typename T>                                 class MatrixOfFixVecs;
   template<typename T>                                 class MatVecMultiplier;
   template<typename T>                                 class SolverMatrix;
   template<typename T>                                 class VectorOfFixVecs;
-  
-  namespace detail 
+
+  namespace detail
   {
     template <class P> class CouplingProblemStat;
   }
 
   // some typedefs to introduce matrix and vector-types
   // ---------------------------------------------------------------------------
-  
+
   template <class T>
   using DenseVector = mtl::dense_vector<T>;
-  
+
   template <class T>
   using DenseMatrix = mtl::dense2D<T>;
-  
+
   template <class T>
   using SparseMatrix = mtl::compressed2D<T>;
-  
+
   // TODO: use templated ElementMatrix;
   using ElementMatrix = DenseMatrix<double>;
-  
-  
 
 } // end namespace AMDiS

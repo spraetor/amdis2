@@ -5,22 +5,22 @@
 #include "AMDiS_fwd.h"
 #include "Quadrature.h"
 
-namespace AMDiS 
+namespace AMDiS
 {
   class SubQuadrature : public Quadrature
   {
   public:
-    SubQuadrature(Quadrature *quad, int dim_);
+    SubQuadrature(Quadrature* quad, int dim_);
 
-    void scaleQuadrature(VectorOfFixVecs<DimVec<double> > &coords);
+    void scaleQuadrature(VectorOfFixVecs<DimVec<double>>& coords);
 
     int getSubDim() const
-    { 
+    {
       return subDim_;
     }
 
   protected:
-    Quadrature *quad_;
+    Quadrature* quad_;
 
     int subDim_;
   };

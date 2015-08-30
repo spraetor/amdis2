@@ -4,19 +4,20 @@
 #include "CoarseningManager.h"
 #include "FixVec.h"
 
-namespace AMDiS 
+namespace AMDiS
 {
   constexpr int Line::vertexOfEdge[1][2];
   constexpr int Line::sideOfChild[2][2];
   constexpr int Line::vertexOfParent[2][2];
 
-  int Line::getVertexOfPosition(GeoIndex position, 
-                        				int positionIndex,
-                        				int vertexIndex) const
+  int Line::getVertexOfPosition(GeoIndex position,
+                                int positionIndex,
+                                int vertexIndex) const
   {
     FUNCNAME("Line::getVertexOfPosition()");
 
-    switch(position) {
+    switch(position)
+    {
     case VERTEX:
       return positionIndex;
       break;
@@ -26,10 +27,10 @@ namespace AMDiS
     default:
       ERROR_EXIT("invalid position\n");
       return 0;
-    }  
+    }
   }
 
-  void Line::sortFaceIndices(int face, FixVec<int,WORLD> &vec) const
+  void Line::sortFaceIndices(int face, FixVec<int,WORLD>& vec) const
   {
     vec[0] = face;
   }

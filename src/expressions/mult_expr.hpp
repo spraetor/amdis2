@@ -5,50 +5,53 @@
 #include "AMDiS_fwd.h"
 #include "LazyOperatorTerm.h"
 
-namespace AMDiS 
-{  
-  namespace expressions 
+namespace AMDiS
+{
+  namespace expressions
   {
-    
+
     /// Expressions that represents the multiplication of two expressions: E1 * E2
     template <class Term0, class Term1>
     struct Mult : public LazyOperatorTerms<Term0, Term1>
     {
       using Super = LazyOperatorTerms<Term0, Term1>;
-      using value_type = typename traits::mult_type< Value_t<Term0>, Value_t<Term1> >::type;
-      
-      static_assert( !(std::is_same<value_type, traits::no_valid_type>::value), 
+      using value_type = typename traits::mult_type<Value_t<Term0>, Value_t<Term1>>::type;
+
+      static_assert( !(std::is_same<value_type, traits::no_valid_type>::value),
                      "********** ERROR: Can not multiply terms **********" );
-      
+
       template <class Term0_, class Term1_>
       Mult(Term0_&& term0_, Term1_&& term1_)
         : Super(std::forward<Term0_>(term0_), std::forward<Term1_>(term1_)) {}
-      
+
       int getDegree() const
       {
         return Super::getDegree(_0) + Super::getDegree(_1);
       }
 
-      value_type operator()(const int& iq) const 
-      { 
+      value_type operator()(const int& iq) const
+      {
         return Super::getTerm(_0)(iq) * Super::getTerm(_1)(iq);
       }
-      
-      std::string str() const { return std::string("(") + Super::getTerm(_0).str() + " * " + Super::getTerm(_1).str() + ")"; }
+
+      std::string str() const
+      {
+        return std::string("(") + Super::getTerm(_0).str() + " * " + Super::getTerm(_1).str() + ")";
+      }
     };
-    
-    
+
+
     /// Expressions that represents the inverse of an expressions: 1/E
     template <class Term>
     struct MultInverse : public LazyOperatorTerms<Term>
     {
       using Super = LazyOperatorTerms<Term>;
       using value_type = Value_t<Term>;
-      
+
       template <class Term_>
       MultInverse(Term_&& term_)
         : Super(std::forward<Term_>(term_)) {}
-      
+
       int getDegree() const
       {
         return Super::getDegree(_0);
@@ -56,66 +59,75 @@ namespace AMDiS
 
       // works only for scalar types
       // TODO: extend implementation to inverse of matrices
-      value_type operator()(const int& iq) const { return 1.0 / Super::getTerm(_0)(iq); } 
-      
-      std::string str() const { return std::string("(") + Super::getTerm(_0).str() + ")^(-1)"; }
+      value_type operator()(const int& iq) const
+      {
+        return 1.0 / Super::getTerm(_0)(iq);
+      }
+
+      std::string str() const
+      {
+        return std::string("(") + Super::getTerm(_0).str() + ")^(-1)";
+      }
     };
-    
-    
+
+
     /// Expressions that represents the division of two expressions: E1/E2
     template <class Term0, class Term1>
     struct Divide : public LazyOperatorTerms<Term0, Term1>
     {
       using Super = LazyOperatorTerms<Term0, Term1>;
-      using value_type = typename traits::mult_type< Value_t<Term0>, Value_t<Term1> >::type;
-      
+      using value_type = typename traits::mult_type<Value_t<Term0>, Value_t<Term1>>::type;
+
       template <class Term0_, class Term1_>
       Divide(Term0_&& term0_, Term1_&& term1_)
         : Super(std::forward<Term0_>(term0_), std::forward<Term1_>(term1_)) {}
-      
+
       int getDegree() const
       {
         return Super::getDegree(_0) + Super::getDegree(_1);
       }
 
-      value_type operator()(const int& iq) const 
-      { 
-        return Super::getTerm(_0)(iq) / Super::getTerm(_1)(iq); 
-      } 
-      
-      std::string str() const { return std::string("(") + Super::getTerm(_0).str() + "/" + Super::getTerm(_1).str() + ")"; }
+      value_type operator()(const int& iq) const
+      {
+        return Super::getTerm(_0)(iq) / Super::getTerm(_1)(iq);
+      }
+
+      std::string str() const
+      {
+        return std::string("(") + Super::getTerm(_0).str() + "/" + Super::getTerm(_1).str() + ")";
+      }
     };
-    
+
   } // end namespace expressions
-  
+
 
   namespace result_of
   {
     template <class Term0, class Term1>
     using Mult = enable_if
-      < 
-      	traits::is_valid_arg2<Term0, Term1>,
-      	expressions::Mult
-      	<
-      	  typename traits::to_expr<Term0>::type, 
-      	  typename traits::to_expr<Term1>::type
-      	>
-      >;
-      
-      
+                 <
+                 traits::is_valid_arg2<Term0, Term1>,
+                 expressions::Mult
+                 <
+                 typename traits::to_expr<Term0>::type,
+                 typename traits::to_expr<Term1>::type
+                 >
+                 >;
+
+
     template <class Term0, class Term1>
     using Divide = enable_if
-      < 
-      	traits::is_valid_arg2<Term0, Term1>,
-      	expressions::Divide
-      	<
-      	  typename traits::to_expr<Term0>::type, 
-      	  typename traits::to_expr<Term1>::type
-      	>
-      >;
-      
+                   <
+                   traits::is_valid_arg2<Term0, Term1>,
+                   expressions::Divide
+                   <
+                   typename traits::to_expr<Term0>::type,
+                   typename traits::to_expr<Term1>::type
+                   >
+                   >;
+
   } // end namespace result_of
-  
+
 
   // multiply two terms
   // _____________________________________________________________________________

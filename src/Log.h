@@ -3,23 +3,23 @@
 #pragma once
 
 // std c++ headers: std::ostream, std::ofstream
-#include <ostream>	
+#include <ostream>
 
 // AMDiS headers: ThreadPrivate
-#include "OpenMP.h"	
+#include "OpenMP.h"
 
 
 #define STATIC_ASSERT(...) \
   static_assert(__VA_ARGS__, #__VA_ARGS__)
 
-namespace AMDiS 
+namespace AMDiS
 {
-  extern const char *funcName;
-  
+  extern const char* funcName;
+
   void waitSec(int seconds);
 
   void processMemUsage(double& vm_usage, double& resident_set, bool inMegaByte = true);
-  
+
   /** \brief
    * Manages the output of messages, warnings, errors, ...
    * Used by the macros FUNCNAME, ERROR, ERROR_EXIT, WARNING, TEST, MSG, INFO,
@@ -30,79 +30,79 @@ namespace AMDiS
   {
   public:
     /// Prints a formated message to the message stream
-    static void print(const char *format, ...);
+    static void print(const char* format, ...);
 
     /// Prints a formated message to the error stream
-    static void print_error(const char *format, ...);
+    static void print_error(const char* format, ...);
 
-    /// Prints a formated message to the error stream and exits 
-    static void print_error_exit(const char *format, ...);
+    /// Prints a formated message to the error stream and exits
+    static void print_error_exit(const char* format, ...);
 
     ///
-    static void catch_error_exit(const char *format, ...) {}
+    static void catch_error_exit(const char* format, ...) {}
 
     /// Prints an error message with funcname, file, and line to the error stream
-    static void print_error_funcname(const char *funcname,
-				     const char *file, 
-				     int line);
+    static void print_error_funcname(const char* funcname,
+                                     const char* file,
+                                     int line);
 
     /// Prints a warning to the message stream
-    static void print_warn(const char *format, ...);
+    static void print_warn(const char* format, ...);
 
     /// Prints a warning with funcname, file, and line to the message stream
-    static void print_warn_funcname(const char *funcname,
-				    const char *file, 
-				    int line);
+    static void print_warn_funcname(const char* funcname,
+                                    const char* file,
+                                    int line);
 
     /// Prints the funcname to the message stream
-    static void print_funcname(const char *funcname);
+    static void print_funcname(const char* funcname);
 
     /// Changes the message stream
     // static void change_out(std::ostream*);
 
-    /// Changes the error stream 
+    /// Changes the error stream
     // static void change_error_out(std::ofstream *fp);
 
     /// Creates a filestream and sets the error stream to this filestream
     // static void open_error_file(const char *filename, OPENMODE);
 
     /// Sets \ref msgInfo
-    static void setMsgInfo(int info) 
-    { 
-      msgInfo = info; 
+    static void setMsgInfo(int info)
+    {
+      msgInfo = info;
     }
 
     /// Returns \ref msgInfo
-    static int  getMsgInfo() 
-    { 
-      return msgInfo; 
+    static int  getMsgInfo()
+    {
+      return msgInfo;
     }
 
     /// Sets \ref msgWait
-    static void setMsgWait(bool wait) 
-    { 
-      msgWait = wait; 
+    static void setMsgWait(bool wait)
+    {
+      msgWait = wait;
     }
 
     /// Returns \ref msgWait
-    static bool getMsgWait() 
-    { 
-      return msgWait; 
+    static bool getMsgWait()
+    {
+      return msgWait;
     }
 
     /// Waits for enter if w is true
     static void wait(bool w);
 
     /// Returns \ref out
-    static std::ostream *getOutStream() 
-    { 
-      return out; 
+    static std::ostream* getOutStream()
+    {
+      return out;
     }
 
     /// Returns \ref error
-    static std::ostream *getErrorStream() 
-    { 
-      return error; 
+    static std::ostream* getErrorStream()
+    {
+      return error;
     }
 
   public:
@@ -115,10 +115,10 @@ namespace AMDiS
 
   protected:
     /// Message stram
-    static std::ostream *out;
+    static std::ostream* out;
 
     /// Error stream
-    static std::ostream *error;
+    static std::ostream* error;
 
     /// Remember funcName to avoid multiple output of funcName within the same
     /// function call
@@ -135,27 +135,27 @@ namespace AMDiS
   // ===== message macros ======================================================
   // ===========================================================================
 
-  /// Should be the first call in every functions. It defines the current 
+  /// Should be the first call in every functions. It defines the current
   /// function name nn for message output via MSG, WARNING, ...
 #define FUNCNAME(nn) const char *funcName; funcName = nn;
-  
-#if (DEBUG == 0) 
-  #define FUNCNAME_DBG(nn)
+
+#if (DEBUG == 0)
+#define FUNCNAME_DBG(nn)
 #else
-  #define FUNCNAME_DBG(nn) const char *funcName; funcName = nn;
+#define FUNCNAME_DBG(nn) const char *funcName; funcName = nn;
 #endif
 
-  /// prints an error message 
+  /// prints an error message
 #define ERROR Msg::print_error_funcname(funcName,__FILE__, __LINE__),	\
-    Msg::print_error
+  Msg::print_error
 
-  /// prints an error message and exits 
+  /// prints an error message and exits
 #define ERROR_EXIT Msg::print_error_funcname(funcName,__FILE__, __LINE__), \
-    Msg::print_error_exit
+  Msg::print_error_exit
 
   /// prints a warning
 #define WARNING Msg::print_warn_funcname(funcName,__FILE__, __LINE__),	\
-    Msg::print_warn
+  Msg::print_warn
 
   /// if test is false, an error message is printed
 #define TEST(test) if ((test));else ERROR
@@ -164,21 +164,21 @@ namespace AMDiS
 #define TEST_EXIT(test) if ((test));else ERROR_EXIT
 
   /// In debug mode, it corresponds to ERROR_EXIT, otherwise it is noop.
-#if (DEBUG == 0) 
-  #define TEST_EXIT_DBG(test) if (false) Msg::catch_error_exit
-  #define DBG_VAR(var)
+#if (DEBUG == 0)
+#define TEST_EXIT_DBG(test) if (false) Msg::catch_error_exit
+#define DBG_VAR(var)
 #else
 #define TEST_EXIT_DBG(test) if ((test));else ERROR_EXIT
-  #define DBG_VAR(var) var
+#define DBG_VAR(var) var
 #endif
 
   /// prints a message
 #define MSG Msg::print_funcname(funcName), Msg::print
 
-#if (DEBUG == 0) 
-  #define MSG_DBG
+#if (DEBUG == 0)
+#define MSG_DBG
 #else
-  #define MSG_DBG Msg::print_funcname(funcName), Msg::print
+#define MSG_DBG Msg::print_funcname(funcName), Msg::print
 #endif
 
   /// prints a message, if min(Msg::msgInfo, info) >= noinfo
@@ -190,7 +190,7 @@ namespace AMDiS
   if (Msg::getMsgInfo() && (std::min(Msg::getMsgInfo(), (info)) >= (noinfo))) Msg::print
 
 
-  /// If the value of Msg::wait is not zero the macro will produce the message 
+  /// If the value of Msg::wait is not zero the macro will produce the message
   /// 'wait for <enter> ...' and will continue after pressing the return or enter
   /// key. Otherwise the program continues without a message.
 #define WAIT Msg::wait(Msg::getMsgWait())

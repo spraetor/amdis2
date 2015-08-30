@@ -9,21 +9,22 @@
 #include "BoundaryCondition.h"
 #include "FixVec.h"
 
-namespace AMDiS 
+namespace AMDiS
 {
 
   template <class T>
-  class DimVecLess 
+  class DimVecLess
   {
   public:
-    bool operator()(const DimVec<T> &v1, const DimVec<T> &v2) const
+    bool operator()(const DimVec<T>& v1, const DimVec<T>& v2) const
     {
       int  size = v1.getSize();
-      for (int i = 0; i < size; i++) {
-      	if (v1[i] < v2[i]) 
-      	  return true;
-      	if (v1[i] > v2[i]) 
-      	  return false;
+      for (int i = 0; i < size; i++)
+      {
+        if (v1[i] < v2[i])
+          return true;
+        if (v1[i] > v2[i])
+          return false;
       }
       return false;
     }
@@ -32,24 +33,24 @@ namespace AMDiS
   class PeriodicDOFMapping
   {
   public:
-    PeriodicDOFMapping(const BasisFunction *basFcts);
+    PeriodicDOFMapping(const BasisFunction* basFcts);
 
     ~PeriodicDOFMapping();
 
   public:
-    static PeriodicDOFMapping* providePeriodicDOFMapping(const BasisFunction *basFcts);
+    static PeriodicDOFMapping* providePeriodicDOFMapping(const BasisFunction* basFcts);
 
-    const DegreeOfFreedom *getDOFPermutation(const DimVec<int> &vertexPermutation);
+    const DegreeOfFreedom* getDOFPermutation(const DimVec<int>& vertexPermutation);
 
   protected:
     /// Basis functions the mapping object is defined on.
-    const BasisFunction *basFcts;
+    const BasisFunction* basFcts;
 
-    std::map<DimVec<int>, DegreeOfFreedom*, DimVecLess<int> > dofPermutation;
+    std::map<DimVec<int>, DegreeOfFreedom*, DimVecLess<int>> dofPermutation;
 
     /// Maps from coordinates (in barycentric coordinates) of a local basis
     /// function to the local index of that basis function.
-    std::map<DimVec<double>, int, DimVecLess<double> > indexOfCoords;
+    std::map<DimVec<double>, int, DimVecLess<double>> indexOfCoords;
 
     /// Global array that provids for each existing basis functions a unique
     /// mapping object.
@@ -67,17 +68,17 @@ namespace AMDiS
   {
   public:
     /// Constructor.
-    PeriodicBC(BoundaryType type, const FiniteElemSpace *rowFeSpace);
+    PeriodicBC(BoundaryType type, const FiniteElemSpace* rowFeSpace);
 
     ~PeriodicBC();
 
     virtual void initMatrix(DOFMatrix* matrix) override;
 
-    virtual void fillBoundaryCondition(DOFMatrix *matrix,
-                          			       ElInfo *elInfo,
-                          			       const DegreeOfFreedom *dofIndices,
-                          			       const BoundaryType *localBound,
-                          			       int nBasFcts) override;
+    virtual void fillBoundaryCondition(DOFMatrix* matrix,
+                                       ElInfo* elInfo,
+                                       const DegreeOfFreedom* dofIndices,
+                                       const BoundaryType* localBound,
+                                       int nBasFcts) override;
 
     virtual void exitMatrix(DOFMatrix* matrix) override;
 
@@ -90,11 +91,11 @@ namespace AMDiS
     }
 
   protected:
-    VertexVector *associated;
+    VertexVector* associated;
 
-    PeriodicDOFMapping *periodicDOFMapping;
+    PeriodicDOFMapping* periodicDOFMapping;
 
-    DOFMatrix *masterMatrix;
+    DOFMatrix* masterMatrix;
   };
 
 } // end namespace AMDiS

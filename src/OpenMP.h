@@ -7,12 +7,13 @@
 #include <vector>
 #endif
 
-namespace AMDiS 
+namespace AMDiS
 {
-  
+
 #ifdef _OPENMP
   template <class T>
-  class ThreadPrivate {
+  class ThreadPrivate
+  {
   public:
     ThreadPrivate()
       : data(omp_get_max_threads())
@@ -25,9 +26,10 @@ namespace AMDiS
     T& get()
     {
 #if (DEBUG != 0)
-      if (omp_get_thread_num() >= data.size()) {
-	std::cout << "Error in ThreadPrivate::get()!\n";
-	exit(0);
+      if (omp_get_thread_num() >= data.size())
+      {
+        std::cout << "Error in ThreadPrivate::get()!\n";
+        exit(0);
       }
 #endif
       return data[omp_get_thread_num()];
@@ -36,9 +38,10 @@ namespace AMDiS
     void set(T& val)
     {
 #if (DEBUG != 0)
-      if (omp_get_thread_num() >= data.size()) {
-	std::cout << "Error in ThreadPrivate::set()!\n";
-	exit(0);
+      if (omp_get_thread_num() >= data.size())
+      {
+        std::cout << "Error in ThreadPrivate::set()!\n";
+        exit(0);
       }
 #endif
       data[omp_get_thread_num()] = val;
@@ -47,11 +50,11 @@ namespace AMDiS
   private:
     std::vector<T> data;
   };
-  
+
 #else
 
   template <class T>
-  class ThreadPrivate 
+  class ThreadPrivate
   {
   public:
     ThreadPrivate() {}

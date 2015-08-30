@@ -12,26 +12,28 @@
 
 using namespace std;
 
-namespace AMDiS 
+namespace AMDiS
 {
 
   const int MeshStructure::structureSize = 64;
 
 
-  void MeshStructure::insertElement(bool isLeaf) 
+  void MeshStructure::insertElement(bool isLeaf)
   {
     // overflow? -> next index
-    if (pos >= structureSize) {
+    if (pos >= structureSize)
+    {
       code.push_back(currentCode);
       pos = 0;
       currentCode = 0;
     }
 
     // insert element in binary code
-    if (!isLeaf) {
+    if (!isLeaf)
+    {
       uint64_t one = 1;
       currentCode += (one << pos);
-    } 
+    }
 
     pos++;
     nElements++;
@@ -48,122 +50,131 @@ namespace AMDiS
   }
 
 
-  void MeshStructure::init(Mesh *mesh, int macroElIndex) 
+  void MeshStructure::init(Mesh* mesh, int macroElIndex)
   {
     clear();
 
     TraverseStack stack;
 
-    ElInfo *elInfo;
+    ElInfo* elInfo;
     if (macroElIndex == -1)
       elInfo = stack.traverseFirst(mesh, -1, Mesh::CALL_EVERY_EL_PREORDER);
     else
-      elInfo = stack.traverseFirstOneMacro(mesh, macroElIndex, -1, 
-					   Mesh::CALL_EVERY_EL_PREORDER);
+      elInfo = stack.traverseFirstOneMacro(mesh, macroElIndex, -1,
+                                           Mesh::CALL_EVERY_EL_PREORDER);
 
-    while (elInfo) {
+    while (elInfo)
+    {
       insertElement(elInfo->getElement()->isLeaf());
       elInfo = stack.traverseNext(elInfo);
     }
-  
+
     commit();
   }
 
 
-  void MeshStructure::init(BoundaryObject &bound, Element* element)
+  void MeshStructure::init(BoundaryObject& bound, Element* element)
   {
     FUNCNAME("MeshStructure::init()");
 
     Element* el = (element == NULL) ? bound.el : element;
-    
+
     TEST_EXIT_DBG(el)("No element!\n");
 
     clear();
 
     int s1 = el->getSubObjOfChild(0, bound.subObj, bound.ithObj, bound.elType);
     int s2 = el->getSubObjOfChild(1, bound.subObj, bound.ithObj, bound.elType);
-    
+
     TEST_EXIT(s1 != -1 || s2 != -1)("This should not happen!\n");
 
-    if (debugMode) {
+    if (debugMode)
+    {
       MSG("addAlondSide(%d, %d, %d, %d)\n",
-	  bound.elIndex, bound.ithObj, bound.elType, bound.reverseMode);
+          bound.elIndex, bound.ithObj, bound.elType, bound.reverseMode);
       MSG("Element is leaf: %d\n", el->isLeaf());
       MSG("s1 = %d    s2 = %d\n", s1, s2);
     }
-    
+
     /*    switch (bound.subObj)
     {
       case EDGE:
     */
-	if (!el->isLeaf()) {
-	  if (s1 == -1)
-	    addAlongSide(el->getSecondChild(), bound.subObj, s2, 
-			el->getChildType(bound.elType), bound.reverseMode);
-	  else if (s2 == -1)
-	    addAlongSide(el->getFirstChild(), bound.subObj, s1, 
-			el->getChildType(bound.elType), bound.reverseMode);
-	  else
-	    addAlongSide(el, bound.subObj, bound.ithObj, bound.elType, bound.reverseMode);
-	}
-	  /*	break;
-      case FACE:
-	addAlongSide(el, bound.subObj, bound.ithObj, bound.elType, bound.reverseMode);
-	break;
-      default:
-	ERROR_EXIT("What is this?\n");
+    if (!el->isLeaf())
+    {
+      if (s1 == -1)
+        addAlongSide(el->getSecondChild(), bound.subObj, s2,
+                     el->getChildType(bound.elType), bound.reverseMode);
+      else if (s2 == -1)
+        addAlongSide(el->getFirstChild(), bound.subObj, s1,
+                     el->getChildType(bound.elType), bound.reverseMode);
+      else
+        addAlongSide(el, bound.subObj, bound.ithObj, bound.elType, bound.reverseMode);
     }
-	  */
-    
-    commit();    
+    /*	break;
+    case FACE:
+    addAlongSide(el, bound.subObj, bound.ithObj, bound.elType, bound.reverseMode);
+    break;
+      default:
+    ERROR_EXIT("What is this?\n");
+    }
+      */
+
+    commit();
   }
 
 
-  void MeshStructure::addAlongSide(Element *el, GeoIndex subObj, int ithObj, 
-				   int elType, bool reverseOrder)
+  void MeshStructure::addAlongSide(Element* el, GeoIndex subObj, int ithObj,
+                                   int elType, bool reverseOrder)
   {
     FUNCNAME("MeshStructure::addAlongSide()");
 
-    if (debugMode) {
+    if (debugMode)
+    {
       MSG("addAlondSide(%d, %d, %d, %d)\n",
-	  el->getIndex(), ithObj, elType, reverseOrder);
+          el->getIndex(), ithObj, elType, reverseOrder);
       MSG("Element is leaf: %d\n", el->isLeaf());
     }
-    
+
     insertElement(el->isLeaf());
-    
-    if (!el->isLeaf()) {
+
+    if (!el->isLeaf())
+    {
       int s1 = el->getSubObjOfChild(0, subObj, ithObj, elType);
       int s2 = el->getSubObjOfChild(1, subObj, ithObj, elType);
 
-      if (debugMode) {
-	MSG("Child index %d  %d\n", 
-	    el->getFirstChild()->getIndex(),
-	    el->getSecondChild()->getIndex());
-	MSG("s1 = %d    s2 = %d\n", s1, s2);
-	MSG("   \n");
+      if (debugMode)
+      {
+        MSG("Child index %d  %d\n",
+            el->getFirstChild()->getIndex(),
+            el->getSecondChild()->getIndex());
+        MSG("s1 = %d    s2 = %d\n", s1, s2);
+        MSG("   \n");
       }
 
-      if (!reverseOrder) {
-	if (s1 != -1) 
-	  addAlongSide(el->getFirstChild(), subObj, s1, 
-		       el->getChildType(elType), reverseOrder);
-	if (s2 != -1)
-	  addAlongSide(el->getSecondChild(), subObj, s2, 
-		       el->getChildType(elType), reverseOrder);
-      } else {
-	if (s2 != -1)
-	  addAlongSide(el->getSecondChild(), subObj, s2, 
-		       el->getChildType(elType), reverseOrder);
-	if (s1 != -1) 
-	  addAlongSide(el->getFirstChild(), subObj, s1, 
-		       el->getChildType(elType), reverseOrder);
+      if (!reverseOrder)
+      {
+        if (s1 != -1)
+          addAlongSide(el->getFirstChild(), subObj, s1,
+                       el->getChildType(elType), reverseOrder);
+        if (s2 != -1)
+          addAlongSide(el->getSecondChild(), subObj, s2,
+                       el->getChildType(elType), reverseOrder);
+      }
+      else
+      {
+        if (s2 != -1)
+          addAlongSide(el->getSecondChild(), subObj, s2,
+                       el->getChildType(elType), reverseOrder);
+        if (s1 != -1)
+          addAlongSide(el->getFirstChild(), subObj, s1,
+                       el->getChildType(elType), reverseOrder);
       }
     }
   }
 
 
-  void MeshStructure::reset() 
+  void MeshStructure::reset()
   {
     currentIndex = 0;
     pos = 0;
@@ -171,12 +182,12 @@ namespace AMDiS
 
     if (code.size() > 0)
       currentCode = code[0];
-    else 
+    else
       currentCode = 0;
   }
 
 
-  bool MeshStructure::nextElement(MeshStructure *insert)
+  bool MeshStructure::nextElement(MeshStructure* insert)
   {
     FUNCNAME_DBG("MeshStructure::nextElement()");
 
@@ -186,16 +197,19 @@ namespace AMDiS
     pos++;
     currentElement++;
 
-    if (currentElement >= nElements) 
+    if (currentElement >= nElements)
       return false;
 
-    if (pos >= structureSize) {
+    if (pos >= structureSize)
+    {
       currentIndex++;
       TEST_EXIT_DBG(currentIndex < static_cast<int>(code.size()))
-	("End of structure reached!\n");
+      ("End of structure reached!\n");
       pos = 0;
       currentCode = code[currentIndex];
-    } else {
+    }
+    else
+    {
       currentCode >>= 1;
     }
 
@@ -212,10 +226,12 @@ namespace AMDiS
     int tmp_currentIndex = currentIndex;
     uint64_t tmp_currentCode = currentCode;
 
-    for (unsigned int i = 0; i < n; i++) {
-      if (nextElement() == false) {
-	returnValue = -1;      
-	break;
+    for (unsigned int i = 0; i < n; i++)
+    {
+      if (nextElement() == false)
+      {
+        returnValue = -1;
+        break;
       }
     }
 
@@ -231,13 +247,16 @@ namespace AMDiS
   }
 
 
-  bool MeshStructure::skipBranch(MeshStructure *insert)
+  bool MeshStructure::skipBranch(MeshStructure* insert)
   {
     FUNCNAME_DBG("MeshStructure::skipBranch()");
 
-    if (isLeafElement()) {
+    if (isLeafElement())
+    {
       return nextElement(insert);
-    } else {
+    }
+    else
+    {
       bool cont = nextElement(insert);
       cont = skipBranch(insert); // left branch
       TEST_EXIT_DBG(cont)("Invalid structure!\n");
@@ -247,9 +266,9 @@ namespace AMDiS
   }
 
 
-  void MeshStructure::merge(MeshStructure *structure1,
-			    MeshStructure *structure2,
-			    MeshStructure *result)
+  void MeshStructure::merge(MeshStructure* structure1,
+                            MeshStructure* structure2,
+                            MeshStructure* result)
   {
     FUNCNAME_DBG("MeshStructure::merge()");
 
@@ -258,28 +277,35 @@ namespace AMDiS
     structure2->reset();
 
     bool cont = true;
-    while (cont) {
+    while (cont)
+    {
       bool cont1;
 #if DEBUG != 0
       bool cont2;
 #endif
-      if (structure1->isLeafElement() == structure2->isLeafElement()) {
-	cont1 = structure1->nextElement(result);
+      if (structure1->isLeafElement() == structure2->isLeafElement())
+      {
+        cont1 = structure1->nextElement(result);
 #if DEBUG != 0
-	cont2 = structure2->nextElement();
+        cont2 = structure2->nextElement();
 #endif
-      } else {
-	if (structure1->isLeafElement()) {
-	  cont1 = structure1->nextElement();
+      }
+      else
+      {
+        if (structure1->isLeafElement())
+        {
+          cont1 = structure1->nextElement();
 #if DEBUG != 0
-	  cont2 = structure2->skipBranch(result);
+          cont2 = structure2->skipBranch(result);
 #endif
-	} else {
-	  cont1 = structure1->skipBranch(result);
+        }
+        else
+        {
+          cont1 = structure1->skipBranch(result);
 #if DEBUG != 0
-	  cont2 = structure2->nextElement();
+          cont2 = structure2->nextElement();
 #endif
-	}
+        }
       }
       TEST_EXIT_DBG(cont1 == cont2)("Structures don't match!\n");
       cont = cont1;
@@ -289,11 +315,11 @@ namespace AMDiS
   }
 
 
-  void MeshStructure::fitMeshToStructure(Mesh *mesh,
-					 RefinementManager *manager,
-					 bool debugMode,
-					 int macroElIndex,
-					 bool ignoreFinerMesh) 
+  void MeshStructure::fitMeshToStructure(Mesh* mesh,
+                                         RefinementManager* manager,
+                                         bool debugMode,
+                                         int macroElIndex,
+                                         bool ignoreFinerMesh)
   {
     FUNCNAME("MeshStructure::fitMeshToStructure()");
 
@@ -302,105 +328,124 @@ namespace AMDiS
     // decorate leaf data
     reset();
     TraverseStack stack;
-    ElInfo *elInfo = NULL;
+    ElInfo* elInfo = NULL;
     if (macroElIndex == -1)
       elInfo = stack.traverseFirst(mesh, -1, Mesh::CALL_EVERY_EL_PREORDER);
     else
       elInfo = stack.traverseFirstOneMacro(mesh, macroElIndex, -1, Mesh::CALL_EVERY_EL_PREORDER);
 
 
-    while (elInfo) {
-      Element *element = elInfo->getElement();
+    while (elInfo)
+    {
+      Element* element = elInfo->getElement();
 
       TEST_EXIT(cont)("unexpected structure code end!\n");
 
-      if (isLeafElement()) {
-	if (ignoreFinerMesh && !element->isLeaf()) {
-	  int level = elInfo->getLevel();
-	  while (elInfo && level >= elInfo->getLevel())
-	    elInfo = stack.traverseNext(elInfo);
-	} else {
-	  TEST_EXIT(element->isLeaf())
-	    ("Mesh is finer than strucutre code! (Element index: %d Macro element index: %d)\n", 
-	     element->getIndex(), elInfo->getMacroElement()->getIndex());
-	}
-      } 
+      if (isLeafElement())
+      {
+        if (ignoreFinerMesh && !element->isLeaf())
+        {
+          int level = elInfo->getLevel();
+          while (elInfo && level >= elInfo->getLevel())
+            elInfo = stack.traverseNext(elInfo);
+        }
+        else
+        {
+          TEST_EXIT(element->isLeaf())
+          ("Mesh is finer than strucutre code! (Element index: %d Macro element index: %d)\n",
+           element->getIndex(), elInfo->getMacroElement()->getIndex());
+        }
+      }
 
       TEST_EXIT_DBG(element)("Should not happen!\n");
 
-      if (element->isLeaf() && !isLeafElement()) {
-	MeshStructure *structure = new MeshStructure();
-	cont = skipBranch(structure);
-	structure->commit();
+      if (element->isLeaf() && !isLeafElement())
+      {
+        MeshStructure* structure = new MeshStructure();
+        cont = skipBranch(structure);
+        structure->commit();
 
-	MeshStructure_ED *elData = new MeshStructure_ED(element->getElementData());
-	elData->setStructure(structure);
-	element->setElementData(elData);
-      } else {
-	cont = nextElement();
+        MeshStructure_ED* elData = new MeshStructure_ED(element->getElementData());
+        elData->setStructure(structure);
+        element->setElementData(elData);
+      }
+      else
+      {
+        cont = nextElement();
       }
 
       if (elInfo)
-	elInfo = stack.traverseNext(elInfo);
+        elInfo = stack.traverseNext(elInfo);
     }
 
     // refine mesh
     bool finished = true;
 
-    do {
+    do
+    {
       finished = true;
       if (macroElIndex == -1)
-	elInfo = stack.traverseFirst(mesh, -1, Mesh::CALL_LEAF_EL);
+        elInfo = stack.traverseFirst(mesh, -1, Mesh::CALL_LEAF_EL);
       else
-	elInfo = stack.traverseFirstOneMacro(mesh, macroElIndex, -1, Mesh::CALL_LEAF_EL);      
-      while (elInfo) {
-	Element *element = elInfo->getElement();
-	if (element->getElementData(MESH_STRUCTURE) != NULL) {
-	  element->setMark(1);
-	  finished = false;
-	} else {
-	  element->setMark(0);
-	}
-	elInfo = stack.traverseNext(elInfo);
+        elInfo = stack.traverseFirstOneMacro(mesh, macroElIndex, -1, Mesh::CALL_LEAF_EL);
+      while (elInfo)
+      {
+        Element* element = elInfo->getElement();
+        if (element->getElementData(MESH_STRUCTURE) != NULL)
+        {
+          element->setMark(1);
+          finished = false;
+        }
+        else
+        {
+          element->setMark(0);
+        }
+        elInfo = stack.traverseNext(elInfo);
       }
 
-      if (!finished) {
+      if (!finished)
+      {
 #if (DEBUG != 0)
-	int oldMeshIndex = mesh->getChangeIndex();
+        int oldMeshIndex = mesh->getChangeIndex();
 #endif
 
-	if (macroElIndex == -1)
-	  manager->refineMesh(mesh);
-	else
-	  manager->refineMacroElement(mesh, macroElIndex);
+        if (macroElIndex == -1)
+          manager->refineMesh(mesh);
+        else
+          manager->refineMacroElement(mesh, macroElIndex);
 
 #if (DEBUG != 0)
-	TEST_EXIT(oldMeshIndex != mesh->getChangeIndex())
-	  ("Mesh has not been changed by refinement procedure!\n");
+        TEST_EXIT(oldMeshIndex != mesh->getChangeIndex())
+        ("Mesh has not been changed by refinement procedure!\n");
 #endif
       }
-    } while (!finished);
+    }
+    while (!finished);
   }
 
 
   string MeshStructure::toStr(bool resetCode)
   {
     std::stringstream oss;
-    
-    if (empty()) {
+
+    if (empty())
+    {
       oss << "-" << std::endl;
-    }	else {	
+    }
+    else
+    {
       if (resetCode)
-	reset();
+        reset();
 
       bool cont = true;
-      while (cont) {
-	if (isLeafElement())
-	  oss << "0";
-	else
-	  oss << "1";
-	
-	cont = nextElement();
+      while (cont)
+      {
+        if (isLeafElement())
+          oss << "0";
+        else
+          oss << "1";
+
+        cont = nextElement();
       }
     }
 
@@ -411,12 +456,15 @@ namespace AMDiS
   void MeshStructure::print(bool resetCode)
   {
     FUNCNAME("MeshStructure::print()");
-    
+
     string str = toStr(resetCode);
-   
-    if (str.length() < 255) {
+
+    if (str.length() < 255)
+    {
       MSG("Mesh structure code: %s\n", str.c_str());
-    } else {
+    }
+    else
+    {
 #ifdef HAVE_PARALLEL_DOMAIN_AMDIS
       std::cout << "[" << MPI::COMM_WORLD.Get_rank() << "]                Mesh structure code: " << str << "\n";
 #else
@@ -426,23 +474,23 @@ namespace AMDiS
   }
 
 
-  bool MeshStructure::compare(MeshStructure &other)
+  bool MeshStructure::compare(MeshStructure& other)
   {
     return (other.getCode() == code);
   }
 
 
   void MeshStructure::getMeshStructureValues(int macroElIndex,
-					     const DOFVector<double>* vec,
-					     std::vector<double>& values,
-					     bool withElIndex)
+      const DOFVector<double>* vec,
+      std::vector<double>& values,
+      bool withElIndex)
   {
     FUNCNAME_DBG("MeshStructure::getMeshStructureValues()");
 
     TEST_EXIT_DBG(vec)("No DOFVector defined!\n");
-  
-    const FiniteElemSpace *feSpace = vec->getFeSpace();
-    Mesh *mesh = feSpace->getMesh();
+
+    const FiniteElemSpace* feSpace = vec->getFeSpace();
+    Mesh* mesh = feSpace->getMesh();
     int nVertexPreDofs = feSpace->getAdmin()->getNumberOfPreDofs(VERTEX);
     bool feSpaceHasNonVertexDofs = (feSpace->getBasisFcts()->getDegree() > 1);
     values.clear();
@@ -453,32 +501,39 @@ namespace AMDiS
 
     ElementDofIterator elDofIter(feSpace);
     TraverseStack stack;
-    ElInfo *elInfo = stack.traverseFirstOneMacro(mesh, macroElIndex, -1, 
-						 Mesh::CALL_EVERY_EL_PREORDER);
-    while (elInfo) {
+    ElInfo* elInfo = stack.traverseFirstOneMacro(mesh, macroElIndex, -1,
+                     Mesh::CALL_EVERY_EL_PREORDER);
+    while (elInfo)
+    {
       // For the macro element the mesh structure code stores all vertex values.
       if (elInfo->getLevel() == 0)
-	for (int i = 0; i < mesh->getGeo(VERTEX); i++)
-	  values.push_back((*vec)[elInfo->getElement()->getDof(i, nVertexPreDofs)]);
+        for (int i = 0; i < mesh->getGeo(VERTEX); i++)
+          values.push_back((*vec)[elInfo->getElement()->getDof(i, nVertexPreDofs)]);
 
-      if (!elInfo->getElement()->isLeaf()) {
-	// If no leaf element store the value of the "new" DOF that is created
-	// by bisectioning of this element.
+      if (!elInfo->getElement()->isLeaf())
+      {
+        // If no leaf element store the value of the "new" DOF that is created
+        // by bisectioning of this element.
 
-	DegreeOfFreedom dof0 = 
-	  elInfo->getElement()->getChild(0)->getDof(mesh->getDim(), nVertexPreDofs);
-	values.push_back((*vec)[dof0]);
-      } else {
-	// If leaf element store all non vertex values of this element, thus
-	// only relevant for higher order basis functions.
+        DegreeOfFreedom dof0 =
+          elInfo->getElement()->getChild(0)->getDof(mesh->getDim(), nVertexPreDofs);
+        values.push_back((*vec)[dof0]);
+      }
+      else
+      {
+        // If leaf element store all non vertex values of this element, thus
+        // only relevant for higher order basis functions.
 
-	if (feSpaceHasNonVertexDofs) {
-	  elDofIter.reset(elInfo->getElement());
-	  do {
-	    if (elDofIter.getPosIndex() != VERTEX) 
-	      values.push_back((*vec)[elDofIter.getDof()]);
-	  } while (elDofIter.next());
-	}
+        if (feSpaceHasNonVertexDofs)
+        {
+          elDofIter.reset(elInfo->getElement());
+          do
+          {
+            if (elDofIter.getPosIndex() != VERTEX)
+              values.push_back((*vec)[elDofIter.getDof()]);
+          }
+          while (elDofIter.next());
+        }
       }
 
       elInfo = stack.traverseNext(elInfo);
@@ -487,66 +542,74 @@ namespace AMDiS
 
 
   void MeshStructure::setMeshStructureValues(int macroElIndex,
-					     DOFVector<double>* vec,
-					     const std::vector<double>& values,
-					     bool withElIndex)
+      DOFVector<double>* vec,
+      const std::vector<double>& values,
+      bool withElIndex)
   {
     FUNCNAME_DBG("MeshStructure::setMeshStructureValues()");
 
     TEST_EXIT_DBG(vec)("No DOFVector defined!\n");
 
-    const FiniteElemSpace *feSpace = vec->getFeSpace();
-    Mesh *mesh = feSpace->getMesh();
+    const FiniteElemSpace* feSpace = vec->getFeSpace();
+    Mesh* mesh = feSpace->getMesh();
     bool feSpaceHasNonVertexDofs = (feSpace->getBasisFcts()->getDegree() > 1);
     int nVertexPreDofs = feSpace->getAdmin()->getNumberOfPreDofs(VERTEX);
     unsigned int counter = 0;
 
-    if (withElIndex) {
+    if (withElIndex)
+    {
       TEST_EXIT(static_cast<int>(values[0]) == macroElIndex)
-	("Value structure code was created for macro element index %d, but should be set to macro element index %d\n",
-	static_cast<int>(values[0]), macroElIndex);
+      ("Value structure code was created for macro element index %d, but should be set to macro element index %d\n",
+       static_cast<int>(values[0]), macroElIndex);
       counter++;
     }
 
     TEST_EXIT_DBG(static_cast<int>(values.size()) >= mesh->getGeo(VERTEX))
-      ("Should not happen!\n");
+    ("Should not happen!\n");
 
     ElementDofIterator elDofIter(feSpace);
     TraverseStack stack;
-    ElInfo *elInfo = stack.traverseFirstOneMacro(mesh, macroElIndex, -1, 
-						 Mesh::CALL_EVERY_EL_PREORDER);
-    while (elInfo) {
+    ElInfo* elInfo = stack.traverseFirstOneMacro(mesh, macroElIndex, -1,
+                     Mesh::CALL_EVERY_EL_PREORDER);
+    while (elInfo)
+    {
       // For the macro element all vertex nodes are set first.
       if (elInfo->getLevel() == 0)
-	for (int i = 0; i < mesh->getGeo(VERTEX); i++)
-	  (*vec)[elInfo->getElement()->getDof(i, nVertexPreDofs)] = 
-	    values[counter++];
+        for (int i = 0; i < mesh->getGeo(VERTEX); i++)
+          (*vec)[elInfo->getElement()->getDof(i, nVertexPreDofs)] =
+            values[counter++];
 
-      if (!elInfo->getElement()->isLeaf()) {
-	// If no leaf element set the value of the "new" DOF that is created
-	// by bisectioning of this element.
-	TEST_EXIT_DBG(counter < values.size())("Should not happen!\n");
-	
-	(*vec)[elInfo->getElement()->getChild(0)->getDof(mesh->getDim(), nVertexPreDofs)] =
-	  values[counter++];      
-      } else {
-	// On leaf elements set all non vertex values (thus DOFs of higher order
-	// basis functions).
+      if (!elInfo->getElement()->isLeaf())
+      {
+        // If no leaf element set the value of the "new" DOF that is created
+        // by bisectioning of this element.
+        TEST_EXIT_DBG(counter < values.size())("Should not happen!\n");
 
-	if (feSpaceHasNonVertexDofs) {
-	  elDofIter.reset(elInfo->getElement());
-	  do {
-	    if (elDofIter.getPosIndex() != VERTEX) 
-	      (*vec)[elDofIter.getDof()] = values[counter++];
-	  } while (elDofIter.next());
-	}
+        (*vec)[elInfo->getElement()->getChild(0)->getDof(mesh->getDim(), nVertexPreDofs)] =
+          values[counter++];
+      }
+      else
+      {
+        // On leaf elements set all non vertex values (thus DOFs of higher order
+        // basis functions).
+
+        if (feSpaceHasNonVertexDofs)
+        {
+          elDofIter.reset(elInfo->getElement());
+          do
+          {
+            if (elDofIter.getPosIndex() != VERTEX)
+              (*vec)[elDofIter.getDof()] = values[counter++];
+          }
+          while (elDofIter.next());
+        }
       }
 
       elInfo = stack.traverseNext(elInfo);
     }
-      
+
     TEST_EXIT_DBG(values.size() == counter)
-      ("Should not happen! values size %d, counter %d\n", values.size(), counter);
+    ("Should not happen! values size %d, counter %d\n", values.size(), counter);
   }
 
 } // end namespace AMDiS

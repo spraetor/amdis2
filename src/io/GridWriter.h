@@ -5,7 +5,7 @@
  * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
  * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
  *
- * Authors: 
+ * Authors:
  * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
  *
  * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
@@ -15,7 +15,7 @@
  * This file is part of AMDiS
  *
  * See also license.opensource.txt in the distribution.
- * 
+ *
  ******************************************************************************/
 
 
@@ -28,17 +28,21 @@
 #include "Global.h"
 #include "AMDiS_fwd.h"
 
-namespace AMDiS { namespace io {
+namespace AMDiS
+{
+  namespace io
+  {
 
     /** \ingroup Output
     *  \brief
     * Produces a grid-based output of a dof-vector
     */
-    namespace GridWriter {
-      
+    namespace GridWriter
+    {
+
       /** \brief
-      * Produces a grid-based output of a dof-vector or vector of dof-vectors 
-      * \param p array of world coordinates. 
+      * Produces a grid-based output of a dof-vector or vector of dof-vectors
+      * \param p array of world coordinates.
       * - p[0] defines origin of grid-system.
       * - p[1] defines first basis vector by p[1] relatively to p[0].
       * - p[2] defines second basis vector by p[2] relatively to p[0]. (dim >= 2).
@@ -55,23 +59,24 @@ namespace AMDiS { namespace io {
       * \param filename file to which the grid will be written
       * \param outFilePrecision precision used to write file
       */
-    template<typename T>
-    void writeGrid(const WorldVector<double> *p,
-		  int               *numPoints, 
-		  double            *dist,
-		  DOFVector<T>      *vec,
-		  const char*              filename,
-		  int outFilePrecision=6); 
+      template<typename T>
+      void writeGrid(const WorldVector<double>* p,
+                     int*               numPoints,
+                     double*            dist,
+                     DOFVector<T>*      vec,
+                     const char*              filename,
+                     int outFilePrecision=6);
 
-    template<typename T>
-    void writeGrid(const WorldVector<double> *p,
-		  int               *numPoints, 
-		  double            *dist,
-		  std::vector< DOFVector<T> * >     vec,
-		  const char*              filename,
-		  int outFilePrecision=6); 
+      template<typename T>
+      void writeGrid(const WorldVector<double>* p,
+                     int*               numPoints,
+                     double*            dist,
+                     std::vector<DOFVector<T> *>     vec,
+                     const char*              filename,
+                     int outFilePrecision=6);
+    }
   }
-} } // end namespace io, AMDiS
+} // end namespace io, AMDiS
 
 #include "GridWriter.hh"
 

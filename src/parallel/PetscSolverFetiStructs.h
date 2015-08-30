@@ -5,7 +5,7 @@
  * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
  * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
  *
- * Authors: 
+ * Authors:
  * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
  *
  * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
@@ -15,7 +15,7 @@
  * This file is part of AMDiS
  *
  * See also license.opensource.txt in the distribution.
- * 
+ *
  ******************************************************************************/
 
 
@@ -28,7 +28,7 @@
 #include <map>
 #include "parallel/PetscSolver.h"
 
-namespace AMDiS 
+namespace AMDiS
 {
   namespace Parallel
   {
@@ -36,7 +36,8 @@ namespace AMDiS
     class PetscSolverFeti;
 
 
-    enum FetiSolverType {
+    enum FetiSolverType
+    {
       // Standard exakt FETI-DP system
       EXACT,
       // Inexact FETI-DP
@@ -46,10 +47,11 @@ namespace AMDiS
     };
 
     /** \brief
-    * This structure is used when defining the MatShell operation for solving 
+    * This structure is used when defining the MatShell operation for solving
     * primal schur complement. \ref petscMultMatSchurPrimal
     */
-    struct SchurPrimalData {
+    struct SchurPrimalData
+    {
       /// Temporal vector on the B variables.
       Vec tmp_vec_b;
 
@@ -63,7 +65,8 @@ namespace AMDiS
     /** \brief
     *
     */
-    struct SchurPrimalAugmentedData {
+    struct SchurPrimalAugmentedData
+    {
       /// Temporal vectors on the B variables.
       Vec tmp_vec_b0, tmp_vec_b1;
 
@@ -71,9 +74,9 @@ namespace AMDiS
 
       Vec tmp_vec_lagrange;
 
-      Mat *mat_lagrange;
+      Mat* mat_lagrange;
 
-      Mat *mat_augmented_lagrange;
+      Mat* mat_augmented_lagrange;
 
       PetscSolver* subSolver;
 
@@ -82,16 +85,17 @@ namespace AMDiS
 
 
     /** \brief
-    * This structure is used when defining the FETI-DP operator for solving 
+    * This structure is used when defining the FETI-DP operator for solving
     * the system matrix reduced to the Lagrange multipliers.
     * \ref petscMultMatFeti
     */
-    struct FetiData {
+    struct FetiData
+    {
       /// Matrix of Lagrange variables.
-      Mat *mat_lagrange;
+      Mat* mat_lagrange;
 
       ///
-      Mat *mat_augmented_lagrange;
+      Mat* mat_augmented_lagrange;
 
       /// Temporal vectors on the B variables.
       Vec tmp_vec_b0, tmp_vec_b1;
@@ -107,20 +111,22 @@ namespace AMDiS
       PetscSolver* subSolver;
 
       /// Pointer to the solver of the schur complement on the primal variables.
-      KSP *ksp_schur_primal;
+      KSP* ksp_schur_primal;
     };
 
 
-    struct FetiInexactData {
-      Mat *matBB, *matBPi, *matPiB, *matPiPi;
+    struct FetiInexactData
+    {
+      Mat* matBB, *matBPi, *matPiB, *matPiPi;
 
-      Mat *mat_lagrange;
+      Mat* mat_lagrange;
 
       Vec tmp_vec_b0, tmp_vec_b1;
     };
 
 
-    struct FetiInexactPreconData {
+    struct FetiInexactPreconData
+    {
       KSP ksp_schur;
 
       KSP ksp_interior;
@@ -129,31 +135,32 @@ namespace AMDiS
 
       PC pc_feti;
 
-      Mat *matPiB, *matBPi;
+      Mat* matPiB, *matBPi;
 
-      Mat *mat_lagrange;
+      Mat* mat_lagrange;
 
       Vec tmp_vec_b0;
     };
 
 
-    struct FetiDirichletPreconData {
+    struct FetiDirichletPreconData
+    {
       /// Matrix of scaled Lagrange variables.
-      Mat *mat_lagrange_scaled;
+      Mat* mat_lagrange_scaled;
 
-      Mat *mat_interior_interior, *mat_duals_duals;
+      Mat* mat_interior_interior, *mat_duals_duals;
 
-      Mat *mat_interior_duals, *mat_duals_interior;
+      Mat* mat_interior_duals, *mat_duals_interior;
 
       /// Pointer to the solver for \ref PetscSolverFeti::mat_bb.
-      KSP *ksp_interior;
+      KSP* ksp_interior;
 
       /// Temporal vector on the B variables.
       Vec tmp_vec_b;
 
       /// Temporal vector on the dual variables.
       Vec tmp_vec_duals0, tmp_vec_duals1;
-      
+
       /// Temporal vector on the interior variables.
       Vec tmp_vec_interior;
 
@@ -161,11 +168,12 @@ namespace AMDiS
     };
 
 
-    struct FetiLumpedPreconData {
+    struct FetiLumpedPreconData
+    {
       /// Matrix of scaled Lagrange variables.
-      Mat *mat_lagrange_scaled;
+      Mat* mat_lagrange_scaled;
 
-      Mat *mat_duals_duals;
+      Mat* mat_duals_duals;
 
       /// Temporal vector on the B variables.
       Vec tmp_vec_b0;
@@ -177,7 +185,8 @@ namespace AMDiS
     };
 
 
-    struct FetiInterfaceLumpedPreconData : public FetiLumpedPreconData {
+    struct FetiInterfaceLumpedPreconData : public FetiLumpedPreconData
+    {
       /// Temporal vectors on the B variables.
       Vec tmp_vec_b1;
 
@@ -189,11 +198,13 @@ namespace AMDiS
     };
 
 
-    struct FetiKspData {
+    struct FetiKspData
+    {
       Vec draft;
     };
 
-    typedef enum {
+    typedef enum
+    {
       FETI_NONE = 0,
       FETI_DIRICHLET = 1,
       FETI_LUMPED = 2

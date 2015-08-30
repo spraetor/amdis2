@@ -8,7 +8,7 @@
 #include "FixVec.h"
 #include "FixVecConvert.h"
 
-namespace AMDiS 
+namespace AMDiS
 {
   MacroElement::MacroElement(int dim)
     : element(NULL),
@@ -18,7 +18,7 @@ namespace AMDiS
       neighbour(dim),
       neighbour_inv(dim),
       oppVertex(dim),
-      index(-1), 
+      index(-1),
       elType(0),
       deserializedNeighbourIndices(NULL)
   {
@@ -30,11 +30,11 @@ namespace AMDiS
   MacroElement::~MacroElement()
   {
     if (element)
-      delete element;    
+      delete element;
   }
 
 
-  MacroElement& MacroElement::operator=(const MacroElement &el)
+  MacroElement& MacroElement::operator=(const MacroElement& el)
   {
     if (this == &el)
       return *this;
@@ -44,8 +44,8 @@ namespace AMDiS
     projection = el.projection;
     oppVertex = el.oppVertex;
     index = el.index;
-    elType = el.elType;  
-    
+    elType = el.elType;
+
     return *this;
   }
 

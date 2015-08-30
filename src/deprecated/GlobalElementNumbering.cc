@@ -5,25 +5,29 @@
 #include "ElInfo.h"
 #include "Element.h"
 
-namespace AMDiS 
+namespace AMDiS
 {
-  GlobalElementNumbering::GlobalElementNumbering(MeshStructure *compositeStructure,
-						 Mesh *localMesh)
+  GlobalElementNumbering::GlobalElementNumbering(MeshStructure* compositeStructure,
+      Mesh* localMesh)
   {
     int localIndex, globalIndex;
     compositeStructure->reset();
     TraverseStack stack;
-    ElInfo *elInfo = stack.traverseFirst(localMesh, -1, Mesh::CALL_EVERY_EL_PREORDER);
-    while(elInfo) {
-      Element *element = elInfo->getElement();
+    ElInfo* elInfo = stack.traverseFirst(localMesh, -1, Mesh::CALL_EVERY_EL_PREORDER);
+    while(elInfo)
+    {
+      Element* element = elInfo->getElement();
       localIndex = element->getIndex();
       globalIndex = compositeStructure->getCurrentElement();
       localToGlobal_[localIndex] = globalIndex + 1;
       globalToLocal_[globalIndex] = localIndex + 1;
-      if(element->isLeaf()) {
-	compositeStructure->skipBranch();
-      } else {
-	compositeStructure->nextElement();
+      if(element->isLeaf())
+      {
+        compositeStructure->skipBranch();
+      }
+      else
+      {
+        compositeStructure->nextElement();
       }
       elInfo = stack.traverseNext(elInfo);
     }
@@ -38,5 +42,5 @@ namespace AMDiS
   {
     return (localToGlobal_[localIndex] - 1);
   }
-  
+
 } // end namespace AMDiS

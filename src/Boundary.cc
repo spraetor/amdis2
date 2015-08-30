@@ -1,14 +1,17 @@
 #include "Boundary.h"
 
-namespace AMDiS 
+namespace AMDiS
 {
   BoundaryType newBound(BoundaryType oldBound, BoundaryType newBound)
   {
-    if (newBound <= INTERIOR) {
+    if (newBound <= INTERIOR)
+    {
       // Face on NEUMANN-boundary or interior face; weak type.
 
       return oldBound;
-    } else {
+    }
+    else
+    {
       // Node is already node on the DIRICHLET boundary.
 
       if (oldBound > newBound)

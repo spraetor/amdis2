@@ -4,8 +4,9 @@
 
 #include <chrono>
 
-namespace AMDiS {
-  
+namespace AMDiS
+{
+
   /// Helper class to distinguish between different time measurement methods
   class Timer
   {
@@ -18,7 +19,7 @@ namespace AMDiS {
 
     /// returns the elapsed time (from construction or last reset) to now in seconds
     double elapsed() const;
-    
+
   private:
     /// begin value for sequentiell measurement
     std::chrono::time_point<std::chrono::system_clock> first_seq;
@@ -28,5 +29,5 @@ namespace AMDiS {
     double first_mpi;
 #endif
   };
-  
+
 }  // end namespace AMDiS

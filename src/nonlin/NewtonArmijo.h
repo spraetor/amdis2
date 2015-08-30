@@ -5,7 +5,7 @@
  * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
  * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
  *
- * Authors: 
+ * Authors:
  * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
  *
  * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
@@ -15,7 +15,7 @@
  * This file is part of AMDiS
  *
  * See also license.opensource.txt in the distribution.
- * 
+ *
  ******************************************************************************/
 
 
@@ -31,11 +31,12 @@
 #include "solver/LinearSolverInterface.h"
 #include "io/VtkWriter.h"
 
-namespace AMDiS {
+namespace AMDiS
+{
 
   /**
    * \ingroup Solver
-   * 
+   *
    * \Brief
    * Implements the newton method with Armijo-rule for stepsize control
    * for solving a non linear system. Sub class of NonLinSolver.
@@ -50,24 +51,24 @@ namespace AMDiS {
       virtual ~Creator() {}
 
       /// Returns a new Newton object.
-      NonLinSolver* create() 
-      { 
-	return new NewtonArmijo(this->name, this->linearSolver); 
+      NonLinSolver* create()
+      {
+        return new NewtonArmijo(this->name, this->linearSolver);
       }
     };
 
     /// Calls constructor of base class NonLinSolver
-    NewtonArmijo(const std::string& name, LinearSolverInterface *linSolver)
+    NewtonArmijo(const std::string& name, LinearSolverInterface* linSolver)
       : NonLinSolver(name, linSolver),
-	b(NULL),
+        b(NULL),
         buildCycle(1),
         delta(1.e-2),   // Abstiegsregulator, z.B. 1.e-2, 1.e-4
         alpha(0.5),     // Daempfungsfaktor, z.B. 0.5
         nLineSearch(5)  // maximale Anzahl line-seach Schritte
     {
 
-      Parameters::get(name + "->build cycle", buildCycle);  
-      Parameters::get(name + "->armijo->delta", delta);    
+      Parameters::get(name + "->build cycle", buildCycle);
+      Parameters::get(name + "->armijo->delta", delta);
       Parameters::get(name + "->armijo->alpha", alpha);
     }
 
@@ -76,15 +77,15 @@ namespace AMDiS {
     void init() {}
 
     /// realisation of NonLinSolver::nlsolve
-    int nlsolve(SolverMatrix<Matrix<DOFMatrix*> >& mat,
-		SystemVector& x, SystemVector& rhs, 
-		AdaptInfo *adaptInfo,
-		ProblemStat *prob)
+    int nlsolve(SolverMatrix<Matrix<DOFMatrix*>>& mat,
+                SystemVector& x, SystemVector& rhs,
+                AdaptInfo* adaptInfo,
+                ProblemStat* prob)
     {
       FUNCNAME("Newton::nlsolve()");
 
       if (b == NULL)
-	b = new SystemVector(x);
+        b = new SystemVector(x);
 
       double err = 0.0, errOld = -1.0, lambda = 1.0;
       int iter, n;
@@ -92,29 +93,31 @@ namespace AMDiS {
 
       MSG("iter. |     this->residual |     red. |    n |  lambda |\n");
 
-      for (iter = 1; iter <= this->maxIter; iter++) {
-	// Assemble DF(x) and F(x)
+      for (iter = 1; iter <= this->maxIter; iter++)
+      {
+        // Assemble DF(x) and F(x)
         if (iter == 1 || (buildCycle > 0 && (iter-1) % buildCycle == 0))
           prob->buildAfterCoarsen(adaptInfo, 0, true, true);
         else
-          prob->buildAfterCoarsen(adaptInfo, 0, false, true);        
+          prob->buildAfterCoarsen(adaptInfo, 0, false, true);
 
-	// Initial guess is zero
-	b->set(0.0);
+        // Initial guess is zero
+        b->set(0.0);
 
-	// Solve linear system
-	n = solveLinearSystem(mat, *b, rhs);
+        // Solve linear system
+        n = solveLinearSystem(mat, *b, rhs);
 
         lambda = std::min(1.0, lambda/alpha);
 
-	// x = x + d
-	x_test = x + lambda * (*b);
+        // x = x + d
+        x_test = x + lambda * (*b);
 
-        for (int k = 0; k < nLineSearch; ++k) {
-	  if (this->usedNorm == NO_NORM || this->usedNorm == L2_NORM)
-	    err = L2Norm(b);
-	  else
-	    err = H1Norm(b);
+        for (int k = 0; k < nLineSearch; ++k)
+        {
+          if (this->usedNorm == NO_NORM || this->usedNorm == L2_NORM)
+            err = L2Norm(b);
+          else
+            err = H1Norm(b);
           // armijo rule
           if (err <= (1.0  - 2.0 * delta * lambda) * errOld)
             break;
@@ -124,20 +127,21 @@ namespace AMDiS {
         }
         x = x_test;
 
-	if (iter == 1)  
-	  this->initialResidual = err;
+        if (iter == 1)
+          this->initialResidual = err;
 
-	if (errOld <= 0)
-	  MSG("%5d | %12.5e | -------- | %4d | %5.2 |\n", iter, err, n, lambda);
-	else
-	  MSG("%5d | %12.5e | %8.2e | %4d | %5.2 |\n", iter, err, err/errOld, n,lambda);	
+        if (errOld <= 0)
+          MSG("%5d | %12.5e | -------- | %4d | %5.2 |\n", iter, err, n, lambda);
+        else
+          MSG("%5d | %12.5e | %8.2e | %4d | %5.2 |\n", iter, err, err/errOld, n,lambda);
 
-	residual = err;
- 	if (err < this->tolerance) {
- 	  MSG("Finished successfully!\n");
- 	  return iter;
- 	}
-	errOld = err;
+        residual = err;
+        if (err < this->tolerance)
+        {
+          MSG("Finished successfully!\n");
+          return iter;
+        }
+        errOld = err;
       }
 
       MSG("iter. %d, residual: %12.5e\n", iter, err);
@@ -151,19 +155,20 @@ namespace AMDiS {
     /// Realisation of NonLinSolver::exit
     void exit()
     {
-      if (b != NULL) {
-	delete b;
-	b = NULL;
+      if (b != NULL)
+      {
+        delete b;
+        b = NULL;
       }
     }
 
   private:
     /// Internal used data
-    SystemVector *b;
+    SystemVector* b;
 
-    /// build matrix every ith iteration, 
-    /// 0...build matrix only once, 
-    /// i>=1...rebuild matrix in ith solver iteration, 
+    /// build matrix every ith iteration,
+    /// 0...build matrix only once,
+    /// i>=1...rebuild matrix in ith solver iteration,
     /// standard = 1
     int buildCycle;
 

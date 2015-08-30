@@ -1,6 +1,6 @@
 #include "AdaptBase.h"
 
-namespace AMDiS 
+namespace AMDiS
 {
   int AdaptBase::info = 10;
 

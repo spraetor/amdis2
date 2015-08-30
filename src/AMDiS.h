@@ -28,6 +28,7 @@
 #include "DOFIterator.h"
 #include "DOFMatrix.h"
 #include "DOFVector.h"
+#include "DOFVectorOperations.h"
 #include "DirichletBC.h"
 #include "DualTraverse.h"
 #include "ElInfo.h"
@@ -137,12 +138,12 @@
 #include <petsc.h>
 #endif
 
-namespace AMDiS 
+namespace AMDiS
 {
-  void init(int argc, char **argv, std::string initFileName = "");
+  void init(int argc, char** argv, std::string initFileName = "");
 
   void init(std::string initFileName);
 
   void finalize();
-  
+
 } // end namespace AMDiS

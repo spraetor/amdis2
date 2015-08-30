@@ -5,7 +5,7 @@
  * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
  * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
  *
- * Authors: 
+ * Authors:
  * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
  *
  * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
@@ -15,7 +15,7 @@
  * This file is part of AMDiS
  *
  * See also license.opensource.txt in the distribution.
- * 
+ *
  ******************************************************************************/
 
 
@@ -27,33 +27,34 @@
 #include "FixVec.h"
 #include "VelocityExt.h"
 
-namespace reinit {
-
-using namespace AMDiS;
-
-class ElementUpdate
+namespace reinit
 {
-public:
-  ElementUpdate(VelocityExt *velExt_)
-    : velExt(velExt_)
-  {}
 
-  virtual ~ElementUpdate() {}
+  using namespace AMDiS;
 
-  /**
-   * Pure virtual function.
-   * Calculate Bornemann update on an element. Realization is implemented for
-   * dimensions 2 and 3.
-   */
-  virtual double calcElementUpdate(const FixVec<WorldVector<double> *, VERTEX> &vert,
-				   FixVec<double, VERTEX> &uhVal) = 0;
+  class ElementUpdate
+  {
+  public:
+    ElementUpdate(VelocityExt* velExt_)
+      : velExt(velExt_)
+    {}
 
- protected:
-  /**
-   * Object needed to extrapolate velocity from the interface.
-   */  
-  VelocityExt *velExt;
-};
+    virtual ~ElementUpdate() {}
+
+    /**
+     * Pure virtual function.
+     * Calculate Bornemann update on an element. Realization is implemented for
+     * dimensions 2 and 3.
+     */
+    virtual double calcElementUpdate(const FixVec<WorldVector<double> *, VERTEX>& vert,
+                                     FixVec<double, VERTEX>& uhVal) = 0;
+
+  protected:
+    /**
+     * Object needed to extrapolate velocity from the interface.
+     */
+    VelocityExt* velExt;
+  };
 
 }
 

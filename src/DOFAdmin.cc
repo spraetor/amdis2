@@ -10,30 +10,30 @@
 #include "DOFVector.h"
 #include "DOFIterator.h"
 
-namespace AMDiS 
+namespace AMDiS
 {
   const int DOFAdmin::sizeIncrement = 10;
 
-  DOFAdmin::DOFAdmin(Mesh* m) 
-    : mesh(m), 
+  DOFAdmin::DOFAdmin(Mesh* m)
+    : mesh(m),
       nDof(mesh->getDim()),
       nPreDof(mesh->getDim())
-  { 
-    init(); 
+  {
+    init();
   }
 
 
-  DOFAdmin::DOFAdmin(Mesh* m, std::string aName) 
-    : name(aName), 
-      mesh(m), 
+  DOFAdmin::DOFAdmin(Mesh* m, std::string aName)
+    : name(aName),
+      mesh(m),
       nDof(mesh->getDim()),
       nPreDof(mesh->getDim())
-  { 
-    init(); 
+  {
+    init();
   }
 
 
-  DOFAdmin::~DOFAdmin() 
+  DOFAdmin::~DOFAdmin()
   {}
 
 
@@ -48,9 +48,10 @@ namespace AMDiS
   }
 
 
-  DOFAdmin& DOFAdmin::operator=(const DOFAdmin& src) 
+  DOFAdmin& DOFAdmin::operator=(const DOFAdmin& src)
   {
-    if (this != &src) { 
+    if (this != &src)
+    {
       mesh = src.mesh;
       name = src.name;
       dofFree = src.dofFree;
@@ -59,9 +60,10 @@ namespace AMDiS
       usedCount = src.usedCount;
       holeCount = src.holeCount;
       sizeUsed = src.sizeUsed;
-      for (int i = 0; i <= mesh->getDim(); i++) {
-      	nDof[i] = src.nDof[i];
-      	nPreDof[i] = src.nPreDof[i];
+      for (int i = 0; i <= mesh->getDim(); i++)
+      {
+        nDof[i] = src.nDof[i];
+        nPreDof[i] = src.nPreDof[i];
       }
       dofIndexedList = src.dofIndexedList;
       dofContainerList = src.dofContainerList;
@@ -73,9 +75,9 @@ namespace AMDiS
 
   bool DOFAdmin::operator==(const DOFAdmin& ad) const
   {
-    if (name != ad.name) 
+    if (name != ad.name)
       return false;
-    if (mesh != ad.mesh) 
+    if (mesh != ad.mesh)
       return false;
 
     return true;
@@ -90,8 +92,8 @@ namespace AMDiS
   }
 
 
-  void DOFAdmin::freeDofIndex(DegreeOfFreedom dof) 
-  {    
+  void DOFAdmin::freeDofIndex(MeshAccessor const&, DegreeOfFreedom dof)
+  {
     FUNCNAME_DBG("DOFAdmin::freeDofIndex()");
 
     TEST_EXIT_DBG(usedCount > 0)("No DOFs in use!\n");
@@ -110,8 +112,8 @@ namespace AMDiS
       (*dc)->freeDofIndex(dof);
 
     dofFree[dof] = true;
-    
-    if (firstHole > dof) 
+
+    if (firstHole > dof)
       firstHole = dof;
 
     usedCount--;
@@ -119,13 +121,14 @@ namespace AMDiS
   }
 
 
-  DegreeOfFreedom DOFAdmin::getDOFIndex()
+  DegreeOfFreedom DOFAdmin::getDOFIndex(MeshAccessor const&)
   {
     FUNCNAME_DBG("DOFAdmin::getDOFIndex()");
     DegreeOfFreedom dof = 0;
 
     // if there is a hole
-    if (firstHole < static_cast<DofIndex::size_type>(dofFree.size())) {      
+    if (firstHole < static_cast<DofIndex::size_type>(dofFree.size()))
+    {
       TEST_EXIT_DBG(dofFree[firstHole])("no hole at firstHole!\n");
       // its no longer a hole
       dofFree[firstHole] = false;
@@ -134,16 +137,18 @@ namespace AMDiS
       DofIndex::size_type dfsize = static_cast<DofIndex::size_type>(dofFree.size());
       DofIndex::size_type i = firstHole + 1;
       for (; i < dfsize; i++)
-	if (dofFree[i])
-	  break;
+        if (dofFree[i])
+          break;
 
       firstHole = i;
-    } else {                    // if there is no hole
+    }
+    else                        // if there is no hole
+    {
       // enlarge dof-list
       enlargeDofLists();
 
       TEST_EXIT_DBG(firstHole < static_cast<DofIndex::size_type>(dofFree.size()))
-	("no free entry after enlargeDofLists\n");
+      ("no free entry after enlargeDofLists\n");
       TEST_EXIT_DBG(dofFree[firstHole])("no free bit at firstHole\n");
       dofFree[firstHole] = false;
       dof = firstHole;
@@ -151,7 +156,7 @@ namespace AMDiS
     }
 
     usedCount++;
-    if (holeCount > 0) 
+    if (holeCount > 0)
       holeCount--;
     sizeUsed = std::max(sizeUsed, dof + 1);
 
@@ -160,33 +165,33 @@ namespace AMDiS
 
 
   void DOFAdmin::enlargeDofLists(int minsize)
-  {  
+  {
     DofIndex::size_type old = size;
     if (minsize > 0)
-      if (old > minsize) 
-	return;
-  
-    DofIndex::size_type newval = std::max(static_cast<DofIndex::size_type>(minsize), 
-					  static_cast<DofIndex::size_type>((dofFree.size() + sizeIncrement)));
+      if (old > minsize)
+        return;
+
+    DofIndex::size_type newval = std::max(static_cast<DofIndex::size_type>(minsize),
+                                          static_cast<DofIndex::size_type>((dofFree.size() + sizeIncrement)));
 
     size = newval;
-  
+
     // stl resizes dofFree to at least newval and sets all new values true
     dofFree.resize(newval, true);
 
     firstHole = old;
-  
+
     // enlarge all vectors and matrices
     // but DOFVectors<int> don't have to be changed
-  
+
     std::list<DOFIndexedBase*>::iterator di;
     for (di = dofIndexedList.begin(); di != dofIndexedList.end(); ++di)
       if ((*di)->getSize() < newval)
- 	(*di)->resize(newval);
+        (*di)->resize(newval);
   }
 
 
-  void DOFAdmin::addDOFIndexed(DOFIndexedBase* dofIndexed) 
+  void DOFAdmin::addDOFIndexed(DOFIndexedBase* dofIndexed)
   {
     FUNCNAME("DOFAdmin::addDOFIndexed()");
 
@@ -194,8 +199,8 @@ namespace AMDiS
 
     if (dofIndexed->getSize() < size)
       dofIndexed->resize(size);
-    
-    dofIndexedList.push_back(dofIndexed);    
+
+    dofIndexedList.push_back(dofIndexed);
   }
 
 
@@ -206,11 +211,13 @@ namespace AMDiS
     bool removed = false;
     std::list<DOFIndexedBase*>::iterator it;
     std::list<DOFIndexedBase*>::iterator end = dofIndexedList.end();
-    for (it = dofIndexedList.begin(); it != end; ++it) {
-      if (*it == dofIndexed) {
-	dofIndexedList.erase(it);
-	removed = true;
-	break;	
+    for (it = dofIndexedList.begin(); it != end; ++it)
+    {
+      if (*it == dofIndexed)
+      {
+        dofIndexedList.erase(it);
+        removed = true;
+        break;
       }
     }
 
@@ -224,7 +231,7 @@ namespace AMDiS
 
     TEST_EXIT_DBG(cont)("no container\n");
 
-    dofContainerList.push_back(cont);  
+    dofContainerList.push_back(cont);
   }
 
 
@@ -234,10 +241,12 @@ namespace AMDiS
 
     std::list<DOFContainer*>::iterator it;
     std::list<DOFContainer*>::iterator end = dofContainerList.end();
-    for (it = dofContainerList.begin(); it != end; ++it) {
-      if (*it == cont) {
-	dofContainerList.erase(it);
-	return;
+    for (it = dofContainerList.begin(); it != end; ++it)
+    {
+      if (*it == cont)
+      {
+        dofContainerList.erase(it);
+        return;
       }
     }
 
@@ -245,12 +254,12 @@ namespace AMDiS
   }
 
 
-  void DOFAdmin::compress(std::vector<DegreeOfFreedom> &newDofIndex)
+  void DOFAdmin::compress(std::vector<DegreeOfFreedom>& newDofIndex)
   {
     FUNCNAME_DBG("DOFAdmin::compress()");
 
     // nothing to do ?
-    if (size < 1 || usedCount < 1 || holeCount < 1) 
+    if (size < 1 || usedCount < 1 || holeCount < 1)
       return;
 
     // vector to mark used dofs
@@ -260,19 +269,21 @@ namespace AMDiS
     // mark used dofs
     DOFIteratorBase it(this, USED_DOFS);
     for (it.reset(); !it.end(); ++it)
-      newDofIndex[it.getDOFIndex()] = 1;   
-    
+      newDofIndex[it.getDOFIndex()] = 1;
+
     // create a MONOTONE compress
     int n = 0, last = 0;
-    for (int i = 0; i < size; i++) {
-      if (newDofIndex[i] == 1) {
-	newDofIndex[i] = n++;
-	last = i;
+    for (int i = 0; i < size; i++)
+    {
+      if (newDofIndex[i] == 1)
+      {
+        newDofIndex[i] = n++;
+        last = i;
       }
     }
-  
+
     TEST_EXIT_DBG(n == usedCount)("count %d != usedCount %d\n", n, usedCount);
-  
+
     // mark used dofs in compressed dofFree
     for (int i = 0; i < n; i++)
       dofFree[i] = false;
@@ -281,46 +292,48 @@ namespace AMDiS
     for (int i = n; i < size; i++)
       dofFree[i] = true;
 
-    firstHole = n;  
+    firstHole = n;
     holeCount = 0;
     sizeUsed  = n;
-  
+
     // get index of first changed dof
     int first = last;
-    for (int i = 0; i < size; i++) {
-      if (newDofIndex[i] < i && newDofIndex[i] >= 0) {
-	first = i;
-	break;
+    for (int i = 0; i < size; i++)
+    {
+      if (newDofIndex[i] < i && newDofIndex[i] >= 0)
+      {
+        first = i;
+        break;
       }
     }
-    
-    for (std::list<DOFIndexedBase*>::iterator di = dofIndexedList.begin(); 
-	 di != dofIndexedList.end(); ++di)
+
+    for (std::list<DOFIndexedBase*>::iterator di = dofIndexedList.begin();
+         di != dofIndexedList.end(); ++di)
       (*di)->compressDOFIndexed(first, last, newDofIndex);
 
-    for (std::list<DOFContainer*>::iterator dc = dofContainerList.begin(); 
-	 dc != dofContainerList.end(); ++dc)
+    for (std::list<DOFContainer*>::iterator dc = dofContainerList.begin();
+         dc != dofContainerList.end(); ++dc)
       (*dc)->compressDofContainer(n, newDofIndex);
   }
 
 
-  void DOFAdmin::setNumberOfDofs(int i, int v) 
-  { 
+  void DOFAdmin::setNumberOfDofs(int i, int v)
+  {
     FUNCNAME_DBG("DOFAdmin::setNumberOfDOFs()");
 
     TEST_EXIT_DBG(0 <= i && 4 > i)("Should not happen!\n");
 
-    nDof[i] = v; 
+    nDof[i] = v;
   }
 
 
-  void DOFAdmin::setNumberOfPreDofs(int i, int v) 
-  { 
+  void DOFAdmin::setNumberOfPreDofs(int i, int v)
+  {
     FUNCNAME_DBG("DOFAdmin::setNumberOfPreDOFs()");
 
-    TEST_EXIT_DBG(0 <= i && 4 > i)("Should not happen!\n"); 
+    TEST_EXIT_DBG(0 <= i && 4 > i)("Should not happen!\n");
 
-    nPreDof[i] = v; 
+    nPreDof[i] = v;
   }
 
 
