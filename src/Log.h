@@ -139,7 +139,7 @@ namespace AMDiS
   /// function name nn for message output via MSG, WARNING, ...
 #define FUNCNAME(nn) const char *funcName; funcName = nn;
   
-#if (DEBUG == 0) 
+#ifdef NDEBUG
   #define FUNCNAME_DBG(nn)
 #else
   #define FUNCNAME_DBG(nn) const char *funcName; funcName = nn;
@@ -164,7 +164,7 @@ namespace AMDiS
 #define TEST_EXIT(test) if ((test));else ERROR_EXIT
 
   /// In debug mode, it corresponds to ERROR_EXIT, otherwise it is noop.
-#if (DEBUG == 0) 
+#ifdef NDEBUG
   #define TEST_EXIT_DBG(test) if (false) Msg::catch_error_exit
   #define DBG_VAR(var)
 #else
@@ -175,7 +175,7 @@ namespace AMDiS
   /// prints a message
 #define MSG Msg::print_funcname(funcName), Msg::print
 
-#if (DEBUG == 0) 
+#ifdef NDEBUG
   #define MSG_DBG
 #else
   #define MSG_DBG Msg::print_funcname(funcName), Msg::print
