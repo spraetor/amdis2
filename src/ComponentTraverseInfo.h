@@ -6,60 +6,60 @@
 
 #include "Global.h"
 
-namespace AMDiS 
+namespace AMDiS
 {
   //forward declaration
   class FiniteElemSpace;
-  
-  
+
+
   class SingleComponentInfo
-  {      
+  {
   public:
     SingleComponentInfo()
       : rowFeSpace(NULL),
-      	colFeSpace(NULL),
-      	status(0)
-      {}
-    
-    void setFeSpace(const FiniteElemSpace *row, const FiniteElemSpace *col = NULL) 
+        colFeSpace(NULL),
+        status(0)
+    {}
+
+    void setFeSpace(const FiniteElemSpace* row, const FiniteElemSpace* col = NULL)
     {
       rowFeSpace = row;
       colFeSpace = col;
     }
-    
-    void setAuxFeSpaces(std::set<const FiniteElemSpace*> feSpaces) 
+
+    void setAuxFeSpaces(std::set<const FiniteElemSpace*> feSpaces)
     {
       auxFeSpaces = feSpaces;
     }
 
-    void addAuxFeSpace(const FiniteElemSpace *fe) 
+    void addAuxFeSpace(const FiniteElemSpace* fe)
     {
       auxFeSpaces.insert(fe);
     }
-    
+
     bool hasFeSpace() const
     {
       return rowFeSpace != NULL;
     }
 
     void updateStatus();
-    
+
     int getNumAuxFeSpaces() const
     {
       return auxFeSpaces.size();
     }
-    
-    const FiniteElemSpace *getRowFeSpace() const
+
+    const FiniteElemSpace* getRowFeSpace() const
     {
       return rowFeSpace;
     }
-    
-    const FiniteElemSpace *getColFeSpace() const
+
+    const FiniteElemSpace* getColFeSpace() const
     {
       return colFeSpace;
     }
-    
-    const FiniteElemSpace *getAuxFeSpace() const
+
+    const FiniteElemSpace* getAuxFeSpace() const
     {
       FUNCNAME_DBG("SingleComponentInfo::getAuxFeSpace()");
 
@@ -75,12 +75,12 @@ namespace AMDiS
     {
       return status;
     }
-    
-  protected:      
-    const FiniteElemSpace *rowFeSpace;
-    
-    const FiniteElemSpace *colFeSpace;
-    
+
+  protected:
+    const FiniteElemSpace* rowFeSpace;
+
+    const FiniteElemSpace* colFeSpace;
+
     std::set<const FiniteElemSpace*> auxFeSpaces;
 
     /// Status of the component, see the possible status flags below.
@@ -109,17 +109,17 @@ namespace AMDiS
     static constexpr int DIF_SPACES_WITH_DIF_AUX = 6;
   };
 
-  
+
   class ComponentTraverseInfo
   {
-  public: 
-    ComponentTraverseInfo(int n) 
+  public:
+    ComponentTraverseInfo(int n)
       : nComponents(n)
     {
       resize(n);
     }
 
-    void resize(int n) 
+    void resize(int n)
     {
       nComponents = n;
 
@@ -130,22 +130,23 @@ namespace AMDiS
         matrixComponents[i].resize(n);
     }
 
-    void updateStatus() 
+    void updateStatus()
     {
-      for (int i = 0; i < nComponents; i++) {
-      	for (int j = 0; j < nComponents; j++)
-      	  matrixComponents[i][j].updateStatus();
-      
-      	vectorComponents[i].updateStatus();
+      for (int i = 0; i < nComponents; i++)
+      {
+        for (int j = 0; j < nComponents; j++)
+          matrixComponents[i][j].updateStatus();
+
+        vectorComponents[i].updateStatus();
       }
     }
 
-    SingleComponentInfo &getMatrix(int row, int col) 
+    SingleComponentInfo& getMatrix(int row, int col)
     {
       return matrixComponents[row][col];
     }
 
-    SingleComponentInfo &getVector(int row) 
+    SingleComponentInfo& getVector(int row)
     {
       return vectorComponents[row];
     }
@@ -168,8 +169,8 @@ namespace AMDiS
       int status = matrixComponents[row][col].getStatus();
 
       return (status == SingleComponentInfo::EQ_SPACES_NO_AUX ||
-	      status == SingleComponentInfo::EQ_SPACES_WITH_AUX ||
-	      status == SingleComponentInfo::EQ_SPACES_WITH_DIF_AUX);
+              status == SingleComponentInfo::EQ_SPACES_WITH_AUX ||
+              status == SingleComponentInfo::EQ_SPACES_WITH_DIF_AUX);
     }
 
     const FiniteElemSpace* getAuxFeSpace(int row, int col) const
@@ -188,7 +189,7 @@ namespace AMDiS
       int status = matrixComponents[row][col].getStatus();
 
       return (status == SingleComponentInfo::EQ_SPACES_WITH_DIF_AUX ||
-	      status == SingleComponentInfo::DIF_SPACES_WITH_DIF_AUX);
+              status == SingleComponentInfo::DIF_SPACES_WITH_DIF_AUX);
     }
 
     /// Returns true if there is an aux FE that is different from row and col FE spaces.
@@ -197,16 +198,16 @@ namespace AMDiS
       int status = vectorComponents[row].getStatus();
 
       return (status == SingleComponentInfo::EQ_SPACES_WITH_DIF_AUX ||
-	      status == SingleComponentInfo::DIF_SPACES_WITH_DIF_AUX);
+              status == SingleComponentInfo::DIF_SPACES_WITH_DIF_AUX);
     }
-    
+
     /** \brief
      * Returns the row FE space for a given row number, i.e., the FE space
      * of the diagonal matrix.
      *
      * \param[in]  row   Row number of the matrix line for which the FE space
      *                   should be returned.
-     */    
+     */
     const FiniteElemSpace* getRowFeSpace(int row) const;
 
 
@@ -224,7 +225,7 @@ namespace AMDiS
   protected:
     int nComponents;
 
-    std::vector<std::vector<SingleComponentInfo> > matrixComponents;
+    std::vector<std::vector<SingleComponentInfo>> matrixComponents;
 
     std::vector<SingleComponentInfo> vectorComponents;
   };

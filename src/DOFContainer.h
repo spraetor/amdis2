@@ -4,7 +4,7 @@
 
 #include "Global.h"
 
-namespace AMDiS 
+namespace AMDiS
 {
   /** \ingroup DOFAdministration
    * \brief
@@ -30,20 +30,21 @@ namespace AMDiS
      * Used by DOFAdmin to actualize the DOF indices in this container after
      * DOF compression.
      */
-    virtual void compressDofContainer(int size, std::vector<DegreeOfFreedom> &newDOF)
+    virtual void compressDofContainer(int size, std::vector<DegreeOfFreedom>& newDOF)
     {
       FUNCNAME_DBG("DOFContainer::compressDofContainer()");
 
-      for (DegreeOfFreedom i = 0; i < size; i++) {
-	DegreeOfFreedom j = newDOF[operator[](i)];
+      for (DegreeOfFreedom i = 0; i < size; i++)
+      {
+        DegreeOfFreedom j = newDOF[operator[](i)];
 
-	TEST_EXIT_DBG(j >= 0)
-	  ("Invalid DOF %d in DOF container! (%d %d)\n", j, i, operator[](i));
+        TEST_EXIT_DBG(j >= 0)
+        ("Invalid DOF %d in DOF container! (%d %d)\n", j, i, operator[](i));
 
-	operator[](i) = j;
+        operator[](i) = j;
       }
     }
 
   };
-  
+
 } // end namespace AMDiS

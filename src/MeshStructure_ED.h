@@ -8,7 +8,7 @@
 #include "ElementData.h"
 #include "Element.h"
 
-namespace AMDiS 
+namespace AMDiS
 {
 
   const int MESH_STRUCTURE = 10;
@@ -16,20 +16,20 @@ namespace AMDiS
   class MeshStructure_ED : public ElementData
   {
   public:
-    MeshStructure_ED(ElementData *decorated = NULL) 
+    MeshStructure_ED(ElementData* decorated = NULL)
       : ElementData(decorated),
-	structure(NULL)
+        structure(NULL)
     {}
 
-    virtual ~MeshStructure_ED() 
+    virtual ~MeshStructure_ED()
     {
       delete structure;
     }
 
-    virtual bool refineElementData(Element* parent, 
-				   Element* child1,
-				   Element* child2,
-				   int elType)
+    virtual bool refineElementData(Element* parent,
+                                   Element* child1,
+                                   Element* child2,
+                                   int elType)
     {
       FUNCNAME_DBG("MeshStructureED::refineElementData()");
 
@@ -42,54 +42,58 @@ namespace AMDiS
 
       structure->nextElement();
 
-      if (!structure->isLeafElement()) {
-	MeshStructure *structure1 = new MeshStructure();
-	structure->skipBranch(structure1);
-	structure1->commit();
-	MeshStructure_ED *elData1 = new MeshStructure_ED(child1->getElementData());
-	elData1->setStructure(structure1);
-	child1->setElementData(elData1);
-      } else {
-	structure->nextElement();
+      if (!structure->isLeafElement())
+      {
+        MeshStructure* structure1 = new MeshStructure();
+        structure->skipBranch(structure1);
+        structure1->commit();
+        MeshStructure_ED* elData1 = new MeshStructure_ED(child1->getElementData());
+        elData1->setStructure(structure1);
+        child1->setElementData(elData1);
+      }
+      else
+      {
+        structure->nextElement();
       }
 
-      if (!structure->isLeafElement()) {
-	MeshStructure *structure2 = new MeshStructure();
-	structure->skipBranch(structure2);
-	structure2->commit();
-	MeshStructure_ED *elData2 = new MeshStructure_ED(child2->getElementData());
-	elData2->setStructure(structure2);
-	child2->setElementData(elData2);
+      if (!structure->isLeafElement())
+      {
+        MeshStructure* structure2 = new MeshStructure();
+        structure->skipBranch(structure2);
+        structure2->commit();
+        MeshStructure_ED* elData2 = new MeshStructure_ED(child2->getElementData());
+        elData2->setStructure(structure2);
+        child2->setElementData(elData2);
       }
 
       return true;
     }
 
-    virtual int getTypeID() const 
+    virtual int getTypeID() const
     {
       return MESH_STRUCTURE;
     }
 
-    virtual bool isOfType(int typeID) const 
+    virtual bool isOfType(int typeID) const
     {
-      if (typeID == MESH_STRUCTURE) 
-	return true;
+      if (typeID == MESH_STRUCTURE)
+        return true;
 
       return false;
     }
 
-    void setStructure(MeshStructure *s) 
+    void setStructure(MeshStructure* s)
     {
       structure = s;
     }
 
-    MeshStructure *getStructure() 
+    MeshStructure* getStructure()
     {
       return structure;
     }
 
   protected:
-    MeshStructure *structure;
+    MeshStructure* structure;
   };
 
 } // end namespace AMDiS

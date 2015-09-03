@@ -6,13 +6,13 @@
 #include "Operator.h"
 #include "FixVec.h"
 
-namespace AMDiS 
+namespace AMDiS
 {
-  /** 
+  /**
    * \ingroup Integration
    *
    * \brief
-   * A SurfaceOperator is a Operator used for surface integration. Instead of a 
+   * A SurfaceOperator is a Operator used for surface integration. Instead of a
    * normal Quadrature it uses a SurfaceQuadrature with integration points at
    * one element side instead of integration points in the inner of the element.
    * The determinant in ElInfo is replaced by the surface determinant, so the
@@ -24,38 +24,38 @@ namespace AMDiS
   {
   public:
     /// Creates a SurfaceOperator conforming to operat for the given \ref coords.
-    SurfaceOperator(Operator const& operat, 
-		                VectorOfFixVecs<DimVec<double> > &coords);
+    SurfaceOperator(Operator const& operat,
+                    VectorOfFixVecs<DimVec<double>>& coords);
 
     /// Adapt surface quadratures to \ref coords.
-    void adaptSurfaceOperator(VectorOfFixVecs<DimVec<double> > &coords);
+    void adaptSurfaceOperator(VectorOfFixVecs<DimVec<double>>& coords);
 
     /** \brief
-     * Implementation of \ref Operator::getElementMatrix(). Repalces the 
+     * Implementation of \ref Operator::getElementMatrix(). Repalces the
      * determinant by the surface determinant and deligates the call to
      * the base class function.
      */
-    virtual void getElementMatrix(const ElInfo *elInfo, 
-                        				  ElementMatrix& userMat, 
-                        				  double factor = 1.0) override;
-  
+    virtual void getElementMatrix(const ElInfo* elInfo,
+                                  ElementMatrix& userMat,
+                                  double factor = 1.0) override;
+
     /** \brief
-     * Implementation of \ref Operator::getElementVector(). Repalces the 
+     * Implementation of \ref Operator::getElementVector(). Repalces the
      * determinant by the surface determinant and deligates the call to
      * the base class function.
      */
-    virtual void getElementVector(const ElInfo *elInfo, 
-                        				  DenseVector<double>& userVec, 
-                        				  double factor = 1.0) override;
+    virtual void getElementVector(const ElInfo* elInfo,
+                                  DenseVector<double>& userVec,
+                                  double factor = 1.0) override;
 
   protected:
-    VectorOfFixVecs<DimVec<double> > coords_;
+    VectorOfFixVecs<DimVec<double>> coords_;
 
     /// Surface quadratures
-    SurfaceQuadrature *quad2;
-    SurfaceQuadrature *quad1GrdPsi;
-    SurfaceQuadrature *quad1GrdPhi;
-    SurfaceQuadrature *quad0;
+    SurfaceQuadrature* quad2;
+    SurfaceQuadrature* quad1GrdPsi;
+    SurfaceQuadrature* quad1GrdPhi;
+    SurfaceQuadrature* quad0;
   };
 
 } // end namespace

@@ -6,11 +6,11 @@
 #include <expressions2/TermGenerator.hpp>
 #include <traits/basic.hpp>
 
-namespace AMDiS 
+namespace AMDiS
 {
   class DOFMatrix;
-  
-  /** 
+
+  /**
    * \ingroup Assembler
    *
    * \brief
@@ -24,49 +24,49 @@ namespace AMDiS
   public:
     /// Constructor. \f$ j \f$ and \f$ alpha \f$ are given as AbstractFunction objects.
     template <class JExpr, class AlphaExpr>
-    RobinBC(BoundaryType type, 
+    RobinBC(BoundaryType type,
             JExpr&& j_expr, AlphaExpr&& a_expr,
-      	    const FiniteElemSpace *rowFeSpace,
-      	    const FiniteElemSpace *colFeSpace = NULL)
-      : BoundaryCondition(type, rowFeSpace, colFeSpace), 
-      	neumannOperators(NULL), 
-      	robinOperators(NULL)
+            const FiniteElemSpace* rowFeSpace,
+            const FiniteElemSpace* colFeSpace = NULL)
+      : BoundaryCondition(type, rowFeSpace, colFeSpace),
+        neumannOperators(NULL),
+        robinOperators(NULL)
     {
       if (traits::IsCompatible<AlphaExpr, tag::dummy>::value)
         init(toTerm(std::forward<JExpr>(j_expr)));
       else
-        init(toTerm(std::forward<JExpr>(j_expr)), 
+        init(toTerm(std::forward<JExpr>(j_expr)),
              toTerm(std::forward<AlphaExpr>(a_expr)));
     }
-    
+
     // TODO: move to private section:
-    
+
     /// Implements BoundaryCondition::fillBoundaryCondition();
     virtual void fillBoundaryCondition(DOFMatrix* matrix,
-                        				       ElInfo* elInfo,
-                        				       const DegreeOfFreedom* dofIndices,
-                        				       const BoundaryType* localBound,
-                        				       int nBasFcts) override;
-  
+                                       ElInfo* elInfo,
+                                       const DegreeOfFreedom* dofIndices,
+                                       const BoundaryType* localBound,
+                                       int nBasFcts) override;
+
     /// Implements BoundaryCondition::fillBoundaryCondition();
-    virtual void fillBoundaryCondition(DOFVectorBase<double>* vector, 
-                        				       ElInfo* elInfo,
-                        				       const DegreeOfFreedom* dofIndices,
-                        				       const BoundaryType* localBound,
-                        				       int nBasFcts) override;
+    virtual void fillBoundaryCondition(DOFVectorBase<double>* vector,
+                                       ElInfo* elInfo,
+                                       const DegreeOfFreedom* dofIndices,
+                                       const BoundaryType* localBound,
+                                       int nBasFcts) override;
 
     /// Implements BoundaryCondition::boundResidual();
-    virtual double boundResidual(ElInfo *elInfo, 
-                        				 DOFMatrix *matrix,
-                        				 const DOFVectorBase<double> *dv) override;
+    virtual double boundResidual(ElInfo* elInfo,
+                                 DOFMatrix* matrix,
+                                 const DOFVectorBase<double>* dv) override;
 
   protected:
     template <class JExpr, class AlphaExpr>
     void init(JExpr&& j_expr, AlphaExpr&& a_expr);
-    
+
     template <class JExpr>
     void init(JExpr&& j_expr);
-    
+
   protected:
     /// Surface operators for each element side for the Neumann part.
     DimVec<SurfaceOperator*>* neumannOperators;
@@ -74,7 +74,7 @@ namespace AMDiS
     /// Surface operators for each element side for the Robin part.
     DimVec<SurfaceOperator*>* robinOperators;
 
-    VectorOfFixVecs<DimVec<double> >**coords;
+    VectorOfFixVecs<DimVec<double>>** coords;
   };
 
 
@@ -82,9 +82,9 @@ namespace AMDiS
   {
     template <class JExpr>
     NeumannBC(BoundaryType type,
-      	      JExpr&& j_expr,
-      	      const FiniteElemSpace *rowFeSpace,
-      	      const FiniteElemSpace *colFeSpace = NULL)
+              JExpr&& j_expr,
+              const FiniteElemSpace* rowFeSpace,
+              const FiniteElemSpace* colFeSpace = NULL)
       : RobinBC(type, std::forward<JExpr>(j_expr), tag::dummy(), rowFeSpace, colFeSpace)
     {}
   };

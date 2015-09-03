@@ -14,9 +14,10 @@
 #include "AMDiS_fwd.h"
 #include "AdaptBase.h"
 
-namespace AMDiS {
+namespace AMDiS
+{
 
-  /** \ingroup Adaption 
+  /** \ingroup Adaption
    * \brief
    * AdaptStationary contains information about the adaptive procedure and the
    * adapt procedure itself
@@ -26,8 +27,8 @@ namespace AMDiS {
   public:
     /// Creates a AdaptStationary object with given name.
     AdaptStationary(std::string name,
-            		    ProblemIterationInterface &prob,
-            		    AdaptInfo &info);
+                    ProblemIterationInterface& prob,
+                    AdaptInfo& info);
 
     /// Implementation of AdaptBase::adapt()
     virtual int adapt() override;

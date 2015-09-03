@@ -13,18 +13,19 @@ namespace AMDiS
 
     boundaryConditionSet = true;
 
-    DirichletBC<Term> *dirichletApply = 
+    DirichletBC<Term>* dirichletApply =
       new DirichletBC<Term>(type, std::forward<Term>(term), componentSpaces[row], componentSpaces[col], true);
-    DirichletBC<Term> *dirichletNotApply = 
+    DirichletBC<Term>* dirichletNotApply =
       new DirichletBC<Term>(type, std::forward<Term>(term), componentSpaces[row], componentSpaces[col], false);
 
     for (int i = 0; i < nComponents; i++)
-      if (systemMatrix && (*systemMatrix)[row][i]) {
-      	if (i == col)
-      	  (*systemMatrix)[row][i]->getBoundaryManager()->addBoundaryCondition(dirichletApply);
-      	else
-      	  (*systemMatrix)[row][i]->getBoundaryManager()->addBoundaryCondition(dirichletNotApply);
-      }	
+      if (systemMatrix && (*systemMatrix)[row][i])
+      {
+        if (i == col)
+          (*systemMatrix)[row][i]->getBoundaryManager()->addBoundaryCondition(dirichletApply);
+        else
+          (*systemMatrix)[row][i]->getBoundaryManager()->addBoundaryCondition(dirichletNotApply);
+      }
 
     if (rhs)
       rhs->getDOFVector(row)->getBoundaryManager()->addBoundaryCondition(dirichletApply);
@@ -32,13 +33,13 @@ namespace AMDiS
       solution->getDOFVector(col)->getBoundaryManager()->addBoundaryCondition(dirichletApply);
   }
 
-  
-  template <class Term>  
+
+  template <class Term>
   void ProblemStatSeq::addNeumannBC(BoundaryType type, int row, int col, Term&& term)
   {
     boundaryConditionSet = true;
 
-    NeumannBC *neumann = 
+    NeumannBC* neumann =
       new NeumannBC(type, std::forward<Term>(term), componentSpaces[row], componentSpaces[col]);
 
     if (rhs)
@@ -47,12 +48,12 @@ namespace AMDiS
 
 
   template <class TermRhs, class TermLhs>
-  void ProblemStatSeq::addRobinBC(BoundaryType type, int row, int col, 
-				  TermRhs&& termRhs, TermLhs&& termLhs)
+  void ProblemStatSeq::addRobinBC(BoundaryType type, int row, int col,
+                                  TermRhs&& termRhs, TermLhs&& termLhs)
   {
     boundaryConditionSet = true;
 
-    RobinBC *robin = 
+    RobinBC* robin =
       new RobinBC(type, std::forward<TermRhs>(termRhs), std::forward<TermLhs>(termLhs), componentSpaces[row], componentSpaces[col]);
 
     if (systemMatrix && (*systemMatrix)[row][col])

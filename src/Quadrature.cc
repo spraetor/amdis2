@@ -7,7 +7,7 @@
 
 using namespace std;
 
-namespace AMDiS 
+namespace AMDiS
 {
   constexpr int Quadrature::maxNQuadPoints[4];
 
@@ -20,9 +20,9 @@ namespace AMDiS
     degree = q.degree;
     dim = q.dim;
     n_points = q.n_points;
-  
+
     // copy barycentric coordinates
-    lambda = new VectorOfFixVecs<DimVec<double> >(*(q.lambda));
+    lambda = new VectorOfFixVecs<DimVec<double>>(*(q.lambda));
 
     // copy weights
     w = new double[n_points];
@@ -37,49 +37,58 @@ namespace AMDiS
   /****************************************************************************/
 
   const WorldVector<double>
-  *Quadrature::grdFAtQp(const std::function<WorldVector<double>(DimVec<double>)>& f, 
-	                      WorldVector<double>* vec) const
+  * Quadrature::grdFAtQp(const std::function<WorldVector<double>(DimVec<double>)>& f,
+                         WorldVector<double>* vec) const
   {
-    static WorldVector<double> *quad_vec_d = NULL;
+    static WorldVector<double>* quad_vec_d = NULL;
     static int size = 0;
-    WorldVector<double> *val;
+    WorldVector<double>* val;
     WorldVector<double> grd;
 
-    if (vec) {
+    if (vec)
+    {
       val = vec;
-    } else {
-      if (size < n_points) {
-      	int new_size = std::max(maxNQuadPoints[dim], n_points);
-      	if (quad_vec_d)
-      	  delete [] quad_vec_d;
-      	quad_vec_d = new WorldVector<double>[new_size];
-      	size = new_size;
+    }
+    else
+    {
+      if (size < n_points)
+      {
+        int new_size = std::max(maxNQuadPoints[dim], n_points);
+        if (quad_vec_d)
+          delete [] quad_vec_d;
+        quad_vec_d = new WorldVector<double>[new_size];
+        size = new_size;
       }
       val = quad_vec_d;
     }
 
     int dow = Global::getGeo(WORLD);
 
-    for (int i = 0; i < n_points; i++) {
+    for (int i = 0; i < n_points; i++)
+    {
       grd = f((*lambda)[i]);
       for (int j = 0; j < dow; j++)
         val[i][j] = grd[j];
     }
-    
+
     return val;
   }
 
-  const double *Quadrature::fAtQp(const std::function<double(DimVec<double>)>& f,
-				  double *vec) const
+  const double* Quadrature::fAtQp(const std::function<double(DimVec<double>)>& f,
+                                  double* vec) const
   {
-    static double *quad_vec = NULL;
+    static double* quad_vec = NULL;
     static int size = 0;
-    double *val;
- 
-    if (vec) {
+    double* val;
+
+    if (vec)
+    {
       val = vec;
-    } else {
-      if (size < n_points) {
+    }
+    else
+    {
+      if (size < n_points)
+      {
         int new_size = std::max(maxNQuadPoints[dim], n_points);
         if (quad_vec)
           delete [] quad_vec;
@@ -91,78 +100,78 @@ namespace AMDiS
 
     for (int i = 0; i < n_points; i++)
       val[i] = f((*lambda)[i]);
-    
-    return const_cast<const double *>(val);
+
+    return const_cast<const double*>(val);
   }
 
 
-  Quadrature **Quadrature::quad_nd[4];
-  Quadrature *Quadrature::quad_0d[1];
-  Quadrature *Quadrature::quad_1d[20];
-  Quadrature *Quadrature::quad_2d[18];
-  Quadrature *Quadrature::quad_3d[8];
+  Quadrature** Quadrature::quad_nd[4];
+  Quadrature* Quadrature::quad_0d[1];
+  Quadrature* Quadrature::quad_1d[20];
+  Quadrature* Quadrature::quad_2d[18];
+  Quadrature* Quadrature::quad_3d[8];
 
-  VectorOfFixVecs<DimVec<double> > *Quadrature::x_0d;
-  double *Quadrature::w_0d;
+  VectorOfFixVecs<DimVec<double>>* Quadrature::x_0d;
+  double* Quadrature::w_0d;
 
-  VectorOfFixVecs<DimVec<double> > *Quadrature::x0_1d = NULL;
-  VectorOfFixVecs<DimVec<double> > *Quadrature::x1_1d;
-  VectorOfFixVecs<DimVec<double> > *Quadrature::x2_1d;
-  VectorOfFixVecs<DimVec<double> > *Quadrature::x3_1d;
-  VectorOfFixVecs<DimVec<double> > *Quadrature::x4_1d;
-  VectorOfFixVecs<DimVec<double> > *Quadrature::x5_1d;
-  VectorOfFixVecs<DimVec<double> > *Quadrature::x6_1d;
-  VectorOfFixVecs<DimVec<double> > *Quadrature::x7_1d;
-  VectorOfFixVecs<DimVec<double> > *Quadrature::x8_1d;
-  VectorOfFixVecs<DimVec<double> > *Quadrature::x9_1d;
-  double *Quadrature::w0_1d;
-  double *Quadrature::w1_1d;
-  double *Quadrature::w2_1d;
-  double *Quadrature::w3_1d;
-  double *Quadrature::w4_1d;
-  double *Quadrature::w5_1d;
-  double *Quadrature::w6_1d;
-  double *Quadrature::w7_1d;
-  double *Quadrature::w8_1d;
-  double *Quadrature::w9_1d;
+  VectorOfFixVecs<DimVec<double>>* Quadrature::x0_1d = NULL;
+  VectorOfFixVecs<DimVec<double>>* Quadrature::x1_1d;
+  VectorOfFixVecs<DimVec<double>>* Quadrature::x2_1d;
+  VectorOfFixVecs<DimVec<double>>* Quadrature::x3_1d;
+  VectorOfFixVecs<DimVec<double>>* Quadrature::x4_1d;
+  VectorOfFixVecs<DimVec<double>>* Quadrature::x5_1d;
+  VectorOfFixVecs<DimVec<double>>* Quadrature::x6_1d;
+  VectorOfFixVecs<DimVec<double>>* Quadrature::x7_1d;
+  VectorOfFixVecs<DimVec<double>>* Quadrature::x8_1d;
+  VectorOfFixVecs<DimVec<double>>* Quadrature::x9_1d;
+  double* Quadrature::w0_1d;
+  double* Quadrature::w1_1d;
+  double* Quadrature::w2_1d;
+  double* Quadrature::w3_1d;
+  double* Quadrature::w4_1d;
+  double* Quadrature::w5_1d;
+  double* Quadrature::w6_1d;
+  double* Quadrature::w7_1d;
+  double* Quadrature::w8_1d;
+  double* Quadrature::w9_1d;
 
-  VectorOfFixVecs<DimVec<double> > *Quadrature::x1_2d;
-  VectorOfFixVecs<DimVec<double> > *Quadrature::x2_2d;
-  VectorOfFixVecs<DimVec<double> > *Quadrature::x3_2d;
-  VectorOfFixVecs<DimVec<double> > *Quadrature::x4_2d;
-  VectorOfFixVecs<DimVec<double> > *Quadrature::x5_2d;
-  VectorOfFixVecs<DimVec<double> > *Quadrature::x7_2d;
-  VectorOfFixVecs<DimVec<double> > *Quadrature::x8_2d;
-  VectorOfFixVecs<DimVec<double> > *Quadrature::x9_2d;
-  VectorOfFixVecs<DimVec<double> > *Quadrature::x10_2d;
-  VectorOfFixVecs<DimVec<double> > *Quadrature::x11_2d;
-  VectorOfFixVecs<DimVec<double> > *Quadrature::x12_2d;
-  VectorOfFixVecs<DimVec<double> > *Quadrature::x17_2d;
-  double *Quadrature::w1_2d;
-  double *Quadrature::w2_2d;
-  double *Quadrature::w3_2d;
-  double *Quadrature::w4_2d;
-  double *Quadrature::w5_2d;
-  double *Quadrature::w7_2d;
-  double *Quadrature::w8_2d;
-  double *Quadrature::w9_2d;
-  double *Quadrature::w10_2d;
-  double *Quadrature::w11_2d;
-  double *Quadrature::w12_2d;
-  double *Quadrature::w17_2d;
+  VectorOfFixVecs<DimVec<double>>* Quadrature::x1_2d;
+  VectorOfFixVecs<DimVec<double>>* Quadrature::x2_2d;
+  VectorOfFixVecs<DimVec<double>>* Quadrature::x3_2d;
+  VectorOfFixVecs<DimVec<double>>* Quadrature::x4_2d;
+  VectorOfFixVecs<DimVec<double>>* Quadrature::x5_2d;
+  VectorOfFixVecs<DimVec<double>>* Quadrature::x7_2d;
+  VectorOfFixVecs<DimVec<double>>* Quadrature::x8_2d;
+  VectorOfFixVecs<DimVec<double>>* Quadrature::x9_2d;
+  VectorOfFixVecs<DimVec<double>>* Quadrature::x10_2d;
+  VectorOfFixVecs<DimVec<double>>* Quadrature::x11_2d;
+  VectorOfFixVecs<DimVec<double>>* Quadrature::x12_2d;
+  VectorOfFixVecs<DimVec<double>>* Quadrature::x17_2d;
+  double* Quadrature::w1_2d;
+  double* Quadrature::w2_2d;
+  double* Quadrature::w3_2d;
+  double* Quadrature::w4_2d;
+  double* Quadrature::w5_2d;
+  double* Quadrature::w7_2d;
+  double* Quadrature::w8_2d;
+  double* Quadrature::w9_2d;
+  double* Quadrature::w10_2d;
+  double* Quadrature::w11_2d;
+  double* Quadrature::w12_2d;
+  double* Quadrature::w17_2d;
 
-  VectorOfFixVecs<DimVec<double> > *Quadrature::x1_3d;
-  VectorOfFixVecs<DimVec<double> > *Quadrature::x2_3d;
-  VectorOfFixVecs<DimVec<double> > *Quadrature::x3_3d;
-  VectorOfFixVecs<DimVec<double> > *Quadrature::x4_3d;
-  VectorOfFixVecs<DimVec<double> > *Quadrature::x5_3d;
-  VectorOfFixVecs<DimVec<double> > *Quadrature::x7_3d;
-  double *Quadrature::w1_3d;
-  double *Quadrature::w2_3d;
-  double *Quadrature::w3_3d;
-  double *Quadrature::w4_3d;
-  double *Quadrature::w5_3d;
-  double *Quadrature::w7_3d;
+  VectorOfFixVecs<DimVec<double>>* Quadrature::x1_3d;
+  VectorOfFixVecs<DimVec<double>>* Quadrature::x2_3d;
+  VectorOfFixVecs<DimVec<double>>* Quadrature::x3_3d;
+  VectorOfFixVecs<DimVec<double>>* Quadrature::x4_3d;
+  VectorOfFixVecs<DimVec<double>>* Quadrature::x5_3d;
+  VectorOfFixVecs<DimVec<double>>* Quadrature::x7_3d;
+  double* Quadrature::w1_3d;
+  double* Quadrature::w2_3d;
+  double* Quadrature::w3_3d;
+  double* Quadrature::w4_3d;
+  double* Quadrature::w5_3d;
+  double* Quadrature::w7_3d;
 
 
   void Quadrature::initStaticQuadratures()
@@ -201,9 +210,9 @@ namespace AMDiS
     /*  quadrature exact on P_3                                                 */
     /****************************************************************************/
 
-    x1_1d = createAndInit(1, 2, 
-			  0.788675134594813, 0.211324865405187,
-			  0.211324865405187, 0.788675134594813);
+    x1_1d = createAndInit(1, 2,
+                          0.788675134594813, 0.211324865405187,
+                          0.211324865405187, 0.788675134594813);
     w1_1d = createAndInitArray(2, StdVol * 0.5, StdVol * 0.5);
 
     /****************************************************************************/
@@ -212,160 +221,160 @@ namespace AMDiS
 
 
     x2_1d = createAndInit(1, 3,
-			  0.887298334620741, 0.112701665379259,
-			  0.500000000000000, 0.500000000000000,
-			  0.112701665379259, 0.887298334620741);
-    w2_1d = createAndInitArray(3, 
-			       StdVol * 0.277777777777778,
-			       StdVol * 0.444444444444444,
-			       StdVol * 0.277777777777778);
+                          0.887298334620741, 0.112701665379259,
+                          0.500000000000000, 0.500000000000000,
+                          0.112701665379259, 0.887298334620741);
+    w2_1d = createAndInitArray(3,
+                               StdVol * 0.277777777777778,
+                               StdVol * 0.444444444444444,
+                               StdVol * 0.277777777777778);
 
     /****************************************************************************/
     /*  quadrature exact on P_7                                                 */
     /****************************************************************************/
 
     x3_1d = createAndInit(1, 4,
-			  0.930568155797026, 0.069431844202973,
-			  0.669990521792428, 0.330009478207572,
-			  0.330009478207572, 0.669990521792428,
-			  0.069431844202973, 0.930568155797026);
-    w3_1d = createAndInitArray(4, 
-			       StdVol * 0.173927422568727,
-			       StdVol * 0.326072577431273,
-			       StdVol * 0.326072577431273,
-			       StdVol * 0.173927422568727);
+                          0.930568155797026, 0.069431844202973,
+                          0.669990521792428, 0.330009478207572,
+                          0.330009478207572, 0.669990521792428,
+                          0.069431844202973, 0.930568155797026);
+    w3_1d = createAndInitArray(4,
+                               StdVol * 0.173927422568727,
+                               StdVol * 0.326072577431273,
+                               StdVol * 0.326072577431273,
+                               StdVol * 0.173927422568727);
 
     /****************************************************************************/
     /*  quadrature exact on P_9                                                 */
     /****************************************************************************/
 
     x4_1d = createAndInit(1, 5,
-			  0.953089922969332, 0.046910077030668,
-			  0.769234655052841, 0.230765344947159,
-			  0.500000000000000, 0.500000000000000,
-			  0.230765344947159, 0.769234655052841,
-			  0.046910077030668, 0.953089922969332);
-    w4_1d = createAndInitArray(5, 
-			       StdVol * 0.118463442528095,
-			       StdVol * 0.239314335249683,
-			       StdVol * 0.284444444444444,
-			       StdVol * 0.239314335249683,
-			       StdVol * 0.118463442528095);
+                          0.953089922969332, 0.046910077030668,
+                          0.769234655052841, 0.230765344947159,
+                          0.500000000000000, 0.500000000000000,
+                          0.230765344947159, 0.769234655052841,
+                          0.046910077030668, 0.953089922969332);
+    w4_1d = createAndInitArray(5,
+                               StdVol * 0.118463442528095,
+                               StdVol * 0.239314335249683,
+                               StdVol * 0.284444444444444,
+                               StdVol * 0.239314335249683,
+                               StdVol * 0.118463442528095);
 
     /****************************************************************************/
     /*  quadrature exact on P_11                                                */
     /****************************************************************************/
 
     x5_1d = createAndInit(1, 6,
-			  0.966234757101576, 0.033765242898424,
-			  0.830604693233133, 0.169395306766867,
-			  0.619309593041598, 0.380690406958402,
-			  0.380690406958402, 0.619309593041598,
-			  0.169395306766867, 0.830604693233133,
-			  0.033765242898424, 0.966234757101576);
-    w5_1d = createAndInitArray(6, 
-			       StdVol * 0.085662246189585,
-			       StdVol * 0.180380786524069,
-			       StdVol * 0.233956967286345,
-			       StdVol * 0.233956967286345,
-			       StdVol * 0.180380786524069,
-			       StdVol * 0.085662246189585);
+                          0.966234757101576, 0.033765242898424,
+                          0.830604693233133, 0.169395306766867,
+                          0.619309593041598, 0.380690406958402,
+                          0.380690406958402, 0.619309593041598,
+                          0.169395306766867, 0.830604693233133,
+                          0.033765242898424, 0.966234757101576);
+    w5_1d = createAndInitArray(6,
+                               StdVol * 0.085662246189585,
+                               StdVol * 0.180380786524069,
+                               StdVol * 0.233956967286345,
+                               StdVol * 0.233956967286345,
+                               StdVol * 0.180380786524069,
+                               StdVol * 0.085662246189585);
 
     /****************************************************************************/
     /*  quadrature exact on P_13                                                */
     /****************************************************************************/
 
     x6_1d = createAndInit(1, 7,
-			  0.974553956171380, 0.025446043828620,
-			  0.870765592799697, 0.129234407200303,
-			  0.702922575688699, 0.297077424311301,
-			  0.500000000000000, 0.500000000000000,
-			  0.297077424311301, 0.702922575688699,
-			  0.129234407200303, 0.870765592799697,
-			  0.025446043828620, 0.974553956171380);
-    w6_1d = createAndInitArray(7, 
-			       StdVol * 0.064742483084435,
-			       StdVol * 0.139852695744614,
-			       StdVol * 0.190915025252559,
-			       StdVol * 0.208979591836735,
-			       StdVol * 0.190915025252559,
-			       StdVol * 0.139852695744614,
-			       StdVol * 0.064742483084435);
+                          0.974553956171380, 0.025446043828620,
+                          0.870765592799697, 0.129234407200303,
+                          0.702922575688699, 0.297077424311301,
+                          0.500000000000000, 0.500000000000000,
+                          0.297077424311301, 0.702922575688699,
+                          0.129234407200303, 0.870765592799697,
+                          0.025446043828620, 0.974553956171380);
+    w6_1d = createAndInitArray(7,
+                               StdVol * 0.064742483084435,
+                               StdVol * 0.139852695744614,
+                               StdVol * 0.190915025252559,
+                               StdVol * 0.208979591836735,
+                               StdVol * 0.190915025252559,
+                               StdVol * 0.139852695744614,
+                               StdVol * 0.064742483084435);
 
     /****************************************************************************/
     /*  quadrature exact on P_15                                                */
     /****************************************************************************/
 
-    x7_1d = createAndInit(1, 8, 
-			  0.980144928248768, 0.019855071751232,
-			  0.898333238706813, 0.101666761293187,
-			  0.762766204958164, 0.237233795041836,
-			  0.591717321247825, 0.408282678752175,
-			  0.408282678752175, 0.591717321247825,
-			  0.237233795041836, 0.762766204958164,
-			  0.101666761293187, 0.898333238706813,
-			  0.019855071751232, 0.980144928248768);
-    w7_1d = createAndInitArray(8, 
-			       StdVol * 0.050614268145188,
-			       StdVol * 0.111190517226687,
-			       StdVol * 0.156853322938943,
-			       StdVol * 0.181341891689181,
-			       StdVol * 0.181341891689181,
-			       StdVol * 0.156853322938943,
-			       StdVol * 0.111190517226687,
-			       StdVol * 0.050614268145188);
+    x7_1d = createAndInit(1, 8,
+                          0.980144928248768, 0.019855071751232,
+                          0.898333238706813, 0.101666761293187,
+                          0.762766204958164, 0.237233795041836,
+                          0.591717321247825, 0.408282678752175,
+                          0.408282678752175, 0.591717321247825,
+                          0.237233795041836, 0.762766204958164,
+                          0.101666761293187, 0.898333238706813,
+                          0.019855071751232, 0.980144928248768);
+    w7_1d = createAndInitArray(8,
+                               StdVol * 0.050614268145188,
+                               StdVol * 0.111190517226687,
+                               StdVol * 0.156853322938943,
+                               StdVol * 0.181341891689181,
+                               StdVol * 0.181341891689181,
+                               StdVol * 0.156853322938943,
+                               StdVol * 0.111190517226687,
+                               StdVol * 0.050614268145188);
 
     /****************************************************************************/
     /*  quadrature exact on P_17                                                */
     /****************************************************************************/
 
     x8_1d = createAndInit(1, 9,
-			  0.984080119753813, 0.015919880246187,
-			  0.918015553663318, 0.081984446336682,
-			  0.806685716350295, 0.193314283649705,
-			  0.662126711701905, 0.337873288298095,
-			  0.500000000000000, 0.500000000000000,
-			  0.337873288298095, 0.662126711701905,
-			  0.193314283649705, 0.806685716350295,
-			  0.081984446336682, 0.918015553663318,
-			  0.015919880246187, 0.984080119753813);
-    w8_1d = createAndInitArray(9, 
-			       StdVol * 0.040637194180787,
-			       StdVol * 0.090324080347429,
-			       StdVol * 0.130305348201467,
-			       StdVol * 0.156173538520001,
-			       StdVol * 0.165119677500630,
-			       StdVol * 0.156173538520001,
-			       StdVol * 0.130305348201467,
-			       StdVol * 0.090324080347429,
-			       StdVol * 0.040637194180787);
+                          0.984080119753813, 0.015919880246187,
+                          0.918015553663318, 0.081984446336682,
+                          0.806685716350295, 0.193314283649705,
+                          0.662126711701905, 0.337873288298095,
+                          0.500000000000000, 0.500000000000000,
+                          0.337873288298095, 0.662126711701905,
+                          0.193314283649705, 0.806685716350295,
+                          0.081984446336682, 0.918015553663318,
+                          0.015919880246187, 0.984080119753813);
+    w8_1d = createAndInitArray(9,
+                               StdVol * 0.040637194180787,
+                               StdVol * 0.090324080347429,
+                               StdVol * 0.130305348201467,
+                               StdVol * 0.156173538520001,
+                               StdVol * 0.165119677500630,
+                               StdVol * 0.156173538520001,
+                               StdVol * 0.130305348201467,
+                               StdVol * 0.090324080347429,
+                               StdVol * 0.040637194180787);
 
     /****************************************************************************/
     /*  quadrature exact on P_19                                                */
     /****************************************************************************/
 
     x9_1d = createAndInit(1, 10,
-			  0.986953264258586, 0.013046735741414,
-			  0.932531683344493, 0.067468316655508,
-			  0.839704784149512, 0.160295215850488,
-			  0.716697697064623, 0.283302302935377,
-			  0.574437169490815, 0.425562830509185,
-			  0.425562830509185, 0.574437169490815,
-			  0.283302302935377, 0.716697697064623,
-			  0.160295215850488, 0.839704784149512,
-			  0.067468316655508, 0.932531683344493,
-			  0.013046735741414, 0.986953264258586);
-    w9_1d = createAndInitArray(10, 
-			       StdVol * 0.033335672154344,
-			       StdVol * 0.074725674575291,
-			       StdVol * 0.109543181257991,
-			       StdVol * 0.134633359654998,
-			       StdVol * 0.147762112357376,
-			       StdVol * 0.147762112357376,
-			       StdVol * 0.134633359654998,
-			       StdVol * 0.109543181257991,
-			       StdVol * 0.074725674575291,
-			       StdVol * 0.033335672154344);
+                          0.986953264258586, 0.013046735741414,
+                          0.932531683344493, 0.067468316655508,
+                          0.839704784149512, 0.160295215850488,
+                          0.716697697064623, 0.283302302935377,
+                          0.574437169490815, 0.425562830509185,
+                          0.425562830509185, 0.574437169490815,
+                          0.283302302935377, 0.716697697064623,
+                          0.160295215850488, 0.839704784149512,
+                          0.067468316655508, 0.932531683344493,
+                          0.013046735741414, 0.986953264258586);
+    w9_1d = createAndInitArray(10,
+                               StdVol * 0.033335672154344,
+                               StdVol * 0.074725674575291,
+                               StdVol * 0.109543181257991,
+                               StdVol * 0.134633359654998,
+                               StdVol * 0.147762112357376,
+                               StdVol * 0.147762112357376,
+                               StdVol * 0.134633359654998,
+                               StdVol * 0.109543181257991,
+                               StdVol * 0.074725674575291,
+                               StdVol * 0.033335672154344);
 
     Quadrature::quad_1d[0]= new Quadrature("1d-Gauss: P_1", 1, 1, 1, Quadrature::x0_1d, Quadrature::w0_1d); /* P_0   */
     Quadrature::quad_1d[1]= new Quadrature("1d-Gauss: P_1", 1, 1, 1, Quadrature::x0_1d, Quadrature::w0_1d); /* P_1   */
@@ -564,10 +573,10 @@ namespace AMDiS
 #define w4   0.06749318700980879
 
     x7_2d = createAndInit(2, 12,
-			  CYCLE(c1, c2, c3), CYCLE(c4, c5, c6),
-			  CYCLE(c7, c8, c9), CYCLE(c10, c11, c12));
+                          CYCLE(c1, c2, c3), CYCLE(c4, c5, c6),
+                          CYCLE(c7, c8, c9), CYCLE(c10, c11, c12));
     w7_2d = createAndInitArray(N7, W_CYCLE(w1), W_CYCLE(w2),
-			       W_CYCLE(w3), W_CYCLE(w4));
+                               W_CYCLE(w3), W_CYCLE(w4));
 
 #undef c1
 #undef c2
@@ -615,14 +624,14 @@ namespace AMDiS
 #define w5   StdVol*0.027230314174435
 
     x8_2d = createAndInit(2, 16,
-			  c1, c1, c1, 
-			  CYCLE(c2, c3, c3),
-			  CYCLE(c4, c5, c5),
-			  CYCLE(c6, c7, c7),
-			  ALL_COMB(c8, c9, c10));
+                          c1, c1, c1,
+                          CYCLE(c2, c3, c3),
+                          CYCLE(c4, c5, c5),
+                          CYCLE(c6, c7, c7),
+                          ALL_COMB(c8, c9, c10));
     w8_2d = createAndInitArray(N8, w1, W_CYCLE(w2), W_CYCLE(w3),
-			       W_CYCLE(w4), W_ALL_COMB(w5));
-				  
+                               W_CYCLE(w4), W_ALL_COMB(w5));
+
 
 #undef c1
 #undef c2
@@ -671,18 +680,18 @@ namespace AMDiS
 #define w6   StdVol*0.043283539377289
 
     x9_2d = createAndInit(2, 19,
-			  c1, c1, c1,
-			  CYCLE(c2, c3, c3),
-			  CYCLE(c4, c5, c5),
-			  CYCLE(c6, c7, c7),
-			  CYCLE(c8, c9, c9),
-			  ALL_COMB(c10, c11, c12));
-    w9_2d = createAndInitArray(N9, w1, 
-			       W_CYCLE(w2),
-			       W_CYCLE(w3),
-			       W_CYCLE(w4),
-			       W_CYCLE(w5),
-			       W_ALL_COMB(w6));
+                          c1, c1, c1,
+                          CYCLE(c2, c3, c3),
+                          CYCLE(c4, c5, c5),
+                          CYCLE(c6, c7, c7),
+                          CYCLE(c8, c9, c9),
+                          ALL_COMB(c10, c11, c12));
+    w9_2d = createAndInitArray(N9, w1,
+                               W_CYCLE(w2),
+                               W_CYCLE(w3),
+                               W_CYCLE(w4),
+                               W_CYCLE(w5),
+                               W_ALL_COMB(w6));
 
 #undef c1
 #undef c2
@@ -742,18 +751,18 @@ namespace AMDiS
 #define w6   StdVol*0.009421666963733
 
     x10_2d = createAndInit(2, 25,
-			   c1, c1, c1,
-			   CYCLE(c2, c3, c3),
-			   CYCLE(c4, c5, c5),
-			   ALL_COMB(c6, c7, c8),
-			   ALL_COMB(c9, c10, c11),
-			   ALL_COMB(c12, c13, c14));
-    w10_2d = createAndInitArray(N10, w1, 
-				W_CYCLE(w2),
-				W_CYCLE(w3),
-				W_ALL_COMB(w4),
-				W_ALL_COMB(w5),
-				W_ALL_COMB(w6));
+                           c1, c1, c1,
+                           CYCLE(c2, c3, c3),
+                           CYCLE(c4, c5, c5),
+                           ALL_COMB(c6, c7, c8),
+                           ALL_COMB(c9, c10, c11),
+                           ALL_COMB(c12, c13, c14));
+    w10_2d = createAndInitArray(N10, w1,
+                                W_CYCLE(w2),
+                                W_CYCLE(w3),
+                                W_ALL_COMB(w4),
+                                W_ALL_COMB(w5),
+                                W_ALL_COMB(w6));
 
 #undef c1
 #undef c2
@@ -819,20 +828,20 @@ namespace AMDiS
 #define w7   StdVol*0.020707659639141
 
     x11_2d = createAndInit(2, 27,
-			   CYCLE(c1,c2,c2),
-			   CYCLE(c3,c4,c4),
-			   CYCLE(c5,c6,c6),
-			   CYCLE(c7,c8,c8),
-			   CYCLE(c9,c10,c10),
-			   ALL_COMB(c11,c12,c13),
-			   ALL_COMB(c14,c15,c16));
+                           CYCLE(c1,c2,c2),
+                           CYCLE(c3,c4,c4),
+                           CYCLE(c5,c6,c6),
+                           CYCLE(c7,c8,c8),
+                           CYCLE(c9,c10,c10),
+                           ALL_COMB(c11,c12,c13),
+                           ALL_COMB(c14,c15,c16));
     w11_2d = createAndInitArray(N11, W_CYCLE(w1),
-				W_CYCLE(w2),
-				W_CYCLE(w3),
-				W_CYCLE(w4),
-				W_CYCLE(w5),
-				W_ALL_COMB(w6),
-				W_ALL_COMB(w7));
+                                W_CYCLE(w2),
+                                W_CYCLE(w3),
+                                W_CYCLE(w4),
+                                W_CYCLE(w5),
+                                W_ALL_COMB(w6),
+                                W_ALL_COMB(w7));
 
 #undef c1
 #undef c2
@@ -880,7 +889,7 @@ namespace AMDiS
 
 #define c7   0.744847708916828
 #define c8   0.127576145541586
-	       
+
 #define c9   0.957365299093579
 #define c10  0.021317350453210
 
@@ -906,22 +915,22 @@ namespace AMDiS
 #define w8   StdVol*0.017316231108659
 
     x12_2d = createAndInit(2, 33,
-			   CYCLE(c1,c2,c2),
-			   CYCLE(c3,c4,c4),
-			   CYCLE(c5,c6,c6),
-			   CYCLE(c7,c8,c8),
-			   CYCLE(c9,c10,c10),
-			   ALL_COMB(c11,c12,c13),
-			   ALL_COMB(c14,c15,c16),
-			   ALL_COMB(c17,c18,c19));
+                           CYCLE(c1,c2,c2),
+                           CYCLE(c3,c4,c4),
+                           CYCLE(c5,c6,c6),
+                           CYCLE(c7,c8,c8),
+                           CYCLE(c9,c10,c10),
+                           ALL_COMB(c11,c12,c13),
+                           ALL_COMB(c14,c15,c16),
+                           ALL_COMB(c17,c18,c19));
     w12_2d = createAndInitArray(N12, W_CYCLE(w1),
-				W_CYCLE(w2),
-				W_CYCLE(w3),
-				W_CYCLE(w4),
-				W_CYCLE(w5),
-				W_ALL_COMB(w6),
-				W_ALL_COMB(w7),
-				W_ALL_COMB(w8));
+                                W_CYCLE(w2),
+                                W_CYCLE(w3),
+                                W_CYCLE(w4),
+                                W_CYCLE(w5),
+                                W_ALL_COMB(w6),
+                                W_ALL_COMB(w7),
+                                W_ALL_COMB(w8));
 
 #undef c1
 #undef c2
@@ -963,13 +972,13 @@ namespace AMDiS
 #define N17 61
 
 #define c1   1.0/3.0
-	       
+
 #define c2   0.005658918886452
 #define c3   0.497170540556774
-	       
+
 #define c4   0.035647354750751
 #define c5   0.482176322624625
-	       
+
 #define c6   0.099520061958437
 #define c7   0.450239969020782
 
@@ -978,7 +987,7 @@ namespace AMDiS
 
 #define c10  0.495717464058095
 #define c11  0.252141267970953
-	       
+
 #define c12  0.675905990683077
 #define c13  0.162047004658461
 
@@ -1029,36 +1038,36 @@ namespace AMDiS
 #define w15  StdVol*0.006665632004165
 
     x17_2d = createAndInit(2, 61,
-			   c1, c1, c1,
-			   CYCLE(c2,c3,c3),
-			   CYCLE(c4,c5,c5),
-			   CYCLE(c6,c7,c7),
-			   CYCLE(c8,c9,c9),
-			   CYCLE(c10,c11,c11),
-			   CYCLE(c12,c13,c13),
-			   CYCLE(c14,c15,c15),
-			   CYCLE(c16,c17,c17),
-			   ALL_COMB(c18,c19,c20),
-			   ALL_COMB(c21,c22,c23),
-			   ALL_COMB(c24,c25,c26),
-			   ALL_COMB(c27,c28,c29),
-			   ALL_COMB(c30,c31,c32),
-			   ALL_COMB(c33,c34,c35));
-    w17_2d = createAndInitArray(N17, w1, 
-				W_CYCLE(w2),
-				W_CYCLE(w3),
-				W_CYCLE(w4),
-				W_CYCLE(w5),
-				W_CYCLE(w6),
-				W_CYCLE(w7),
-				W_CYCLE(w8),
-				W_CYCLE(w9),
-				W_ALL_COMB(w10),
-				W_ALL_COMB(w11),
-				W_ALL_COMB(w12),
-				W_ALL_COMB(w13),
-				W_ALL_COMB(w14),
-				W_ALL_COMB(w15));
+                           c1, c1, c1,
+                           CYCLE(c2,c3,c3),
+                           CYCLE(c4,c5,c5),
+                           CYCLE(c6,c7,c7),
+                           CYCLE(c8,c9,c9),
+                           CYCLE(c10,c11,c11),
+                           CYCLE(c12,c13,c13),
+                           CYCLE(c14,c15,c15),
+                           CYCLE(c16,c17,c17),
+                           ALL_COMB(c18,c19,c20),
+                           ALL_COMB(c21,c22,c23),
+                           ALL_COMB(c24,c25,c26),
+                           ALL_COMB(c27,c28,c29),
+                           ALL_COMB(c30,c31,c32),
+                           ALL_COMB(c33,c34,c35));
+    w17_2d = createAndInitArray(N17, w1,
+                                W_CYCLE(w2),
+                                W_CYCLE(w3),
+                                W_CYCLE(w4),
+                                W_CYCLE(w5),
+                                W_CYCLE(w6),
+                                W_CYCLE(w7),
+                                W_CYCLE(w8),
+                                W_CYCLE(w9),
+                                W_ALL_COMB(w10),
+                                W_ALL_COMB(w11),
+                                W_ALL_COMB(w12),
+                                W_ALL_COMB(w13),
+                                W_ALL_COMB(w14),
+                                W_ALL_COMB(w15));
 
 #undef c1
 #undef c2
@@ -1160,7 +1169,7 @@ namespace AMDiS
     /****************************************************************************/
 
     x1_3d = createAndInit(3, 1,
-			  quart, quart, quart, quart);
+                          quart, quart, quart, quart);
     w1_3d = createAndInitArray(1, StdVol*one);
 
 
@@ -1173,12 +1182,12 @@ namespace AMDiS
 #define c15   0.138196601125011
 
     x2_3d = createAndInit(3, 4,
-			  c14, c15, c15, c15,
-			  c15, c14, c15, c15,
-			  c15, c15, c14, c15,
-			  c15, c15, c15, c14);
+                          c14, c15, c15, c15,
+                          c15, c14, c15, c15,
+                          c15, c15, c14, c15,
+                          c15, c15, c15, c14);
     w2_3d = createAndInitArray(4, StdVol*quart, StdVol*quart,
-			       StdVol*quart, StdVol*quart);
+                               StdVol*quart, StdVol*quart);
 
     /****************************************************************************/
     /*  quadrature exact on P_3                                                 */
@@ -1188,16 +1197,16 @@ namespace AMDiS
 #define w9  9.0/40.0
 
     x3_3d = createAndInit(3, 8,
-			  one,  zero,  zero,  zero,
-			  zero,   one,  zero,  zero,
-			  zero,  zero,   one,  zero,
-			  zero,  zero,  zero,   one,
-			  zero, third, third, third,
-			  third, zero, third, third,
-			  third, third, zero, third,
-			  third, third, third, zero);
+                          one,  zero,  zero,  zero,
+                          zero,   one,  zero,  zero,
+                          zero,  zero,   one,  zero,
+                          zero,  zero,  zero,   one,
+                          zero, third, third, third,
+                          third, zero, third, third,
+                          third, third, zero, third,
+                          third, third, third, zero);
     w3_3d = createAndInitArray(8,  StdVol*w8, StdVol*w8, StdVol*w8, StdVol*w8,
-			       StdVol*w9, StdVol*w9, StdVol*w9, StdVol*w9);
+                               StdVol*w9, StdVol*w9, StdVol*w9, StdVol*w9);
 
     /****************************************************************************/
     /*  quadrature exact on P_4                                                 */
@@ -1216,166 +1225,166 @@ namespace AMDiS
 #define w13  0.052910052911999995
 
     x4_3d = createAndInit(3, 15,
-			  quart, quart, quart, quart,
-			  c18, c18, c18, c19,
-			  c18, c18, c19, c18,
-			  c18, c19, c18, c18,
-			  c19, c18, c18, c18,
-			  c20, c20, c20, c21,
-			  c20, c20, c21, c20,
-			  c20, c21, c20, c20,
-			  c21, c20, c20, c20,
-			  c22, c22, c23, c23,
-			  c22, c23, c22, c23,
-			  c23, c22, c22, c23,
-			  c22, c23, c23, c22,
-			  c23, c22, c23, c22,
-			  c23, c23, c22, c22);
-    w4_3d = createAndInitArray(15, StdVol*w10, 
-			       StdVol*w11, StdVol*w11,
-			       StdVol*w11, StdVol*w11, 
-			       StdVol*w12, StdVol*w12,
-			       StdVol*w12, StdVol*w12,
-			       StdVol*w13, StdVol*w13, StdVol*w13,
-			       StdVol*w13, StdVol*w13, StdVol*w13);
+                          quart, quart, quart, quart,
+                          c18, c18, c18, c19,
+                          c18, c18, c19, c18,
+                          c18, c19, c18, c18,
+                          c19, c18, c18, c18,
+                          c20, c20, c20, c21,
+                          c20, c20, c21, c20,
+                          c20, c21, c20, c20,
+                          c21, c20, c20, c20,
+                          c22, c22, c23, c23,
+                          c22, c23, c22, c23,
+                          c23, c22, c22, c23,
+                          c22, c23, c23, c22,
+                          c23, c22, c23, c22,
+                          c23, c23, c22, c22);
+    w4_3d = createAndInitArray(15, StdVol*w10,
+                               StdVol*w11, StdVol*w11,
+                               StdVol*w11, StdVol*w11,
+                               StdVol*w12, StdVol*w12,
+                               StdVol*w12, StdVol*w12,
+                               StdVol*w13, StdVol*w13, StdVol*w13,
+                               StdVol*w13, StdVol*w13, StdVol*w13);
 
     /****************************************************************************/
     /*  quadrature exact on P_5                                                 */
     /****************************************************************************/
 
     x5_3d = createAndInit(3, 15,
-			  0.250000000000000, 0.250000000000000, 0.250000000000000, 0.250000000000000,
-			  0.091971078052723, 0.091971078052723, 0.091971078052723, 0.724086765841831,
-			  0.724086765841831, 0.091971078052723, 0.091971078052723, 0.091971078052723,
-			  0.091971078052723, 0.724086765841831, 0.091971078052723, 0.091971078052723,
-			  0.091971078052723, 0.091971078052723, 0.724086765841831, 0.091971078052723,
-			  0.319793627829630, 0.319793627829630, 0.319793627829630, 0.040619116511110,
-			  0.040619116511110, 0.319793627829630, 0.319793627829630, 0.319793627829630,
-			  0.319793627829630, 0.040619116511110, 0.319793627829630, 0.319793627829630,
-			  0.319793627829630, 0.319793627829630, 0.040619116511110, 0.319793627829630,
-			  0.443649167310371, 0.056350832689629, 0.056350832689629, 0.443649167310371,
-			  0.056350832689629, 0.443649167310371, 0.056350832689629, 0.443649167310371,
-			  0.056350832689629, 0.056350832689629, 0.443649167310371, 0.443649167310371,
-			  0.443649167310371, 0.056350832689629, 0.443649167310371, 0.056350832689629,
-			  0.443649167310371, 0.443649167310371, 0.056350832689629, 0.056350832689629,
-			  0.056350832689629, 0.443649167310371, 0.443649167310371, 0.056350832689629);
+                          0.250000000000000, 0.250000000000000, 0.250000000000000, 0.250000000000000,
+                          0.091971078052723, 0.091971078052723, 0.091971078052723, 0.724086765841831,
+                          0.724086765841831, 0.091971078052723, 0.091971078052723, 0.091971078052723,
+                          0.091971078052723, 0.724086765841831, 0.091971078052723, 0.091971078052723,
+                          0.091971078052723, 0.091971078052723, 0.724086765841831, 0.091971078052723,
+                          0.319793627829630, 0.319793627829630, 0.319793627829630, 0.040619116511110,
+                          0.040619116511110, 0.319793627829630, 0.319793627829630, 0.319793627829630,
+                          0.319793627829630, 0.040619116511110, 0.319793627829630, 0.319793627829630,
+                          0.319793627829630, 0.319793627829630, 0.040619116511110, 0.319793627829630,
+                          0.443649167310371, 0.056350832689629, 0.056350832689629, 0.443649167310371,
+                          0.056350832689629, 0.443649167310371, 0.056350832689629, 0.443649167310371,
+                          0.056350832689629, 0.056350832689629, 0.443649167310371, 0.443649167310371,
+                          0.443649167310371, 0.056350832689629, 0.443649167310371, 0.056350832689629,
+                          0.443649167310371, 0.443649167310371, 0.056350832689629, 0.056350832689629,
+                          0.056350832689629, 0.443649167310371, 0.443649167310371, 0.056350832689629);
     w5_3d = createAndInitArray(15, StdVol*0.118518518518519,
-			       StdVol*0.071937083779019,
-			       StdVol*0.071937083779019,
-			       StdVol*0.071937083779019,
-			       StdVol*0.071937083779019,
-			       StdVol*0.069068207226272,
-			       StdVol*0.069068207226272,
-			       StdVol*0.069068207226272,
-			       StdVol*0.069068207226272,
-			       StdVol*0.052910052910053,
-			       StdVol*0.052910052910053,
-			       StdVol*0.052910052910053,
-			       StdVol*0.052910052910053,
-			       StdVol*0.052910052910053,
-			       StdVol*0.052910052910053);
+                               StdVol*0.071937083779019,
+                               StdVol*0.071937083779019,
+                               StdVol*0.071937083779019,
+                               StdVol*0.071937083779019,
+                               StdVol*0.069068207226272,
+                               StdVol*0.069068207226272,
+                               StdVol*0.069068207226272,
+                               StdVol*0.069068207226272,
+                               StdVol*0.052910052910053,
+                               StdVol*0.052910052910053,
+                               StdVol*0.052910052910053,
+                               StdVol*0.052910052910053,
+                               StdVol*0.052910052910053,
+                               StdVol*0.052910052910053);
 
     /****************************************************************************/
     /*  quadrature exact on P_7                                                 */
     /****************************************************************************/
 
     x7_3d = createAndInit(3, 64,
-			  0.0485005494, 0.0543346112, 0.0622918076, 0.8348730318,
-			  0.0485005494, 0.0543346112, 0.2960729005, 0.6010919389,
-			  0.0485005494, 0.0543346112, 0.6010919389, 0.2960729005,
-			  0.0485005494, 0.0543346112, 0.8348730300, 0.0622918093,
-			  0.0485005494, 0.2634159753, 0.0477749033, 0.6403085720,
-			  0.0485005494, 0.2634159753, 0.2270740686, 0.4610094066,
-			  0.0485005494, 0.2634159753, 0.4610094066, 0.2270740686,
-			  0.0485005494, 0.2634159753, 0.6403085706, 0.0477749047,
-			  0.0485005494, 0.5552859758, 0.0275098315, 0.3687036433,
-			  0.0485005494, 0.5552859758, 0.1307542021, 0.2654592727,
-			  0.0485005494, 0.5552859758, 0.2654592727, 0.1307542021,
-			  0.0485005494, 0.5552859758, 0.3687036425, 0.0275098323,
-			  0.0485005494, 0.8185180165, 0.0092331459, 0.1237482881,
-			  0.0485005494, 0.8185180165, 0.0438851337, 0.0890963004,
-			  0.0485005494, 0.8185180165, 0.0890963004, 0.0438851337,
-			  0.0485005494, 0.8185180165, 0.1237482879, 0.0092331462,
-			  0.2386007376, 0.0434790928, 0.0498465199, 0.6680736497,
-			  0.2386007376, 0.0434790928, 0.2369204606, 0.4809997090,
-			  0.2386007376, 0.0434790928, 0.4809997090, 0.2369204606,
-			  0.2386007376, 0.0434790928, 0.6680736482, 0.0498465214,
-			  0.2386007376, 0.2107880664, 0.0382299497, 0.5123812464,
-			  0.2386007376, 0.2107880664, 0.1817069135, 0.3689042825,
-			  0.2386007376, 0.2107880664, 0.3689042825, 0.1817069135,
-			  0.2386007376, 0.2107880664, 0.5123812453, 0.0382299508,
-			  0.2386007376, 0.4443453248, 0.0220136390, 0.2950402987,
-			  0.2386007376, 0.4443453248, 0.1046308045, 0.2124231331,
-			  0.2386007376, 0.4443453248, 0.2124231331, 0.1046308045,
-			  0.2386007376, 0.4443453248, 0.2950402980, 0.0220136396,
-			  0.2386007376, 0.6549862048, 0.0073884546, 0.0990246030,
-			  0.2386007376, 0.6549862048, 0.0351173176, 0.0712957400,
-			  0.2386007376, 0.6549862048, 0.0712957400, 0.0351173176,
-			  0.2386007376, 0.6549862048, 0.0990246028, 0.0073884548,
-			  0.5170472951, 0.0275786260, 0.0316174612, 0.4237566177,
-			  0.5170472951, 0.0275786260, 0.1502777622, 0.3050963168,
-			  0.5170472951, 0.0275786260, 0.3050963168, 0.1502777622,
-			  0.5170472951, 0.0275786260, 0.4237566168, 0.0316174621,
-			  0.5170472951, 0.1337020823, 0.0242491141, 0.3250015085,
-			  0.5170472951, 0.1337020823, 0.1152560157, 0.2339946069,
-			  0.5170472951, 0.1337020823, 0.2339946069, 0.1152560157,
-			  0.5170472951, 0.1337020823, 0.3250015078, 0.0242491148,
-			  0.5170472951, 0.2818465779, 0.0139631689, 0.1871429581,
-			  0.5170472951, 0.2818465779, 0.0663669280, 0.1347391990,
-			  0.5170472951, 0.2818465779, 0.1347391990, 0.0663669280,
-			  0.5170472951, 0.2818465779, 0.1871429577, 0.0139631693,
-			  0.5170472951, 0.4154553004, 0.0046864691, 0.0628109354,
-			  0.5170472951, 0.4154553004, 0.0222747832, 0.0452226213,
-			  0.5170472951, 0.4154553004, 0.0452226213, 0.0222747832,
-			  0.5170472951, 0.4154553004, 0.0628109352, 0.0046864693,
-			  0.7958514179, 0.0116577407, 0.0133649937, 0.1791258477,
-			  0.7958514179, 0.0116577407, 0.0635238021, 0.1289670393,
-			  0.7958514179, 0.0116577407, 0.1289670393, 0.0635238021,
-			  0.7958514179, 0.0116577407, 0.1791258473, 0.0133649941,
-			  0.7958514179, 0.0565171087, 0.0102503252, 0.1373811482,
-			  0.7958514179, 0.0565171087, 0.0487197855, 0.0989116879,
-			  0.7958514179, 0.0565171087, 0.0989116879, 0.0487197855,
-			  0.7958514179, 0.0565171087, 0.1373811479, 0.0102503255,
-			  0.7958514179, 0.1191391593, 0.0059023608, 0.0791070620,
-			  0.7958514179, 0.1191391593, 0.0280539153, 0.0569555075,
-			  0.7958514179, 0.1191391593, 0.0569555075, 0.0280539153,
-			  0.7958514179, 0.1191391593, 0.0791070618, 0.0059023610,
-			  0.7958514179, 0.1756168040, 0.0019810139, 0.0265507642,
-			  0.7958514179, 0.1756168040, 0.0094157572, 0.0191160209,
-			  0.7958514179, 0.1756168040, 0.0191160209, 0.0094157572,
-			  0.7958514179, 0.1756168040, 0.0265507642, 0.0019810140);
+                          0.0485005494, 0.0543346112, 0.0622918076, 0.8348730318,
+                          0.0485005494, 0.0543346112, 0.2960729005, 0.6010919389,
+                          0.0485005494, 0.0543346112, 0.6010919389, 0.2960729005,
+                          0.0485005494, 0.0543346112, 0.8348730300, 0.0622918093,
+                          0.0485005494, 0.2634159753, 0.0477749033, 0.6403085720,
+                          0.0485005494, 0.2634159753, 0.2270740686, 0.4610094066,
+                          0.0485005494, 0.2634159753, 0.4610094066, 0.2270740686,
+                          0.0485005494, 0.2634159753, 0.6403085706, 0.0477749047,
+                          0.0485005494, 0.5552859758, 0.0275098315, 0.3687036433,
+                          0.0485005494, 0.5552859758, 0.1307542021, 0.2654592727,
+                          0.0485005494, 0.5552859758, 0.2654592727, 0.1307542021,
+                          0.0485005494, 0.5552859758, 0.3687036425, 0.0275098323,
+                          0.0485005494, 0.8185180165, 0.0092331459, 0.1237482881,
+                          0.0485005494, 0.8185180165, 0.0438851337, 0.0890963004,
+                          0.0485005494, 0.8185180165, 0.0890963004, 0.0438851337,
+                          0.0485005494, 0.8185180165, 0.1237482879, 0.0092331462,
+                          0.2386007376, 0.0434790928, 0.0498465199, 0.6680736497,
+                          0.2386007376, 0.0434790928, 0.2369204606, 0.4809997090,
+                          0.2386007376, 0.0434790928, 0.4809997090, 0.2369204606,
+                          0.2386007376, 0.0434790928, 0.6680736482, 0.0498465214,
+                          0.2386007376, 0.2107880664, 0.0382299497, 0.5123812464,
+                          0.2386007376, 0.2107880664, 0.1817069135, 0.3689042825,
+                          0.2386007376, 0.2107880664, 0.3689042825, 0.1817069135,
+                          0.2386007376, 0.2107880664, 0.5123812453, 0.0382299508,
+                          0.2386007376, 0.4443453248, 0.0220136390, 0.2950402987,
+                          0.2386007376, 0.4443453248, 0.1046308045, 0.2124231331,
+                          0.2386007376, 0.4443453248, 0.2124231331, 0.1046308045,
+                          0.2386007376, 0.4443453248, 0.2950402980, 0.0220136396,
+                          0.2386007376, 0.6549862048, 0.0073884546, 0.0990246030,
+                          0.2386007376, 0.6549862048, 0.0351173176, 0.0712957400,
+                          0.2386007376, 0.6549862048, 0.0712957400, 0.0351173176,
+                          0.2386007376, 0.6549862048, 0.0990246028, 0.0073884548,
+                          0.5170472951, 0.0275786260, 0.0316174612, 0.4237566177,
+                          0.5170472951, 0.0275786260, 0.1502777622, 0.3050963168,
+                          0.5170472951, 0.0275786260, 0.3050963168, 0.1502777622,
+                          0.5170472951, 0.0275786260, 0.4237566168, 0.0316174621,
+                          0.5170472951, 0.1337020823, 0.0242491141, 0.3250015085,
+                          0.5170472951, 0.1337020823, 0.1152560157, 0.2339946069,
+                          0.5170472951, 0.1337020823, 0.2339946069, 0.1152560157,
+                          0.5170472951, 0.1337020823, 0.3250015078, 0.0242491148,
+                          0.5170472951, 0.2818465779, 0.0139631689, 0.1871429581,
+                          0.5170472951, 0.2818465779, 0.0663669280, 0.1347391990,
+                          0.5170472951, 0.2818465779, 0.1347391990, 0.0663669280,
+                          0.5170472951, 0.2818465779, 0.1871429577, 0.0139631693,
+                          0.5170472951, 0.4154553004, 0.0046864691, 0.0628109354,
+                          0.5170472951, 0.4154553004, 0.0222747832, 0.0452226213,
+                          0.5170472951, 0.4154553004, 0.0452226213, 0.0222747832,
+                          0.5170472951, 0.4154553004, 0.0628109352, 0.0046864693,
+                          0.7958514179, 0.0116577407, 0.0133649937, 0.1791258477,
+                          0.7958514179, 0.0116577407, 0.0635238021, 0.1289670393,
+                          0.7958514179, 0.0116577407, 0.1289670393, 0.0635238021,
+                          0.7958514179, 0.0116577407, 0.1791258473, 0.0133649941,
+                          0.7958514179, 0.0565171087, 0.0102503252, 0.1373811482,
+                          0.7958514179, 0.0565171087, 0.0487197855, 0.0989116879,
+                          0.7958514179, 0.0565171087, 0.0989116879, 0.0487197855,
+                          0.7958514179, 0.0565171087, 0.1373811479, 0.0102503255,
+                          0.7958514179, 0.1191391593, 0.0059023608, 0.0791070620,
+                          0.7958514179, 0.1191391593, 0.0280539153, 0.0569555075,
+                          0.7958514179, 0.1191391593, 0.0569555075, 0.0280539153,
+                          0.7958514179, 0.1191391593, 0.0791070618, 0.0059023610,
+                          0.7958514179, 0.1756168040, 0.0019810139, 0.0265507642,
+                          0.7958514179, 0.1756168040, 0.0094157572, 0.0191160209,
+                          0.7958514179, 0.1756168040, 0.0191160209, 0.0094157572,
+                          0.7958514179, 0.1756168040, 0.0265507642, 0.0019810140);
     w7_3d = createAndInitArray(64, StdVol*0.0156807540, StdVol*0.0293976870,
-			       StdVol*0.0293976870, StdVol*0.0156807540,
-			       StdVol*0.0235447608, StdVol*0.0441408300,
-			       StdVol*0.0441408300, StdVol*0.0235447608,
-			       StdVol*0.0150258564, StdVol*0.0281699100,
-			       StdVol*0.0281699100, StdVol*0.0150258564,
-			       StdVol*0.0036082374, StdVol*0.0067645878,
-			       StdVol*0.0067645878, StdVol*0.0036082374,
-			       StdVol*0.0202865376, StdVol*0.0380324358,
-			       StdVol*0.0380324358, StdVol*0.0202865376,
-			       StdVol*0.0304603764, StdVol*0.0571059660,
-			       StdVol*0.0571059660, StdVol*0.0304603764,
-			       StdVol*0.0194392824, StdVol*0.0364440336,
-			       StdVol*0.0364440336, StdVol*0.0194392824,
-			       StdVol*0.0046680564, StdVol*0.0087514968,
-			       StdVol*0.0087514968, StdVol*0.0046680564,
-			       StdVol*0.0097055322, StdVol*0.0181955664,
-			       StdVol*0.0181955664, StdVol*0.0097055322,
-			       StdVol*0.0145729242, StdVol*0.0273207684,
-			       StdVol*0.0273207684, StdVol*0.0145729242,
-			       StdVol*0.0093001866, StdVol*0.0174356394,
-			       StdVol*0.0174356394, StdVol*0.0093001866,
-			       StdVol*0.0022333026, StdVol*0.0041869110,
-			       StdVol*0.0041869110, StdVol*0.0022333026,
-			       StdVol*0.0014639124, StdVol*0.0027444882,
-			       StdVol*0.0027444882, StdVol*0.0014639124,
-			       StdVol*0.0021980748, StdVol*0.0041208678,
-			       StdVol*0.0041208678, StdVol*0.0021980748,
-			       StdVol*0.0014027730, StdVol*0.0026298660,
-			       StdVol*0.0026298660, StdVol*0.0014027730,
-			       StdVol*0.0003368550, StdVol*0.0006315234,
-			       StdVol*0.0006315234, StdVol*0.0003368550);
+                               StdVol*0.0293976870, StdVol*0.0156807540,
+                               StdVol*0.0235447608, StdVol*0.0441408300,
+                               StdVol*0.0441408300, StdVol*0.0235447608,
+                               StdVol*0.0150258564, StdVol*0.0281699100,
+                               StdVol*0.0281699100, StdVol*0.0150258564,
+                               StdVol*0.0036082374, StdVol*0.0067645878,
+                               StdVol*0.0067645878, StdVol*0.0036082374,
+                               StdVol*0.0202865376, StdVol*0.0380324358,
+                               StdVol*0.0380324358, StdVol*0.0202865376,
+                               StdVol*0.0304603764, StdVol*0.0571059660,
+                               StdVol*0.0571059660, StdVol*0.0304603764,
+                               StdVol*0.0194392824, StdVol*0.0364440336,
+                               StdVol*0.0364440336, StdVol*0.0194392824,
+                               StdVol*0.0046680564, StdVol*0.0087514968,
+                               StdVol*0.0087514968, StdVol*0.0046680564,
+                               StdVol*0.0097055322, StdVol*0.0181955664,
+                               StdVol*0.0181955664, StdVol*0.0097055322,
+                               StdVol*0.0145729242, StdVol*0.0273207684,
+                               StdVol*0.0273207684, StdVol*0.0145729242,
+                               StdVol*0.0093001866, StdVol*0.0174356394,
+                               StdVol*0.0174356394, StdVol*0.0093001866,
+                               StdVol*0.0022333026, StdVol*0.0041869110,
+                               StdVol*0.0041869110, StdVol*0.0022333026,
+                               StdVol*0.0014639124, StdVol*0.0027444882,
+                               StdVol*0.0027444882, StdVol*0.0014639124,
+                               StdVol*0.0021980748, StdVol*0.0041208678,
+                               StdVol*0.0041208678, StdVol*0.0021980748,
+                               StdVol*0.0014027730, StdVol*0.0026298660,
+                               StdVol*0.0026298660, StdVol*0.0014027730,
+                               StdVol*0.0003368550, StdVol*0.0006315234,
+                               StdVol*0.0006315234, StdVol*0.0003368550);
 
     /****************************************************************************/
     /*  build a vector of Quad' quadrature formulars. For quadrature of degree */
@@ -1409,7 +1418,8 @@ namespace AMDiS
   {
     FUNCNAME("Quadrature::provideQuadrature()");
 
-    switch (dim_) {
+    switch (dim_)
+    {
     case 0:
       degree_ = 0;
       break;
@@ -1425,8 +1435,8 @@ namespace AMDiS
     default:
       ERROR_EXIT("invalid dim\n");
     }
-    
-    if (x0_1d == NULL) 
+
+    if (x0_1d == NULL)
       initStaticQuadratures();
 
     return (quad_nd[dim_][degree_]);
@@ -1437,7 +1447,7 @@ namespace AMDiS
   {
     if (lambda)
       delete lambda;
-    
+
     delete [] w;
   }
 
@@ -1454,37 +1464,43 @@ namespace AMDiS
 
 
   FastQuadrature* FastQuadrature::provideFastQuadrature(const BasisFunction* bas_fcts,
-                                          							const Quadrature& quad, 
-                                          							Flag init_flag)
+      const Quadrature& quad,
+      Flag init_flag)
   {
-    FastQuadrature *quad_fast = NULL;
+    FastQuadrature* quad_fast = NULL;
 
-// #pragma omp critical
+    // #pragma omp critical
     {
-      list<FastQuadrature*>::iterator fast = fastQuadList.begin(); 
+      list<FastQuadrature*>::iterator fast = fastQuadList.begin();
       for (; fast != fastQuadList.end(); fast++)
-      	if ((*fast)->basisFunctions == bas_fcts && 
-      	    (*fast)->quadrature == &quad)  
-      	  break;
-      
-      if (fast != fastQuadList.end() && 
-      	  ((*fast)->init_flag & init_flag) == init_flag) {
-      	quad_fast = *fast;
-      } else {
-      	if (fast == fastQuadList.end()) {
-      	  quad_fast = 
-      	    new FastQuadrature(const_cast<BasisFunction*>(bas_fcts), 
-      			       const_cast<Quadrature*>(&quad), 0);
-	  
-      	  fastQuadList.push_front(quad_fast);
-      	  
-      	  max_points = std::max(max_points, quad.getNumPoints());
-      	} else {
-      	  quad_fast = (*fast);
-      	}
+        if ((*fast)->basisFunctions == bas_fcts &&
+            (*fast)->quadrature == &quad)
+          break;
+
+      if (fast != fastQuadList.end() &&
+          ((*fast)->init_flag & init_flag) == init_flag)
+      {
+        quad_fast = *fast;
       }
-      
-      quad_fast->init(init_flag);  
+      else
+      {
+        if (fast == fastQuadList.end())
+        {
+          quad_fast =
+            new FastQuadrature(const_cast<BasisFunction*>(bas_fcts),
+                               const_cast<Quadrature*>(&quad), 0);
+
+          fastQuadList.push_front(quad_fast);
+
+          max_points = std::max(max_points, quad.getNumPoints());
+        }
+        else
+        {
+          quad_fast = (*fast);
+        }
+      }
+
+      quad_fast->init(init_flag);
     }
 
     return quad_fast;
@@ -1501,55 +1517,62 @@ namespace AMDiS
 
     // ----- initialize phi ---------------------------------------------
 
-    if (num_rows(phi) == 0 && init_flag.isSet(INIT_PHI)) {
+    if (num_rows(phi) == 0 && init_flag.isSet(INIT_PHI))
+    {
       phi.change_dim(nPoints, nBasFcts);
 
       // fill memory
-      for (int i = 0; i< nPoints; i++) {
-      	lambda = quadrature->getLambda(i);
-      	for (int j = 0; j < nBasFcts; j++)
-      	  phi[i][j] = (*(basisFunctions->getPhi(j)))(lambda);
+      for (int i = 0; i< nPoints; i++)
+      {
+        lambda = quadrature->getLambda(i);
+        for (int j = 0; j < nBasFcts; j++)
+          phi[i][j] = (*(basisFunctions->getPhi(j)))(lambda);
       }
-    
+
       // update flag
       init_flag |= INIT_PHI;
     }
 
     // initialize grd_phi
-    if (grdPhi.empty() && init_flag.isSet(INIT_GRD_PHI)) {
+    if (grdPhi.empty() && init_flag.isSet(INIT_GRD_PHI))
+    {
 
       // allocate memory
       grdPhi.resize(nPoints);
 
       // fill memory
-      for (int i = 0; i< nPoints; i++) {
-      	grdPhi[i].resize(nBasFcts);
-      	lambda = quadrature->getLambda(i);
-      
-      	for (int j = 0; j < nBasFcts; j++) {
-      	  grdPhi[i][j].change_dim(dim + 1);
-      	  (*(basisFunctions->getGrdPhi(j)))(lambda, grdPhi[i][j]);
-      	}
+      for (int i = 0; i< nPoints; i++)
+      {
+        grdPhi[i].resize(nBasFcts);
+        lambda = quadrature->getLambda(i);
+
+        for (int j = 0; j < nBasFcts; j++)
+        {
+          grdPhi[i][j].change_dim(dim + 1);
+          (*(basisFunctions->getGrdPhi(j)))(lambda, grdPhi[i][j]);
+        }
       }
-    
+
       // update flag
       init_flag |= INIT_GRD_PHI;
     }
 
     // initialize D2_phi
 
-    if (!D2Phi && init_flag.isSet(INIT_D2_PHI)) {
+    if (!D2Phi && init_flag.isSet(INIT_D2_PHI))
+    {
 
       // allocate memory
-      D2Phi = new MatrixOfFixVecs<DimMat<double> >(dim, nPoints, nBasFcts, NO_INIT);
+      D2Phi = new MatrixOfFixVecs<DimMat<double>>(dim, nPoints, nBasFcts, NO_INIT);
 
       // fill memory
-      for (int i = 0; i < nPoints; i++) {
-      	lambda = quadrature->getLambda(i);
-      	for (int j = 0; j < nBasFcts; j++)
-      	  (*(basisFunctions->getD2Phi(j)))(lambda, (*(D2Phi))[i][j]);
+      for (int i = 0; i < nPoints; i++)
+      {
+        lambda = quadrature->getLambda(i);
+        for (int j = 0; j < nBasFcts; j++)
+          (*(basisFunctions->getD2Phi(j)))(lambda, (*(D2Phi))[i][j]);
       }
-    
+
       // update flag
       init_flag |= INIT_D2_PHI;
     }
@@ -1570,29 +1593,33 @@ namespace AMDiS
     init_flag = fastQuad.init_flag;
     basisFunctions = fastQuad.basisFunctions;
     quadrature = fastQuad.quadrature;
-  
+
     int nPoints = quadrature->getNumPoints();
     int nBasFcts = basisFunctions->getNumber();
 
-    if (num_rows(fastQuad.phi) > 0) {
+    if (num_rows(fastQuad.phi) > 0)
+    {
       phi.change_dim(nPoints, nBasFcts);
       phi = fastQuad.phi;
     }
 
-    if (!fastQuad.grdPhi.empty()) {
+    if (!fastQuad.grdPhi.empty())
+    {
       grdPhi.resize(nPoints);
-      for (int i = 0; i < nPoints; i++) {
-      	grdPhi[i].resize(nBasFcts);
-      	for (int j = 0; j < nBasFcts; j++)
-      	  grdPhi[i][j] = fastQuad.grdPhi[i][j];
+      for (int i = 0; i < nPoints; i++)
+      {
+        grdPhi[i].resize(nBasFcts);
+        for (int j = 0; j < nBasFcts; j++)
+          grdPhi[i][j] = fastQuad.grdPhi[i][j];
       }
     }
 
-    if (fastQuad.D2Phi) {
-      D2Phi = new MatrixOfFixVecs<DimMat<double> >(dim, nPoints, nBasFcts, NO_INIT);
+    if (fastQuad.D2Phi)
+    {
+      D2Phi = new MatrixOfFixVecs<DimMat<double>>(dim, nPoints, nBasFcts, NO_INIT);
       for (int i = 0; i < nPoints; i++)
-    	for (int j = 0; j < nBasFcts; j++)
-    	  (*D2Phi)[i][j] = (*(fastQuad.D2Phi))[i][j];
+        for (int j = 0; j < nBasFcts; j++)
+          (*D2Phi)[i][j] = (*(fastQuad.D2Phi))[i][j];
     }
   }
 
@@ -1603,15 +1630,15 @@ namespace AMDiS
   }
 
 
-  double FastQuadrature::getSecDer(int q,int i ,int j, int m) const 
+  double FastQuadrature::getSecDer(int q,int i ,int j, int m) const
   {
     return (D2Phi) ? (*D2Phi)[q][i][j][m] : 0.0;
   }
 
 
-  const VectorOfFixVecs<DimMat<double> > *FastQuadrature::getSecDer(int q) const 
+  const VectorOfFixVecs<DimMat<double>>* FastQuadrature::getSecDer(int q) const
   {
     return D2Phi ? (&((*D2Phi)[q])) : NULL;
   }
-  
+
 } // end namespace AMDiS

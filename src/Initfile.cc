@@ -7,7 +7,7 @@
 
 #include <string>
 
-namespace AMDiS 
+namespace AMDiS
 {
   Initfile* Initfile::singlett = NULL;
 
@@ -15,7 +15,7 @@ namespace AMDiS
   void Initfile::init(std::string in)
   {
     initIntern();
-    singlett->read(in);	
+    singlett->read(in);
     singlett->getInternalParameters();
   }
 
@@ -24,15 +24,15 @@ namespace AMDiS
   void Initfile::read(std::string fn, bool force)
   {
     TEST_EXIT( file_exists(fn) )
-      ("init-file '%s' cannot be opened for reading", fn.c_str());
-    
+    ("init-file '%s' cannot be opened for reading", fn.c_str());
+
     using namespace boost::property_tree;
     json_parser::read_json(fn, pt);
   }
 
 
   /// read standard values for output and information of parameter-values
-  void Initfile::getInternalParameters() 
+  void Initfile::getInternalParameters()
   {
     int val = 0;
     get("level of information", val, 0);
@@ -56,16 +56,16 @@ namespace AMDiS
 
 
   /// print all parameters to std::cout
-  void Initfile::printParameters() 
+  void Initfile::printParameters()
   {
     initIntern();
     // TODO: implement printing of all parameters
   }
-  
+
   // explicit template instatiation
   template void Initfile::get(const std::string, int&, int);
   template void Initfile::get(const std::string, double&, int);
   template void Initfile::get(const std::string, std::string&, int);
 
-  
+
 } // end namespace AMDiS

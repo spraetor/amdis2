@@ -4,13 +4,14 @@
 
 #include <map>
 
-namespace AMDiS {
+namespace AMDiS
+{
 
-  class PeriodicInfo 
+  class PeriodicInfo
   {
   public:
     int mode;
-      
+
     int type;
 
     int outputIndex;

@@ -10,44 +10,44 @@
 
 #include "expressions2/TermGenerator.hpp"
 
-namespace AMDiS 
-{  
-  namespace detail 
+namespace AMDiS
+{
+  namespace detail
   {
     class DirichletBC : public BoundaryCondition
     {
     public:
-		  
+
       /// Constructor.
       DirichletBC(BoundaryType type,
-            		  const FiniteElemSpace *rowFeSpace,
-            		  const FiniteElemSpace *colFeSpace,
-            		  bool apply)
-      	: BoundaryCondition(type, rowFeSpace, colFeSpace), 
-      	  applyBC(apply) 
+                  const FiniteElemSpace* rowFeSpace,
+                  const FiniteElemSpace* colFeSpace,
+                  bool apply)
+        : BoundaryCondition(type, rowFeSpace, colFeSpace),
+          applyBC(apply)
       { }
 
       /// Implementation of BoundaryCondition::fillBoundaryCondition().
       virtual void fillBoundaryCondition(DOFMatrix* matrix,
-                                				 ElInfo* elInfo,
-                                				 const DegreeOfFreedom* dofIndices,
-                                				 const BoundaryType* localBound,
-                                				 int nBasFcts) override;
+                                         ElInfo* elInfo,
+                                         const DegreeOfFreedom* dofIndices,
+                                         const BoundaryType* localBound,
+                                         int nBasFcts) override;
 
       /// Implementation of BoundaryCondition::initVector()
       virtual void initVector(DOFVectorBase<double>* vec) override;
 
       /// Implementation of BoundaryCondition::boundResidual().
-      virtual double boundResidual(ElInfo*, DOFMatrix*, 
-                                   const DOFVectorBase<double>*) override 
-      { 
-        return 0.0; 
+      virtual double boundResidual(ElInfo*, DOFMatrix*,
+                                   const DOFVectorBase<double>*) override
+      {
+        return 0.0;
       }
 
       /// Because this is a Dirichlet boundary condition, always return true.
       virtual bool isDirichlet() const override
-      { 
-        return true; 
+      {
+        return true;
       }
 
       /// Returns \ref applyBC.
@@ -62,10 +62,10 @@ namespace AMDiS
       /// comment of \ref BoundaryCondition::applyBoundaryCondition.
       bool applyBC;
     };
-  
+
   } // end namespace detail
 
-  
+
   /**
   * \ingroup Assembler
   *
@@ -80,40 +80,41 @@ namespace AMDiS
   {
     using Super = detail::DirichletBC;
     using TermType = ToTerm_t<Expr>;
-    
+
   public:
     /// Constructor.
     template <class Expr_>
     DirichletBC(BoundaryType type,
-            		Expr_&& fct_,
-            		const FiniteElemSpace *rowFeSpace,
-            		const FiniteElemSpace *colFeSpace = NULL,
-            		bool apply = true)
+                Expr_&& fct_,
+                const FiniteElemSpace* rowFeSpace,
+                const FiniteElemSpace* colFeSpace = NULL,
+                bool apply = true)
       : Super(type, rowFeSpace, colFeSpace, apply),
-      	fct(toTerm(std::forward<Expr_>(fct_)))
+        fct(toTerm(std::forward<Expr_>(fct_)))
     {}
-    
-  
+
+
     /// Implementation of BoundaryCondition::fillBoundaryCondition().
-    virtual void fillBoundaryCondition(DOFVectorBase<double>* vector, 
-                            					 ElInfo* elInfo,
-                            					 const DegreeOfFreedom* dofIndices,
-                            					 const BoundaryType* localBound,
-                            				   int nBasFcts) override
+    virtual void fillBoundaryCondition(DOFVectorBase<double>* vector,
+                                       ElInfo* elInfo,
+                                       const DegreeOfFreedom* dofIndices,
+                                       const BoundaryType* localBound,
+                                       int nBasFcts) override
     {
-      const BasisFunction *basFcts = rowFeSpace->getBasisFcts();
+      const BasisFunction* basFcts = rowFeSpace->getBasisFcts();
       // initialize expression on ElInfo
       fct.initElement(elInfo, NULL, NULL, basFcts);
       for (int i = 0; i < nBasFcts; i++)
-      	if (localBound[i] == boundaryType) {
-      	  Value_t<TermType> value = fct(i);
-      	  vector->setDirichletDofValue(dofIndices[i], value);
-      	  (*vector)[dofIndices[i]] = value;
-      	}
+        if (localBound[i] == boundaryType)
+        {
+          Value_t<TermType> value = fct[i];
+          vector->setDirichletDofValue(dofIndices[i], value);
+          (*vector)[dofIndices[i]] = value;
+        }
     }
-			      
+
   protected:
     TermType fct;
   };
-  
+
 } // end namespace AMDiS

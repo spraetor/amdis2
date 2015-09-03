@@ -5,7 +5,7 @@
  * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
  * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
  *
- * Authors: 
+ * Authors:
  * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
  *
  * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
@@ -15,7 +15,7 @@
  * This file is part of AMDiS
  *
  * See also license.opensource.txt in the distribution.
- * 
+ *
  ******************************************************************************/
 
 /** \file FileWriter.hh */
@@ -50,11 +50,11 @@ namespace AMDiS
 {
   namespace detail
   {
-      
+
     template<typename T>
-    FileWriter<T>::FileWriter(std::string str, Mesh *m, DOFVector<T> *vec)
+    FileWriter<T>::FileWriter(std::string str, Mesh* m, DOFVector<T>* vec)
       : name(str),
-	mesh(m)
+        mesh(m)
     {
       initialize();
 
@@ -62,43 +62,44 @@ namespace AMDiS
 
       solutionVecs.resize(1);
       solutionVecs[0] = vec;
-      
+
       solutionNames.push_back(vec->getName());
     }
 
 
     template<typename T>
     FileWriter<T>::FileWriter(std::string name_,
-			  Mesh *mesh_, 
-			  std::vector<DOFVector<T>*> vecs,
-			  std::vector< std::string > componentNames)
+                              Mesh* mesh_,
+                              std::vector<DOFVector<T>*> vecs,
+                              std::vector<std::string> componentNames)
       : name(name_),
-	mesh(mesh_),
-	solutionNames(componentNames)
+        mesh(mesh_),
+        solutionNames(componentNames)
     {
       initialize();
 
-  /** removed by Siqi. Not sure.
-  *  for (int i = 0; i < static_cast<int>(vecs.size()); i++)
-  *    TEST_EXIT(vecs[0]->getFeSpace() == vecs[i]->getFeSpace())
-  *      ("All FeSpace have to be equal!\n");
-  */
+      /** removed by Siqi. Not sure.
+      *  for (int i = 0; i < static_cast<int>(vecs.size()); i++)
+      *    TEST_EXIT(vecs[0]->getFeSpace() == vecs[i]->getFeSpace())
+      *      ("All FeSpace have to be equal!\n");
+      */
       feSpace = vecs[0]->getFeSpace();
       solutionVecs = vecs;
-      
-      if (solutionNames.size() < vecs.size()) {
-	for (size_t i = solutionNames.size(); i < vecs.size(); i++)
-	  solutionNames.push_back(vecs[i]->getName());
+
+      if (solutionNames.size() < vecs.size())
+      {
+        for (size_t i = solutionNames.size(); i < vecs.size(); i++)
+          solutionNames.push_back(vecs[i]->getName());
       }
     }
 
 
     template<typename T>
     FileWriter<T>::FileWriter(std::string name_,
-			  Mesh *mesh_,
-			  SystemVector *vecs)
+                              Mesh* mesh_,
+                              SystemVector* vecs)
       : name(name_),
-	mesh(mesh_)
+        mesh(mesh_)
     {
       ERROR_EXIT("SystemVector contains DOFVectors of type double, so the FileWriter<not double> can not be used!\n");
     }
@@ -110,10 +111,10 @@ namespace AMDiS
       // Do not forget to delete temporal solution vector, if there have been
       // some created in the constructor.
       if (nTmpSolutions > 0)
-	for (int i = 0; i < nTmpSolutions; i++)
-	  delete solutionVecs[i]; 
+        for (int i = 0; i < nTmpSolutions; i++)
+          delete solutionVecs[i];
     }
-    
+
 
     template<typename T>
     void FileWriter<T>::initialize()
@@ -141,7 +142,7 @@ namespace AMDiS
       pngType = 0;
       nTmpSolutions = 0;
       paraviewAnimationFrames.resize(0),
-      compression = NONE;
+                                     compression = NONE;
 
       readParameters(name);
     }
@@ -151,7 +152,7 @@ namespace AMDiS
     void FileWriter<T>::readParameters(std::string name)
     {
       super::readParameters(name);
-      
+
       Parameters::get(name + "->AMDiS format", writeAMDiSFormat);
       Parameters::get(name + "->AMDiS mesh ext", amdisMeshExt);
       Parameters::get(name + "->AMDiS data ext", amdisDataExt);
@@ -161,7 +162,7 @@ namespace AMDiS
       Parameters::get(name + "->ParaView vector format", writeParaViewVectorFormat);
       Parameters::get(name + "->write vector as 3d vector", writeAs3dVector);
       Parameters::get(name + "->ParaView animation", writeParaViewAnimation);
-      Parameters::get(name + "->ParaView ext", paraviewFileExt);    
+      Parameters::get(name + "->ParaView ext", paraviewFileExt);
       Parameters::get(name + "->Periodic format", writePeriodicFormat);
       Parameters::get(name + "->Periodic ext", periodicFileExt);
       Parameters::get(name + "->PNG format", writePngFormat);
@@ -180,42 +181,48 @@ namespace AMDiS
 
       std::string compressionStr = "";
       Parameters::get(name + "->compression", compressionStr);
-      if (compressionStr == "gzip" || compressionStr == "gz") {
-	compression = GZIP;
-      } else if (compressionStr == "bzip2" || compressionStr == "bz2") {
-	compression = BZIP2;
+      if (compressionStr == "gzip" || compressionStr == "gz")
+      {
+        compression = GZIP;
+      }
+      else if (compressionStr == "bzip2" || compressionStr == "bz2")
+      {
+        compression = BZIP2;
       }
     }
 
 
     template<typename T>
-    void FileWriter<T>::writeFiles(AdaptInfo *adaptInfo,
-					    bool force,
-					    int level,
-					    Flag flag,
-					    bool (*writeElem)(ElInfo*))
+    void FileWriter<T>::writeFiles(AdaptInfo* adaptInfo,
+                                   bool force,
+                                   int level,
+                                   Flag flag,
+                                   bool (*writeElem)(ElInfo*))
     {
       FUNCNAME("FileWriter<T>::writeFiles()");
 
       if (!super::doWriteTimestep(adaptInfo, force))
-	return;
-      
+        return;
+
       // Containers, which store the data to be written;
       std::vector<DataCollector<T>*> dataCollectors(solutionVecs.size());
-      
-      if (writeElem) {
-	for (int i = 0; i < static_cast<int>(dataCollectors.size()); i++)
-	  dataCollectors[i] = new DataCollector<T>(feSpace, solutionVecs[i], 
-						  level, flag, writeElem);
-      } else {
-	for (int i = 0; i < static_cast<int>(dataCollectors.size()); i++)
-	  dataCollectors[i] = new DataCollector<T>(feSpace, solutionVecs[i], 
-						  traverseLevel, 
-						  flag | traverseFlag, 
-						  writeElement);
+
+      if (writeElem)
+      {
+        for (int i = 0; i < static_cast<int>(dataCollectors.size()); i++)
+          dataCollectors[i] = new DataCollector<T>(feSpace, solutionVecs[i],
+              level, flag, writeElem);
       }
-      
-     std::string fn;
+      else
+      {
+        for (int i = 0; i < static_cast<int>(dataCollectors.size()); i++)
+          dataCollectors[i] = new DataCollector<T>(feSpace, solutionVecs[i],
+              traverseLevel,
+              flag | traverseFlag,
+              writeElement);
+      }
+
+      std::string fn;
 #ifdef HAVE_PARALLEL_DOMAIN_AMDIS
       std::string paraFilename, postfix;
       super::getFilename(adaptInfo, fn, paraFilename, postfix);
@@ -224,44 +231,47 @@ namespace AMDiS
       super::getFilename(adaptInfo, fn);
 #endif
 
-      if (writeParaViewVectorFormat) {
-	io::VtkVectorWriter::Aux<T> vtkVectorWriter(&dataCollectors, writeAs3dVector);
+      if (writeParaViewVectorFormat)
+      {
+        io::VtkVectorWriter::Aux<T> vtkVectorWriter(&dataCollectors, writeAs3dVector);
 #ifdef HAVE_COMPRESSION
-	vtkVectorWriter.setCompression(compression);
+        vtkVectorWriter.setCompression(compression);
 #endif
-	vtkVectorWriter.writeFile(fn + paraviewFileExt);
+        vtkVectorWriter.writeFile(fn + paraviewFileExt);
 
-  #if HAVE_PARALLEL_DOMAIN_AMDIS
-	if (MPI::COMM_WORLD.Get_rank() == 0)
-	  vtkVectorWriter.writeParallelFile(paraFilename + paraviewParallelFileExt,
-					    MPI::COMM_WORLD.Get_size(),
-					    filename, postfix);
-  #endif
-	  
-	MSG("ParaView file written to %s\n", (fn + paraviewFileExt).c_str());
-      }
-      
-      if (writeParaViewAnimation) {
-  #if HAVE_PARALLEL_DOMAIN_AMDIS
-	if (MPI::COMM_WORLD.Get_rank() == 0) {
-	  io::VtkWriter::detail::updateAnimationFile(adaptInfo,
-					paraFilename + paraviewParallelFileExt,
-					&paraviewAnimationFrames,
-					filename + ".pvd");
+#if HAVE_PARALLEL_DOMAIN_AMDIS
+        if (MPI::COMM_WORLD.Get_rank() == 0)
+          vtkVectorWriter.writeParallelFile(paraFilename + paraviewParallelFileExt,
+                                            MPI::COMM_WORLD.Get_size(),
+                                            filename, postfix);
+#endif
 
-	}
-  #else
-	io::VtkWriter::detail::updateAnimationFile(adaptInfo,
-				      fn + paraviewFileExt,
-				      &paraviewAnimationFrames,
-				      filename + ".pvd");
-  #endif
+        MSG("ParaView file written to %s\n", (fn + paraviewFileExt).c_str());
       }
-      
+
+      if (writeParaViewAnimation)
+      {
+#if HAVE_PARALLEL_DOMAIN_AMDIS
+        if (MPI::COMM_WORLD.Get_rank() == 0)
+        {
+          io::VtkWriter::detail::updateAnimationFile(adaptInfo,
+              paraFilename + paraviewParallelFileExt,
+              &paraviewAnimationFrames,
+              filename + ".pvd");
+
+        }
+#else
+        io::VtkWriter::detail::updateAnimationFile(adaptInfo,
+            fn + paraviewFileExt,
+            &paraviewAnimationFrames,
+            filename + ".pvd");
+#endif
+      }
+
       for (int i = 0; i < static_cast<int>(dataCollectors.size()); i++)
-	delete dataCollectors[i];
+        delete dataCollectors[i];
     }
-    
+
   } // end namespace detail
 } // end namespace AMDiS
 

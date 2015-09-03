@@ -6,9 +6,9 @@
 #include "Assembler.h"
 #include "FixVec.h"
 
-namespace AMDiS 
+namespace AMDiS
 {
-  /** 
+  /**
    * \ingroup Integration
    *
    * \brief
@@ -17,22 +17,22 @@ namespace AMDiS
   {
   public:
     /// Creates a SurfaceAssembler conforming to operate for the given \ref coords.
-    SurfaceAssembler(Operator *operat,
-            		     const FiniteElemSpace *rowFeSpace,
-            		     const FiniteElemSpace *colFeSpace,
-            		     VectorOfFixVecs<DimVec<double> > &coords);
+    SurfaceAssembler(Operator* operat,
+                     const FiniteElemSpace* rowFeSpace,
+                     const FiniteElemSpace* colFeSpace,
+                     VectorOfFixVecs<DimVec<double>>& coords);
 
     /// Destructor
     ~SurfaceAssembler();
 
     /// Adapt surface quadratures to \ref coords.
-    void adaptSurfaceAssembler(VectorOfFixVecs<DimVec<double> > &coords);
+    void adaptSurfaceAssembler(VectorOfFixVecs<DimVec<double>>& coords);
 
     ///
-    bool initElementVector(const ElInfo *elInfo);
+    bool initElementVector(const ElInfo* elInfo);
 
   protected:
-    VectorOfFixVecs<DimVec<double> > coords_;
+    VectorOfFixVecs<DimVec<double>> coords_;
   };
 
 } // end namespace AMDiS

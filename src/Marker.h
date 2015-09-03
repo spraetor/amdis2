@@ -11,12 +11,12 @@
 #include "MatrixVector.h"
 #include "Initfile.h"
 
-namespace AMDiS 
+namespace AMDiS
 {
 
   /**
    * \ingroup Adaption
-   * 
+   *
    * \brief
    * Base class for all scalar markers.
    */
@@ -28,13 +28,13 @@ namespace AMDiS
 
     /// Constructor.
     Marker(std::string name_, int row_)
-      : name(name_), 
-      	row(row_),
-      	maximumMarking(false),
-      	p(2),
-      	info(10),
-      	maxRefineLevel(-1),
-      	minRefineLevel(-1)
+      : name(name_),
+        row(row_),
+        maximumMarking(false),
+        p(2),
+        info(10),
+        maxRefineLevel(-1),
+        minRefineLevel(-1)
     {
       Parameters::get(name + "->p", p);
       Parameters::get(name + "->info", info);
@@ -48,66 +48,73 @@ namespace AMDiS
     /// Marks element with newMark. If \ref maximumMarking is set, the element
     /// is marked only if the new mark is bigger than the old one. The return
     /// value specifies whether the element has been marked, or not.
-    void setMark(Element *el, char newMark) 
+    void setMark(Element* el, char newMark)
     {
       // TODO: move implementation ouside of class
       char oldMark = el->getMark();
 
-      if (!maximumMarking || (newMark > oldMark)) {
-      	el->setMark(newMark);
-      
-      	if (oldMark > 0) {
-      	  elMarkRefine--; 
-      	} else {
-      	  if (oldMark < 0) 
-      	    elMarkCoarsen--;
-      	}
-      
-      	if (newMark > 0) {
-      	  elMarkRefine++; 
-      	} else { 
-      	  if (newMark < 0) 
-      	    elMarkCoarsen++;
-      	}
+      if (!maximumMarking || (newMark > oldMark))
+      {
+        el->setMark(newMark);
+
+        if (oldMark > 0)
+        {
+          elMarkRefine--;
+        }
+        else
+        {
+          if (oldMark < 0)
+            elMarkCoarsen--;
+        }
+
+        if (newMark > 0)
+        {
+          elMarkRefine++;
+        }
+        else
+        {
+          if (newMark < 0)
+            elMarkCoarsen++;
+        }
       }
     }
 
     /// Can be used by sub classes. Called before traversal.
-    virtual void initMarking(AdaptInfo *adaptInfo, Mesh *mesh);
+    virtual void initMarking(AdaptInfo* adaptInfo, Mesh* mesh);
 
     /// Can be used by sub classes. Called after traversal.
-    virtual void finishMarking(AdaptInfo *adaptInfo);
+    virtual void finishMarking(AdaptInfo* adaptInfo);
 
     /// Marks one element.
-    virtual void markElement(AdaptInfo *adaptInfo, ElInfo *elInfo);
-  
+    virtual void markElement(AdaptInfo* adaptInfo, ElInfo* elInfo);
+
     /// Marking of the mesh.
-    virtual Flag markMesh(AdaptInfo *adaptInfo, Mesh *mesh);
+    virtual Flag markMesh(AdaptInfo* adaptInfo, Mesh* mesh);
 
     /// Sets \ref maximumMarking.
-    void setMaximumMarking(bool maxMark) 
+    void setMaximumMarking(bool maxMark)
     {
       maximumMarking = maxMark;
     }
 
-    int getElMarkRefine() 
-    { 
-      return elMarkRefine; 
+    int getElMarkRefine()
+    {
+      return elMarkRefine;
     }
 
-    int getElMarkCoarsen() 
-    { 
-      return elMarkCoarsen; 
+    int getElMarkCoarsen()
+    {
+      return elMarkCoarsen;
     }
 
     /// Returns \ref name of the Marker
-    std::string getName() const 
-    { 
-      return name; 
+    std::string getName() const
+    {
+      return name;
     }
 
     /// Creates a scalr marker depending on the strategy set in parameters.
-    static Marker *createMarker(std::string name, int row_);
+    static Marker* createMarker(std::string name, int row_);
 
   protected:
     /// Name of the scalar marker.
@@ -131,7 +138,7 @@ namespace AMDiS
     /// refinement
     double markRLimit;
 
-    /// Upper limit for error estimation, from which an element is marked for 
+    /// Upper limit for error estimation, from which an element is marked for
     /// coarsening
     double markCLimit;
 
@@ -157,7 +164,7 @@ namespace AMDiS
 
   /**
    * \ingroup Adaption
-   * 
+   *
    * \brief
    * Global refinement.
    */
@@ -165,14 +172,14 @@ namespace AMDiS
   {
   public:
     /// Constructor.
-    GRMarker(std::string name_, int row_) 
-      : Marker(name_, row_) 
+    GRMarker(std::string name_, int row_)
+      : Marker(name_, row_)
     {}
 
     /// Implementation of Marker::markElement().
-    virtual void markElement(AdaptInfo *adaptInfo, ElInfo *elInfo) 
+    virtual void markElement(AdaptInfo* adaptInfo, ElInfo* elInfo)
     {
-      Element *el = elInfo->getElement();
+      Element* el = elInfo->getElement();
       if (adaptInfo->isRefinementAllowed(row == -1 ? 0 : row))
         setMark(el, adaptInfo->getRefineBisections(row == -1 ? 0 : row));
     }
@@ -181,7 +188,7 @@ namespace AMDiS
 
   /**
    * \ingroup Adaption
-   * 
+   *
    * \brief
    * Maximum strategy.
    */
@@ -189,18 +196,18 @@ namespace AMDiS
   {
   public:
     /// Constructor.
-    MSMarker(std::string name_, int row_) 
+    MSMarker(std::string name_, int row_)
       : Marker(name_, row_),
-      	MSGamma(0.5),
-      	MSGammaC(0.1)
+        MSGamma(0.5),
+        MSGammaC(0.1)
     {
       Parameters::get(name + "->MSGamma", MSGamma);
       Parameters::get(name + "->MSGammaC", MSGammaC);
     }
 
     /// Implementation of MarkScal::initMarking().
-    void initMarking(AdaptInfo *adaptInfo, Mesh *mesh);
-  
+    void initMarking(AdaptInfo* adaptInfo, Mesh* mesh);
+
   protected:
     /// Marking parameter.
     double MSGamma;
@@ -212,7 +219,7 @@ namespace AMDiS
 
   /**
    * \ingroup Adaption
-   * 
+   *
    * \brief
    * Equidistribution strategy
    */
@@ -220,18 +227,18 @@ namespace AMDiS
   {
   public:
     /// Constructor.
-    ESMarker(std::string name_, int row_) 
+    ESMarker(std::string name_, int row_)
       : Marker(name_, row_),
-      	ESTheta(0.9),
-      	ESThetaC(0.2)
+        ESTheta(0.9),
+        ESThetaC(0.2)
     {
       Parameters::get(name + "->ESTheta", ESTheta);
       Parameters::get(name + "->ESThetaC", ESThetaC);
     }
 
     /// Implementation of MarkScal::initMarking().
-    virtual void initMarking(AdaptInfo *adaptInfo, Mesh *mesh);
-  
+    virtual void initMarking(AdaptInfo* adaptInfo, Mesh* mesh);
+
   protected:
     /// Marking parameter.
     double ESTheta;
@@ -243,20 +250,20 @@ namespace AMDiS
 
   /**
    * \ingroup Adaption
-   * 
+   *
    * \brief
-   * Guaranteed error reduction strategy 
+   * Guaranteed error reduction strategy
    */
   class GERSMarker : public Marker
   {
   public:
     /// Constructor.
-    GERSMarker(std::string name_, int row_) 
+    GERSMarker(std::string name_, int row_)
       : Marker(name_, row_),
-      	oldErrSum(0.0),
-      	GERSThetaStar(0.6),
-      	GERSNu(0.1),
-      	GERSThetaC(0.1)
+        oldErrSum(0.0),
+        GERSThetaStar(0.6),
+        GERSNu(0.1),
+        GERSThetaC(0.1)
     {
       Parameters::get(name + "->GERSThetaStar", GERSThetaStar);
       Parameters::get(name + "->GERSNu", GERSNu);
@@ -264,14 +271,14 @@ namespace AMDiS
     }
 
     /// Implementation of Marker::markMesh().
-    virtual Flag markMesh(AdaptInfo *adaptInfo, Mesh *mesh);
+    virtual Flag markMesh(AdaptInfo* adaptInfo, Mesh* mesh);
 
   protected:
     /// Refinement marking function.
-    void markElementForRefinement(AdaptInfo *adaptInfo, ElInfo *elInfo);
+    void markElementForRefinement(AdaptInfo* adaptInfo, ElInfo* elInfo);
 
     /// Coarsening marking function.
-    void markElementForCoarsening(AdaptInfo *adaptInfo, ElInfo *elInfo);
+    void markElementForCoarsening(AdaptInfo* adaptInfo, ElInfo* elInfo);
 
   protected:
     /// Marking parameter.

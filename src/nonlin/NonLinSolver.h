@@ -5,7 +5,7 @@
  * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
  * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
  *
- * Authors: 
+ * Authors:
  * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
  *
  * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
@@ -15,7 +15,7 @@
  * This file is part of AMDiS
  *
  * See also license.opensource.txt in the distribution.
- * 
+ *
  ******************************************************************************/
 
 
@@ -38,9 +38,10 @@
 #include "parallel/ParallelProblemStat.h"
 #endif
 
-namespace AMDiS {
+namespace AMDiS
+{
 
-  /** 
+  /**
    * \ingroup Solver
    *
    * \brief
@@ -54,20 +55,20 @@ namespace AMDiS {
      *
      * \param name     Name of this solver
      */
-    NonLinSolver(const std::string &name, LinearSolverInterface *solver)
+    NonLinSolver(const std::string& name, LinearSolverInterface* solver)
       : name(name),
-	linSolver(solver),
-	tolerance(1.e-8),
-	maxIter(50),
-	info(8),
-	initialResidual(0.0),
-	residual(0.0),
-	usedNorm(NO_NORM)
+        linSolver(solver),
+        tolerance(1.e-8),
+        maxIter(50),
+        info(8),
+        initialResidual(0.0),
+        residual(0.0),
+        usedNorm(NO_NORM)
     {
       Parameters::get(name + "->tolerance", tolerance);
       Parameters::get(name + "->max iteration", maxIter);
       Parameters::get(name + "->info", info);
-      Parameters::get(name + "->norm", usedNorm);  
+      Parameters::get(name + "->norm", usedNorm);
     }
 
     /// Destructor
@@ -76,10 +77,10 @@ namespace AMDiS {
     /** \brief
      * solves the non linear system. Uses sub class methods
      */
-    inline int solve(SolverMatrix<Matrix<DOFMatrix*> >& mat,
-		     SystemVector &solution, SystemVector &rhs, 
-		     AdaptInfo *adaptInfo,
-		     ProblemStat *prob) 
+    inline int solve(SolverMatrix<Matrix<DOFMatrix*>>& mat,
+                     SystemVector& solution, SystemVector& rhs,
+                     AdaptInfo* adaptInfo,
+                     ProblemStat* prob)
     {
       init();
       solution.set(0.0);
@@ -99,8 +100,8 @@ namespace AMDiS {
     }
 
     inline LinearSolverInterface* getLinearSolverInterface()
-    { 
-      return linSolver; 
+    {
+      return linSolver;
     }
 
   protected:
@@ -108,18 +109,18 @@ namespace AMDiS {
     virtual void init() = 0;
 
     /// Solves the non linear system. Must be overriden in sub classes.
-    virtual int nlsolve(SolverMatrix<Matrix<DOFMatrix*> >& matVec,
-			SystemVector& x, 
-			SystemVector& rhs, 
-			AdaptInfo *adaptInfo,
-			ProblemStat *prob) = 0;
+    virtual int nlsolve(SolverMatrix<Matrix<DOFMatrix*>>& matVec,
+                        SystemVector& x,
+                        SystemVector& rhs,
+                        AdaptInfo* adaptInfo,
+                        ProblemStat* prob) = 0;
 
     /// Frees needed memory. Must be overriden in sub classes.
     virtual void exit() = 0;
-  
-    virtual int solveLinearSystem(SolverMatrix<Matrix<DOFMatrix*> >& mat,
-				  SystemVector &x, 
-				  SystemVector &b)
+
+    virtual int solveLinearSystem(SolverMatrix<Matrix<DOFMatrix*>>& mat,
+                                  SystemVector& x,
+                                  SystemVector& b)
     {
       FUNCNAME("NonLinSolver::solveLinearSystem()");
       TEST_EXIT(linSolver)("no solver\n");
@@ -131,7 +132,7 @@ namespace AMDiS {
     std::string name;
 
     /// Linear solver object.
-    LinearSolverInterface *linSolver;
+    LinearSolverInterface* linSolver;
 
     /// Solver tolerance.
     double tolerance;
@@ -146,33 +147,33 @@ namespace AMDiS {
     double initialResidual;
 
     /// Current residual.
-    double residual; 
+    double residual;
 
     /// Used norm for convergent test.
     Norm usedNorm;
   };
 
 
-  /// Interface for creators of concrete NonLinSolvers. 
+  /// Interface for creators of concrete NonLinSolvers.
   class NonLinSolverCreator : public CreatorInterface<NonLinSolver>
-  { 
+  {
   public:
     virtual ~NonLinSolverCreator() {}
 
-    void setName(std::string n) 
-    { 
-      name = n; 
+    void setName(std::string n)
+    {
+      name = n;
     }
 
-    void setLinearSolverInterface(LinearSolverInterface *solver) 
-    { 
-      linearSolver = solver; 
+    void setLinearSolverInterface(LinearSolverInterface* solver)
+    {
+      linearSolver = solver;
     }
 
   protected:
     std::string name;
 
-    LinearSolverInterface *linearSolver;
+    LinearSolverInterface* linearSolver;
   };
 
 }

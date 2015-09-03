@@ -6,7 +6,7 @@
 
 #include "ElInfo.h"
 
-namespace AMDiS 
+namespace AMDiS
 {
 
   /** \ingroup Traverse
@@ -23,7 +23,7 @@ namespace AMDiS
     ~ElInfo2d();
 
     /// 2-dimensional realisation of ElInfo's fillElInfo method.
-    virtual void fillElInfo(int ichild, const ElInfo *elinfo_old) override;
+    virtual void fillElInfo(int ichild, const ElInfo* elinfo_old) override;
 
     /// 2-dimensional realisation of ElInfo's fillMacroInfo method.
     virtual void fillMacroInfo(const MacroElement*) override;
@@ -32,13 +32,13 @@ namespace AMDiS
     virtual int worldToCoord(const WorldVector<double>& w, DimVec<double>& l) const override;
 
     /// 2-dimensional realisation of ElInfo's calcGrdLambda method.
-    virtual double calcGrdLambda(DimVec<WorldVector<double> >& grd_lam) override;
+    virtual double calcGrdLambda(DimVec<WorldVector<double>>& grd_lam) override;
 
     /// 2-dimensional realisation of ElInfo's getNormal method.
-    virtual double getNormal(int side, WorldVector<double> &normal) const override;
+    virtual double getNormal(int side, WorldVector<double>& normal) const override;
 
     /// 2-dimensional realisation of ElInfo's getElementNormal method.
-    virtual double getElementNormal(WorldVector<double> &normal) const override;
+    virtual double getElementNormal(WorldVector<double>& normal) const override;
 
     /// implements \ref Elnfo::getSubElemCoordsMat
     virtual mtl::dense2D<double>& getSubElemCoordsMat(int degree) const override;

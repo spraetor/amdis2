@@ -5,7 +5,7 @@
  * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
  * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
  *
- * Authors: 
+ * Authors:
  * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
  *
  * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
@@ -15,7 +15,7 @@
  * This file is part of AMDiS
  *
  * See also license.opensource.txt in the distribution.
- * 
+ *
  ******************************************************************************/
 
 
@@ -31,97 +31,98 @@
 #include "NormEps.h"
 #include "VelocityExt.h"
 
-namespace reinit {
-
-using namespace AMDiS;
-
-/////////////////////////////////////////////////////////////////////////////
-//  c l a s s   V e l o c i t y E x t F r o m V e l o c i t y F i e l d    //
-/////////////////////////////////////////////////////////////////////////////
-class VelocityExtFromVelocityField : public VelocityExt
+namespace reinit
 {
-public:
 
-  VelocityExtFromVelocityField(int dim_)
-    : VelocityExt(dim_),
-      lSFct(NULL),
-      elNormalVel(dim_),
-      basFcts(NULL)
+  using namespace AMDiS;
+
+  /////////////////////////////////////////////////////////////////////////////
+  //  c l a s s   V e l o c i t y E x t F r o m V e l o c i t y F i e l d    //
+  /////////////////////////////////////////////////////////////////////////////
+  class VelocityExtFromVelocityField : public VelocityExt
   {
-    lSFctVal.change_dim(dim + 1);
-    
-    // ===== set epsilon for norm regularization =====
-    NormEps::setEps();
-  }
+  public:
 
-  ~VelocityExtFromVelocityField()
-  {}
+    VelocityExtFromVelocityField(int dim_)
+      : VelocityExt(dim_),
+        lSFct(NULL),
+        elNormalVel(dim_),
+        basFcts(NULL)
+    {
+      lSFctVal.change_dim(dim + 1);
 
-  /**
-   * Set velocity field.
-   */
-  void setVelocityField(std::vector<DOFVector<double> *> &velField_,
-			const DOFVector<double> *lSFct_,
-			DOFVector<double> *velDOF_)
-  {
-    FUNCNAME("VelocityExtFromVelocityField::setVelocityField()");
+      // ===== set epsilon for norm regularization =====
+      NormEps::setEps();
+    }
 
-    nVelDOFs = 1;
+    ~VelocityExtFromVelocityField()
+    {}
 
-    velField = velField_;
-    lSFct = lSFct_;
-    velDOF.clear();
-    velDOF.push_back(velDOF_);
-    origVelDOF.clear();
+    /**
+     * Set velocity field.
+     */
+    void setVelocityField(std::vector<DOFVector<double> *>& velField_,
+                          const DOFVector<double>* lSFct_,
+                          DOFVector<double>* velDOF_)
+    {
+      FUNCNAME("VelocityExtFromVelocityField::setVelocityField()");
 
-    TEST_EXIT(lSFct)("level set function not defined !\n");
-    TEST_EXIT((int)velField.size() == dim)("illegal velocity field !\n");
-    TEST_EXIT(lSFct->getFeSpace() == velDOF_->getFeSpace())
+      nVelDOFs = 1;
+
+      velField = velField_;
+      lSFct = lSFct_;
+      velDOF.clear();
+      velDOF.push_back(velDOF_);
+      origVelDOF.clear();
+
+      TEST_EXIT(lSFct)("level set function not defined !\n");
+      TEST_EXIT((int)velField.size() == dim)("illegal velocity field !\n");
+      TEST_EXIT(lSFct->getFeSpace() == velDOF_->getFeSpace())
       ("different feSpaces !\n");
 
-    basFcts = lSFct->getFeSpace()->getBasisFcts();
+      basFcts = lSFct->getFeSpace()->getBasisFcts();
+    };
+
+    /**
+     * Adaption of VelocityExt::calcVelocityBoundary().
+     * Used to initialize normal velocity at interface elements.
+     */
+    void calcVelocityBoundary(DegreeOfFreedom* locInd, const int indexV);
+
+    /**
+     * Sets elInfo.
+     */
+    inline void setElInfo(ElInfo* elInfo_)
+    {
+      elInfo = elInfo_;
+    }
+
+  protected:
+    /**
+     * Velocity field at interface.
+     */
+    std::vector<DOFVector<double> *> velField;
+
+    /**
+     * Interface is zero level set of level set function lSFct.
+     */
+    const DOFVector<double>* lSFct;
+
+    /**
+     * Normal velocity on a single element. Used to set normal velocity
+     * in velDOF on interface elements.
+     */
+    DimVec<double> elNormalVel;
+
+    /// Values of level set function in vertices of element.
+    DenseVector<double> lSFctVal;
+
+    /// Basis functions.
+    const BasisFunction* basFcts;
+
+    /// ElInfo used in calcVelocityBoundary().
+    ElInfo* elInfo;
   };
-
-  /**
-   * Adaption of VelocityExt::calcVelocityBoundary().
-   * Used to initialize normal velocity at interface elements.
-   */
-  void calcVelocityBoundary(DegreeOfFreedom *locInd, const int indexV);
-
-  /**
-   * Sets elInfo.
-   */
-  inline void setElInfo(ElInfo *elInfo_) 
-  {
-    elInfo = elInfo_;
-  }
-
- protected:
-  /**
-   * Velocity field at interface.
-   */
-  std::vector<DOFVector<double> *> velField;
-
-  /**
-   * Interface is zero level set of level set function lSFct.
-   */
-  const DOFVector<double> *lSFct;
-
-  /**
-   * Normal velocity on a single element. Used to set normal velocity
-   * in velDOF on interface elements.
-   */
-  DimVec<double> elNormalVel;
-
-  /// Values of level set function in vertices of element.
-  DenseVector<double> lSFctVal;
-
-  /// Basis functions.
-  const BasisFunction *basFcts;
-
-  /// ElInfo used in calcVelocityBoundary().
-  ElInfo *elInfo;
-};
 
 }
 

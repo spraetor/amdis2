@@ -5,7 +5,7 @@
  * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
  * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
  *
- * Authors: 
+ * Authors:
  * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
  *
  * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
@@ -15,7 +15,7 @@
  * This file is part of AMDiS
  *
  * See also license.opensource.txt in the distribution.
- * 
+ *
  ******************************************************************************/
 
 
@@ -28,7 +28,8 @@
 #include "AMDiS_fwd.h"
 #include "CreatorInterface.h"
 
-namespace AMDiS {
+namespace AMDiS
+{
 
   class RosenbrockMethod
   {
@@ -37,7 +38,7 @@ namespace AMDiS {
 
     virtual ~RosenbrockMethod() {}
 
-    inline int getOrder() 
+    inline int getOrder()
     {
       return order;
     }
@@ -71,12 +72,12 @@ namespace AMDiS {
     {
       return m2[i];
     }
-    
+
     inline double getAlphaI(int i)
     {
       return a[i][i];
     }
-    
+
     inline double getGammaI(int i)
     {
       return c[i][i];
@@ -92,9 +93,9 @@ namespace AMDiS {
 
     double gamma;
 
-    std::vector<std::vector<double> > a;
+    std::vector<std::vector<double>> a;
 
-    std::vector<std::vector<double> > c;
+    std::vector<std::vector<double>> c;
 
     std::vector<double> m1;
 
@@ -121,7 +122,7 @@ namespace AMDiS {
 
       RosenbrockMethod* create()
       {
-	return new Ros2();
+        return new Ros2();
       }
     };
 
@@ -143,7 +144,7 @@ namespace AMDiS {
 
       RosenbrockMethod* create()
       {
-	return new Rowda3();
+        return new Rowda3();
       }
     };
 
@@ -165,7 +166,7 @@ namespace AMDiS {
 
       RosenbrockMethod* create()
       {
-	return new Ros3p();
+        return new Ros3p();
       }
     };
 
@@ -187,7 +188,7 @@ namespace AMDiS {
 
       RosenbrockMethod* create()
       {
-	return new Rodasp();
+        return new Rodasp();
       }
     };
 
@@ -209,7 +210,7 @@ namespace AMDiS {
 
       RosenbrockMethod* create()
       {
-	return new ROSI2P1();
+        return new ROSI2P1();
       }
     };
 
@@ -217,7 +218,7 @@ namespace AMDiS {
 
     ~ROSI2P1() {}
   };
-  
+
 
   class ROSI2P2 : public RosenbrockMethod
   {
@@ -231,7 +232,7 @@ namespace AMDiS {
 
       RosenbrockMethod* create()
       {
-	return new ROSI2P2();
+        return new ROSI2P2();
       }
     };
 
@@ -239,7 +240,7 @@ namespace AMDiS {
 
     ~ROSI2P2() {}
   };
-  
+
 
   class ROSI2Pw : public RosenbrockMethod
   {
@@ -253,7 +254,7 @@ namespace AMDiS {
 
       RosenbrockMethod* create()
       {
-	return new ROSI2Pw();
+        return new ROSI2Pw();
       }
     };
 
@@ -261,7 +262,7 @@ namespace AMDiS {
 
     ~ROSI2Pw() {}
   };
-  
+
 
   class ROSI2PW : public RosenbrockMethod
   {
@@ -275,7 +276,7 @@ namespace AMDiS {
 
       RosenbrockMethod* create()
       {
-	return new ROSI2PW();
+        return new ROSI2PW();
       }
     };
 
@@ -283,7 +284,7 @@ namespace AMDiS {
 
     ~ROSI2PW() {}
   };
-  
+
 
   class Ros3Pw : public RosenbrockMethod
   {
@@ -297,7 +298,7 @@ namespace AMDiS {
 
       RosenbrockMethod* create()
       {
-	return new Ros3Pw();
+        return new Ros3Pw();
       }
     };
 
@@ -305,7 +306,7 @@ namespace AMDiS {
 
     ~Ros3Pw() {}
   };
-    
+
 
   class Ros34PW2 : public RosenbrockMethod
   {
@@ -319,7 +320,7 @@ namespace AMDiS {
 
       RosenbrockMethod* create()
       {
-	return new Ros34PW2();
+        return new Ros34PW2();
       }
     };
 

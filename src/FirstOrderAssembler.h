@@ -7,12 +7,12 @@
 #include "AMDiS_fwd.h"
 #include "SubAssembler.h"
 
-namespace AMDiS 
+namespace AMDiS
 {
 
   /**
    * \ingroup Assembler
-   * 
+   *
    * \brief
    * SubAssembler for first order terms.
    */
@@ -20,49 +20,49 @@ namespace AMDiS
   {
   public:
     /// Creates and returns the FirstOrderAssembler for Operator op and
-    /// the given assembler. If all terms are piecewise constant precalculated 
-    /// integrals can be used while assembling and the returned 
+    /// the given assembler. If all terms are piecewise constant precalculated
+    /// integrals can be used while assembling and the returned
     /// ZeroOrderAssembler is of type Pre0. Otherwise a Quad0 object will
     /// be returned.
-    static FirstOrderAssembler* getSubAssembler(Operator *op,
-						Assembler *assembler,
-						Quadrature *quadrat,
-						FirstOrderType type,
-						bool optimized);
-  
+    static FirstOrderAssembler* getSubAssembler(Operator* op,
+        Assembler* assembler,
+        Quadrature* quadrat,
+        FirstOrderType type,
+        bool optimized);
+
     /// Destructor.
     virtual ~FirstOrderAssembler() {}
 
   protected:
     /// Constructor.
-    FirstOrderAssembler(Operator *op,
-			Assembler *assembler,
-			Quadrature *quadrat,
-			bool optimized,
-			FirstOrderType type);
+    FirstOrderAssembler(Operator* op,
+                        Assembler* assembler,
+                        Quadrature* quadrat,
+                        bool optimized,
+                        FirstOrderType type);
 
 
   protected:
     /// Vector of DimMats for calculation in function calculateElementMatrix().
-    std::vector<DenseVector<double> > Lb;
+    std::vector<DenseVector<double>> Lb;
 
     /// List of all yet created optimized zero order assemblers for grdPsi.
-    static ThreadPrivate<std::vector<SubAssembler*> > optimizedSubAssemblersGrdPsi;
+    static ThreadPrivate<std::vector<SubAssembler*>> optimizedSubAssemblersGrdPsi;
 
     /// List of all yet created standard zero order assemblers for grdPsi.
-    static ThreadPrivate<std::vector<SubAssembler*> > standardSubAssemblersGrdPsi;
+    static ThreadPrivate<std::vector<SubAssembler*>> standardSubAssemblersGrdPsi;
 
     /// List of all yet created optimized zero order assemblers for grdPhi.
-    static ThreadPrivate<std::vector<SubAssembler*> > optimizedSubAssemblersGrdPhi;
+    static ThreadPrivate<std::vector<SubAssembler*>> optimizedSubAssemblersGrdPhi;
 
     /// List of all yet created standard zero order assemblers for grdPhi.
-    static ThreadPrivate<std::vector<SubAssembler*> > standardSubAssemblersGrdPhi;
+    static ThreadPrivate<std::vector<SubAssembler*>> standardSubAssemblersGrdPhi;
   };
 
 
   /**
    * \ingroup Assembler
-   * 
+   *
    * \brief
    * Standard first order assembler for grdPsi.
    */
@@ -70,23 +70,23 @@ namespace AMDiS
   {
   public:
     /// Constructor
-    Stand10(Operator *op, Assembler *assembler, Quadrature *quad);
+    Stand10(Operator* op, Assembler* assembler, Quadrature* quad);
 
   private:
     /// Implements SubAssembler::calculateElementMatrix().
-    virtual void calculateElementMatrixImpl(const ElInfo *elInfo, ElementMatrix& mat) override;
+    virtual void calculateElementMatrixImpl(const ElInfo* elInfo, ElementMatrix& mat) override;
 
     /// Implements SubAssembler::calculateElementVector().
-    virtual void calculateElementVectorImpl(const ElInfo *, DenseVector<double>&) override;
+    virtual void calculateElementVectorImpl(const ElInfo*, DenseVector<double>&) override;
 
   protected:
-    const BasisFunction *psi, *phi;
+    const BasisFunction* psi, *phi;
   };
 
 
   /**
    * \ingroup Assembler
-   * 
+   *
    * \brief
    * Standard first order assembler for grdPhi.
    */
@@ -94,11 +94,11 @@ namespace AMDiS
   {
   public:
     /// Constructor.
-    Stand01(Operator *op, Assembler *assembler, Quadrature *quad);
+    Stand01(Operator* op, Assembler* assembler, Quadrature* quad);
 
   private:
     /// Implements SubAssembler::calculateElementMatrix().
-    virtual void calculateElementMatrixImpl(const ElInfo *elInfo, ElementMatrix& mat) override;
+    virtual void calculateElementMatrixImpl(const ElInfo* elInfo, ElementMatrix& mat) override;
 
     /// Implements SubAssembler::calculateElementVector().
     virtual void calculateElementVectorImpl(const ElInfo*, DenseVector<double>&) override
@@ -107,15 +107,15 @@ namespace AMDiS
     }
 
   protected:
-    std::vector<DenseVector<double> > grdPhi;
+    std::vector<DenseVector<double>> grdPhi;
 
-    const BasisFunction *psi, *phi;
+    const BasisFunction* psi, *phi;
   };
 
 
   /**
    * \ingroup Assembler
-   * 
+   *
    * \brief
    * First order assembler for grdPsi using fast quadratures.
    */
@@ -123,32 +123,32 @@ namespace AMDiS
   {
   public:
     /// Constructor.
-    Quad10(Operator *op, Assembler *assembler, Quadrature *quad);
+    Quad10(Operator* op, Assembler* assembler, Quadrature* quad);
 
   private:
     /// Implements SubAssembler::calculateElementMatrix().
-    virtual void calculateElementMatrixImpl(const ElInfo *elInfo, ElementMatrix& mat) override;
+    virtual void calculateElementMatrixImpl(const ElInfo* elInfo, ElementMatrix& mat) override;
 
     /// Implements SubAssembler::calculateElementVector().
-    virtual void calculateElementVectorImpl(const ElInfo *, DenseVector<double>&) override;
+    virtual void calculateElementVectorImpl(const ElInfo*, DenseVector<double>&) override;
   };
 
-  
+
   /**
    * \ingroup Assembler
-   * 
+   *
    * \brief
    * First order assembler for grdPhi using fast quadratures.
    */
-  class Quad01 : public FirstOrderAssembler 
+  class Quad01 : public FirstOrderAssembler
   {
   public:
     /// Constructor.
-    Quad01(Operator *op, Assembler *assembler, Quadrature *quad);
+    Quad01(Operator* op, Assembler* assembler, Quadrature* quad);
 
   private:
     /// Implements SubAssembler::calculateElementMatrix().
-    virtual void calculateElementMatrixImpl(const ElInfo *elInfo, ElementMatrix& mat) override;
+    virtual void calculateElementMatrixImpl(const ElInfo* elInfo, ElementMatrix& mat) override;
 
     /// Implements SubAssembler::calculateElementVector().
     virtual void calculateElementVectorImpl(const ElInfo*, DenseVector<double>&) override
@@ -164,27 +164,25 @@ namespace AMDiS
    * \brief
    * First order assembler for grdPsi using precalculated integrals
    */
-  class Pre10 : public FirstOrderAssembler 
+  class Pre10 : public FirstOrderAssembler
   {
   public:
     /// Constructor.
-    Pre10(Operator *op, Assembler *assembler, Quadrature *quad);
+    Pre10(Operator* op, Assembler* assembler, Quadrature* quad);
 
   private:
     /// Implements SubAssembler::calculateElementMatrix().
-    virtual void calculateElementMatrixImpl(const ElInfo *elInfo, ElementMatrix& mat) override;
+    virtual void calculateElementMatrixImpl(const ElInfo* elInfo, ElementMatrix& mat) override;
 
     /// Implements SubAssembler::calculateElementVector().
     virtual void calculateElementVectorImpl(const ElInfo*, DenseVector<double>&) override;
 
   protected:
     /// Integral of the product of the derivative of psi and phi.
-    const Q10PsiPhi *q10;
+    const Q10PsiPhi* q10;
 
     /// Integral of the derivative of psi.
-    const Q1Psi *q1;
-
-    friend class FirstOrderAssembler;
+    const Q1Psi* q1;
   };
 
 
@@ -194,15 +192,15 @@ namespace AMDiS
    * \brief
    *  First order assembler for grdPhi using precalculated integrals
    */
-  class Pre01 : public FirstOrderAssembler 
+  class Pre01 : public FirstOrderAssembler
   {
   public:
     /// Constructor.
-    Pre01(Operator *op, Assembler *assembler, Quadrature *quad);
+    Pre01(Operator* op, Assembler* assembler, Quadrature* quad);
 
   private:
     /// Implements SubAssembler::calculateElementMatrix().
-    virtual void calculateElementMatrixImpl(const ElInfo *elInfo, ElementMatrix& mat) override;
+    virtual void calculateElementMatrixImpl(const ElInfo* elInfo, ElementMatrix& mat) override;
 
     /// Implements SubAssembler::calculateElementVector().
     virtual void calculateElementVectorImpl(const ElInfo*, DenseVector<double>&) override
@@ -212,12 +210,10 @@ namespace AMDiS
 
   protected:
     /// Integral of the product of psi and the derivative of phi.
-    const Q01PsiPhi *q01;
+    const Q01PsiPhi* q01;
 
     /// Integral of the derivative of phi.
-    const Q1Psi *q1;
-
-    friend class FirstOrderAssembler;
+    const Q1Psi* q1;
   };
 
 } // end namespace AMDiS

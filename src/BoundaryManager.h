@@ -9,11 +9,11 @@
 #include "AMDiS_base.h"
 #include "Boundary.h"
 
-namespace AMDiS 
+namespace AMDiS
 {
   // forward declaration
   class BoundaryCondition;
-  
+
   using BoundaryIndexMap = std::map<BoundaryType, BoundaryCondition*>;
 
   /**
@@ -29,7 +29,7 @@ namespace AMDiS
   public:
     /// Constructor. Reads the nr. of basis functions and allocates an
     /// array \ref localBound of this size.
-    BoundaryManager(const FiniteElemSpace *feSpace);
+    BoundaryManager(const FiniteElemSpace* feSpace);
 
     /// Copy constructor.
     BoundaryManager(BoundaryManager const& bm);
@@ -38,30 +38,30 @@ namespace AMDiS
     virtual ~BoundaryManager();
 
     /// Adds a local boundary condition to the list of managed conditions.
-    void addBoundaryCondition(BoundaryCondition *localBC);
+    void addBoundaryCondition(BoundaryCondition* localBC);
 
-    void initMatrix(DOFMatrix *matrix);
+    void initMatrix(DOFMatrix* matrix);
 
-    void exitMatrix(DOFMatrix *matrix);
+    void exitMatrix(DOFMatrix* matrix);
 
-    void initVector(DOFVectorBase<double> *vector);
+    void initVector(DOFVectorBase<double>* vector);
 
-    void exitVector(DOFVectorBase<double> *vector);
+    void exitVector(DOFVectorBase<double>* vector);
 
     /// Calls DOFVectorBase::fillBoundaryCondition() for each local boundary
     /// condition in \ref localBCs.
-    void fillBoundaryConditions(ElInfo *elInfo, DOFVectorBase<double> *vec);
+    void fillBoundaryConditions(ElInfo* elInfo, DOFVectorBase<double>* vec);
 
     /// Calls DOFMatrix::fillBoundaryCondition() for each local boundary condition
     /// in \ref localBCs.
-    void fillBoundaryConditions(ElInfo *elInfo, DOFMatrix *mat);
+    void fillBoundaryConditions(ElInfo* elInfo, DOFMatrix* mat);
 
-    /// Calls BoundaryCondition::boundResidual() for each boundary condition in 
+    /// Calls BoundaryCondition::boundResidual() for each boundary condition in
     /// \ref localBCs.
-    double boundResidual(ElInfo *elInfo, DOFMatrix *matrix, 
-			                   const DOFVectorBase<double> *dv);
+    double boundResidual(ElInfo* elInfo, DOFMatrix* matrix,
+                         const DOFVectorBase<double>* dv);
 
-    BoundaryCondition *getBoundaryCondition(BoundaryType type)
+    BoundaryCondition* getBoundaryCondition(BoundaryType type)
     {
       return localBCs[type];
     }
@@ -71,11 +71,11 @@ namespace AMDiS
       return localBCs;
     }
 
-    void setBoundaryConditionMap(const BoundaryIndexMap& bcs) 
+    void setBoundaryConditionMap(const BoundaryIndexMap& bcs)
     {
       localBCs = bcs;
     }
-    
+
     /// Returns true, if there is at least one boundary object with the given
     /// boundary id, which implements a periodic boundary.
     static bool isBoundaryPeriodic(BoundaryType b);
@@ -97,9 +97,9 @@ namespace AMDiS
     /** \brief
      * For every boundary id we store here all possible boundary object (although
      * it's not clear if it is meaningful to have different boundary conditions on
-     * the same boundary id). 
+     * the same boundary id).
      *
-     * We have to use this global variable, because the mesh traverse interface 
+     * We have to use this global variable, because the mesh traverse interface
      * does not provide more information about traversed boundaries at elements
      * than the boundary id.
      *
@@ -107,7 +107,7 @@ namespace AMDiS
      * directly and we can remove this global variable. The biggest problem will be
      * than serialization and deserialization of the mesh.
      */
-    static std::map<BoundaryType, std::vector<BoundaryCondition*> > globalBoundaryMap;
+    static std::map<BoundaryType, std::vector<BoundaryCondition*>> globalBoundaryMap;
   };
 
 } // end namespace AMDiS

@@ -6,7 +6,7 @@
 
 #include "ElInfo.h"
 
-namespace AMDiS 
+namespace AMDiS
 {
 
   /** \ingroup Traverse
@@ -17,8 +17,8 @@ namespace AMDiS
   {
   public:
     /// Constructor. Calls ElInfo's protected Constructor.
-    ElInfo3d(Mesh* aMesh) 
-      : ElInfo(aMesh) 
+    ElInfo3d(Mesh* aMesh)
+      : ElInfo(aMesh)
     {
       tmpWorldVecs.resize(3);
       for (int i = 0; i < 3; i++)
@@ -26,43 +26,43 @@ namespace AMDiS
     }
 
     /// Assignment operator
-    ElInfo3d& operator=(const ElInfo3d& rhs) 
+    ElInfo3d& operator=(const ElInfo3d& rhs)
     {
       ElInfo::operator=(rhs);
       elType = rhs.elType;
       orientation = rhs.orientation;
       return *this;
-    } 
+    }
 
     /// get ElInfo's \ref orientation
-    signed char getOrientation() const 
-    { 
-      return orientation; 
+    signed char getOrientation() const
+    {
+      return orientation;
     }
 
     /// set ElInfo's \ref orientation to o
-    void setOrientation(signed char o) 
-    { 
-      orientation = o; 
+    void setOrientation(signed char o)
+    {
+      orientation = o;
     }
 
     /// 3-dimensional realisation of ElInfo's fillElInfo method.
-    virtual void fillElInfo(int ichild, const ElInfo *elinfo_old) override;
+    virtual void fillElInfo(int ichild, const ElInfo* elinfo_old) override;
 
     /// 3-dimensional realisation of ElInfo's fillMacroInfo method.
-    virtual void fillMacroInfo(const MacroElement *) override;
+    virtual void fillMacroInfo(const MacroElement*) override;
 
     /// 3-dimensional realisation of ElInfo's worldToCoord method.
     virtual int worldToCoord(const WorldVector<double>& w, DimVec<double>& l) const override;
 
     /// 3-dimensional realisation of ElInfo's calcGrdLambda method.
-    virtual double calcGrdLambda(DimVec<WorldVector<double> >& grd_lam) override;
+    virtual double calcGrdLambda(DimVec<WorldVector<double>>& grd_lam) override;
 
     /// 3-dimensional realisation of ElInfo's getNormal method.
-    virtual double getNormal(int side, WorldVector<double> &normal) const override;
-    
-    
-    virtual double getElementNormal(WorldVector<double> &normal) const override
+    virtual double getNormal(int side, WorldVector<double>& normal) const override;
+
+
+    virtual double getElementNormal(WorldVector<double>& normal) const override
     {
       ERROR_EXIT("ElementNormal not available in 3d!");
       return 0.0;
@@ -82,7 +82,7 @@ namespace AMDiS
     signed char orientation;
 
     /// Tmp vectors used for calculations in calcGrdLambda and getNormal().
-    std::vector< std::vector<double> > tmpWorldVecs;
+    std::vector<std::vector<double>> tmpWorldVecs;
 
     static double mat_d1_left_val[4][4];
     static mtl::dense2D<double> mat_d1_left;

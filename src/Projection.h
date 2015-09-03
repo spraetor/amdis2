@@ -9,10 +9,11 @@
 #include <Log.h>
 #include <MatrixVector_fwd.h>
 
-namespace AMDiS 
-{  
+namespace AMDiS
+{
   /// Different possible types for a \ref Projection.
-  enum ProjectionType {
+  enum ProjectionType
+  {
     BOUNDARY_PROJECTION = 0, /**< Projection of boundary parts of an element. */
     VOLUME_PROJECTION = 1    /**< Projection of whole elements. */
   };
@@ -28,13 +29,13 @@ namespace AMDiS
   {
   public:
     /// Constructs a prjection with given id and type.
-    Projection(int id, ProjectionType type) 
+    Projection(int id, ProjectionType type)
       : projectionID(id),
-      	projectionType(type)
+        projectionType(type)
     {
       TEST_EXIT(id != 0)("don't use 0 as projection id. is used as no projection\n");
       TEST_EXIT(projectionMap[id] == NULL)
-      	("there is already a projection with this id\n");
+      ("there is already a projection with this id\n");
       projectionMap[id] = this;
     }
 
@@ -45,18 +46,18 @@ namespace AMDiS
 
     /// Returns \ref projectionID.
     int getID() const
-    { 
-      return projectionID; 
+    {
+      return projectionID;
     }
 
     /// Returns \ref projectionType;
     ProjectionType getType() const
-    { 
-      return projectionType; 
+    {
+      return projectionType;
     }
-    
+
     /// Returns the projection with the given id, if existing. Returns NULL otherwise.
-    static Projection* getProjection(int id) 
+    static Projection* getProjection(int id)
     {
       return projectionMap[id];
     }

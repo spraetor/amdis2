@@ -5,7 +5,7 @@
  * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
  * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
  *
- * Authors: 
+ * Authors:
  * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
  *
  * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
@@ -15,7 +15,7 @@
  * This file is part of AMDiS
  *
  * See also license.opensource.txt in the distribution.
- * 
+ *
  ******************************************************************************/
 
 
@@ -27,21 +27,21 @@
 
 #include "MTL4Types.h"
 
-namespace AMDiS 
+namespace AMDiS
 {
   template<typename T>
   struct Collection {};
 
   template<>
-  struct Collection< MTLTypes::MTLMatrix > 
+  struct Collection<MTLTypes::MTLMatrix>
   {
-    typedef mtl::matrix::inserter< MTLTypes::MTLMatrix > Inserter;
+    typedef mtl::matrix::inserter<MTLTypes::MTLMatrix> Inserter;
   };
 
   template<>
-  struct Collection< MTLTypes::MTLVector > 
+  struct Collection<MTLTypes::MTLVector>
   {
-    typedef mtl::vector::inserter< MTLTypes::MTLVector > Inserter;
+    typedef mtl::vector::inserter<MTLTypes::MTLVector> Inserter;
     typedef MTLTypes::MTLMatrix PreconditionMatrix;
   };
 }

@@ -28,43 +28,43 @@ typedef size_t aligned_size_t   __attribute__ ((aligned(CACHE_LINE)));
 #if __cplusplus > 199711L
 
 #if GCC_VERSION >= 40300
-  #define HAS_VARIADIC_TEMPLATES 1
+#define HAS_VARIADIC_TEMPLATES 1
 #endif
 
 #if GCC_VERSION >= 40700
-  #define HAS_ALIAS_TEMPLATES 1
+#define HAS_ALIAS_TEMPLATES 1
 #endif
 
 #if GCC_VERSION >= 40300
-  #define HAS_DECLTYPE 1
+#define HAS_DECLTYPE 1
 #endif
 
 #if GCC_VERSION >= 40600
-  #define HAS_CONSTEXPR 1
+#define HAS_CONSTEXPR 1
 #endif
 
 #if GCC_VERSION >= 40700
-  #define HAS_DELEGATING_CONSTRUCTORS 1
+#define HAS_DELEGATING_CONSTRUCTORS 1
 #endif
 
 #if GCC_VERSION >= 40600
-  #define HAS_RANGE_BASED_FOR 1
+#define HAS_RANGE_BASED_FOR 1
 #endif
 
 #if GCC_VERSION >= 40400
-  #define HAS_INITIALIZER_LISTS 1
+#define HAS_INITIALIZER_LISTS 1
 #endif
 
 #if GCC_VERSION >= 40700
-  #define HAS_OVERRIDE 1
+#define HAS_OVERRIDE 1
 #endif
 
 #if GCC_VERSION >= 40400
-  #define HAS_TYPED_ENUMS 1
+#define HAS_TYPED_ENUMS 1
 #endif
 
 #if GCC_VERSION >= 40300
-  #define HAS_RVALUE_REFERENCES 1
+#define HAS_RVALUE_REFERENCES 1
 #endif
 
 #endif

@@ -16,7 +16,7 @@
 #include "BoundaryManager.h"
 #include "Assembler.h"
 
-namespace AMDiS 
+namespace AMDiS
 {
   using namespace mtl;
 
@@ -32,11 +32,11 @@ namespace AMDiS
 
 
   DOFMatrix::DOFMatrix(const FiniteElemSpace* rowSpace,
-		       const FiniteElemSpace* colSpace,
-		       std::string n)
+                       const FiniteElemSpace* colSpace,
+                       std::string n)
     : rowFeSpace(rowSpace),
       colFeSpace(colSpace),
-      name(n), 
+      name(n),
       coupleMatrix(false),
       nnzPerRow(0),
       inserter(NULL)
@@ -70,20 +70,20 @@ namespace AMDiS
 
   DOFMatrix::~DOFMatrix()
   {
-    if (boundaryManager) 
+    if (boundaryManager)
       delete boundaryManager;
-    if (inserter) 
+    if (inserter)
       delete inserter;
   }
 
 
   void DOFMatrix::print() const
   {
-    if (inserter) 
+    if (inserter)
       inserter->print();
   }
 
-  int DOFMatrix::getUsedSize() const 
+  int DOFMatrix::getUsedSize() const
   {
     return rowFeSpace->getAdmin()->getUsedSize();
   }
@@ -104,7 +104,7 @@ namespace AMDiS
       boundaryManager = new BoundaryManager(*rhs.boundaryManager);
     else
       boundaryManager = NULL;
-    
+
     nRow = rhs.nRow;
     nCol = rhs.nCol;
     elementMatrix.change_dim(nRow, nCol);
@@ -113,87 +113,98 @@ namespace AMDiS
   }
 
 
-  void DOFMatrix::addElementMatrix(const ElementMatrix& elMat, 
-				   const BoundaryType *bound,
-				   ElInfo* rowElInfo,
-				   ElInfo* colElInfo)
+  void DOFMatrix::addElementMatrix(const ElementMatrix& elMat,
+                                   const BoundaryType* bound,
+                                   ElInfo* rowElInfo,
+                                   ElInfo* colElInfo)
   {
     FUNCNAME_DBG("DOFMatrix::addElementMatrix()");
 
     TEST_EXIT_DBG(inserter)("DOFMatrix is not in insertion mode\n");
     TEST_EXIT_DBG(rowFeSpace)("Have now rowFeSpace!\n");
 
-    inserter_type &ins= *inserter;
- 
+    inserter_type& ins= *inserter;
+
     // === Get indices mapping from local to global matrix indices. ===
 
     rowFeSpace->getBasisFcts()->getLocalIndices(rowElInfo->getElement(),
-						rowFeSpace->getAdmin(),
-						rowIndices);
-    if (rowFeSpace == colFeSpace) {
+        rowFeSpace->getAdmin(),
+        rowIndices);
+    if (rowFeSpace == colFeSpace)
+    {
       colIndices = rowIndices;
-    } else {
-      if (colElInfo) {
-	colFeSpace->getBasisFcts()->getLocalIndices(colElInfo->getElement(),
-						    colFeSpace->getAdmin(),
-						    colIndices);
-      } else {
-	// If there is no colElInfo pointer, use rowElInfo the get the indices.
-	colFeSpace->getBasisFcts()->getLocalIndices(rowElInfo->getElement(),
-						    colFeSpace->getAdmin(),
-						    colIndices);
+    }
+    else
+    {
+      if (colElInfo)
+      {
+        colFeSpace->getBasisFcts()->getLocalIndices(colElInfo->getElement(),
+            colFeSpace->getAdmin(),
+            colIndices);
+      }
+      else
+      {
+        // If there is no colElInfo pointer, use rowElInfo the get the indices.
+        colFeSpace->getBasisFcts()->getLocalIndices(rowElInfo->getElement(),
+            colFeSpace->getAdmin(),
+            colIndices);
       }
     }
 
-    for (int i = 0; i < nRow; i++)  {
+    for (int i = 0; i < nRow; i++)
+    {
       DegreeOfFreedom row = rowIndices[i];
 
-      BoundaryCondition *condition = 
-	bound ? boundaryManager->getBoundaryCondition(bound[i]) : NULL;
+      BoundaryCondition* condition =
+        bound ? boundaryManager->getBoundaryCondition(bound[i]) : NULL;
 
-      if (condition && condition->isDirichlet()) {	
-	if (condition->applyBoundaryCondition())
-	  dirichletDofs.insert(row);
-      } else {
-	for (int j = 0; j < nCol; j++) {
-	  DegreeOfFreedom col = colIndices[j];
-	  ins[row][col] += elMat[i][j];
-	}
+      if (condition && condition->isDirichlet())
+      {
+        if (condition->applyBoundaryCondition())
+          dirichletDofs.insert(row);
+      }
+      else
+      {
+        for (int j = 0; j < nCol; j++)
+        {
+          DegreeOfFreedom col = colIndices[j];
+          ins[row][col] += elMat[i][j];
+        }
       }
     }
   }
 
 
-  void DOFMatrix::assembleOperator(Operator &op)
+  void DOFMatrix::assembleOperator(Operator& op)
   {
     FUNCNAME("DOFMatrix::assembleOperator()");
 
     TEST_EXIT(rowFeSpace->getMesh() == colFeSpace->getMesh())
-      ("This function does not support for multi mesh procedure!\n");
+    ("This function does not support for multi mesh procedure!\n");
     TEST_EXIT(op.getRowFeSpace() == rowFeSpace)
-      ("Row FE spaces do not fit together!\n");
+    ("Row FE spaces do not fit together!\n");
     TEST_EXIT(op.getColFeSpace() == colFeSpace)
-      ("Column FE spaces do not fit together!\n");
+    ("Column FE spaces do not fit together!\n");
 
     clearOperators();
     addOperator(&op);
 
     matrix.change_dim(rowFeSpace->getAdmin()->getUsedSize(),
-		      colFeSpace->getAdmin()->getUsedSize());
+                      colFeSpace->getAdmin()->getUsedSize());
 
-    Mesh *mesh = rowFeSpace->getMesh();
+    Mesh* mesh = rowFeSpace->getMesh();
     mesh->dofCompress();
-    const BasisFunction *basisFcts = rowFeSpace->getBasisFcts();
+    const BasisFunction* basisFcts = rowFeSpace->getBasisFcts();
 
-    Flag assembleFlag = getAssembleFlag() | 
-      Mesh::CALL_LEAF_EL                        | 
-      Mesh::FILL_COORDS                         |
-      Mesh::FILL_DET                            |
-      Mesh::FILL_GRD_LAMBDA |
-      Mesh::FILL_NEIGH |
-      Mesh::FILL_BOUND;
+    Flag assembleFlag = getAssembleFlag() |
+                        Mesh::CALL_LEAF_EL                        |
+                        Mesh::FILL_COORDS                         |
+                        Mesh::FILL_DET                            |
+                        Mesh::FILL_GRD_LAMBDA |
+                        Mesh::FILL_NEIGH |
+                        Mesh::FILL_BOUND;
 
-    BoundaryType *bound = new BoundaryType[basisFcts->getNumber()];
+    BoundaryType* bound = new BoundaryType[basisFcts->getNumber()];
 
     calculateNnz();
     if (getBoundaryManager())
@@ -202,14 +213,15 @@ namespace AMDiS
     startInsertion(getNnz());
 
     TraverseStack stack;
-    ElInfo *elInfo = stack.traverseFirst(mesh, -1, assembleFlag);
-    while (elInfo) {
+    ElInfo* elInfo = stack.traverseFirst(mesh, -1, assembleFlag);
+    while (elInfo)
+    {
       basisFcts->getBound(elInfo, bound);
 
       assemble(1.0, elInfo, bound);
 
       if (getBoundaryManager())
-	getBoundaryManager()->fillBoundaryConditions(elInfo, this);
+        getBoundaryManager()->fillBoundaryConditions(elInfo, this);
 
       elInfo = stack.traverseNext(elInfo);
     }
@@ -221,53 +233,53 @@ namespace AMDiS
 
     delete [] bound;
   }
-  
 
-  void DOFMatrix::assemble(double factor, 
-			   ElInfo *elInfo, 
-			   const BoundaryType *bound)
+
+  void DOFMatrix::assemble(double factor,
+                           ElInfo* elInfo,
+                           const BoundaryType* bound)
   {
     set_to_zero(elementMatrix);
 
     std::vector<Operator*>::iterator it = operators.begin();
     std::vector<double*>::iterator factorIt = operatorFactor.begin();
     for (; it != operators.end(); ++it, ++factorIt)
-      if ((*it)->getNeedDualTraverse() == false && 
-	  (*factorIt == NULL || **factorIt != 0.0))
-	(*it)->getElementMatrix(elInfo,	elementMatrix, *factorIt ? **factorIt : 1.0);
+      if ((*it)->getNeedDualTraverse() == false &&
+          (*factorIt == NULL ||** factorIt != 0.0))
+        (*it)->getElementMatrix(elInfo,	elementMatrix, *factorIt ? **factorIt : 1.0);
 
     if (factor != 1.0)
       elementMatrix *= factor;
 
     if (operators.size())
-      addElementMatrix(elementMatrix, bound, elInfo, NULL); 
+      addElementMatrix(elementMatrix, bound, elInfo, NULL);
   }
 
 
-  void DOFMatrix::assemble(double factor, 
-			   ElInfo *elInfo, 
-			   const BoundaryType *bound,
-			   Operator *op)
+  void DOFMatrix::assemble(double factor,
+                           ElInfo* elInfo,
+                           const BoundaryType* bound,
+                           Operator* op)
   {
     FUNCNAME_DBG("DOFMatrix::assemble()");
-    
+
     TEST_EXIT_DBG(op)("No operator!\n");
-    
+
     set_to_zero(elementMatrix);
     op->getElementMatrix(elInfo, elementMatrix, factor);
-    
+
     if (factor != 1.0)
-	elementMatrix *= factor;
-    
+      elementMatrix *= factor;
+
     addElementMatrix(elementMatrix, bound, elInfo, NULL);
   }
 
-  
+
   void DOFMatrix::finishAssembling()
   {
     // call the operators cleanup procedures
     for (std::vector<Operator*>::iterator it = operators.begin();
-	 it != operators.end(); ++it)
+         it != operators.end(); ++it)
       (*it)->finishAssembling();
   }
 
@@ -276,16 +288,16 @@ namespace AMDiS
   Flag DOFMatrix::getAssembleFlag()
   {
     Flag fillFlag(0);
-    for (std::vector<Operator*>::iterator op = operators.begin(); 
-	 op != operators.end(); ++op)
+    for (std::vector<Operator*>::iterator op = operators.begin();
+         op != operators.end(); ++op)
       fillFlag |= (*op)->getFillFlag();
 
     return fillFlag;
   }
 
-  
-  void DOFMatrix::addOperator(Operator *op, double* factor, double* estFactor) 
-  { 
+
+  void DOFMatrix::addOperator(Operator* op, double* factor, double* estFactor)
+  {
     operators.push_back(op);
     operatorFactor.push_back(factor);
     operatorEstFactor.push_back(estFactor);
@@ -300,35 +312,36 @@ namespace AMDiS
   }
 
 
-  void DOFMatrix::copy(const DOFMatrix& rhs) 
+  void DOFMatrix::copy(const DOFMatrix& rhs)
   {
     matrix = rhs.matrix;
   }
 
 
   void DOFMatrix::clearDirichletRows()
-  {      
+  {
     // Do the following only in sequential code. In parallel mode, the specific
     // solver method must care about dirichlet boundary conditions.
-    inserter_type &ins = *inserter;  
-    for (std::set<DegreeOfFreedom>::iterator it = dirichletDofs.begin(); 
-	 it != dirichletDofs.end(); ++it)
+    inserter_type& ins = *inserter;
+    for (std::set<DegreeOfFreedom>::iterator it = dirichletDofs.begin();
+         it != dirichletDofs.end(); ++it)
       ins[(*it)][(*it)] = 1.0;
   }
 
 
   int DOFMatrix::memsize() const
-  {   
+  {
     return (num_rows(matrix) + matrix.nnz()) * sizeof(base_matrix_type::size_type)
-      + matrix.nnz() * sizeof(base_matrix_type::value_type);
+           + matrix.nnz() * sizeof(base_matrix_type::value_type);
   }
 
 
   void DOFMatrix::startInsertion(int nnz_per_row)
   {
-    if (inserter) {
+    if (inserter)
+    {
       delete inserter;
-      inserter = NULL; 
+      inserter = NULL;
     }
 
     inserter = new inserter_type(matrix, nnz_per_row);

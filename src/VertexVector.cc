@@ -4,9 +4,9 @@
 #include "DOFAdmin.h"
 #include "DOFIterator.h"
 
-namespace AMDiS 
+namespace AMDiS
 {
-  VertexVector::VertexVector(const DOFAdmin *a, std::string n)
+  VertexVector::VertexVector(const DOFAdmin* a, std::string n)
     : DOFVectorDOF(),
       admin(a)
   {
@@ -28,21 +28,21 @@ namespace AMDiS
   {
     DOFIteratorBase it(const_cast<DOFAdmin*>(admin), USED_DOFS);
     for (it.reset(); !it.end(); ++it)
-      if (!it.isDofFree()) 
+      if (!it.isDofFree())
         operator[](it.getDOFIndex()) = val;
-  } 
+  }
 
-  
-  void VertexVector::resize(int size) 
+
+  void VertexVector::resize(int size)
   {
     int oldSize = static_cast<int>(vec.size());
     vec.resize(size);
     for (int i = oldSize; i < size; i++)
       vec[i] = i;
   }
-  
 
-  void VertexVector::compressDofContainer(int size, std::vector<DegreeOfFreedom> &newDOF) 
+
+  void VertexVector::compressDofContainer(int size, std::vector<DegreeOfFreedom>& newDOF)
   {
     DOFContainer::compressDofContainer(size, newDOF);
     int totalSize = getAdmin()->getSize();
@@ -55,11 +55,11 @@ namespace AMDiS
   {
     std::vector<DegreeOfFreedom> tmp(vec.size());
     std::iota(tmp.begin(), tmp.end(), 0);
-    
+
     for (auto const& d : dofIndexMap)
       if (vec[d.first] == -1)
         tmp[d.second] = -1;
-      else 
+      else
         tmp[d.second] = dofIndexMap[vec[d.first]];
 
     std::swap(vec, tmp);

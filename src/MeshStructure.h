@@ -15,25 +15,25 @@
 #define WITH_ELINDEX false
 #endif
 
-namespace AMDiS 
+namespace AMDiS
 {
   class MeshStructure
   {
   public:
     MeshStructure()
       : currentIndex(0),
-	currentCode(0),
-	pos(0),
-	currentElement(0),
-	nElements(0),
-	debugMode(false)
+        currentCode(0),
+        pos(0),
+        currentElement(0),
+        nElements(0),
+        debugMode(false)
     {}
-  
+
     void clear();
 
 
     /** \brief
-     * Creates a mesh structure code from a mesh object by traversing it in 
+     * Creates a mesh structure code from a mesh object by traversing it in
      * preorder.
      *
      * \param[in]  mesh           Mesh that is used to create the structure code.
@@ -41,18 +41,18 @@ namespace AMDiS
      *                            created for the whole mesh. Otherwise, it is done
      *                            only for the macro element with this index.
      */
-    void init(Mesh *mesh, int macroElIndex = -1);
-   
-    void init(BoundaryObject &bound, Element* mesh = NULL);
+    void init(Mesh* mesh, int macroElIndex = -1);
 
-    void init(const std::vector<uint64_t>& initCode, int n) 
+    void init(BoundaryObject& bound, Element* mesh = NULL);
+
+    void init(const std::vector<uint64_t>& initCode, int n)
     {
       code = initCode;
       nElements = n;
       reset();
     }
 
-    /// Sets all position counters, that are used to traverse the code, to the 
+    /// Sets all position counters, that are used to traverse the code, to the
     /// starting position. The code itself is not changed.
     void reset();
 
@@ -62,70 +62,70 @@ namespace AMDiS
       return (nElements == 0);
     }
 
-    void commit() 
+    void commit()
     {
       if (pos > 0)
-	code.push_back(currentCode);
+        code.push_back(currentCode);
       reset();
     }
 
-    bool skipBranch(MeshStructure *insert = NULL);
+    bool skipBranch(MeshStructure* insert = NULL);
 
-    ElInfo *skipBranch(ElInfo *elInfo, TraverseStack *stack);
+    ElInfo* skipBranch(ElInfo* elInfo, TraverseStack* stack);
 
-    bool nextElement(MeshStructure *insert = NULL);
+    bool nextElement(MeshStructure* insert = NULL);
 
     int lookAhead(unsigned int n = 1);
 
-    bool isLeafElement() 
+    bool isLeafElement()
     {
       return (currentCode & 1) == 0;
     }
 
     /// Merges a mesh structure code with its own mesh structure code. The result
     /// overwrites the own mesh structure code.
-    void merge(MeshStructure *struc) 
+    void merge(MeshStructure* struc)
     {
       MeshStructure temp(*this);
       merge(&temp, struc, this);
     }
 
     /** \brief
-     * Fits a given mesh to the mesh structure code. 
+     * Fits a given mesh to the mesh structure code.
      *
      * \param debugMode     In debugMode, the whole mesh is fitted to the mesh
-     *                      structure code. Otherwise, the mesh is fitted only on 
+     *                      structure code. Otherwise, the mesh is fitted only on
      *                      the partition of the current process.
-     * \param macroElIndex  If the mesh structure code represents only one macro 
+     * \param macroElIndex  If the mesh structure code represents only one macro
      *                      element, this can be denoted here by its index. In this
      *                      case, only the corresponding macro element will be
-     *                      fitted to the code. Otherwise, this variable is 
+     *                      fitted to the code. Otherwise, this variable is
      *                      negative and the whole mesh will be adapted.
      */
-    void fitMeshToStructure(Mesh *mesh,
-			    RefinementManager *manager,
-			    bool debugMode = false,
-			    int macroElIndex = -1,
-			    bool ignoreFinerMesh = false);
+    void fitMeshToStructure(Mesh* mesh,
+                            RefinementManager* manager,
+                            bool debugMode = false,
+                            int macroElIndex = -1,
+                            bool ignoreFinerMesh = false);
 
     /// Converts the mesh structure code to a string (for debugging).
     std::string toStr(bool resetCode = true);
-    
+
     /// Prints the mesh structure code.
-    void print(bool resetCode = true); 
+    void print(bool resetCode = true);
 
     /// Returns the mesh structure code.
-    const std::vector<uint64_t>& getCode() 
+    const std::vector<uint64_t>& getCode()
     {
       return code;
     }
 
-    int getNumElements() 
-    { 
-      return nElements; 
+    int getNumElements()
+    {
+      return nElements;
     }
 
-    int getCurrentElement() 
+    int getCurrentElement()
     {
       return currentElement;
     }
@@ -136,24 +136,24 @@ namespace AMDiS
     }
 
     /// Returns true, if the given mesh structure code is equal to this one.
-    bool compare(MeshStructure &other);
+    bool compare(MeshStructure& other);
 
     /** \brief
      * Creates a value array of a given DOFVector. This value array corresponds
      * to the mesh structure code of the element and thus can easily be used
      * to reconstruct the values of the DOFVector on the same element (e.g., after
      * the mesh and the value array has been redistributed in parallel
-     * computations). 
+     * computations).
      *
      * \param[in]  macroElIndex  Index of the macro element for which the value
      *                           structure code must be created.
      * \param[in]  vec           DOFVector to be used for creating the value code.
-     * \param[out] values        Resulting value structure code.     
+     * \param[out] values        Resulting value structure code.
      */
     void getMeshStructureValues(int macroElIndex,
-				const DOFVector<double>* vec,
-				std::vector<double>& values,
-				bool withElIndex = WITH_ELINDEX);
+                                const DOFVector<double>* vec,
+                                std::vector<double>& values,
+                                bool withElIndex = WITH_ELINDEX);
 
 
     /** \brief
@@ -165,25 +165,25 @@ namespace AMDiS
      * \param[in]  values        Value structure code.
      */
     void setMeshStructureValues(int macroElIndex,
-				DOFVector<double>* vec,
-				const std::vector<double>& values,
-				bool withElIndex = WITH_ELINDEX);
+                                DOFVector<double>* vec,
+                                const std::vector<double>& values,
+                                bool withElIndex = WITH_ELINDEX);
 
     /// Insert a new element to the structure code. Is used by the init function.
     void insertElement(bool isLeaf);
 
   protected:
 
-    void addAlongSide(Element *el, 
-		      GeoIndex subObj, 
-		      int ithObj, 
-		      int elType, 
-		      bool reverseOrder);
+    void addAlongSide(Element* el,
+                      GeoIndex subObj,
+                      int ithObj,
+                      int elType,
+                      bool reverseOrder);
 
-    /// Merges two mesh structure codes to one structure code.     
-    void merge(MeshStructure *structure1,
-	       MeshStructure *structure2,
-	       MeshStructure *result);
+    /// Merges two mesh structure codes to one structure code.
+    void merge(MeshStructure* structure1,
+               MeshStructure* structure2,
+               MeshStructure* result);
 
   protected:
     /// Mesh structure code.
@@ -199,7 +199,7 @@ namespace AMDiS
 
     int nElements;
 
-    /// If true, some output is printed to screen during mesh structure 
+    /// If true, some output is printed to screen during mesh structure
     /// code generation.
     bool debugMode;
 

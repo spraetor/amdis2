@@ -9,16 +9,16 @@
 
 using namespace std;
 
-namespace AMDiS 
+namespace AMDiS
 {
-  SubAssembler::SubAssembler(Operator *op,
-                  			     Assembler *assembler,
-                  			     Quadrature *quadrat,
-                  			     int order, 
-                  			     bool optimized,
-                  			     FirstOrderType type) 
-    : rowFeSpace(assembler->rowFeSpace),
-      colFeSpace(assembler->colFeSpace),
+  SubAssembler::SubAssembler(Operator* op,
+                             Assembler* assembler,
+                             Quadrature* quadrat,
+                             int order,
+                             bool optimized,
+                             FirstOrderType type)
+    : rowFeSpace(assembler->getRowFeSpace()),
+      colFeSpace(assembler->getColFeSpace()),
       nRow(0),
       nCol(0),
       coordsNumAllocated(0),
@@ -35,24 +35,25 @@ namespace AMDiS
     TEST_EXIT(rowFeSpace)("No row FE space defined!\n");
     TEST_EXIT(colFeSpace)("No col FE space defined!\n");
 
-    const BasisFunction *psi = rowFeSpace->getBasisFcts();
-    const BasisFunction *phi = colFeSpace->getBasisFcts();
+    const BasisFunction* psi = rowFeSpace->getBasisFcts();
+    const BasisFunction* phi = colFeSpace->getBasisFcts();
 
     nRow = psi->getNumber();
     nCol = phi->getNumber();
 
-    switch (order) {
+    switch (order)
+    {
     case 0:
-      terms = op->zeroOrder;
+      terms = op->getZeroOrder();
       break;
     case 1:
       if (type == GRD_PHI)
-        terms = op->firstOrderGrdPhi;
-      else 
-        terms = op->firstOrderGrdPsi;
+        terms = op->getFirstOrderGrdPhi();
+      else
+        terms = op->getFirstOrderGrdPsi();
       break;
     case 2:
-      terms = op->secondOrder;
+      terms = op->getSecondOrder();
       break;
     }
 
@@ -60,15 +61,20 @@ namespace AMDiS
     // the element matrix may be symmetric if all operator terms are symmetric.
     // If the row and col fe space are different, the element matrix is neither
     // quadratic, and therefore cannot be symmetric.
-    if (nRow == nCol) {
+    if (nRow == nCol)
+    {
       symmetric = true;
-      for (size_t i = 0; i < terms.size(); i++) {
-      	if (!(terms[i])->isSymmetric()) {
-      	  symmetric = false;
-      	  break;
-      	}
-      }  
-    } else {
+      for (size_t i = 0; i < terms.size(); i++)
+      {
+        if (!(terms[i])->isSymmetric())
+        {
+          symmetric = false;
+          break;
+        }
+      }
+    }
+    else
+    {
       symmetric = false;
     }
 
@@ -76,17 +82,20 @@ namespace AMDiS
   }
 
 
-  FastQuadrature *SubAssembler::updateFastQuadrature(FastQuadrature *quadFast,
-						     const BasisFunction *psi,
-						     Flag updateFlag)
+  FastQuadrature* SubAssembler::updateFastQuadrature(FastQuadrature* quadFast,
+      const BasisFunction* psi,
+      Flag updateFlag)
   {
-    if (!quadFast) {
+    if (!quadFast)
+    {
       quadFast = FastQuadrature::provideFastQuadrature(psi, *quadrature, updateFlag);
-    } else {
-// #pragma omp critical 
+    }
+    else
+    {
+      // #pragma omp critical
       {
-      	if (!quadFast->initialized(updateFlag))
-      	  quadFast->init(updateFlag);
+        if (!quadFast->initialized(updateFlag))
+          quadFast->init(updateFlag);
       }
     }
 
@@ -95,8 +104,8 @@ namespace AMDiS
 
 
   void SubAssembler::initImpl(const ElInfo* elInfo,
-                  			      const ElInfo*,
-                  			      Quadrature *quad)
+                              const ElInfo*,
+                              Quadrature* quad)
   {
     // set corrdsAtQPs invalid
     coordsValid = false;
@@ -108,26 +117,27 @@ namespace AMDiS
     // set gradients at QPs invalid
     for (auto& itAnyGrd : cachedGradientsAtQPs)
       itAnyGrd.second->valid = false;
-    
+
     // calls initElement of each term
     for (OperatorTerm* term : terms)
       term->initElement(elInfo, this, quad);
   }
 
 
-  void SubAssembler::getCoordsAtQPs(const ElInfo* elInfo, 
-                        				    Quadrature *quad,
-                        				    DenseVector<WorldVector<double> > &coordsAtQPs)
+  void SubAssembler::getCoordsAtQPs(const ElInfo* elInfo,
+                                    Quadrature* quad,
+                                    DenseVector<WorldVector<double>>& coordsAtQPs)
   {
     // already calculated for this element ?
-    if (coordsValid) {
+    if (coordsValid)
+    {
       coordsAtQPs = cacheCoordsAtQPs;
       return;
     }
 
-    Quadrature *localQuad = quad ? quad : quadrature; 
+    Quadrature* localQuad = quad ? quad : quadrature;
     const int nPoints = localQuad->getNumPoints();
-  
+
     coordsAtQPs.change_dim(nPoints);
     for (int i = 0; i < nPoints; i++)
       elInfo->coordToWorld(localQuad->getLambda(i), coordsAtQPs[i]);

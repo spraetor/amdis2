@@ -7,46 +7,46 @@
 #include "AMDiS_fwd.h"
 #include "ProblemIterationInterface.h"
 
-namespace AMDiS 
+namespace AMDiS
 {
   /// A master problem for a single non coupled problem.
   class StandardProblemIteration : public virtual ProblemIterationInterface
   {
   public:
     /// constructor
-    StandardProblemIteration(ProblemStatBase *prob)
+    StandardProblemIteration(ProblemStatBase* prob)
       : problem(prob)
     {}
 
     /// Implementation of \ref ProblemIterationIterface::beginIteration()
-    virtual void beginIteration(AdaptInfo *adaptInfo) override;
+    virtual void beginIteration(AdaptInfo* adaptInfo) override;
 
     /// Implementation of \ref ProblemIterationInterface::oneIteration()
-    virtual Flag oneIteration(AdaptInfo *adaptInfo, Flag toDo) override;
+    virtual Flag oneIteration(AdaptInfo* adaptInfo, Flag toDo) override;
 
     /// Implementation of \ref ProblemIterationInterface::endIteration()
-    virtual void endIteration(AdaptInfo *adaptInfo) override;
+    virtual void endIteration(AdaptInfo* adaptInfo) override;
 
     /// Returns the name of the problem.
     virtual std::string getName() const override;
-    
+
     virtual int getNumProblems() const override
     {
       return 1;
     }
-    
+
     /// Return the managed ProblemStat \ref problem, by number
-    virtual ProblemStatBase *getProblem(int number = 0) override;
-    
+    virtual ProblemStatBase* getProblem(int number = 0) override;
+
     /// Return the managed ProblemStat \ref problem, by name
-    virtual ProblemStatBase *getProblem(std::string name) override;
+    virtual ProblemStatBase* getProblem(std::string name) override;
 
     /// Nested assemblage and mesh adaption. TODO: make this prortected
-    Flag buildAndAdapt(AdaptInfo *adaptInfo, Flag toDo);
+    Flag buildAndAdapt(AdaptInfo* adaptInfo, Flag toDo);
 
   protected:
     /// The problem to solve.
-    ProblemStatBase *problem;
+    ProblemStatBase* problem;
 
     /// Info level
     static int info;

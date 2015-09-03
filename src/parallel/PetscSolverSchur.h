@@ -5,7 +5,7 @@
  * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
  * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
  *
- * Authors: 
+ * Authors:
  * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
  *
  * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
@@ -15,7 +15,7 @@
  * This file is part of AMDiS
  *
  * See also license.opensource.txt in the distribution.
- * 
+ *
  ******************************************************************************/
 
 
@@ -32,7 +32,7 @@ namespace AMDiS
   {
 
     /** \ingroup Solver
-     * 
+     *
      * \brief
      * PETSc solver using fieldsplit
      */
@@ -43,48 +43,48 @@ namespace AMDiS
       class Creator : public LinearSolverCreator
       {
       public:
-	virtual ~Creator() {}
+        virtual ~Creator() {}
 
-	/// Returns a new PetscSolver object.
-	LinearSolverInterface* create() 
-	{ 
-	  return new PetscSolverSchur(this->name); 
-	}
+        /// Returns a new PetscSolver object.
+        LinearSolverInterface* create()
+        {
+          return new PetscSolverSchur(this->name);
+        }
       };
-      
-      PetscSolverSchur(std::string name) 
-	: PetscSolver(name)
+
+      PetscSolverSchur(std::string name)
+        : PetscSolver(name)
       {}
 
-      void fillPetscMatrix(Matrix<DOFMatrix*> *mat);
+      void fillPetscMatrix(Matrix<DOFMatrix*>* mat);
 
-      void fillPetscRhs(SystemVector *vec);
+      void fillPetscRhs(SystemVector* vec);
 
-      void solvePetscMatrix(SystemVector &vec, AdaptInfo *adaptInfo);
+      void solvePetscMatrix(SystemVector& vec, AdaptInfo* adaptInfo);
 
-      void destroyMatrixData() 
+      void destroyMatrixData()
       {}
 
-      void destroyVectorData() 
+      void destroyVectorData()
       {}
 
       Flag getBoundaryDofRequirement()
       {
-	return 
-	  MeshDistributor::BOUNDARY_SUBOBJ_SORTED |
-	  MeshDistributor::BOUNDARY_FILL_INFO_SEND_DOFS;
+        return
+          MeshDistributor::BOUNDARY_SUBOBJ_SORTED |
+          MeshDistributor::BOUNDARY_FILL_INFO_SEND_DOFS;
       }
-      
+
     protected:
       void updateDofData(int nComponents);
 
       /// Takes a DOF matrix and sends the values to the global PETSc matrix.
-      void setDofMatrix(DOFMatrix* mat, int dispMult = 1, 
-			int dispAddRow = 0, int dispAddCol = 0);
+      void setDofMatrix(DOFMatrix* mat, int dispMult = 1,
+                        int dispAddRow = 0, int dispAddCol = 0);
 
       /// Takes a DOF vector and sends its values to a given PETSc vector.
-      void setDofVector(Vec& petscVec, DOFVector<double>* vec, 
-			int disMult = 1, int dispAdd = 0, bool rankOnly = false);
+      void setDofVector(Vec& petscVec, DOFVector<double>* vec,
+                        int disMult = 1, int dispAdd = 0, bool rankOnly = false);
 
     protected:
       int nBoundaryDofs;
@@ -103,7 +103,7 @@ namespace AMDiS
 
       int nOverallInteriorDofs;
 
-      std::set<DegreeOfFreedom> interiorDofs;    
+      std::set<DegreeOfFreedom> interiorDofs;
 
       std::map<DegreeOfFreedom, DegreeOfFreedom> mapGlobalInteriorDof;
 
@@ -113,7 +113,7 @@ namespace AMDiS
 
       Vec petscSolVec;
     };
-    
+
   } // end namespace Parallel
 
 } // end namespace AMDiS

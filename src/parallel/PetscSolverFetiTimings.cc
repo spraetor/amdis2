@@ -5,7 +5,7 @@
  * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
  * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
  *
- * Authors: 
+ * Authors:
  * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
  *
  * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
@@ -15,26 +15,30 @@
  * This file is part of AMDiS
  *
  * See also license.opensource.txt in the distribution.
- * 
+ *
  ******************************************************************************/
 
 
 #include "parallel/PetscSolverFetiTimings.h"
 
-namespace AMDiS { namespace Parallel {
-
-  double FetiTimings::fetiSolve = 0.0;
-  double FetiTimings::fetiSolve01 = 0.0;
-  double FetiTimings::fetiSolve02 = 0.0;
-  double FetiTimings::fetiPreconditioner = 0.0;
-
-
-  void FetiTimings::reset()
+namespace AMDiS
+{
+  namespace Parallel
   {
-    fetiSolve = 0.0;
-    fetiSolve01 = 0.0;
-    fetiSolve02 = 0.0;
-    fetiPreconditioner = 0.0;
-  }
 
-} }
+    double FetiTimings::fetiSolve = 0.0;
+    double FetiTimings::fetiSolve01 = 0.0;
+    double FetiTimings::fetiSolve02 = 0.0;
+    double FetiTimings::fetiPreconditioner = 0.0;
+
+
+    void FetiTimings::reset()
+    {
+      fetiSolve = 0.0;
+      fetiSolve01 = 0.0;
+      fetiSolve02 = 0.0;
+      fetiPreconditioner = 0.0;
+    }
+
+  }
+}

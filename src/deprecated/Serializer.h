@@ -5,7 +5,7 @@
  * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
  * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
  *
- * Authors: 
+ * Authors:
  * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
  *
  * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
@@ -15,7 +15,7 @@
  * This file is part of AMDiS
  *
  * See also license.opensource.txt in the distribution.
- * 
+ *
  ******************************************************************************/
 
 
@@ -37,27 +37,28 @@
 #include "AdaptInfo.h"
 #include "io/FileWriterInterface.h"
 
-namespace AMDiS {
+namespace AMDiS
+{
 
   template<typename ProblemType>
   class Serializer : public FileWriterInterface
   {
   public:
-    Serializer(ProblemType *prob) 
-      : name(""), 
-	problem(prob),
-	tsModulo(1), 
-	appendIndex(0),
-	indexLength(5),
-	indexDecimals(3),
-	timestepNumber(-1)
+    Serializer(ProblemType* prob)
+      : name(""),
+        problem(prob),
+        tsModulo(1),
+        appendIndex(0),
+        indexLength(5),
+        indexDecimals(3),
+        timestepNumber(-1)
     {
       FUNCNAME("Serializer::Serializer()");
 
-      Parameters::get(problem->getName() + "->output->serialization filename", 
-		      name);
-      Parameters::get(problem->getName() + "->output->write every i-th timestep", 
-		      tsModulo);
+      Parameters::get(problem->getName() + "->output->serialization filename",
+                      name);
+      Parameters::get(problem->getName() + "->output->write every i-th timestep",
+                      tsModulo);
       TEST_EXIT(name != "")("No filename!\n");
 
       Parameters::get(problem->getName() + "->output->append serialization index", appendIndex);
@@ -66,14 +67,14 @@ namespace AMDiS {
     }
 
 
-    Serializer(ProblemType *prob, std::string filename, int writeEveryIth)
+    Serializer(ProblemType* prob, std::string filename, int writeEveryIth)
       : name(filename),
-	problem(prob),
-	tsModulo(writeEveryIth),
-	appendIndex(0),
-	indexLength(5),
-	indexDecimals(3),
-	timestepNumber(-1)
+        problem(prob),
+        tsModulo(writeEveryIth),
+        appendIndex(0),
+        indexLength(5),
+        indexDecimals(3),
+        timestepNumber(-1)
     {
       FUNCNAME("Serializer::Serializer()");
 
@@ -87,37 +88,38 @@ namespace AMDiS {
 
     virtual ~Serializer() {}
 
-    virtual void writeFiles(AdaptInfo *adaptInfo, 
-			    bool force,
-			    int level = -1,
-			    Flag traverseFlag = Mesh::CALL_LEAF_EL,
-			    bool (*writeElem)(ElInfo*) = NULL) 
+    virtual void writeFiles(AdaptInfo* adaptInfo,
+                            bool force,
+                            int level = -1,
+                            Flag traverseFlag = Mesh::CALL_LEAF_EL,
+                            bool (*writeElem)(ElInfo*) = NULL)
     {
       FUNCNAME("Serializer::writeFiles()");
 
       TEST_EXIT(tsModulo > 0)
-	("Parameter 'write every ith timestep' must be larger than zero!\n");
+      ("Parameter 'write every ith timestep' must be larger than zero!\n");
 
       timestepNumber++;
       timestepNumber %= tsModulo;
       if ((timestepNumber != 0) && !force)
-	return;
+        return;
 
       TEST_EXIT(adaptInfo)("No AdaptInfo\n");
 
       std::string filename = name;
-      if (appendIndex) {
-	TEST_EXIT(indexLength <= 99)("index lenght > 99\n");
-	TEST_EXIT(indexDecimals <= 97)("index decimals > 97\n");
-	TEST_EXIT(indexDecimals < indexLength)("index length <= index decimals\n");
-	
-	char formatStr[9];
-	char timeStr[20];
-	
-	std::sprintf(formatStr, "%%0%d.%df", indexLength, indexDecimals);
-	std::sprintf(timeStr, formatStr, adaptInfo ? adaptInfo->getTime() : 0.0);
-	
-	filename += std::string(timeStr);
+      if (appendIndex)
+      {
+        TEST_EXIT(indexLength <= 99)("index lenght > 99\n");
+        TEST_EXIT(indexDecimals <= 97)("index decimals > 97\n");
+        TEST_EXIT(indexDecimals < indexLength)("index length <= index decimals\n");
+
+        char formatStr[9];
+        char timeStr[20];
+
+        std::sprintf(formatStr, "%%0%d.%df", indexLength, indexDecimals);
+        std::sprintf(timeStr, formatStr, adaptInfo ? adaptInfo->getTime() : 0.0);
+
+        filename += std::string(timeStr);
       }
 
 #if HAVE_PARALLEL_DOMAIN_AMDIS
@@ -139,7 +141,7 @@ namespace AMDiS {
     std::string name;
 
     /// Pointer to the problem.
-    ProblemType *problem;
+    ProblemType* problem;
 
     /// The problem is serialized every tsModulo-th timestep.
     int tsModulo;
@@ -158,19 +160,20 @@ namespace AMDiS {
     int timestepNumber;
   };
 
-  namespace SerUtil {
+  namespace SerUtil
+  {
 
     template<typename T>
     void serialize(std::ostream& out, T& data)
     {
       out.write(reinterpret_cast<const char*>(&data), sizeof(T));
-    }   
+    }
 
     template<typename T>
     void deserialize(std::istream& in, T& data)
     {
       in.read(reinterpret_cast<char*>(&data), sizeof(T));
-    }   
+    }
 
 
 
@@ -207,10 +210,11 @@ namespace AMDiS {
     {
       int vecSize = data.size();
       serialize(out, vecSize);
-      for (typename std::vector<T>::iterator it = data.begin(); 
-	   it != data.end(); ++it) {
-	T v = *it;
-	serialize(out, v);
+      for (typename std::vector<T>::iterator it = data.begin();
+           it != data.end(); ++it)
+      {
+        T v = *it;
+        serialize(out, v);
       }
     }
 
@@ -223,10 +227,11 @@ namespace AMDiS {
       deserialize(in, vecSize);
       data.resize(vecSize);
 
-      for (int i = 0; i < vecSize; i++) {
-	T v;
-	deserialize(in, v);
-	data[i] = v;
+      for (int i = 0; i < vecSize; i++)
+      {
+        T v;
+        deserialize(in, v);
+        data[i] = v;
       }
     }
 
@@ -237,10 +242,11 @@ namespace AMDiS {
     {
       int setSize = data.size();
       serialize(out, setSize);
-      for (typename std::set<T>::iterator it = data.begin(); 
-	   it != data.end(); ++it) {
-	T v = *it;
-	serialize(out, v);
+      for (typename std::set<T>::iterator it = data.begin();
+           it != data.end(); ++it)
+      {
+        T v = *it;
+        serialize(out, v);
       }
     }
 
@@ -252,10 +258,11 @@ namespace AMDiS {
       int setSize = 0;
       deserialize(in, setSize);
 
-      for (int i = 0; i < setSize; i++) {
-	T v;
-	deserialize(in, v);
-	data.insert(v);
+      for (int i = 0; i < setSize; i++)
+      {
+        T v;
+        deserialize(in, v);
+        data.insert(v);
       }
     }
 
@@ -267,12 +274,13 @@ namespace AMDiS {
       int mapSize = data.size();
       serialize(out, mapSize);
 
-      for (typename std::map<T1,T2>::iterator it = data.begin(); 
-	   it != data.end(); ++it) {
-	T1 v1 = it->first;
-	T2 v2 = it->second;
-	serialize(out, v1);
-	serialize(out, v2);
+      for (typename std::map<T1,T2>::iterator it = data.begin();
+           it != data.end(); ++it)
+      {
+        T1 v1 = it->first;
+        T2 v2 = it->second;
+        serialize(out, v1);
+        serialize(out, v2);
       }
     }
 
@@ -284,12 +292,13 @@ namespace AMDiS {
       int mapSize = 0;
       deserialize(in, mapSize);
 
-      for (int i = 0; i < mapSize; i++) {
-	T1 v1;
-	T2 v2;
-	deserialize(in, v1);
-	deserialize(in, v2);
-	data[v1] = v2;
+      for (int i = 0; i < mapSize; i++)
+      {
+        T1 v1;
+        T2 v2;
+        deserialize(in, v1);
+        deserialize(in, v2);
+        data[v1] = v2;
       }
     }
 

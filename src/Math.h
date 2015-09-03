@@ -12,57 +12,57 @@
 #include "AMDiS_fwd.h"
 #include "traits/scalar_types.hpp"
 
-namespace AMDiS 
+namespace AMDiS
 {
   namespace math
   {
-    template <class T> 
-    constexpr typename std::enable_if< traits::is_arithmetic<T>::value, T >::type
-    abs(T a) 
+    template <class T>
+    constexpr typename std::enable_if<traits::is_arithmetic<T>::value, T>::type
+    abs(T a)
     {
       return  a >= 0 ? a : -a;
     }
-  
-  
-    template <class T> 
-    constexpr typename std::enable_if< traits::is_arithmetic<T>::value, T >::type 
-    sqr(T a) 
+
+
+    template <class T>
+    constexpr typename std::enable_if<traits::is_arithmetic<T>::value, T>::type
+    sqr(T a)
     {
       return a*a;
     }
-    
-    
-    template <class T0, class T1> 
+
+
+    template <class T0, class T1>
     constexpr typename std::common_type<T0, T1>::type
-    min(T0 a, T1 b) 
+    min(T0 a, T1 b)
     {
       return a > b ? b : a;
     }
-    
-    
-    template <class T0, class T1> 
+
+
+    template <class T0, class T1>
     constexpr typename std::common_type<T0, T1>::type
-    max(T0 a, T1 b) 
+    max(T0 a, T1 b)
     {
       return a > b ? a : b;
     }
-  
+
   } // end namespace math
-  
-  
-  template <class T> inline void nullify(T &a)
+
+
+  template <class T> inline void nullify(T& a)
   {
     a = 0;
   }
 
-  template <class T> inline void nullify(std::vector<T> &a)
+  template <class T> inline void nullify(std::vector<T>& a)
   {
     typename std::vector<T>::iterator it;
     for (it = a.begin(); it != a.end(); it++)
       nullify(*it);
   }
 
-  template <class T> inline void nullify(mtl::dense_vector<T> &a)
+  template <class T> inline void nullify(mtl::dense_vector<T>& a)
   {
     T null;
     nullify(null);
@@ -72,12 +72,12 @@ namespace AMDiS
   /// Calculates factorial of i
   inline int fac(int i)
   {
-    if (i <= 1) 
+    if (i <= 1)
       return 1;
-    else 
+    else
       return i * fac(i - 1);
   }
-  
+
   /// check for inf and nan values
   inline bool isNumber(double val)
   {

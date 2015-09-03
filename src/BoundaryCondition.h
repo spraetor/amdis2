@@ -6,7 +6,7 @@
 #include "AMDiS_base.h"   // => DegreeOfFreedom
 #include "Boundary.h"     // => BoundaryType
 
-namespace AMDiS 
+namespace AMDiS
 {
   /**
    * \ingroup Assembler
@@ -19,33 +19,33 @@ namespace AMDiS
   {
   public:
     /// Constructor.
-    BoundaryCondition(BoundaryType type, 
-            		      const FiniteElemSpace *rowFeSpace_,
-            		      const FiniteElemSpace *colFeSpace_ = NULL) 
+    BoundaryCondition(BoundaryType type,
+                      const FiniteElemSpace* rowFeSpace_,
+                      const FiniteElemSpace* colFeSpace_ = NULL)
       : boundaryType(type),
-      	rowFeSpace(rowFeSpace_),
-      	colFeSpace(colFeSpace_)
+        rowFeSpace(rowFeSpace_),
+        colFeSpace(colFeSpace_)
     {
-      if (!colFeSpace) 
+      if (!colFeSpace)
         colFeSpace = rowFeSpace;
     }
 
     /// Returns \ref boundaryType.
     BoundaryType getBoundaryType() const
-    { 
-      return boundaryType; 
+    {
+      return boundaryType;
     }
 
     /// Returns \ref rowFeSpace.
-    const FiniteElemSpace *getRowFeSpace() const
-    { 
-      return rowFeSpace; 
+    const FiniteElemSpace* getRowFeSpace() const
+    {
+      return rowFeSpace;
     }
 
     /// Returns \ref rowFeSpace.
-    const FiniteElemSpace *getColFeSpace() const
-    { 
-      return colFeSpace; 
+    const FiniteElemSpace* getColFeSpace() const
+    {
+      return colFeSpace;
     }
 
     virtual void initMatrix(DOFMatrix*) {}
@@ -63,33 +63,33 @@ namespace AMDiS
     /// The dofIndices and localBound as well as nBasFcts are determined by
     // the calling BoundaryManager.
     virtual void fillBoundaryCondition(DOFMatrix* matrix,
-                        				       ElInfo* elInfo,
-                        				       const DegreeOfFreedom* dofIndices,
-                        				       const BoundaryType* localBound,
-                        				       int nBasFcts) { }
-  
+                                       ElInfo* elInfo,
+                                       const DegreeOfFreedom* dofIndices,
+                                       const BoundaryType* localBound,
+                                       int nBasFcts) { }
+
     /// Adds the local boundary condition for elInfo to vector.
     /// The dofIndices and localBound as well as nBasFcts are determined by
     /// the calling BoundaryManager.
-    virtual void fillBoundaryCondition(DOFVectorBase<double>* vector, 
-                        				       ElInfo* elInfo,
-                        				       const DegreeOfFreedom* dofIndices,
-                        				       const BoundaryType* localBound,
-                        				       int nBasFcts) { }
-  
+    virtual void fillBoundaryCondition(DOFVectorBase<double>* vector,
+                                       ElInfo* elInfo,
+                                       const DegreeOfFreedom* dofIndices,
+                                       const BoundaryType* localBound,
+                                       int nBasFcts) { }
+
     /// Returns the boundary residual for the given element. Called by estimator.
-    virtual double boundResidual(ElInfo *elInfo, 
-                        				 DOFMatrix *matrix,
-                        				 const DOFVectorBase<double> *dv) 
-    { 
-      return 0.0; 
+    virtual double boundResidual(ElInfo* elInfo,
+                                 DOFMatrix* matrix,
+                                 const DOFVectorBase<double>* dv)
+    {
+      return 0.0;
     }
 
     /// Returns whether the condition must be treated as Dirichlet condition
     /// while assemblage.
     virtual bool isDirichlet() const
-    { 
-      return false; 
+    {
+      return false;
     }
 
     /// Returns whether the boundary condition is a periodic condition or not.
@@ -98,7 +98,7 @@ namespace AMDiS
       return false;
     }
 
-    /// In some situations it may be required to set Dirichlet boundary 
+    /// In some situations it may be required to set Dirichlet boundary
     /// conditions, but not to apply them to the matrix. This is for example the
     /// case, if the boundary condition is set to a couple matrix. Then, the
     /// boundary conditions must be applied to the couple matrix, but they are
@@ -112,14 +112,14 @@ namespace AMDiS
   protected:
     /// Speciefies for which parts of the boundary the condition holds.
     /// This id corresponds to the boundary numbers spcified in the
-    /// macro file. 
+    /// macro file.
     BoundaryType boundaryType;
 
     /// FiniteElemSpace for this BoundaryCondition.
-    const FiniteElemSpace *rowFeSpace;
+    const FiniteElemSpace* rowFeSpace;
 
     /// FiniteElemSpace for this BoundaryCondition.
-    const FiniteElemSpace *colFeSpace;
+    const FiniteElemSpace* colFeSpace;
   };
 
 } // end namespace AMDiS

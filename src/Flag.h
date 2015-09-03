@@ -2,7 +2,7 @@
 
 #pragma once
 
-namespace AMDiS 
+namespace AMDiS
 {
   /** \ingroup Common
    * \brief
@@ -11,7 +11,7 @@ namespace AMDiS
    * visited.
    */
   class Flag
-  {	
+  {
   public:
     /// Constructs a unset Flag
     Flag() : flags(0) {}
@@ -26,113 +26,113 @@ namespace AMDiS
     ~Flag() {}
 
     /// Compares two Flags
-    bool operator==(const Flag& f) const 
+    bool operator==(const Flag& f) const
     {
       return (flags == f.flags);
     }
 
     /// Compares two Flags
-    bool operator!=(const Flag& f) const 
+    bool operator!=(const Flag& f) const
     {
       return !(f == *this);
     }
 
     /// Assignment operator
-    Flag& operator=(const Flag& f) 
+    Flag& operator=(const Flag& f)
     {
-      if (this != &f) 
-        flags = f.flags; 
+      if (this != &f)
+        flags = f.flags;
       return *this;
     }
 
     /// Typecast
-    operator bool() const 
-    { 
-      return isAnySet(); 
-    }
-
-    /// Set \ref flags 
-    void setFlags(const unsigned long f) 
-    { 
-      flags = f; 
+    operator bool() const
+    {
+      return isAnySet();
     }
 
     /// Set \ref flags
-    void setFlags(const Flag& f) 
-    { 
-      flags = f.flags; 
+    void setFlags(const unsigned long f)
+    {
+      flags = f;
+    }
+
+    /// Set \ref flags
+    void setFlags(const Flag& f)
+    {
+      flags = f.flags;
     }
 
     /// Sets \ref flags to \ref flags | f
-    void setFlag(const unsigned long f) 
-    { 
-      flags |= f; 
+    void setFlag(const unsigned long f)
+    {
+      flags |= f;
     }
 
     /// Sets \ref flags to \ref flags | f.flags
-    void setFlag(const Flag& f) 
-    { 
-      flags |= f.flags; 
+    void setFlag(const Flag& f)
+    {
+      flags |= f.flags;
     }
 
     /// Sets \ref flags to \ref flags & ~f
-    void unsetFlag(const unsigned long f) 
-    { 
-      flags &= ~f; 
+    void unsetFlag(const unsigned long f)
+    {
+      flags &= ~f;
     }
 
     /// Sets \ref flags to \ref flags & ~f.flags
-    void unsetFlag(const Flag& f) 
-    { 
-      flags &= ~f.flags; 
+    void unsetFlag(const Flag& f)
+    {
+      flags &= ~f.flags;
     }
 
-    unsigned long getFlags() const 
-    { 
-      return flags; 
+    unsigned long getFlags() const
+    {
+      return flags;
     }
 
     /// Returns \ref flags | f.flags
-    Flag operator+(const Flag& f) const 
+    Flag operator+(const Flag& f) const
     {
-      Flag r(flags); 
-      r.setFlag(f); 
+      Flag r(flags);
+      r.setFlag(f);
       return r;
     }
 
     /// Returns \ref flags & ~f.flags
-    Flag operator-(const Flag& f) const 
+    Flag operator-(const Flag& f) const
     {
-      Flag r(flags); 
-      r.unsetFlag(f); 
+      Flag r(flags);
+      r.unsetFlag(f);
       return r;
     }
 
     /// Returns \ref flags | f.flags
-    Flag operator|(const Flag& f) const 
+    Flag operator|(const Flag& f) const
     {
-      Flag r(flags); 
-      r.setFlag(f); 
+      Flag r(flags);
+      r.setFlag(f);
       return r;
     }
 
     /// Returns \ref flags & f.flags
-    Flag operator&(const Flag& f) const 
+    Flag operator&(const Flag& f) const
     {
       Flag r(flags);
-      r.flags &= f.flags; 
+      r.flags &= f.flags;
       return r;
     }
 
     /// Sets \ref flags to \ref flags &= f.flags
-    Flag operator&=(const Flag& f) 
+    Flag operator&=(const Flag& f)
     {
       flags &= f.flags;
       return *this;
     }
 
     /// Returns \ref flags ^ f.flags
-    Flag operator^(const Flag& f) const 
+    Flag operator^(const Flag& f) const
     {
       Flag r(flags);
       r.flags ^= f.flags;
@@ -140,7 +140,7 @@ namespace AMDiS
     }
 
     /// Sets \ref flags to \ref flags & f.flags
-    Flag& operator|=(const Flag& f) 
+    Flag& operator|=(const Flag& f)
     {
       if (this != &f)
         flags |= f.flags;
@@ -148,32 +148,32 @@ namespace AMDiS
     }
 
     /// Returns ~\ref flags
-    Flag operator~() const 
-    { 
+    Flag operator~() const
+    {
       Flag r;
-      r.flags = ~flags; 
+      r.flags = ~flags;
       return r;
     }
 
     /// Checks whether all set bits of f.flags are set in \ref flags too.
-    bool isSet(const Flag& f) const 
+    bool isSet(const Flag& f) const
     {
       return ((flags&f.flags) == f.flags);
     }
 
     /// Returns !\ref isSet(f)
-    bool isUnset(const Flag& f) const 
-    { 
-      return !isSet(f); 
+    bool isUnset(const Flag& f) const
+    {
+      return !isSet(f);
     }
 
     /// Returns true if \ref flags != 0
-    bool isAnySet() const 
-    { 
-      return (flags != 0); 
+    bool isAnySet() const
+    {
+      return (flags != 0);
     }
 
-  protected:	
+  protected:
     /// Internal flag representation
     unsigned long  flags;
   };

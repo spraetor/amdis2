@@ -4,13 +4,13 @@
 
 #include "ProblemStat.h"
 
-namespace AMDiS 
+namespace AMDiS
 {
   class ProblemStatDbg : public ProblemStatSeq
   {
   public:
     ProblemStatDbg(std::string nameStr,
-		   ProblemIterationInterface *problemIteration = NULL)
+                   ProblemIterationInterface* problemIteration = NULL)
       : ProblemStatSeq(nameStr, problemIteration)
     {}
 
@@ -35,14 +35,14 @@ namespace AMDiS
      * This function is used by the debugging function \ref writeDbgMatrix and \ref
      * readAndCompareDbgMatrix.
      */
-    void createDofToCoordMap(DofToCoord &dofMap);
+    void createDofToCoordMap(DofToCoord& dofMap);
 
     /** \brief
      * Create from the current problem a map from world coordinates of all dofs to
-     * the corresponding dof indices. This function is used by the debugging function 
+     * the corresponding dof indices. This function is used by the debugging function
      * \ref writeDbgMatrix and \ref readAndCompareDbgMatrix.
      */
-    void createCoordToDofMap(CoordToDof &dofMap);
+    void createCoordToDofMap(CoordToDof& dofMap);
   };
-  
+
 } // end namespace AMDiS

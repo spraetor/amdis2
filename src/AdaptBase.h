@@ -6,7 +6,7 @@
 
 #include "AMDiS_fwd.h"
 
-namespace AMDiS 
+namespace AMDiS
 {
   /// Interface for adaption loops.
   class AdaptBase
@@ -14,15 +14,15 @@ namespace AMDiS
   public:
     /// Constructor
     AdaptBase(std::string sname,
-      	      ProblemIterationInterface *problemIteration_,
-      	      AdaptInfo *adapt,
-      	      ProblemTimeInterface *problemTime_ = NULL,
-      	      AdaptInfo *initialAdaptInfo_ = NULL)
+              ProblemIterationInterface* problemIteration_,
+              AdaptInfo* adapt,
+              ProblemTimeInterface* problemTime_ = NULL,
+              AdaptInfo* initialAdaptInfo_ = NULL)
       : name(sname),
-      	problemIteration(problemIteration_),
-      	adaptInfo(adapt),
-      	problemTime(problemTime_),
-      	initialAdaptInfo(initialAdaptInfo_)
+        problemIteration(problemIteration_),
+        adaptInfo(adapt),
+        problemTime(problemTime_),
+        initialAdaptInfo(initialAdaptInfo_)
     { }
 
     /// Destructor
@@ -30,14 +30,14 @@ namespace AMDiS
 
     /** \brief
      * Pure virtual method. Must be overloaded by sub classes to perform
-     * a concrete adaption loop. 
+     * a concrete adaption loop.
      */
     virtual int adapt() = 0;
 
     /// Returns \ref name
-    std::string getName() const 
-    { 
-      return name; 
+    std::string getName() const
+    {
+      return name;
     }
 
     /// Returns \ref problemIteration_
@@ -47,15 +47,15 @@ namespace AMDiS
     }
 
     ///
-    void setProblemIteration(ProblemIterationInterface *pii) 
+    void setProblemIteration(ProblemIterationInterface* pii)
     {
       problemIteration = pii;
     }
 
     /// Returns \ref adaptInfo
     AdaptInfo* getAdaptInfo() const
-    { 
-      return adaptInfo; 
+    {
+      return adaptInfo;
     }
 
     /// Returns \ref problemTime_
@@ -65,15 +65,15 @@ namespace AMDiS
     }
 
     ///
-    void setProblemTime(ProblemTimeInterface *pti) 
+    void setProblemTime(ProblemTimeInterface* pti)
     {
       problemTime = pti;
     }
 
     /// Returns \ref initialAdaptInfo_
     AdaptInfo* getInitialAdaptInfo() const
-    { 
-      return initialAdaptInfo; 
+    {
+      return initialAdaptInfo;
     }
 
   protected:
@@ -81,19 +81,19 @@ namespace AMDiS
     std::string name;
 
     /// Problem iteration interface
-    ProblemIterationInterface *problemIteration;
+    ProblemIterationInterface* problemIteration;
 
     /// Main adapt info
-    AdaptInfo *adaptInfo;
+    AdaptInfo* adaptInfo;
 
     /// problem time interface
-    ProblemTimeInterface *problemTime;
+    ProblemTimeInterface* problemTime;
 
     /** \brief
-     * Adapt info for initial adapt. Will be given to 
+     * Adapt info for initial adapt. Will be given to
      * problemTime_->solveInitialProblem().
      */
-    AdaptInfo *initialAdaptInfo;
+    AdaptInfo* initialAdaptInfo;
 
     /// Info level
     static int info;

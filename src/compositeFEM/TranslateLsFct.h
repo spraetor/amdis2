@@ -5,7 +5,7 @@
  * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
  * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
  *
- * Authors: 
+ * Authors:
  * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
  *
  * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
@@ -15,7 +15,7 @@
  * This file is part of AMDiS
  *
  * See also license.opensource.txt in the distribution.
- * 
+ *
  ******************************************************************************/
 
 
@@ -28,40 +28,41 @@
 #include "ElementFunction.h"
 #include "FixVec.h"
 
-namespace compositeFEM {
-
-using namespace AMDiS;
-
-template<typename T>
-class TranslateLsFct : public ElementFunction<T>
+namespace compositeFEM
 {
-public:
-  /// Constructor
-  TranslateLsFct(ElementFunction<T> *f_, double c_)
-    : ElementFunction<T>(),
-      f(f_),
-      c(c_)
-  {}
 
-  /** 
-   * evaluation at given coordinates.
-   *
-   * Defines new level set function. Zero level set of this level set
-   * function is level set c of level set function f.
-   */
-  const T& operator()(const DimVec<double>& bary) const 
+  using namespace AMDiS;
+
+  template<typename T>
+  class TranslateLsFct : public ElementFunction<T>
   {
-    f->setElInfo(this->elInfo);
-    return ((*f)(bary) - c);
+  public:
+    /// Constructor
+    TranslateLsFct(ElementFunction<T>* f_, double c_)
+      : ElementFunction<T>(),
+        f(f_),
+        c(c_)
+    {}
+
+    /**
+     * evaluation at given coordinates.
+     *
+     * Defines new level set function. Zero level set of this level set
+     * function is level set c of level set function f.
+     */
+    const T& operator()(const DimVec<double>& bary) const
+    {
+      f->setElInfo(this->elInfo);
+      return ((*f)(bary) - c);
+    };
+
+  protected:
+    /// Level set function which is translated.
+    ElementFunction<T>* f;
+
+    /// Translation parameter.
+    double c;
   };
-
-protected:
-  /// Level set function which is translated.
-  ElementFunction<T> *f;
-
-  /// Translation parameter. 
-  double c;
-};
 
 }
 

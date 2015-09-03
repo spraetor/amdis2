@@ -5,7 +5,7 @@
  * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
  * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
  *
- * Authors: 
+ * Authors:
  * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
  *
  * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
@@ -15,7 +15,7 @@
  * This file is part of AMDiS
  *
  * See also license.opensource.txt in the distribution.
- * 
+ *
  ******************************************************************************/
 
 
@@ -33,10 +33,10 @@ namespace AMDiS
   namespace Parallel
   {
 
-    class ParallelDebug 
+    class ParallelDebug
     {
     protected:
-      typedef std::vector<WorldVector<double> > CoordsVec;
+      typedef std::vector<WorldVector<double>> CoordsVec;
 
       /// Defines a mapping type from rank numbers to sets of coordinates.
       typedef std::map<int, CoordsVec> RankToCoords;
@@ -48,23 +48,23 @@ namespace AMDiS
       *
       * \param[in]  pdb   Parallel problem definition used for debugging.
       */
-      static void testInteriorBoundary(MeshDistributor &pdb);
+      static void testInteriorBoundary(MeshDistributor& pdb);
 
       /** \brief
       * Test if all periodic boundaries are set in a consistent way on all ranks.
-      * 
+      *
       * \param[in]  pdb   Parallel problem definition used for debugging.
       */
-      static void testPeriodicBoundary(MeshDistributor &pdb);
+      static void testPeriodicBoundary(MeshDistributor& pdb);
 
       /** \brief
       * Test if all periodic boundaries are set in a consistent way on all ranks.
-      * 
+      *
       * \param[in]  pdb       Parallel problem definition used for debugging.
       * \oaram[in]  feSpace   FE space for which the DOFs are tested.
       */
-      static void testPeriodicBoundary(MeshDistributor &pdb, 
-				      const FiniteElemSpace *feSpace);
+      static void testPeriodicBoundary(MeshDistributor& pdb,
+                                       const FiniteElemSpace* feSpace);
 
       /** \brief
       * This function is used for debugging only. It traverses all interior
@@ -76,7 +76,7 @@ namespace AMDiS
       * \param[in]  printCoords   If true, the coords of all common dofs are
       *                           printed to the screen.
       */
-      static void testCommonDofs(MeshDistributor &pdb, Mesh* mesh, bool printCoords = false);
+      static void testCommonDofs(MeshDistributor& pdb, Mesh* mesh, bool printCoords = false);
 
       /** \brief
       * This function is used for debugging only. It checks if on all ranks DOFs
@@ -86,45 +86,45 @@ namespace AMDiS
       *
       * \param[in]  pdb           Parallel problem definition used for debugging.
       */
-      static void testGlobalIndexByCoords(MeshDistributor &pdb, Mesh* mesh);
+      static void testGlobalIndexByCoords(MeshDistributor& pdb, Mesh* mesh);
 
       /** \brief
       * Tests if all elements in the macro mesh are memeber of exactly one rank.
       *
       * \param[in]  pdb           Parallel problem definition used for debugging.
       */
-      static void testAllElements(MeshDistributor &pdb);
+      static void testAllElements(MeshDistributor& pdb);
 
       /** \brief
-      * Tests for all ranks simultaneously, if the number of all send and received 
+      * Tests for all ranks simultaneously, if the number of all send and received
       * DOFs fits together for all communication partners.
       *
       * \param[in]  pdb        Parallel problem definition used for debugging.
       */
-      static void testDofContainerCommunication(MeshDistributor &pdb, Mesh* mesh);
+      static void testDofContainerCommunication(MeshDistributor& pdb, Mesh* mesh);
 
       /// Tests if there are multiple DOFs in mesh with the same coords.
-      static void testDoubleDofs(Mesh *mesh);
+      static void testDoubleDofs(Mesh* mesh);
 
       /** \brief
       * This function is used for debugging only. It prints all information from
       * the local to global dof mapping, see \ref mapLocalGlobalDofs.
       *
       * \param[in]  pdb     Parallel problem definition used for debugging.
-      * \param[in]  rank    If specified, only the information from the given rank 
+      * \param[in]  rank    If specified, only the information from the given rank
       *                     is printed.
       */
-      static void printMapLocalGlobal(MeshDistributor &pdb, int rank = -1);
+      static void printMapLocalGlobal(MeshDistributor& pdb, int rank = -1);
 
       /** \brief
       * This function is used for debugging only. It prints all information about
       * the periodic mapping of dofs, that are on periodic boundaries.
       *
       * \param[in] pdb    Parallel problem definition used for debugging.
-      * \param[in] rank   If specified, only the information from the given rank 
+      * \param[in] rank   If specified, only the information from the given rank
       *                   is printed.
       */
-      static void printMapPeriodic(MeshDistributor &pdb, int rank = -1);
+      static void printMapPeriodic(MeshDistributor& pdb, int rank = -1);
 
       /** \brief
       * This function is used for debugging only. It prints information about DOFs
@@ -137,13 +137,13 @@ namespace AMDiS
       *                           owned by rank.
       * \param[in]  rankAllDofs   List of all dofs in ranks partition.
       */
-      static void printRankDofs(MeshDistributor &pdb,
-				int rank, 
-				DofContainer& rankDofs, 
-				DofContainer& rankAllDofs);
+      static void printRankDofs(MeshDistributor& pdb,
+                                int rank,
+                                DofContainer& rankDofs,
+                                DofContainer& rankAllDofs);
 
       /** \brief
-      * This functions prints all information about all interior boundaries on 
+      * This functions prints all information about all interior boundaries on
       * all ranks.
       *
       * \param[in]  intBoundary   The boundary object to be printed.
@@ -153,24 +153,24 @@ namespace AMDiS
       *                           parameter "parallel->debug->print boundary info"
       *                           is set.
       */
-      static void printBoundaryInfo(InteriorBoundary &intBoundary,
-				    bool force = false);
+      static void printBoundaryInfo(InteriorBoundary& intBoundary,
+                                    bool force = false);
 
 
-      static void writeDebugFile(const FiniteElemSpace *feSpace,
-				ParallelDofMapping &dofMap,
-				std::string prefix, 
-				std::string postfix);
-      
-      static void writeDebugFile(MeshToFeSpaces& meshToFeSpaces, 
-				 ParallelDofMapping &dofMap,
-				 std::string debugOutputDir);
+      static void writeDebugFile(const FiniteElemSpace* feSpace,
+                                 ParallelDofMapping& dofMap,
+                                 std::string prefix,
+                                 std::string postfix);
+
+      static void writeDebugFile(MeshToFeSpaces& meshToFeSpaces,
+                                 ParallelDofMapping& dofMap,
+                                 std::string debugOutputDir);
 
       /** \brief
       * This functions create a Paraview file with the macro mesh where the
       * elements are colored by the partition they are part of.
       */
-      static void writePartitioning(MeshDistributor &pdb, std::string filename);
+      static void writePartitioning(MeshDistributor& pdb, std::string filename);
 
       /** \brief
       * The mesh is written to a value and all values are assigned by the rank
@@ -182,36 +182,36 @@ namespace AMDiS
       * \param[in]  feSpace
       */
       static void writePartitioningFile(std::string filename,
-					int counter,
-					const FiniteElemSpace *feSpace);
+                                        int counter,
+                                        const FiniteElemSpace* feSpace);
 
 
       static bool followThisBound(int rankElIndex, int neighElIndex);
 
-      static void followBoundary(MeshDistributor &pdb);
-      
-      static void followBoundary(Mesh *mesh,
-				AtomicBoundary &bound, 
-				MeshStructure &code);
+      static void followBoundary(MeshDistributor& pdb);
 
-      /** \brief 
+      static void followBoundary(Mesh* mesh,
+                                 AtomicBoundary& bound,
+                                 MeshStructure& code);
+
+      /** \brief
       * Writes Element Map of local Rank
       * Map containes for each DOF in each Element (resulting in massive doubling of DOFs):
       * localElementNumber	elementLevel	localDOFNumber	dofType dofCoords(0-2) elementLocalDOFNumber	typeOfElement (0-2)
       */
-      static void writeCsvElementMap(const FiniteElemSpace *feSpace,
-			      ParallelDofMapping &dofMap,
-			      std::string prefix, 
-			      std::string postfix);
-      
-      static void writeDofMap(ParallelDofMapping &dofMap, 
-			      int component,
-			      std::string filename, 
-			      std::string postfix);
-      
-      static void writePeriodicElObjInfo(MeshDistributor &pdb, std::string debugOutputDir);
-      
-      static void writeInterchangeVector(MeshDistributor &pdb, std::string debugOutputDir);
+      static void writeCsvElementMap(const FiniteElemSpace* feSpace,
+                                     ParallelDofMapping& dofMap,
+                                     std::string prefix,
+                                     std::string postfix);
+
+      static void writeDofMap(ParallelDofMapping& dofMap,
+                              int component,
+                              std::string filename,
+                              std::string postfix);
+
+      static void writePeriodicElObjInfo(MeshDistributor& pdb, std::string debugOutputDir);
+
+      static void writeInterchangeVector(MeshDistributor& pdb, std::string debugOutputDir);
     };
   } // end namespace Parallel
 } // end namespace AMDiS

@@ -27,11 +27,11 @@
 #include "FixVec.h"
 #include "BoundaryCondition.h"
 
-namespace AMDiS 
+namespace AMDiS
 {
-  /** \ingroup Triangulation 
+  /** \ingroup Triangulation
    * \brief
-   * A Mesh holds all information about a triangulation. 
+   * A Mesh holds all information about a triangulation.
    */
   class Mesh
   {
@@ -52,137 +52,137 @@ namespace AMDiS
      * \{
      */
 
-    /// Returns geometric information about this mesh. With GeoIndex p it is 
+    /// Returns geometric information about this mesh. With GeoIndex p it is
     /// specified which information is requested.
-    int getGeo(GeoIndex p) const 
-    { 
-      return Global::getGeo(p, dim); 
+    int getGeo(GeoIndex p) const
+    {
+      return Global::getGeo(p, dim);
     }
 
     /// Returns \ref name of the mesh
-    std::string getName() const 
-    { 
-      return name; 
+    std::string getName() const
+    {
+      return name;
     }
 
     /// Returns \ref dim of the mesh
     int getDim() const
-    { 
-      return dim; 
+    {
+      return dim;
     }
 
     /// Returns \ref nDofEl of the mesh
-    int getNumberOfAllDofs() const 
-    { 
-      return nDofEl; 
+    int getNumberOfAllDofs() const
+    {
+      return nDofEl;
     }
 
     /// Returns \ref nNodeEl of the mesh
-    int getNumberOfNodes() const 
-    { 
-      return nNodeEl; 
+    int getNumberOfNodes() const
+    {
+      return nNodeEl;
     }
 
     /// Returns \ref nVertices of the mesh
-    int getNumberOfVertices() const 
-    { 
-      return nVertices; 
+    int getNumberOfVertices() const
+    {
+      return nVertices;
     }
 
-    /// Returns \ref nEdges of the mesh 
-    int getNumberOfEdges() const 
-    { 
-      return nEdges; 
+    /// Returns \ref nEdges of the mesh
+    int getNumberOfEdges() const
+    {
+      return nEdges;
     }
 
-    /// Returns \ref nFaces of the mesh 
-    int getNumberOfFaces() const 
-    { 
-      return nFaces; 
+    /// Returns \ref nFaces of the mesh
+    int getNumberOfFaces() const
+    {
+      return nFaces;
     }
 
-    /// Returns \ref nLeaves of the mesh 
-    int getNumberOfLeaves() const 
-    { 
-      return nLeaves; 
+    /// Returns \ref nLeaves of the mesh
+    int getNumberOfLeaves() const
+    {
+      return nLeaves;
     }
 
     /// Returns \ref nElements of the mesh
-    int getNumberOfElements() const 
-    { 
-      return nElements; 
+    int getNumberOfElements() const
+    {
+      return nElements;
     }
 
     /// Returns \ref maxEdgeNeigh of the mesh
-    int getMaxEdgeNeigh() const 
-    { 
-      return maxEdgeNeigh; 
+    int getMaxEdgeNeigh() const
+    {
+      return maxEdgeNeigh;
     }
 
     /// Returns \ref parametric of the mesh
-    Parametric *getParametric() const 
-    { 
-      return parametric; 
+    Parametric* getParametric() const
+    {
+      return parametric;
     }
 
     /// Returns \ref diam of the mesh
-    const WorldVector<double>& getDiameter() const 
-    { 
-      return diam; 
+    const WorldVector<double>& getDiameter() const
+    {
+      return diam;
     }
 
     /// Returns nDof[i] of the mesh
-    int getNumberOfDofs(int i) const 
-    { 
+    int getNumberOfDofs(int i) const
+    {
       TEST_EXIT_DBG(i <= dim)("Wrong index: %d %d\n", i, dim);
-      return nDof[i]; 
+      return nDof[i];
     }
 
     /// Returns \ref elementPrototype of the mesh
-    Element* getElementPrototype() 
-    { 
-      return elementPrototype; 
+    Element* getElementPrototype()
+    {
+      return elementPrototype;
     }
 
     /// Returns \ref leafDataPrototype of the mesh
-    ElementData* getElementDataPrototype() 
-    { 
-      return elementDataPrototype; 
+    ElementData* getElementDataPrototype()
+    {
+      return elementDataPrototype;
     }
 
-    /// Returns node[i] of the mesh 
-    int getNode(int i) const 
-    { 
-      return node[i]; 
+    /// Returns node[i] of the mesh
+    int getNode(int i) const
+    {
+      return node[i];
     }
 
     /// Allocates the number of DOFs needed at position and registers the DOFs
     /// at the DOFAdmins. The number of needed DOFs is the sum over the needed
-    /// DOFs of all DOFAdmin objects belonging to this mesh. 
-    /// The return value is a pointer to the first allocated DOF. 
-    DegreeOfFreedom *getDof(GeoIndex position);
+    /// DOFs of all DOFAdmin objects belonging to this mesh.
+    /// The return value is a pointer to the first allocated DOF.
+    DegreeOfFreedom* getDof(GeoIndex position);
 
     /// Returns *(\ref admin[i]) of the mesh
-    const DOFAdmin& getDofAdmin(int i) const 
+    const DOFAdmin& getDofAdmin(int i) const
     {
       return *(admin[i]);
     }
 
-    /// Creates a DOFAdmin with name lname. nDof specifies how many DOFs 
+    /// Creates a DOFAdmin with name lname. nDof specifies how many DOFs
     /// are needed at the different positions (see \ref DOFAdmin::nrDOF).
     /// A pointer to the created DOFAdmin is returned.
     const DOFAdmin* createDOFAdmin(std::string lname, DimVec<int> nDof);
 
     /// Returns the size of \ref admin which is the number of the DOFAdmins
     /// belonging to this mesh
-    int getNumberOfDOFAdmin() const 
+    int getNumberOfDOFAdmin() const
     {
       return admin.size();
     }
 
     /// Returns the size of \ref macroElements which is the number of
     /// of macro elements of this mesh
-    int getNumberOfMacros() const 
+    int getNumberOfMacros() const
     {
       return macroElements.size();
     }
@@ -190,30 +190,30 @@ namespace AMDiS
     /// Returns a DOFAdmin which at least manages vertex DOFs
     const DOFAdmin* getVertexAdmin() const;
 
-    /// Allocates an array of DOF pointers. The array holds one pointer for 
+    /// Allocates an array of DOF pointers. The array holds one pointer for
     /// each node.
-    DegreeOfFreedom **createDofPtrs();
+    DegreeOfFreedom** createDofPtrs();
 
     /// Returns \ref preserveCoarseDOFs of the mesh
-    bool queryCoarseDOFs() const 
-    { 
+    bool queryCoarseDOFs() const
+    {
       return preserveCoarseDOFs;
     }
 
     /// Returns an iterator to the begin of \ref macroElements
-    std::deque<MacroElement*>::iterator firstMacroElement() 
+    std::deque<MacroElement*>::iterator firstMacroElement()
     {
       return macroElements.begin();
     }
 
     /// Returns macroElements[i].
-    MacroElement *getMacroElement(int i) 
-    { 
-      return macroElements[i]; 
+    MacroElement* getMacroElement(int i)
+    {
+      return macroElements[i];
     }
 
     /// Returns an iterator to the end of \ref macroElements
-    std::deque<MacroElement*>::iterator endOfMacroElements() 
+    std::deque<MacroElement*>::iterator endOfMacroElements()
     {
       return macroElements.end();
     }
@@ -231,69 +231,69 @@ namespace AMDiS
      */
 
     /// Sets \ref name of the mesh
-    void setName(std::string aName) 
-    { 
+    void setName(std::string aName)
+    {
       name = aName;
     }
 
     /// Sets \ref nVertices of the mesh
-    void setNumberOfVertices(int n) 
-    { 
-      nVertices = n; 
+    void setNumberOfVertices(int n)
+    {
+      nVertices = n;
     }
 
     /// Sets \ref nFaces of the mesh
-    void setNumberOfFaces(int n) 
-    { 
-      nFaces = n; 
+    void setNumberOfFaces(int n)
+    {
+      nFaces = n;
     }
 
     /// Increments \ref nVertices by inc
-    void incrementNumberOfVertices(int inc) 
-    { 
-      nVertices += inc; 
+    void incrementNumberOfVertices(int inc)
+    {
+      nVertices += inc;
     }
- 
+
     /// Sets \ref nEdges of the mesh
-    void setNumberOfEdges(int n) 
-    { 
-      nEdges = n; 
+    void setNumberOfEdges(int n)
+    {
+      nEdges = n;
     }
 
     /// Increments \ref nEdges by inc
-    void incrementNumberOfEdges(int inc) 
-    { 
-      nEdges += inc; 
+    void incrementNumberOfEdges(int inc)
+    {
+      nEdges += inc;
     }
 
     /// Increments \ref nFaces by inc
-    void incrementNumberOfFaces(int inc) 
-    { 
-      nFaces += inc; 
+    void incrementNumberOfFaces(int inc)
+    {
+      nFaces += inc;
     }
 
     /// Sets \ref nLeaves of the mesh
-    void setNumberOfLeaves(int n) 
-    { 
-      nLeaves = n; 
+    void setNumberOfLeaves(int n)
+    {
+      nLeaves = n;
     }
 
     /// Increments \ref nLeaves by inc
-    void incrementNumberOfLeaves(int inc) 
-    { 
-      nLeaves += inc; 
+    void incrementNumberOfLeaves(int inc)
+    {
+      nLeaves += inc;
     }
 
     /// Sets \ref nElements of the mesh
-    void setNumberOfElements(int n) 
-    { 
-      nElements = n; 
+    void setNumberOfElements(int n)
+    {
+      nElements = n;
     }
 
     /// Increments \ref nElements by inc
-    void incrementNumberOfElements(int inc) 
-    { 
-      nElements += inc; 
+    void incrementNumberOfElements(int inc)
+    {
+      nElements += inc;
     }
 
     /// Sets *\ref diam to w
@@ -303,56 +303,56 @@ namespace AMDiS
     void setDiameter(int i, double d);
 
     /// Sets \ref preserveCoarseDOFs = true
-    void retainCoarseDOFs() 
+    void retainCoarseDOFs()
     {
       preserveCoarseDOFs = true;
     }
 
     /// Sets \ref preserveCoarseDOFs = b
-    void setPreserveCoarseDOFs(bool b) 
+    void setPreserveCoarseDOFs(bool b)
     {
       preserveCoarseDOFs = b;
     }
 
     /// Sets \ref preserveCoarseDOFs = false
-    void noCoarseDOFs() 
+    void noCoarseDOFs()
     {
       preserveCoarseDOFs = false;
     }
 
     /// Sets \ref elementPrototype of the mesh
-    void setElementPrototype(Element* prototype) 
+    void setElementPrototype(Element* prototype)
     {
       elementPrototype = prototype;
     }
-    
+
     /// Sets \ref elementDataPrototype of the mesh
-    void setElementDataPrototype(ElementData* prototype) 
+    void setElementDataPrototype(ElementData* prototype)
     {
       elementDataPrototype = prototype;
     }
 
     ///
-    void setParametric(Parametric *param) 
+    void setParametric(Parametric* param)
     {
       parametric = param;
     }
 
     ///
-    void setMaxEdgeNeigh(int m) 
-    { 
-      maxEdgeNeigh = m; 
+    void setMaxEdgeNeigh(int m)
+    {
+      maxEdgeNeigh = m;
     }
-  
+
     /** \} */
 
     /// Creates a new Element by cloning \ref elementPrototype
-    Element* createNewElement(Element *parent = NULL);
+    Element* createNewElement(Element* parent = NULL);
 
     /// Creates a new ElInfo dependent of \ref dim of the mesh
     ElInfo* createNewElInfo();
 
-    /// Frees DOFs at the given position pointed by dof 
+    /// Frees DOFs at the given position pointed by dof
     void freeDof(DegreeOfFreedom* dof, GeoIndex position);
 
     /// Frees memory for the given element el
@@ -362,42 +362,42 @@ namespace AMDiS
     void dofCompress();
 
     /// Adds a DOFAdmin to the mesh
-    void addDOFAdmin(DOFAdmin *admin);
+    void addDOFAdmin(DOFAdmin* admin);
 
     /// Recalculates the number of leave elements.
     void updateNumberOfLeaves();
 
     /// Clears \ref macroElements
-    void clearMacroElements() 
-    { 
+    void clearMacroElements()
+    {
       macroElements.clear();
     }
-  
+
     /// Adds a macro element to the mesh
     void addMacroElement(MacroElement* me);
 
-    /// Removes a set of macro elements from the mesh. This works only for the 
-    /// case, that there are no global or local refinements, i.e., all macro 
+    /// Removes a set of macro elements from the mesh. This works only for the
+    /// case, that there are no global or local refinements, i.e., all macro
     /// elements have no children.
     void removeMacroElements(std::set<MacroElement*>& macros,
-			     std::vector<const FiniteElemSpace*>& feSpaces);
-    
+                             std::vector<const FiniteElemSpace*>& feSpaces);
+
     void removeAllMacroElements();
 
     /// Frees the array of DOF pointers (see \ref createDofPtrs)
-    void freeDofPtrs(DegreeOfFreedom **ptrs);
+    void freeDofPtrs(DegreeOfFreedom** ptrs);
 
-    /// Used by \ref findElementAtPoint. 
+    /// Used by \ref findElementAtPoint.
     bool findElInfoAtPoint(const WorldVector<double>& xy,
-			   ElInfo *el_info,
-			   DimVec<double>& bary,
-			   const MacroElement *start_mel,
-			   const WorldVector<double> *xy0,
-			   double *sp);
+                           ElInfo* el_info,
+                           DimVec<double>& bary,
+                           const MacroElement* start_mel,
+                           const WorldVector<double>* xy0,
+                           double* sp);
 
     /** \brief
-     * Access to an element at world coordinates xy. Some applications need the 
-     * access to elements at a special location in world coordinates. Examples 
+     * Access to an element at world coordinates xy. Some applications need the
+     * access to elements at a special location in world coordinates. Examples
      * are characteristic methods for convection problems, or the implementation
      * of a special right hand side like point evaluations or curve integrals.
      * For such purposes, a routine is available which returns an element pointer
@@ -408,34 +408,34 @@ namespace AMDiS
      * \param pary returns barycentric coordinates of xy
      * \param start_mel initial guess for the macro element containing xy or NULL
      * \param xy0 start point from a characteristic method, see below, or NULL
-     * \param sp return address for relative distance to domain boundary in a 
+     * \param sp return address for relative distance to domain boundary in a
      *        characteristic method, see below, or NULL
      * \return true is xy is inside the domain , false otherwise
-     * 
-     * For a characteristic method, where \f$ xy = xy_0 - V\tau \f$, it may be 
-     * convenient to know the point on the domain's boundary which lies on the 
-     * line segment between the old point xy0 and the new point xy, in case that 
-     * xy is outside the domain. Such information is returned when xy0 and a 
-     * pointer sp!=NULL are supplied: *sp is set to the value s such that 
-     * \f$ xy_0 +s (xy -xy_0) \in \partial Domain \f$, and the element and local 
-     * coordinates corresponding to that boundary point will be returned via elp 
+     *
+     * For a characteristic method, where \f$ xy = xy_0 - V\tau \f$, it may be
+     * convenient to know the point on the domain's boundary which lies on the
+     * line segment between the old point xy0 and the new point xy, in case that
+     * xy is outside the domain. Such information is returned when xy0 and a
+     * pointer sp!=NULL are supplied: *sp is set to the value s such that
+     * \f$ xy_0 +s (xy -xy_0) \in \partial Domain \f$, and the element and local
+     * coordinates corresponding to that boundary point will be returned via elp
      * and bary.
      *
-     * The implementation of findElementAtPoint() is based on the transformation 
+     * The implementation of findElementAtPoint() is based on the transformation
      * from world to local coordinates, available via the routine worldToCoord(),
-     * At the moment, findElementAtPoint() works correctly only for domains with 
+     * At the moment, findElementAtPoint() works correctly only for domains with
      * non-curved boundary. This is due to the fact that the implementation first
-     * looks for the macro-element containing xy and then finds its path through 
+     * looks for the macro-element containing xy and then finds its path through
      * the corresponding element tree based on the macro barycentric coordinates.
      * For non-convex domains, it is possible that in some cases a point inside
      * the domain is considered as external.
      */
     bool findElementAtPoint(const WorldVector<double>& xy,
-			    Element **elp, 
-			    DimVec<double>& bary,
-			    const MacroElement *start_mel,
-			    const WorldVector<double> *xy0,
-			    double *sp);
+                            Element** elp,
+                            DimVec<double>& bary,
+                            const MacroElement* start_mel,
+                            const WorldVector<double>* xy0,
+                            double* sp);
 
     /** \brief
      * Returns for a given dof its world coordinates in this mesh. Because we do
@@ -450,9 +450,9 @@ namespace AMDiS
      *
      * The function returns true, if the dof was found, otherwise false.
      */
-    bool getDofIndexCoords(const DegreeOfFreedom* dof, 
-			   const FiniteElemSpace* feSpace,
-			   WorldVector<double>& coords)
+    bool getDofIndexCoords(const DegreeOfFreedom* dof,
+                           const FiniteElemSpace* feSpace,
+                           WorldVector<double>& coords)
     {
       return getDofIndexCoords(*dof, feSpace, coords);
     }
@@ -460,19 +460,19 @@ namespace AMDiS
 
     /// This function is equal to \ref getDofIndexCoords as defined above, but
     /// takes a DOF index instead of a DOF pointer.
-    bool getDofIndexCoords(DegreeOfFreedom dof, 
-			   const FiniteElemSpace* feSpace,
-			   WorldVector<double>& coords);
+    bool getDofIndexCoords(DegreeOfFreedom dof,
+                           const FiniteElemSpace* feSpace,
+                           WorldVector<double>& coords);
 
     /** \brief
      * Traverse the whole mesh and stores to each DOF the coordinates in a given
-     * DOFVector. Works in the same way as the function \ref getDofIndexCoords 
+     * DOFVector. Works in the same way as the function \ref getDofIndexCoords
      * defined above.
      *
      * @param[out]  coords    DOF vector that stores the coordinates to each DOF.
      */
-    void getDofIndexCoords(DOFVector<WorldVector<double> >& coords);
-    
+    void getDofIndexCoords(DOFVector<WorldVector<double>>& coords);
+
 
     /** \brief
      * Traverse the mesh and get all DOFs in this mesh for a given FE space.
@@ -480,13 +480,14 @@ namespace AMDiS
      * @param[in]   feSpace   The FE space to be used for collecting DOFs.
      * @param[out]  allDofs   The set which is filled with all DOFs.
      */
-    void getAllDofs(const FiniteElemSpace *feSpace, 
-		    std::set<const DegreeOfFreedom*>& allDofs);
+    void getAllDofs(const FiniteElemSpace* feSpace,
+                    std::set<const DegreeOfFreedom*>& allDofs);
 
     /// Returns FILL_ANY_?D
-    static const Flag& getFillAnyFlag(int dim) 
+    static const Flag& getFillAnyFlag(int dim)
     {
-      switch (dim) {
+      switch (dim)
+      {
       case 1:
         return FILL_ANY_1D;
         break;
@@ -503,19 +504,19 @@ namespace AMDiS
     }
 
     /// Returns \ref elementIndex and increments it by 1.
-    int getNextElementIndex() 
-    { 
-      return elementIndex++; 
+    int getNextElementIndex()
+    {
+      return elementIndex++;
     }
 
     /// Returns \ref initialized.
-    bool isInitialized() 
+    bool isInitialized()
     {
-      return initialized; 
+      return initialized;
     }
-  
+
     ///
-    std::map<BoundaryType, VertexVector*>& getPeriodicAssociations() 
+    std::map<BoundaryType, VertexVector*>& getPeriodicAssociations()
     {
       return periodicAssociations;
     }
@@ -526,17 +527,17 @@ namespace AMDiS
       FUNCNAME_DBG("Mesh::getPeriodicAssociations()");
 
       TEST_EXIT_DBG(periodicAssociations.count(b) == 1)
-        ("There are no periodic assoications for boundary type %d!\n", b);
+      ("There are no periodic assoications for boundary type %d!\n", b);
 
       return (*(periodicAssociations[b]));
     }
-    
+
     void setPeriodicAssociations(BoundaryType b, VertexVector* vec)
     {
       periodicAssociations[b] = vec;
     }
 
-    
+
     /// Returns whether the given boundary type is periodic, i.e., if there is
     /// a periodic association for this boundary type.
     bool isPeriodicAssociation(BoundaryType b)
@@ -551,8 +552,8 @@ namespace AMDiS
     bool indirectlyAssociated(DegreeOfFreedom dof1, DegreeOfFreedom dof2);
 
     /// Returns \macroFileInfo
-    MacroInfo* getMacroFileInfo() 
-    { 
+    MacroInfo* getMacroFileInfo()
+    {
       return macroFileInfo;
     }
 
@@ -578,7 +579,7 @@ namespace AMDiS
     void deleteMeshStructure();
 
 #ifdef HAVE_PARALLEL_DOMAIN_AMDIS
-    /// In parallel computations the level of all macro elements is equal to the 
+    /// In parallel computations the level of all macro elements is equal to the
     /// number of global pre refinements, \ref nParallelPreRefinements.
     int getMacroElementLevel()
     {
@@ -594,38 +595,38 @@ namespace AMDiS
 
     /// Creates a map for all elements in mesh that maps from element indices
     /// to the corresponding pointers.
-    void getElementIndexMap(std::map<int, Element*> &elIndexMap);
+    void getElementIndexMap(std::map<int, Element*>& elIndexMap);
 
   public:
     ///
     static const Flag FILL_NOTHING;
 
     ///
-    static const Flag FILL_COORDS; 
+    static const Flag FILL_COORDS;
 
     ///
-    static const Flag FILL_BOUND; 
+    static const Flag FILL_BOUND;
 
     ///
-    static const Flag FILL_NEIGH; 
+    static const Flag FILL_NEIGH;
 
     ///
-    static const Flag FILL_OPP_COORDS; 
+    static const Flag FILL_OPP_COORDS;
 
     ///
-    static const Flag FILL_ORIENTATION; 
+    static const Flag FILL_ORIENTATION;
 
     ///
-    static const Flag FILL_ADD_ALL; 
-  
-    ///
-    static const Flag FILL_ANY_1D; 
+    static const Flag FILL_ADD_ALL;
 
     ///
-    static const Flag FILL_ANY_2D; 
+    static const Flag FILL_ANY_1D;
 
     ///
-    static const Flag FILL_ANY_3D; 
+    static const Flag FILL_ANY_2D;
+
+    ///
+    static const Flag FILL_ANY_3D;
 
     ///
     static const Flag FILL_DET;
@@ -634,7 +635,7 @@ namespace AMDiS
     static const Flag FILL_GRD_LAMBDA;
 
     //**************************************************************************
-    //  flags for Mesh traversal                                                
+    //  flags for Mesh traversal
     //**************************************************************************
 
     ///
@@ -663,10 +664,10 @@ namespace AMDiS
 
   protected:
     ///
-    bool findElementAtPointRecursive(ElInfo *elinfo,
+    bool findElementAtPointRecursive(ElInfo* elinfo,
                                      const DimVec<double>& lambda,
                                      int outside,
-                                     ElInfo *final_el_info);
+                                     ElInfo* final_el_info);
 
 #ifdef HAVE_PARALLEL_DOMAIN_AMDIS
     /** \brief
@@ -687,8 +688,8 @@ namespace AMDiS
      *                                    AMDiS macro mesh, the value must be 1 and 0
      *                                    otherwise.
      */
-    void checkParallelMacroFile(std::string &macroFilename, 
-                                std::string &periodicFilename,
+    void checkParallelMacroFile(std::string& macroFilename,
+                                std::string& periodicFilename,
                                 int check);
 #endif
 
@@ -717,24 +718,24 @@ namespace AMDiS
     /// Number of faces in this Mesh
     int nFaces;
 
-    /// Maximal number of elements that share one edge; used to allocate memory 
-    /// to store pointers to the neighbour at the refinement/coarsening edge 
+    /// Maximal number of elements that share one edge; used to allocate memory
+    /// to store pointers to the neighbour at the refinement/coarsening edge
     /// (only 3d);
     int maxEdgeNeigh;
 
     /// Diameter of the mesh in the DIM_OF_WORLD directions
     WorldVector<double> diam;
 
-    /// Is pointer to NULL if mesh contains no parametric elements else pointer 
-    /// to a Parametric object containing coefficients of the parameterization 
+    /// Is pointer to NULL if mesh contains no parametric elements else pointer
+    /// to a Parametric object containing coefficients of the parameterization
     /// and related information
-    Parametric *parametric;
+    Parametric* parametric;
 
-    /// When an element is refined, not all dofs of the coarse element must be 
+    /// When an element is refined, not all dofs of the coarse element must be
     /// part of the new elements. An example are centered dofs when using higher
     /// lagrange basis functions. The midpoint dof of the parents element is not
     /// a dof of the both children elements. Therefore, the dof can be deleted.
-    /// In some situation, e.g., when using multigrid techniques, it can be 
+    /// In some situation, e.g., when using multigrid techniques, it can be
     /// necessary to store this coarse dofs. Then this variable must be set to
     /// true. If false, the not required coarse dofs will be deleted.
     bool preserveCoarseDOFs;
@@ -754,21 +755,21 @@ namespace AMDiS
      * - nDof[FACE]: number of DOFs at a face; if no DOFs are associated to
      *   faces, then this value is 0 (only 3d)
      *
-     * - nDof[CENTER]: number of DOFs at the barycenter; if no DOFs are 
+     * - nDof[CENTER]: number of DOFs at the barycenter; if no DOFs are
      *   associated to the barycenter, then this value is 0
      */
     DimVec<int> nDof;
 
-    /// Number of nodes on a single element where DOFs are located. Needed for 
+    /// Number of nodes on a single element where DOFs are located. Needed for
     /// the (de-) allocation of the DOF-vector on the element (\ref Element::dof).
     /// Here "node" is equivalent to the number of basis functions on the element.
     int nNodeEl;
 
     /** \brief
-     * Gives the index of the first node at vertex, edge, face (only 3d), and 
+     * Gives the index of the first node at vertex, edge, face (only 3d), and
      * barycenter:
      *
-     * - node[VERTEX]: has always value 0; dof[0],...,dof[N_VERTICES-1] are 
+     * - node[VERTEX]: has always value 0; dof[0],...,dof[N_VERTICES-1] are
      *   always DOFs at the vertices;
      *
      * - node[EDGE]: dof[node[EDGE]],..., dof[node[EDGE]+N_EDGES-1] are the DOFs
@@ -790,12 +791,12 @@ namespace AMDiS
 
     /// Used by check functions
     static std::vector<DegreeOfFreedom> dof_used;
-    
+
     static std::set<std::string> refinedMeshNames;
 
     /// This map is used for serialization and deserialization of mesh elements.
     /// During the serialization process, all elements are visited and their
-    /// DOF indices are written to the file. If a dof index at a position, i.e. 
+    /// DOF indices are written to the file. If a dof index at a position, i.e.
     /// vertex, line or face, was written to file, the combination of dof index
     /// and position is inserted to this map. That ensures that the same dof at
     /// the same position, but being part of another element, is not written
@@ -803,13 +804,13 @@ namespace AMDiS
     /// can be used to construct exactly the same dof structure.
     static std::map<std::pair<DegreeOfFreedom, int>, DegreeOfFreedom*> serializedDOFs;
 
-    /// Used while mesh refinement. To create new elements 
+    /// Used while mesh refinement. To create new elements
     /// elementPrototype->clone() is called, which returns a Element of the
     /// same type as elementPrototype. So e.g. Elements of the different
-    /// dimensions can be created in a uniform way. 
+    /// dimensions can be created in a uniform way.
     Element* elementPrototype;
 
-    /// Prototype for leaf data. Used for creation of new leaf data while 
+    /// Prototype for leaf data. Used for creation of new leaf data while
     /// refinement.
     ElementData* elementDataPrototype;
 
@@ -824,11 +825,11 @@ namespace AMDiS
 
     /// If the mesh has been created by reading a macro file, here the information
     /// are stored about the content of the file.
-    MacroInfo *macroFileInfo;
+    MacroInfo* macroFileInfo;
 
-    /// This index is incremented every time the mesh is changed, e.g. by the 
-    /// refinement or the coarsening manager. It can be used by other object if 
-    /// the mesh has been changed by first copying this variable elsewhere and 
+    /// This index is incremented every time the mesh is changed, e.g. by the
+    /// refinement or the coarsening manager. It can be used by other object if
+    /// the mesh has been changed by first copying this variable elsewhere and
     /// comparing its values.
     long changeIndex;
 
@@ -845,17 +846,26 @@ namespace AMDiS
 
     /// Temporary variables that are used in functions \ref findElInfoAtPoint
     /// and \ref findElementAtPointRecursive.
-    const WorldVector<double> *g_xy0, *g_xy;
+    const WorldVector<double>* g_xy0, *g_xy;
 
     /// Temporary variable that is used in functions \ref findElInfoAtPoint and
-    /// \ref findElementAtPointRecursive.  
-    double *g_sp;
-   
+    /// \ref findElementAtPointRecursive.
+    double* g_sp;
+
     friend class MacroInfo;
     friend class io::MacroReader;
     friend struct io::MacroWriter;
-//     friend class MacroElement;
-//     friend class Element;
+  };
+
+
+  /// Accessor class used as passkey pattern in the setIndex method
+  /// to provide access to this specific method only.
+  class MeshAccessor
+  {
+    MeshAccessor() = default;
+    MeshAccessor(MeshAccessor const&) = default;
+
+    friend class Mesh;
   };
 
 } // end namespace AMDiS

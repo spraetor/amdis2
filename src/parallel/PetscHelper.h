@@ -5,7 +5,7 @@
  * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
  * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
  *
- * Authors: 
+ * Authors:
  * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
  *
  * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
@@ -15,7 +15,7 @@
  * This file is part of AMDiS
  *
  * See also license.opensource.txt in the distribution.
- * 
+ *
  ******************************************************************************/
 
 
@@ -38,14 +38,14 @@ namespace AMDiS
 
     /** \brief
     * In this namespace, we collect several auxiliary functions for using
-    * PETSc in AMDiS. Many of these function may be replaced by new PETSc 
+    * PETSc in AMDiS. Many of these function may be replaced by new PETSc
     * function in upcoming versions.
     */
     namespace petsc_helper
     {
 
       /// Defines a PETSc matrix column wise
-      typedef std::pair<std::vector<int>, std::vector<double> > SparseCol;
+      typedef std::pair<std::vector<int>, std::vector<double>> SparseCol;
       typedef std::map<int, SparseCol> PetscMatCol;
 
       /** \brief
@@ -55,7 +55,7 @@ namespace AMDiS
       * \param[in]   mat     PETSc distributerd matrix.
       * \param[out]  matCol  The sparse column represenation of the local matrix.
       */
-      void getMatLocalColumn(Mat mat, PetscMatCol &matCol);
+      void getMatLocalColumn(Mat mat, PetscMatCol& matCol);
 
       /** \brief
       * Set a local column vector in a distributed matrix.
@@ -73,7 +73,7 @@ namespace AMDiS
       * \param[in]   column   Sparse column representation.
       * \param[out]  vec      Vector representing one column of the matrix.
       */
-      void getColumnVec(const SparseCol &matCol, Vec vec);
+      void getColumnVec(const SparseCol& matCol, Vec vec);
 
       /** \brief
       * Computes the matrix matrix product inv(A) B = C. Matrices B and C
@@ -86,10 +86,10 @@ namespace AMDiS
       * \param[in]   mat0     matrix B
       * \param[out]  mat1     resulting matrix C, is created inside the function
       */
-      void blockMatMatSolve(MPI::Intracomm mpiComm, 
-			    KSP ksp, 
-			    Mat mat0, 
-			    Mat &mat1);
+      void blockMatMatSolve(MPI::Intracomm mpiComm,
+                            KSP ksp,
+                            Mat mat0,
+                            Mat& mat1);
 
       /** \brief
       * Converts a 2x2 nested matrix to a MATAIJ matrix (thus not nested).
@@ -97,27 +97,27 @@ namespace AMDiS
       * \param[in]  matNest  nested input matrix
       * \param[out] mat      matrix of type MATAIJ, created inside this function.
       */
-      void matNestConvert(Mat matNest, Mat &mat);
+      void matNestConvert(Mat matNest, Mat& mat);
 
-      void setSolverWithLu(KSP ksp, 
-			  const char* kspPrefix,
-			  KSPType kspType, 
-			  PCType pcType, 
-			  const MatSolverPackage matSolverPackage,
-			  PetscReal rtol = PETSC_DEFAULT,
-			  PetscReal atol = PETSC_DEFAULT,
-			  PetscInt maxIt = PETSC_DEFAULT);
+      void setSolverWithLu(KSP ksp,
+                           const char* kspPrefix,
+                           KSPType kspType,
+                           PCType pcType,
+                           const MatSolverPackage matSolverPackage,
+                           PetscReal rtol = PETSC_DEFAULT,
+                           PetscReal atol = PETSC_DEFAULT,
+                           PetscInt maxIt = PETSC_DEFAULT);
 
-      void setSolver(KSP ksp, 
-		    const char* kspPrefix,
-		    KSPType kspType, 
-		    PCType pcType, 
-		    PetscReal rtol = PETSC_DEFAULT,
-		    PetscReal atol = PETSC_DEFAULT,
-		    PetscInt maxIt = PETSC_DEFAULT);
-		    
-      void createSolver(MPI::Intracomm comm, KSP &ksp, Mat m, std::string kspPrefix = "", int info = 0);
-      
+      void setSolver(KSP ksp,
+                     const char* kspPrefix,
+                     KSPType kspType,
+                     PCType pcType,
+                     PetscReal rtol = PETSC_DEFAULT,
+                     PetscReal atol = PETSC_DEFAULT,
+                     PetscInt maxIt = PETSC_DEFAULT);
+
+      void createSolver(MPI::Intracomm comm, KSP& ksp, Mat m, std::string kspPrefix = "", int info = 0);
+
     } // end namespace petsc_helper
   } // end namespace Parallel
 } // end namespace AMDiS

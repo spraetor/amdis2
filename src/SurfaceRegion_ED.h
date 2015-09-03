@@ -5,68 +5,68 @@
 #include "ElementData.h"
 #include "FixVec.h"
 
-namespace AMDiS 
+namespace AMDiS
 {
 
   class SurfaceRegion_ED : public ElementData
   {
   public:
-    virtual bool isOfType(int typeID) const override 
+    virtual bool isOfType(int typeID) const override
     {
-      if (typeID == SURFACE_REGION) 
+      if (typeID == SURFACE_REGION)
         return true;
       return false;
     }
 
     struct Creator : public CreatorInterface<ElementData>
     {
-      virtual ElementData* create() override 
+      virtual ElementData* create() override
       {
         return new SurfaceRegion_ED;
       }
     };
 
-    SurfaceRegion_ED(ElementData *decorated = NULL)
+    SurfaceRegion_ED(ElementData* decorated = NULL)
       : ElementData(decorated),
-      	side(-1),
-      	region(-1)
+        side(-1),
+        region(-1)
     {}
 
-    virtual bool refineElementData(Element* parent, 
-                          			   Element* child1,
-                          			   Element* child2,
-                          			   int elType) override;
+    virtual bool refineElementData(Element* parent,
+                                   Element* child1,
+                                   Element* child2,
+                                   int elType) override;
 
-    virtual ElementData *clone() const override;
+    virtual ElementData* clone() const override;
 
-    std::string getTypeName() const 
-    { 
-      return "SurfaceRegion_ED"; 
+    std::string getTypeName() const
+    {
+      return "SurfaceRegion_ED";
     }
 
-    virtual int getTypeID() const override 
-    { 
-      return SURFACE_REGION; 
+    virtual int getTypeID() const override
+    {
+      return SURFACE_REGION;
     }
 
-    void setSide(int s) 
-    { 
-      side = s; 
+    void setSide(int s)
+    {
+      side = s;
     }
 
-    int getSide() const 
-    { 
-      return side; 
+    int getSide() const
+    {
+      return side;
     }
 
-    void setRegion(int r) 
-    { 
-      region = r; 
+    void setRegion(int r)
+    {
+      region = r;
     }
 
-    int getRegion() const 
-    { 
-      return region; 
+    int getRegion() const
+    {
+      return region;
     }
 
   protected:

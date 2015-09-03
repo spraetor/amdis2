@@ -5,7 +5,7 @@
  * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
  * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
  *
- * Authors: 
+ * Authors:
  * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
  *
  * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
@@ -15,7 +15,7 @@
  * This file is part of AMDiS
  *
  * See also license.opensource.txt in the distribution.
- * 
+ *
  ******************************************************************************/
 
 
@@ -26,7 +26,8 @@
 
 #include "DOFMatrix.h"
 
-namespace AMDiS {
+namespace AMDiS
+{
 
   /**
    * \brief Helper class to provide complete matrix for ITL solvers and preconditioners
@@ -51,9 +52,9 @@ namespace AMDiS {
       matrix= &A.getBaseMatrix();
     }
 
-    const DOFMatrix::base_matrix_type& getMatrix() const 
-    { 
-      return *matrix; 
+    const DOFMatrix::base_matrix_type& getMatrix() const
+    {
+      return *matrix;
     }
 
   private:
@@ -63,11 +64,11 @@ namespace AMDiS {
 
   // VectorProblem
   template <>
-  class SolverMatrix<Matrix<DOFMatrix*> >
+  class SolverMatrix<Matrix<DOFMatrix*>>
   {
   public :
-    SolverMatrix<Matrix<DOFMatrix* > >()
-      : originalMat(NULL)
+    SolverMatrix<Matrix<DOFMatrix*>>()
+                                    : originalMat(NULL)
     {}
 
     void setMatrix(const Matrix<DOFMatrix*>& A)
@@ -76,32 +77,32 @@ namespace AMDiS {
       matrix.change_dim(0,0);
     }
 
-    const DOFMatrix::base_matrix_type& getMatrix() const 
-    { 
+    const DOFMatrix::base_matrix_type& getMatrix() const
+    {
       if( num_rows(matrix) == 0)
         buildMatrix();
-      return matrix; 
+      return matrix;
     }
 
-    const DOFMatrix::base_matrix_type& getSubMatrix(int i, int j) const 
-    { 
+    const DOFMatrix::base_matrix_type& getSubMatrix(int i, int j) const
+    {
       TEST_EXIT(i>=0 && j>=0 && i<originalMat->getNumRows() && j<originalMat->getNumCols())
-	("SubMatrix indices out of range!\n");
-	
-      return (*originalMat)[i][j]->getBaseMatrix(); 
+      ("SubMatrix indices out of range!\n");
+
+      return (*originalMat)[i][j]->getBaseMatrix();
     }
 
     const Matrix<DOFMatrix*>* getOriginalMat() const
     {
       return originalMat;
     }
-    
+
   private:
-    void buildMatrix() const;    
-    
-  private:      
+    void buildMatrix() const;
+
+  private:
     mutable DOFMatrix::base_matrix_type matrix;
-    
+
     const Matrix<DOFMatrix*>* originalMat;
   };
 

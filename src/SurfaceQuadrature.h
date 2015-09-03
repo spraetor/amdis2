@@ -5,9 +5,9 @@
 #include "FixVec.h"
 #include "Quadrature.h"
 
-namespace AMDiS 
+namespace AMDiS
 {
-  /** 
+  /**
    * \ingroup Integration
    *
    * \brief
@@ -19,16 +19,16 @@ namespace AMDiS
   {
   public:
     /// Constructs a SurfaceQuadrature based on a standard Quadrature of dim-1.
-    SurfaceQuadrature(Quadrature *quad, VectorOfFixVecs<DimVec<double> >& coords);
+    SurfaceQuadrature(Quadrature* quad, VectorOfFixVecs<DimVec<double>>& coords);
 
     /// Adapts SurfaceQuadrature to \ref coords.
-    void scaleSurfaceQuadrature(VectorOfFixVecs<DimVec<double> > &coords);
+    void scaleSurfaceQuadrature(VectorOfFixVecs<DimVec<double>>& coords);
 
   protected:
     /// Pointer to the original quadrature
-    Quadrature *quad;
+    Quadrature* quad;
 
-    VectorOfFixVecs<DimVec<double> > coords;
+    VectorOfFixVecs<DimVec<double>> coords;
   };
 
 } // end namespace AMDiS

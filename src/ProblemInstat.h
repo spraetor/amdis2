@@ -6,7 +6,7 @@
 #include "ProblemTimeInterface.h"
 #include "AdaptInstationary.h"
 
-namespace AMDiS 
+namespace AMDiS
 {
   /**
    * \ingroup Problem
@@ -15,14 +15,14 @@ namespace AMDiS
    * Base class for \ref ProblemInstat.
    */
   class ProblemInstatBase : public ProblemTimeInterface,
-			    public ProblemStatBase // NOTE: Why is this derived from ProblemStatBase
+    public ProblemStatBase   // NOTE: Why is this derived from ProblemStatBase
   {
   public:
     /// Constructor.
     ProblemInstatBase(std::string probName,
-		      ProblemStatBase *initialProb)
+                      ProblemStatBase* initialProb)
       : name(probName),
-	initialProblem(initialProb ? initialProb : this)
+        initialProblem(initialProb ? initialProb : this)
     {}
 
     /// Destructor.
@@ -31,12 +31,12 @@ namespace AMDiS
     /// Initialisation of the problem.
 #if 0
     virtual void initialize(Flag initFlag,
-			    ProblemInstat *adoptProblem = NULL,
-			    Flag adoptFlag = INIT_NOTHING)
+                            ProblemInstat* adoptProblem = NULL,
+                            Flag adoptFlag = INIT_NOTHING)
     {}
 #endif
 
-    virtual void setTime(AdaptInfo* adaptInfo) 
+    virtual void setTime(AdaptInfo* adaptInfo)
     {
       cTime = adaptInfo->getTime();
       tau = adaptInfo->getTimestep();
@@ -45,46 +45,46 @@ namespace AMDiS
 
     virtual void solve(AdaptInfo* adaptInfo) {}
 
-    virtual void solve(AdaptInfo *adaptInfo, bool, bool) 
+    virtual void solve(AdaptInfo* adaptInfo, bool, bool)
     {
       solve(adaptInfo);
     }
 
-    virtual void estimate(AdaptInfo *adaptInfo) {}
+    virtual void estimate(AdaptInfo* adaptInfo) {}
 
-    virtual void buildBeforeRefine(AdaptInfo *adaptInfo, Flag) {}
+    virtual void buildBeforeRefine(AdaptInfo* adaptInfo, Flag) {}
 
-    virtual void buildBeforeCoarsen(AdaptInfo *adaptInfo, Flag) {}
+    virtual void buildBeforeCoarsen(AdaptInfo* adaptInfo, Flag) {}
 
-    virtual void buildAfterCoarsen(AdaptInfo *adaptInfo, Flag, bool, bool) {}
+    virtual void buildAfterCoarsen(AdaptInfo* adaptInfo, Flag, bool, bool) {}
 
-    virtual Flag markElements(AdaptInfo *adaptInfo) 
-    { 
-      return 0; 
+    virtual Flag markElements(AdaptInfo* adaptInfo)
+    {
+      return 0;
     }
 
-    virtual Flag refineMesh(AdaptInfo *adaptInfo) 
-    { 
-      return 0; 
+    virtual Flag refineMesh(AdaptInfo* adaptInfo)
+    {
+      return 0;
     }
 
-    virtual Flag coarsenMesh(AdaptInfo *adaptInfo) 
-    { 
-      return 0; 
+    virtual Flag coarsenMesh(AdaptInfo* adaptInfo)
+    {
+      return 0;
     }
 
     /// Implementation of ProblemTimeInterface::closeTimestep().
-    virtual void closeTimestep(AdaptInfo *adaptInfo) 
+    virtual void closeTimestep(AdaptInfo* adaptInfo)
     {}
 
     /// Returns \ref name.
-    inline std::string getName() 
-    { 
-      return name; 
+    inline std::string getName()
+    {
+      return name;
     }
 
     /// Used by \ref problemInitial
-    virtual void solveInitialProblem(AdaptInfo *adaptInfo);  
+    virtual void solveInitialProblem(AdaptInfo* adaptInfo);
 
     double* getTime()
     {
@@ -105,7 +105,7 @@ namespace AMDiS
     /// Name of the problem.
     std::string name;
 
-    ProblemStatBase *initialProblem;
+    ProblemStatBase* initialProblem;
 
     /// Time
     double cTime;
@@ -129,57 +129,57 @@ namespace AMDiS
   {
   public:
     /// Constructs a ProblemInstatVec with prob as its stationary problem.
-    ProblemInstat(std::string name, 
-		  ProblemStatSeq *prob,
-		  ProblemStatBase *initialProb = NULL);
+    ProblemInstat(std::string name,
+                  ProblemStatSeq* prob,
+                  ProblemStatBase* initialProb = NULL);
 
-    ProblemInstat(std::string name, ProblemStatSeq &prob);
+    ProblemInstat(std::string name, ProblemStatSeq& prob);
 
-    ProblemInstat(std::string name, ProblemStatSeq &prob, ProblemStatBase &initialProb);
+    ProblemInstat(std::string name, ProblemStatSeq& prob, ProblemStatBase& initialProb);
 
     /// Destructor.
     virtual ~ProblemInstat();
 
     /// Initialisation of the problem.
     virtual void initialize(Flag initFlag,
-			    ProblemInstat *adoptProblem = NULL,
-			    Flag adoptFlag = INIT_NOTHING);
+                            ProblemInstat* adoptProblem = NULL,
+                            Flag adoptFlag = INIT_NOTHING);
 
     /// Used in \ref initialize().
     virtual void createUhOld();
 
     /// Implementation of ProblemTimeInterface::initTimestep().
-    virtual void initTimestep(AdaptInfo *adaptInfo);
+    virtual void initTimestep(AdaptInfo* adaptInfo);
 
     /// Implementation of ProblemTimeInterface::closeTimestep().
-    virtual void closeTimestep(AdaptInfo *adaptInfo);
-  
+    virtual void closeTimestep(AdaptInfo* adaptInfo);
+
     /// Returns \ref problemStat.
-    ProblemStatSeq* getStatProblem() 
+    ProblemStatSeq* getStatProblem()
     {
-      return problemStat; 
+      return problemStat;
     }
 
     /// Returns \ref oldSolution.
-    SystemVector *getOldSolution() 
-    { 
-      return oldSolution; 
+    SystemVector* getOldSolution()
+    {
+      return oldSolution;
     }
 
-    DOFVector<double> *getOldSolution(int i)
+    DOFVector<double>* getOldSolution(int i)
     {
       return oldSolution->getDOFVector(i);
     }
 
     /// Used by \ref problemInitial
-    virtual void transferInitialSolution(AdaptInfo *adaptInfo);  
+    virtual void transferInitialSolution(AdaptInfo* adaptInfo);
 
   protected:
     /// Space problem solved in each timestep.
     ProblemStatSeq* problemStat;
 
     /// Solution of the last timestep.
-    SystemVector *oldSolution;
+    SystemVector* oldSolution;
 
     /// In parallel computations, we want to print the overall computational time
     /// that is used for one timestep.

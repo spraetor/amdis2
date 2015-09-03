@@ -3,34 +3,38 @@
 #include "Traverse.h"
 #include "DualTraverse.h"
 
-namespace AMDiS 
+namespace AMDiS
 {
   template <class Expr>
   inline typename boost::enable_if<traits::is_expr<Expr>, typename Expr::value_type>::type
   integrate(Expr expr, Mesh* mesh_)
   {
     typedef typename Expr::value_type TOut;
-    
+
     GenericOperatorTerm<Expr> ot(expr);
     std::set<const FiniteElemSpace*> feSpaces = ot.getAuxFeSpaces();
-    
+
     TEST_EXIT(mesh_ || !feSpaces.empty())
-      ("The Expression must contain a DOFVector or FeSpace depended value!\n");
+    ("The Expression must contain a DOFVector or FeSpace depended value!\n");
     Mesh* mesh = mesh_ ? mesh_ : (*feSpaces.begin())->getMesh();
-    
+
     int deg = expr.getDegree();
     int dim = mesh->getDim();
     Quadrature* quad = Quadrature::provideQuadrature(dim, deg);
-    
-    TOut value; nullify(value);
+
+    TOut value;
+    nullify(value);
 
     Flag traverseFlag = Mesh::CALL_LEAF_EL | Mesh::FILL_COORDS | Mesh::FILL_GRD_LAMBDA | Mesh::FILL_DET;
     TraverseStack stack;
-    ElInfo *elInfo = stack.traverseFirst(mesh, -1, traverseFlag);
-    while (elInfo) {
+    ElInfo* elInfo = stack.traverseFirst(mesh, -1, traverseFlag);
+    while (elInfo)
+    {
       expr.initElement(elInfo, NULL, quad);
-      TOut tmp; nullify(tmp);
-      for (int iq = 0; iq < quad->getNumPoints(); iq++) {
+      TOut tmp;
+      nullify(tmp);
+      for (int iq = 0; iq < quad->getNumPoints(); iq++)
+      {
         tmp += quad->getWeight(iq) * expr(iq);
       }
       value += tmp * elInfo->getDet();
@@ -52,81 +56,87 @@ namespace AMDiS
   {
     GenericOperatorTerm<Expr> ot(expr);
     std::set<const FiniteElemSpace*> feSpaces = ot.getAuxFeSpaces();
-    
+
     TEST_EXIT(!feSpaces.empty())
-      ("The Expression must contain a DOFVector or FeSpace depended value!\n");
-    const FiniteElemSpace* feSpace0 = *feSpaces.begin();  
+    ("The Expression must contain a DOFVector or FeSpace depended value!\n");
+    const FiniteElemSpace* feSpace0 = *feSpaces.begin();
     Mesh* mesh = feSpace0->getMesh();
-    
-    const BasisFunction *basisFcts = feSpace0->getBasisFcts();  
+
+    const BasisFunction* basisFcts = feSpace0->getBasisFcts();
     int nBasisFcts = basisFcts->getNumber();
-    
+
     DOFVector<bool> assigned(feSpace0, "assigned");
     assigned.set(false);
-    
+
     std::vector<DegreeOfFreedom> localIndices(nBasisFcts);
     TraverseStack stack;
-    ElInfo *elInfo = stack.traverseFirst(mesh, -1,
-					  Mesh::CALL_LEAF_EL | 
-					  Mesh::FILL_COORDS | Mesh::FILL_GRD_LAMBDA);
-    
-    while (elInfo) {
+    ElInfo* elInfo = stack.traverseFirst(mesh, -1,
+                                         Mesh::CALL_LEAF_EL |
+                                         Mesh::FILL_COORDS | Mesh::FILL_GRD_LAMBDA);
+
+    while (elInfo)
+    {
       expr.initElement(elInfo, NULL, NULL, basisFcts);
-      basisFcts->getLocalIndices(elInfo->getElement(), feSpace0->getAdmin(), localIndices);	
-      
-      for (int i = 0; i < nBasisFcts; i++) {
-      	if (!assigned[localIndices[i]]) {
-      	  value0 = f(value0, expr(i));
-      	  assigned[localIndices[i]] = true;
-      	}
+      basisFcts->getLocalIndices(elInfo->getElement(), feSpace0->getAdmin(), localIndices);
+
+      for (int i = 0; i < nBasisFcts; i++)
+      {
+        if (!assigned[localIndices[i]])
+        {
+          value0 = f(value0, expr(i));
+          assigned[localIndices[i]] = true;
+        }
       }
       elInfo = stack.traverseNext(elInfo);
     }
-    
+
     return value0;
   }
 
 
   // works only for nodal basis functions!
   template <class T, class Expr>
-  Requires_t<and_<traits::is_expr<Expr>, traits::IsConvertible<Value_t<Expr>, T>> >
+  Requires_t<and_<traits::is_expr<Expr>, traits::IsConvertible<Value_t<Expr>, T>>>
   inline transformDOF(Expr expr, DOFVector<T>* result)
   {
     GenericOperatorTerm<Expr> ot(expr);
     std::set<const FiniteElemSpace*> feSpaces = ot.getAuxFeSpaces();
-    
+
     Mesh* mesh = result->getFeSpace()->getMesh();
     if (feSpaces.size() > 0 && mesh != (*feSpaces.begin())->getMesh())
       return transformDOF_mm(expr, result);
-    
-    
+
+
     typedef typename Expr::value_type TOut;
     DOFVector<TOut> temp(result->getFeSpace(), "temp");
     DOFVector<int> assigned(result->getFeSpace(), "assigned");
-    
+
     const FiniteElemSpace* resultFeSpace = temp.getFeSpace();
-    const BasisFunction *basisFcts = resultFeSpace->getBasisFcts();  
+    const BasisFunction* basisFcts = resultFeSpace->getBasisFcts();
     int nBasisFcts = basisFcts->getNumber();
-    
+
     std::vector<DegreeOfFreedom> localIndices(nBasisFcts);
     TraverseStack stack;
-    ElInfo *elInfo = stack.traverseFirst(mesh, -1,
-					  Mesh::CALL_LEAF_EL | 
-					  Mesh::FILL_COORDS | Mesh::FILL_GRD_LAMBDA);
+    ElInfo* elInfo = stack.traverseFirst(mesh, -1,
+                                         Mesh::CALL_LEAF_EL |
+                                         Mesh::FILL_COORDS | Mesh::FILL_GRD_LAMBDA);
     expr.initElement(elInfo, NULL, NULL, basisFcts);
-    
-    
-    TOut tmp(expr(0)); nullify(tmp);
+
+
+    TOut tmp(expr(0));
+    nullify(tmp);
     assigned.set(0);
     temp.set(tmp);
-    
-    while (elInfo) {
+
+    while (elInfo)
+    {
       expr.initElement(elInfo, NULL, NULL, basisFcts);
-      basisFcts->getLocalIndices(elInfo->getElement(), resultFeSpace->getAdmin(), localIndices);	
-      
-      for (int i = 0; i < nBasisFcts; i++) {
-      	temp[localIndices[i]] += expr(i);
-      	assigned[localIndices[i]]++;
+      basisFcts->getLocalIndices(elInfo->getElement(), resultFeSpace->getAdmin(), localIndices);
+
+      for (int i = 0; i < nBasisFcts; i++)
+      {
+        temp[localIndices[i]] += expr(i);
+        assigned[localIndices[i]]++;
       }
       elInfo = stack.traverseNext(elInfo);
     }
@@ -135,13 +145,14 @@ namespace AMDiS
     Parallel::MeshDistributor::globalMeshDistributor->synchAddVector(temp);
     Parallel::MeshDistributor::globalMeshDistributor->synchAddVector(assigned);
 #endif
-    
+
     DOFIterator<TOut> tempIter(&temp, USED_DOFS);
     DOFIterator<T> resultIter(result, USED_DOFS);
     DOFIterator<int> assignedIter(&assigned, USED_DOFS);
-    for (tempIter.reset(), resultIter.reset(), assignedIter.reset(); 
-	 !resultIter.end(); 
-	 ++tempIter, ++resultIter, ++assignedIter) {
+    for (tempIter.reset(), resultIter.reset(), assignedIter.reset();
+         !resultIter.end();
+         ++tempIter, ++resultIter, ++assignedIter)
+    {
       *resultIter = (*tempIter);
       *resultIter/= (*assignedIter);
     }
@@ -151,58 +162,62 @@ namespace AMDiS
 
   // works only for nodal basis functions!
   template <class T, class Expr>
-  Requires_t<and_<traits::is_expr<Expr>, traits::IsConvertible<Value_t<Expr>, T>> >
+  Requires_t<and_<traits::is_expr<Expr>, traits::IsConvertible<Value_t<Expr>, T>>>
   inline transformDOF_mm(Expr expr, DOFVector<T>* result)
   {
     typedef typename Expr::value_type TOut;
-    
+
     GenericOperatorTerm<Expr> ot(expr);
     std::set<const FiniteElemSpace*> feSpaces = ot.getAuxFeSpaces();
-    
+
     Mesh* mesh1 = result->getFeSpace()->getMesh();
     Mesh* mesh2 = (*feSpaces.begin())->getMesh();
-    
+
     DOFVector<TOut> temp(result->getFeSpace(), "temp");
     DOFVector<int> assigned(result->getFeSpace(), "assigned");
-    
+
     const FiniteElemSpace* resultFeSpace = temp.getFeSpace();
-    const BasisFunction *basisFcts = resultFeSpace->getBasisFcts();  
+    const BasisFunction* basisFcts = resultFeSpace->getBasisFcts();
     int nBasisFcts = basisFcts->getNumber();
-      
+
     std::vector<DegreeOfFreedom> localIndices(nBasisFcts);
     DenseVector<TOut> vecLocalCoeffs(nBasisFcts);
 
-    DimVec<double> *lambda = NULL;
+    DimVec<double>* lambda = NULL;
     DimVec<double> lambda_1(mesh1->getDim());
     WorldVector<double> coords;
-	    
+
     DualTraverse dualTraverse;
     DualElInfo dualElInfo;
-    
+
     Flag assembleFlag = Mesh::CALL_LEAF_EL | Mesh::FILL_COORDS | Mesh::FILL_GRD_LAMBDA;
-    bool cont = dualTraverse.traverseFirst(mesh1, mesh2, -1, -1, 
-					    assembleFlag, assembleFlag, dualElInfo);
+    bool cont = dualTraverse.traverseFirst(mesh1, mesh2, -1, -1,
+                                           assembleFlag, assembleFlag, dualElInfo);
     expr.initElement(dualElInfo.colElInfo, NULL, NULL, basisFcts);
-    
-    TOut tmp(expr(0)); nullify(tmp);
+
+    TOut tmp(expr(0));
+    nullify(tmp);
     assigned.set(0);
     temp.set(tmp);
-    
-    while (cont) {
+
+    while (cont)
+    {
       expr.initElement(dualElInfo.colElInfo, NULL, NULL, basisFcts);
       basisFcts->getLocalIndices(dualElInfo.rowElInfo->getElement(), resultFeSpace->getAdmin(), localIndices);
-      
+
       for (int i = 0; i < nBasisFcts; i++)
         vecLocalCoeffs[i] = expr(i);
-      
-      for (int i = 0; i < nBasisFcts; i++) {
-      	lambda = basisFcts->getCoords(i);
-      	dualElInfo.rowElInfo->coordToWorld(*lambda, coords);
-      	int inside = dualElInfo.colElInfo->worldToCoord(coords, lambda_1);
-      	if (inside < 0) {
-      	  temp[localIndices[i]] += basisFcts->evalUh(lambda_1, vecLocalCoeffs);
-      	  assigned[localIndices[i]]++;
-      	}
+
+      for (int i = 0; i < nBasisFcts; i++)
+      {
+        lambda = basisFcts->getCoords(i);
+        dualElInfo.rowElInfo->coordToWorld(*lambda, coords);
+        int inside = dualElInfo.colElInfo->worldToCoord(coords, lambda_1);
+        if (inside < 0)
+        {
+          temp[localIndices[i]] += basisFcts->evalUh(lambda_1, vecLocalCoeffs);
+          assigned[localIndices[i]]++;
+        }
       }
       cont = dualTraverse.traverseNext(dualElInfo);
     }
@@ -211,12 +226,13 @@ namespace AMDiS
     Parallel::MeshDistributor::globalMeshDistributor->synchAddVector(temp);
     Parallel::MeshDistributor::globalMeshDistributor->synchAddVector(assigned);
 #endif
-    
-    
+
+
     DOFIterator<TOut> tempIter(&temp, USED_DOFS);
     DOFIterator<T> resultIter(result, USED_DOFS);
     DOFIterator<int> assignedIter(&assigned, USED_DOFS);
-    for (tempIter.reset(), resultIter.reset(), assignedIter.reset(); !resultIter.end(); ++tempIter, ++resultIter, ++assignedIter) {
+    for (tempIter.reset(), resultIter.reset(), assignedIter.reset(); !resultIter.end(); ++tempIter, ++resultIter, ++assignedIter)
+    {
       *resultIter = (*tempIter);
       *resultIter/= (*assignedIter);
     }

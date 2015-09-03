@@ -6,27 +6,27 @@
 #include "Log.h"
 #include "MatrixVectorOperations.h"
 
-namespace AMDiS 
+namespace AMDiS
 {
   /** \brief
-   * Projects world coordinates to the surface of a ball with given center and 
+   * Projects world coordinates to the surface of a ball with given center and
    * radius. Can be used as boundary or volume projection.
    */
   class BallProject : public Projection
   {
   public:
     /// Constructor.
-    BallProject(int id, 
-            		ProjectionType type,
-            		WorldVector<double> &center,
-            		double radius) 
+    BallProject(int id,
+                ProjectionType type,
+                WorldVector<double>& center,
+                double radius)
       : Projection(id, type),
-      	center_(center),
-      	radius_(radius)
+        center_(center),
+        radius_(radius)
     {}
 
     /// Implementation of Projection::project();
-    void project(WorldVector<double> &x) 
+    void project(WorldVector<double>& x)
     {
       x -= center_;
       double norm = std::sqrt(x*x);

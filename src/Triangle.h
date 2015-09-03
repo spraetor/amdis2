@@ -4,9 +4,9 @@
 
 #include "Element.h"
 
-namespace AMDiS 
+namespace AMDiS
 {
-  /** \ingroup Triangulation 
+  /** \ingroup Triangulation
    * \brief
    * A Triangle is a 2-dimensional Element.
    *
@@ -18,14 +18,14 @@ namespace AMDiS
   {
   public:
     /// calls base class contructor.
-    Triangle(Mesh* aMesh) 
-      : Element(aMesh) 
+    Triangle(Mesh* aMesh)
+      : Element(aMesh)
     {}
 
     /// implements Element::clone
-    virtual Element *clone() const override
-    { 
-      return new Triangle(mesh); 
+    virtual Element* clone() const override
+    {
+      return new Triangle(mesh);
     }
 
     /// implements Element::getVertexOfEdge
@@ -36,35 +36,38 @@ namespace AMDiS
 
     /// implements Element::getVertexOfPosition
     virtual int getVertexOfPosition(GeoIndex position,
-                        				    int positionIndex,
-                        				    int vertexIndex) const override;
+                                    int positionIndex,
+                                    int vertexIndex) const override;
 
     /// implements Element::getGeo
     virtual int getGeo(GeoIndex i) const override
     {
-      switch (i) {
-      case VERTEX: case PARTS: case NEIGH:
-      	return 3;
-      	break;
+      switch (i)
+      {
+      case VERTEX:
+      case PARTS:
+      case NEIGH:
+        return 3;
+        break;
       case EDGE:
-      	return 3;
-      case FACE:  
-      	return 0;
+        return 3;
+      case FACE:
+        return 0;
       case CENTER:
-      	return 1;
-      	break;
-      case DIMEN: 
-      	return 2;
-      	break;
+        return 1;
+        break;
+      case DIMEN:
+        return 2;
+        break;
       case BOUNDARY:
-      	return 6;
-      	break;
+        return 6;
+        break;
       case PROJECTION:
-      	return 3;
-      	break;
+        return 3;
+        break;
       default:
-      	ERROR_EXIT("invalid geo-index\n");
-      	return 0;
+        ERROR_EXIT("invalid geo-index\n");
+        return 0;
       }
     }
 
@@ -76,20 +79,20 @@ namespace AMDiS
 
     /// implements Element::isLine. Returns false because this element is a Triangle
     virtual bool isLine() const override
-    { 
-      return false; 
+    {
+      return false;
     }
- 
+
     /// implements Element::isTriangle. Returns true because this element is a Triangle
     virtual bool isTriangle() const override
-    { 
-      return true; 
+    {
+      return true;
     }
 
     /// implements Element::isTetrahedron. Returns false because this element is a Triangle
     virtual bool isTetrahedron() const override
-    { 
-      return false; 
+    {
+      return false;
     }
 
     /// Element type number is not used in 2d, so return 0.
@@ -108,8 +111,8 @@ namespace AMDiS
       return sideOfChild[child][side];
     }
 
-    virtual int getSubObjOfChild(int childnr, GeoIndex subObj, 
-		                             int ithObj, int elType) const override
+    virtual int getSubObjOfChild(int childnr, GeoIndex subObj,
+                                 int ithObj, int elType) const override
     {
       FUNCNAME_DBG("Triangle::getSubObjOfChild()");
       TEST_EXIT_DBG(subObj == EDGE)("Not yet implemented!\n");
@@ -154,7 +157,7 @@ namespace AMDiS
       DegreeOfFreedom dof0 = dof[vertexOfEdge[localEdgeIndex][0]][0];
       DegreeOfFreedom dof1 = dof[vertexOfEdge[localEdgeIndex][1]][0];
       return std::minmax({dof0, dof1});
-//       return {std::min(dof0, dof1), std::max(dof0, dof1)};
+      //       return {std::min(dof0, dof1), std::max(dof0, dof1)};
     }
 
     virtual DofFace getFace(int localFaceIndex) const override
@@ -163,30 +166,30 @@ namespace AMDiS
       return {};
     }
 
-    virtual void getNodeDofs(const FiniteElemSpace* feSpace, 
-                  			     BoundaryObject bound,
-                  			     DofContainer& dofs,
-                  			     bool baseDofPtr = false) const override;
-    
-    virtual void getHigherOrderDofs(const FiniteElemSpace* feSpace, 
-                        				    BoundaryObject bound,
-                        				    DofContainer& dofs,
-                        				    bool baseDofPtr = false,
-                        				    std::vector<GeoIndex>* dofGeoIndex = NULL) const override;
+    virtual void getNodeDofs(const FiniteElemSpace* feSpace,
+                             BoundaryObject bound,
+                             DofContainer& dofs,
+                             bool baseDofPtr = false) const override;
 
-    virtual void getSubBoundary(BoundaryObject bound, 
-				                        std::vector<BoundaryObject>& subBound) const override;
-				
+    virtual void getHigherOrderDofs(const FiniteElemSpace* feSpace,
+                                    BoundaryObject bound,
+                                    DofContainer& dofs,
+                                    bool baseDofPtr = false,
+                                    std::vector<GeoIndex>* dofGeoIndex = NULL) const override;
+
+    virtual void getSubBoundary(BoundaryObject bound,
+                                std::vector<BoundaryObject>& subBound) const override;
+
 
     std::string getTypeName() const
-    { 
-      return "Triangle"; 
+    {
+      return "Triangle";
     }
-    
-    void prepareNextBound(BoundaryObject &bound, int ithChild) const;
+
+    void prepareNextBound(BoundaryObject& bound, int ithChild) const;
 
   protected:
-    /// vertexOfEdge[i][j] is the local number of the j-th vertex of the i-th 
+    /// vertexOfEdge[i][j] is the local number of the j-th vertex of the i-th
     /// edge of this element.
     static constexpr int vertexOfEdge[3][2] = {{1, 2}, {2, 0}, {0, 1}};
 

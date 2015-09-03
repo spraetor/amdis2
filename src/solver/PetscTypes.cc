@@ -5,7 +5,7 @@
  * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
  * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
  *
- * Authors: 
+ * Authors:
  * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
  *
  * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
@@ -15,43 +15,48 @@
  * This file is part of AMDiS
  *
  * See also license.opensource.txt in the distribution.
- * 
+ *
  ******************************************************************************/
 
 
 #include "PetscTypes.h"
 
-namespace AMDiS {
-  
+namespace AMDiS
+{
+
   void PetscMatrix::destroy()
   {
-    if (assembled) {
+    if (assembled)
+    {
       MatDestroy(&matrix);
       matrix = PETSC_NULL;
-      for (size_t i = 0; i < nestMat.size(); i++) {
-	if (nestMat[i] != PETSC_NULL)
-	  MatDestroy(&(nestMat[i]));
-	nestMat[i] = PETSC_NULL;
+      for (size_t i = 0; i < nestMat.size(); i++)
+      {
+        if (nestMat[i] != PETSC_NULL)
+          MatDestroy(&(nestMat[i]));
+        nestMat[i] = PETSC_NULL;
       }
     }
     assembled = false;
   }
-  
-  
+
+
   void PetscVector::destroy()
   {
-    if (assembled) {
+    if (assembled)
+    {
       VecDestroy(&vector);
       vector = PETSC_NULL;
-      for (size_t i = 0; i < nestVec.size(); i++) {
-	VecDestroy(&(nestVec[i]));
-	nestVec[i] = PETSC_NULL;
+      for (size_t i = 0; i < nestVec.size(); i++)
+      {
+        VecDestroy(&(nestVec[i]));
+        nestVec[i] = PETSC_NULL;
       }
     }
     assembled = false;
-  }  
+  }
 
-  
+
   PetscParameters::PetscParameters()
   {
     matSolverPackage["superlu"] = true;
@@ -70,8 +75,8 @@ namespace AMDiS {
     matSolverPackage["elemental"] = true;
     matSolverPackage["clique"] = true;
     matSolverPackage["direct"] = true;
-    
-    // mtl-name => petsc-name 
+
+    // mtl-name => petsc-name
     // (or petsc-name => petsc-name if solver does not exist for mtl)
     solverMap["cg"] = "cg";
     solverMap["richardson"] = "richardson";
@@ -110,18 +115,18 @@ namespace AMDiS {
     solverMap["python"] = "python";
     solverMap["gcr"] = "gcr";
     solverMap["specest"] = "specest";
-    
+
     solverMap["superlu"] = "superlu";
     solverMap["superlu_dist"] = "superlu_dist";
     solverMap["umfpack"] = "umfpack";
     solverMap["mumps"] = "mumps";
     solverMap["direct"] = "mumps";
-    
+
     preconMap["diag"] = "jacobi";
     preconMap["jacobi"] = "jacobi";
     preconMap["ilu"] = "ilu";
     preconMap["ic"] = "icc";
-    
+
     emptyParam[""] = true;
     emptyParam["0"] = true;
     emptyParam["no"] = true;

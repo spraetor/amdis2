@@ -2,7 +2,7 @@
 #include "ElInfo.h"
 #include "DOFVector.h"
 
-namespace AMDiS 
+namespace AMDiS
 {
   const Flag OperatorTerm::PW_CONST = 1;
   const Flag OperatorTerm::SYMMETRIC = 2;
@@ -13,7 +13,7 @@ namespace AMDiS
     if (symm)
       properties.setFlag(SYMMETRIC);
     else
-      properties.unsetFlag(SYMMETRIC);       
+      properties.unsetFlag(SYMMETRIC);
   }
 
 

@@ -5,8 +5,8 @@
 #include <string>
 #include <iostream>
 
-#include <boost/lexical_cast.hpp> 
-#include <boost/numeric/conversion/cast.hpp> 
+#include <boost/lexical_cast.hpp>
+#include <boost/numeric/conversion/cast.hpp>
 
 #include <boost/tokenizer.hpp>
 #include <boost/property_tree/ptree.hpp>
@@ -22,10 +22,10 @@
 
 #include "Math.h"
 
-namespace AMDiS 
+namespace AMDiS
 {
-  namespace detail 
-  {   
+  namespace detail
+  {
     /// convert string to intrinsic type
     template <class T, class Enable = void>
     struct Convert
@@ -33,25 +33,25 @@ namespace AMDiS
       static void eval(std::string valStr, T& value)
       {
         value = boost::lexical_cast<T>(valStr);
-      }      
+      }
     };
-    
+
     template <class T>
-    struct Convert<T, typename std::enable_if<traits::is_arithmetic<T>::value >::type>
+    struct Convert<T, typename std::enable_if<traits::is_arithmetic<T>::value>::type>
     {
       static void eval(const std::string valStr, T& value)
       {
         using boost::numeric_cast;
-  
+
         mu::Parser parser;
         parser.DefineConst(_T("M_PI"), m_pi);
         parser.DefineConst(_T("M_E"), m_e);
-  
+
         parser.SetExpr(valStr);
         value = numeric_cast<T>(parser.Eval());
       }
     };
-    
+
     // convert string to vector
     template <class T>
     struct Convert<T, typename std::enable_if<IsVector<T>::value>::type>
@@ -59,32 +59,34 @@ namespace AMDiS
       static void eval(const std::string valStr, T& value)
       {
         using value_type = Value_t<T>;
-        using Tokenizer = boost::tokenizer<boost::char_separator<char> >;
-        
+        using Tokenizer = boost::tokenizer<boost::char_separator<char>>;
+
         std::vector<value_type> values;
         boost::char_separator<char> sep(",; ");
         Tokenizer tokens(valStr, sep);
         int i = 0;
-        for (auto token : tokens) {
+        for (auto token : tokens)
+        {
           value_type v;
           Convert<value_type>::eval(token, v);
           value[i] = v;
         }
       }
     };
-    
+
     // convert string to vector
     template <class T>
-    struct Convert<std::vector<T> >
+    struct Convert<std::vector<T>>
     {
       static void eval(const std::string valStr, std::vector<T>& values)
       {
         using value_type = T;
-        using Tokenizer = boost::tokenizer<boost::char_separator<char> >;
-        
+        using Tokenizer = boost::tokenizer<boost::char_separator<char>>;
+
         boost::char_separator<char> sep(",; ");
         Tokenizer tokens(valStr, sep);
-        for (auto token : tokens) {
+        for (auto token : tokens)
+        {
           value_type v;
           Convert<value_type>::eval(token, v);
           values.push_back(v);
@@ -97,11 +99,12 @@ namespace AMDiS
 
   /// output-stream for std::list
   template<typename T>
-  std::ostream& operator<<(std::ostream& o, const std::list< T >& l)
+  std::ostream& operator<<(std::ostream& o, const std::list<T>& l)
   {
-    typename std::list< T >::const_iterator it = l.begin();
+    typename std::list<T>::const_iterator it = l.begin();
     o << "[";
-    for (unsigned i = 0; it != l.end() && i < l.size(); i++) {
+    for (unsigned i = 0; it != l.end() && i < l.size(); i++)
+    {
       o << *it << (i < l.size() - 1 ? ", " : "");
       ++it;
     }
@@ -116,39 +119,42 @@ namespace AMDiS
   {
     typename std::vector<T>::const_iterator it = l.begin();
     o << "[";
-    for (unsigned i = 0; it != l.end() && i < l.size(); i++) {
+    for (unsigned i = 0; it != l.end() && i < l.size(); i++)
+    {
       o << *it << (i < l.size() - 1 ? ", " : "");
       ++it;
     }
     o << "]";
     return o;
   }
-  
-  inline void replaceAll(std::string& str, const std::string& from, const std::string& to) {
+
+  inline void replaceAll(std::string& str, const std::string& from, const std::string& to)
+  {
     if(from.empty())
-        return;
+      return;
     size_t start_pos = 0;
-    while((start_pos = str.find(from, start_pos)) != std::string::npos) {
-        str.replace(start_pos, from.length(), to);
-        start_pos += to.length(); // In case 'to' contains 'from', like replacing 'x' with 'yx'
+    while((start_pos = str.find(from, start_pos)) != std::string::npos)
+    {
+      str.replace(start_pos, from.length(), to);
+      start_pos += to.length(); // In case 'to' contains 'from', like replacing 'x' with 'yx'
     }
-}
+  }
 
-// _____________________________________________________________________________
+  // _____________________________________________________________________________
 
-  /** Basis data container as a map of tag on a value as strings. The container 
+  /** Basis data container as a map of tag on a value as strings. The container
   *  throws an exception, if the tag was not found.
   */
   struct Initfile
   {
-    /** initialize init-file from file with filename in, read data and save it 
+    /** initialize init-file from file with filename in, read data and save it
     *  to singleton-map
     *  @param in: filename string
     */
     static void init(std::string in);
 
 
-    /** Static get routine for getting parameter-values from init-file 
+    /** Static get routine for getting parameter-values from init-file
     *  initialized in init()-method.
     *  Cast the value to the desired type using std::stringstream.
     *  @param tag: The tag to look for
@@ -162,12 +168,13 @@ namespace AMDiS
       initIntern();
       if (debugInfo == -1)
         debugInfo = singlett->getMsgInfo();
-      else {
-      	int swap(debugInfo);
-      	debugInfo = singlett->getMsgInfo();
-      	singlett->msgInfo=swap;
+      else
+      {
+        int swap(debugInfo);
+        debugInfo = singlett->getMsgInfo();
+        singlett->msgInfo=swap;
       }
-      
+
       using path = boost::property_tree::ptree::path_type;
       replaceAll(tag, "->", ">");
       auto tagPath = path(tag, '>');
@@ -176,13 +183,14 @@ namespace AMDiS
       // TODO: use convert method from above
       std::string valueStr = "-";
       valueStr = singlett->pt.get(tagPath, valueStr);
-      
+
       if (valueStr != "-")
         detail::Convert<T>::eval(valueStr, value);
 
-      if (debugInfo == 2) {
-      	std::cout << "Parameter '" << tag << "'"
-      		        << " initialized with: " << value << std::endl;
+      if (debugInfo == 2)
+      {
+        std::cout << "Parameter '" << tag << "'"
+                  << " initialized with: " << value << std::endl;
       }
       singlett->msgInfo = debugInfo;
     }
@@ -190,7 +198,7 @@ namespace AMDiS
 
     /// update map tag->value_old to tag->value in singleton
     template <class T>
-    static void set(std::string tag, T& value, int debugInfo=  -1) 
+    static void set(std::string tag, T& value, int debugInfo=  -1)
     {
       initIntern();
       if (debugInfo == -1)
@@ -200,7 +208,7 @@ namespace AMDiS
       replaceAll(tag, "->", ">");
       auto tagPath = path(tag, '>');
       singlett->pt.put(tagPath, value);
-      
+
       // update msg parameters msgInfo, msgWait, paramInfo
       singlett->getInternalParameters();
       if (debugInfo == 2)
@@ -211,36 +219,36 @@ namespace AMDiS
 
     /// add map tag->value to data in singleton
     template <class T>
-    static void add(const std::string tag, T& value, int debugInfo = -1) 
+    static void add(const std::string tag, T& value, int debugInfo = -1)
     {
       set(tag, value, debugInfo);
     }
 
     /// Returns specified info level
-    static int getMsgInfo() 
-    { 
-      return (singlett != NULL) ? singlett->msgInfo : 0; 
+    static int getMsgInfo()
+    {
+      return (singlett != NULL) ? singlett->msgInfo : 0;
     }
 
 
     /// Returns specified wait value
-    static int getMsgWait() 
-    { 
-      return (singlett != NULL) ? singlett->msgWait : 0; 
+    static int getMsgWait()
+    {
+      return (singlett != NULL) ? singlett->msgWait : 0;
     }
 
 
     /// Checks whether parameters are initialized. if not, call init()
-    static bool initialized() 
-    { 
-      return (singlett != NULL); 
+    static bool initialized()
+    {
+      return (singlett != NULL);
     }
 
 
     /// return pointer to singleton
-    static Initfile *getSingleton() 
-    { 
-      return singlett; 
+    static Initfile* getSingleton()
+    {
+      return singlett;
     }
 
 
@@ -263,17 +271,17 @@ namespace AMDiS
       initIntern();
       // json_parser::write_jason(fn, singlett->pt);
     }
-	
-protected:	
-    Initfile() 
-      : msgInfo(0), 
-        msgWait(1), 
-        paramInfo(1), 
-        breakOnMissingTag(0) 
+
+  protected:
+    Initfile()
+      : msgInfo(0),
+        msgWait(1),
+        paramInfo(1),
+        breakOnMissingTag(0)
     {}
 
 
-    static void initIntern() 
+    static void initIntern()
     {
       if (singlett == NULL)
         singlett = new Initfile;
@@ -296,18 +304,18 @@ protected:
     /// read parameters for msgInfo, msgWait, paramInfo
     void getInternalParameters();
 
-    int msgInfo, msgWait, paramInfo, breakOnMissingTag;	
-    
+    int msgInfo, msgWait, paramInfo, breakOnMissingTag;
+
     /// boost:property_tree to read/store parameter values
     boost::property_tree::ptree pt;
   };
-  
+
   using Parameters = Initfile;
-  
+
 #ifndef AMDIS_NO_EXTERN_INITFILE
-extern template void Initfile::get(const std::string, int&, int);
-extern template void Initfile::get(const std::string, double&, int);
-extern template void Initfile::get(const std::string, std::string&, int);
+  extern template void Initfile::get(const std::string, int&, int);
+  extern template void Initfile::get(const std::string, double&, int);
+  extern template void Initfile::get(const std::string, std::string&, int);
 #endif
 
 } // end namespace AMDiS

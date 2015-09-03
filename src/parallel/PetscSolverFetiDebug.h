@@ -5,7 +5,7 @@
  * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
  * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
  *
- * Authors: 
+ * Authors:
  * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
  *
  * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
@@ -15,7 +15,7 @@
  * This file is part of AMDiS
  *
  * See also license.opensource.txt in the distribution.
- * 
+ *
  ******************************************************************************/
 
 
@@ -27,7 +27,7 @@
 
 namespace AMDiS
 {
-  namespace Parallel 
+  namespace Parallel
   {
 
     /** \brief
@@ -43,7 +43,7 @@ namespace AMDiS
     public:
       /** \brief
       * Is used to test the null space in stokes mode. The function reads the
-      * null space basis from FETI mat object and test by simple matrix 
+      * null space basis from FETI mat object and test by simple matrix
       * multiplication, whether the vector is a member of the null space.
       * Furthermore, the function creates the null space on the non reduced
       * form of the FETI-DP system and make there the same test. The resulting
@@ -53,27 +53,27 @@ namespace AMDiS
       * \param[in]  feti    FETI-DP solver
       * \param[in]  vec     Is just used as a temporary template vector.
       */
-      static void debugNullSpace(PetscSolverFeti &feti, SystemVector &vec);
+      static void debugNullSpace(PetscSolverFeti& feti, SystemVector& vec);
 
       /** \brief
-      * Creates a parallel distributed matrix of the local (B-index) matrices. 
-      * Note that the matrix is still a block matrix and there are no off 
+      * Creates a parallel distributed matrix of the local (B-index) matrices.
+      * Note that the matrix is still a block matrix and there are no off
       * diagonal values.
       *
       * \param[in]  feti     FETI-DP solver
       * \param[out] mat      The parallel distributed matrix will be created
       *                      on this variable.
       */
-      static void createInteriorMat(PetscSolverFeti &feti, Mat &mat);
+      static void createInteriorMat(PetscSolverFeti& feti, Mat& mat);
 
       /** \brief
-      * Creates the non reduced FETI-DP system (also in stokes mode) as a 
+      * Creates the non reduced FETI-DP system (also in stokes mode) as a
       * nested matrix.
       *
       * \param[in]  feti     FETI-DP solver
       * \param[out] mat      The resulting nested matrix.
       */
-      static void createNestedFetiMat(PetscSolverFeti &feti, Mat &mat);
+      static void createNestedFetiMat(PetscSolverFeti& feti, Mat& mat);
 
       /** \brief
       * Creates the reduced FETI-DP operator in an explicitly given matrix
@@ -86,10 +86,10 @@ namespace AMDiS
       * \param[out] nnzCounter   Stores the number of non zero elements in the
       *                          explicit matrix formulation
       */
-      static void createExplicitFetiMat(PetscSolverFeti &feti, 
-					Mat fetiMat, 
-					Mat &explicitmat, 
-					int &nnzCounter);
+      static void createExplicitFetiMat(PetscSolverFeti& feti,
+                                        Mat fetiMat,
+                                        Mat& explicitmat,
+                                        int& nnzCounter);
 
       /** \brief
       * Create a non nested parallel distributed vector from a nested vector of
@@ -100,9 +100,9 @@ namespace AMDiS
       * \param[in]  nestedVec    Nested PETSc vector with two sub vectors.
       * \param[out] explicitVec  The output vector.
       */
-      static void createExplicitVec(PetscSolverFeti &feti, 
-				    Vec nestedVec, 
-				    Vec &explicitVec);
+      static void createExplicitVec(PetscSolverFeti& feti,
+                                    Vec nestedVec,
+                                    Vec& explicitVec);
 
       /** \brief
       * Checks for the init file parameter "parallel->debug->write fety system"
@@ -113,8 +113,8 @@ namespace AMDiS
       * \param[in] nullSpaceBasis  Vector representing the basis of the null
       *                            space of the FETI-DP system.
       */
-      static void writeNullSpace(PetscSolverFeti &feti, 
-				Vec nullSpaceBasis);
+      static void writeNullSpace(PetscSolverFeti& feti,
+                                 Vec nullSpaceBasis);
 
       /** \brief
       * Checks for the init file parameter "parallel->debug->write fety system"
@@ -125,11 +125,11 @@ namespace AMDiS
       *   - write rhs to "feti_rhs.vec"
       *
       * \param[in] feti       FETI-DP solver
-      * \param[in] dbgRhsVec  Vector representing the rhs vector of the 
+      * \param[in] dbgRhsVec  Vector representing the rhs vector of the
       *                       FETI-DP system.
       */
-      static void debugFeti(PetscSolverFeti &feti, 
-			    Vec dbgRhsVec);
+      static void debugFeti(PetscSolverFeti& feti,
+                            Vec dbgRhsVec);
 
       /** \brief
       * This functions check a PETSc matrix for zero rows. Each zero row index
@@ -142,7 +142,7 @@ namespace AMDiS
       static int testZeroRows(Mat mat);
 
       /// Write files with information about the primal coarner nodes.
-      static void writePrimalFiles(PetscSolverFeti &feti);
+      static void writePrimalFiles(PetscSolverFeti& feti);
     };
   }
 }

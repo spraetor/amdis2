@@ -5,9 +5,9 @@
 #include "Element.h"
 #include "BoundaryObject.h"
 
-namespace AMDiS 
+namespace AMDiS
 {
-  /** \ingroup Triangulation 
+  /** \ingroup Triangulation
    * \brief
    * A Line is an 1-dimensional Element.
    *
@@ -19,50 +19,56 @@ namespace AMDiS
   {
   public:
     /// calls base class contructor.
-    Line(Mesh* aMesh) 
-      : Element(aMesh) 
+    Line(Mesh* aMesh)
+      : Element(aMesh)
     {}
 
     /// implements Element::getVertexOfEdge
-    inline int getVertexOfEdge(int i, int j) const 
+    inline int getVertexOfEdge(int i, int j) const
     {
       return vertexOfEdge[i][j];
     }
 
     /// implements Element::getVertexOfPosition
     virtual int getVertexOfPosition(GeoIndex position,
-                        				    int positionIndex,
-                        				    int vertexIndex) const;
+                                    int positionIndex,
+                                    int vertexIndex) const;
 
-    virtual int getPositionOfVertex(int side, int vertex) const 
+    virtual int getPositionOfVertex(int side, int vertex) const
     {
       static constexpr int positionOfVertex[2][2] = {{0, -1}, {-1, 0}};
       return positionOfVertex[side][vertex];
     }
 
     /// implements Element::getGeo
-    inline int getGeo(GeoIndex i) const 
+    inline int getGeo(GeoIndex i) const
     {
-      switch (i) {
-      case VERTEX: case PARTS: case NEIGH:
-	return 2;
-	break;
-      case EDGE: case FACE:
-	return 0;
-	break;
-      case CENTER: case DIMEN:
-	return 1;
-	break;
-      case PROJECTION: case BOUNDARY:
-	return 2;
-	break;
+      switch (i)
+      {
+      case VERTEX:
+      case PARTS:
+      case NEIGH:
+        return 2;
+        break;
+      case EDGE:
+      case FACE:
+        return 0;
+        break;
+      case CENTER:
+      case DIMEN:
+        return 1;
+        break;
+      case PROJECTION:
+      case BOUNDARY:
+        return 2;
+        break;
       default:
-	ERROR_EXIT("invalid geo-index\n");
-	return 0;
+        ERROR_EXIT("invalid geo-index\n");
+        return 0;
       }
     }
 
-    inline int getEdgeOfFace(int /* face */, int /*edge*/ ) const 
+    inline int getEdgeOfFace(int /* face */, int /*edge*/ ) const
     {
       ERROR_EXIT("This does not work in 1D!\n");
       return 0;
@@ -81,17 +87,17 @@ namespace AMDiS
     }
 
     /// implements Element::sortFaceIndices
-    void sortFaceIndices(int face, FixVec<int,WORLD> &vec) const;
-  
+    void sortFaceIndices(int face, FixVec<int,WORLD>& vec) const;
+
 
     /// implements Element::clone
-    inline Element *clone() const
-    { 
-      return new Line(mesh); 
+    inline Element* clone() const
+    {
+      return new Line(mesh);
     }
 
     /// implements Element::getSideOfChild()
-    int getSideOfChild(int child, int side, int) const 
+    int getSideOfChild(int child, int side, int) const
     {
       FUNCNAME_DBG("Line::getSideOfChild()");
       TEST_EXIT_DBG(child == 0 || child == 1)("Child must be either 0 or 1!\n");
@@ -106,7 +112,7 @@ namespace AMDiS
     }
 
     /// implements Element::getVertexOfParent()
-    int getVertexOfParent(int child, int side, int) const 
+    int getVertexOfParent(int child, int side, int) const
     {
       FUNCNAME_DBG("Line::getVertexOfParent()");
       TEST_EXIT_DBG(child == 0 || child == 1)("Child must be either 0 or 1!\n");
@@ -116,28 +122,28 @@ namespace AMDiS
 
 
     /// implements Element::hasSide
-    inline bool hasSide(Element* /*sideElem*/) const 
-    { 
+    inline bool hasSide(Element* /*sideElem*/) const
+    {
       ERROR_EXIT("a Line has no side elements!\n");
-      return false; 
+      return false;
     }
 
     /// Returns true because this element is a Line.
-    inline bool isLine() const 
-    { 
-      return true; 
+    inline bool isLine() const
+    {
+      return true;
     }
 
     /// Returns false because this element is a Line.
-    inline bool isTriangle() const 
-    { 
-      return false; 
+    inline bool isTriangle() const
+    {
+      return false;
     }
 
     /// Returns false because this element is a Line
-    inline bool isTetrahedron() const 
-    { 
-      return false; 
+    inline bool isTetrahedron() const
+    {
+      return false;
     }
 
     /// Element type number is not used in 1d, so return 0.
@@ -145,36 +151,36 @@ namespace AMDiS
     {
       return 0;
     }
-  
-    std::string getTypeName() const 
-    { 
-      return "Line"; 
+
+    std::string getTypeName() const
+    {
+      return "Line";
     }
 
-    void getNodeDofs(const FiniteElemSpace*, BoundaryObject, 
-		     DofContainer&, bool) const
+    void getNodeDofs(const FiniteElemSpace*, BoundaryObject,
+                     DofContainer&, bool) const
     {
       FUNCNAME("Line::getNodeDofs()");
       ERROR_EXIT("Not yet implemented!\n");
     }
 
-    void getHigherOrderDofs(const FiniteElemSpace*, BoundaryObject, 
-			    DofContainer&, bool, std::vector<GeoIndex>*) const
+    void getHigherOrderDofs(const FiniteElemSpace*, BoundaryObject,
+                            DofContainer&, bool, std::vector<GeoIndex>*) const
     {
       FUNCNAME("Line::getHigherOrderDofs()");
       ERROR_EXIT("Not yet implemented!\n");
     }
 
 
-    void getSubBoundary(BoundaryObject bound, 
-			std::vector<BoundaryObject> &subBound) const
+    void getSubBoundary(BoundaryObject bound,
+                        std::vector<BoundaryObject>& subBound) const
     {
       FUNCNAME("Line::getSubBoundary()");
       ERROR_EXIT("Not yet implemented!\n");
     }
 
   protected:
-    /// vertexOfEdge[i][j] is the local number of the j-th vertex of the i-th 
+    /// vertexOfEdge[i][j] is the local number of the j-th vertex of the i-th
     /// edge of this element.
     static constexpr int vertexOfEdge[1][2] = {{0, 1}};
 

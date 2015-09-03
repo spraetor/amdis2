@@ -4,7 +4,7 @@
 
 #include "DOFMatrix.h"
 
-namespace AMDiS 
+namespace AMDiS
 {
 
   /** \ingroup Common
@@ -31,18 +31,18 @@ namespace AMDiS
      */
     virtual BaseClass* create() = 0;
 
-    virtual BaseClass* create(const DOFMatrix::base_matrix_type& A) 
-    { 
-      return 0; 
+    virtual BaseClass* create(const DOFMatrix::base_matrix_type& A)
+    {
+      return 0;
     }
 
     /// Can be implemented by sub classes.
-    virtual void free(BaseClass *) {}
+    virtual void free(BaseClass*) {}
 
     ///
-    virtual bool isNullCreator() 
-    { 
-      return false; 
+    virtual bool isNullCreator()
+    {
+      return false;
     }
   };
 
@@ -54,20 +54,20 @@ namespace AMDiS
   class NullCreator : public CreatorInterface<BaseClass>
   {
     /// Creates no object.
-    virtual BaseClass* create() override 
+    virtual BaseClass* create() override
     {
-      return NULL; 
+      return NULL;
     }
 
     /// Implementation of \ref CreatorInterface::isNullCreator()
     virtual bool isNullCreator() override
-    { 
-      return true; 
+    {
+      return true;
     }
   };
 
 
-  /** 
+  /**
    * \ingroup Common
    *
    * \brief
@@ -75,16 +75,16 @@ namespace AMDiS
    */
   template <class BaseClass>
   class CreatorInterfaceName : public CreatorInterface<BaseClass>
-  { 
+  {
   public:
     /// Sets \ref name
-    void setName(std::string str) 
-    { 
-      name = str; 
+    void setName(std::string str)
+    {
+      name = str;
     }
 
   protected:
     std::string name;
   };
-  
+
 } // end namespace AMDiS

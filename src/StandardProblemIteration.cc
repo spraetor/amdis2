@@ -5,24 +5,26 @@
 #include "Global.h"
 #include "Timer.h"
 
-namespace AMDiS 
+namespace AMDiS
 {
   int StandardProblemIteration::info = 10;
 
-    
+
   ProblemStatBase* StandardProblemIteration::getProblem(int number)
-  { FUNCNAME_DBG("StandardProblemIteration::getProblem");
+  {
+    FUNCNAME_DBG("StandardProblemIteration::getProblem");
     TEST_EXIT_DBG(number == 0)("Problem number out of range!\n");
     return problem;
   }
-  
+
   ProblemStatBase* StandardProblemIteration::getProblem(std::string name)
-  { FUNCNAME_DBG("StandardProblemIteration::getProblem");
+  {
+    FUNCNAME_DBG("StandardProblemIteration::getProblem");
     TEST_EXIT_DBG(name == problem->getName())("Problem name does not match!\n");
     return problem;
   }
 
-  void StandardProblemIteration::beginIteration(AdaptInfo *adaptInfo) 
+  void StandardProblemIteration::beginIteration(AdaptInfo* adaptInfo)
   {
     FUNCNAME("StandardProblemIteration::beginIteration()");
 
@@ -32,7 +34,7 @@ namespace AMDiS
   }
 
 
-  Flag StandardProblemIteration::oneIteration(AdaptInfo *adaptInfo, Flag toDo) 
+  Flag StandardProblemIteration::oneIteration(AdaptInfo* adaptInfo, Flag toDo)
   {
     Flag flag = buildAndAdapt(adaptInfo, toDo);
 
@@ -42,14 +44,14 @@ namespace AMDiS
     if (toDo.isSet(SOLVE_RHS))
       problem->solve(adaptInfo, true, false);
 
-    if (toDo.isSet(ESTIMATE)) 
+    if (toDo.isSet(ESTIMATE))
       problem->estimate(adaptInfo);
 
     return flag;
   }
 
 
-  void StandardProblemIteration::endIteration(AdaptInfo *adaptInfo) 
+  void StandardProblemIteration::endIteration(AdaptInfo* adaptInfo)
   {
     FUNCNAME("StandardProblemIteration::endIteration()");
 
@@ -59,7 +61,7 @@ namespace AMDiS
   }
 
 
-  Flag StandardProblemIteration::buildAndAdapt(AdaptInfo *adaptInfo, Flag toDo)
+  Flag StandardProblemIteration::buildAndAdapt(AdaptInfo* adaptInfo, Flag toDo)
   {
 #ifdef HAVE_PARALLEL_DOMAIN_AMDIS
     FUNCNAME("StandardProblemIteration::buildAndAdapt()");

@@ -5,7 +5,7 @@
  * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
  * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
  *
- * Authors: 
+ * Authors:
  * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
  *
  * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
@@ -15,38 +15,42 @@
  * This file is part of AMDiS
  *
  * See also license.opensource.txt in the distribution.
- * 
+ *
  ******************************************************************************/
 
 
 #include "time/RosenbrockMethod.h"
 
-namespace AMDiS {
+namespace AMDiS
+{
 
   void RosenbrockMethod::createData()
   {
     a.resize(stages);
-    for (int i = 0; i < stages; i++) {
+    for (int i = 0; i < stages; i++)
+    {
       a[i].resize(stages);
       for (int j = 0; j < stages; j++)
-	a[i][j] = 0.0;
+        a[i][j] = 0.0;
     }
 
     c.resize(stages);
-    for (int i = 0; i < stages; i++) {
+    for (int i = 0; i < stages; i++)
+    {
       c[i].resize(stages);
       for (int j = 0; j < stages; j++)
-	c[i][j] = 0.0;
+        c[i][j] = 0.0;
     }
-    
+
     m1.resize(stages);
     m2.resize(stages);
-    for (int i = 0; i < stages; i++) {
+    for (int i = 0; i < stages; i++)
+    {
       m1[i] = 0.0;
       m2[i] = 0.0;
     }
   }
-  
+
 
   Ros2::Ros2()
   {
@@ -55,7 +59,7 @@ namespace AMDiS {
     gamma = 1.707106781186547;
 
     createData();
-    
+
     // b(2) = 0.5
     // b(1) = 1-b(2) = 0.5
     // alpha(2,1) = 1/(2*b(2)) = 1
@@ -77,7 +81,7 @@ namespace AMDiS {
 
     m2[0] = 5.857864376269050e-01;
     m2[1] = 0.0;
-	
+
     MSG("Rosenbrock scheme Ros2\n");
   }
 
@@ -89,27 +93,27 @@ namespace AMDiS {
     gamma = 4.358665215084590e-01;
 
     createData();
-    
+
     a[0][0] = 0.0;
     a[1][0] = 1.605996252195329e+00;
     a[1][1] = 0.7;
     a[2][0] = 1.605996252195329e+00;
     a[2][2] = 0.7;
-    
+
     c[0][0] =  gamma;
     c[1][0] =  8.874044410657833e-01;
     c[1][1] =  0.604455284065559;
     c[2][0] =  2.398747971635036e+01;
     c[2][1] =  5.263722371562129e+00;
     c[2][2] =  6.37978879934488;
-    
+
     m1[0] =  2.236727045296590e+00;
     m1[1] =  2.250067730969644e+00;
     m1[2] = -2.092514044390320e-01;
-    
+
     m2[0] = 2.059356167645940e+00;
     m2[1] = 1.694014319346528e-01;
-	
+
     MSG("Rosenbrock scheme Rowda3\n");
   }
 
@@ -121,33 +125,33 @@ namespace AMDiS {
     gamma = 7.886751345948129e-01;
 
     createData();
-    
+
     a[0][0] = 0.0;
     a[1][0] = 1.267949192431123;
     a[1][1] = 1.0;
     a[2][0] = 1.267949192431123;
     a[2][1] = 0.0;
     a[2][2] = 1.0;
-    
+
     c[0][0] =  gamma;
     c[1][0] = -1.607695154586736;
     c[1][1] = -0.2113248654051871;
     c[2][0] = -3.464101615137755;
     c[2][1] = -1.732050807568877;
     c[2][2] = -1.077350269189626;
-    
+
     m1[0] = 2.0;
     m1[1] = 0.5773502691896258;
     m1[2] = 0.4226497308103742;
-    
+
     m2[0] = 2.113248654051871;
     m2[1] = 1.0;
     m2[2] = 0.4226497308103742;
-	
+
     MSG("Rosenbrock scheme Ros3p\n");
   }
 
-  
+
   Rodasp::Rodasp()
   {
     order = 4;
@@ -212,7 +216,7 @@ namespace AMDiS {
     m2[2] = -1.631002631330971e+01;
     m2[3] = -1.062004044111401e+00;
     m2[4] =  1.0;
-	
+
     MSG("Rosenbrock scheme Rodasp\n");
   }
 
@@ -246,7 +250,7 @@ namespace AMDiS {
     c[3][1] = -1.089941238157158;
     c[3][2] = -1.718365430214442;
     c[3][3] = -0.135847884055848;
-    
+
     m1[0] =  2.833375148827832;
     m1[1] =  3.953417886999603;
     m1[2] = -1.215227714218472;
@@ -256,10 +260,10 @@ namespace AMDiS {
     m2[1] =  1.770380793635233;
     m2[2] =  0.257316038155499;
     m2[3] =  0.343556220548095;
-	
+
     MSG("Rosenbrock scheme ROSI2P1\n");
   }
-  
+
 
   ROSI2P2::ROSI2P2()
   {
@@ -290,7 +294,7 @@ namespace AMDiS {
     c[3][1] = -6.545972652439727;
     c[3][2] = -0.539706236424999;
     c[3][3] =  0.0;
-    
+
     m1[0] =  2.807348188211369;
     m1[1] =  3.486932172067672;
     m1[2] =  0.0;
@@ -300,7 +304,7 @@ namespace AMDiS {
     m2[1] = -5.943299341711317;
     m2[2] =  0.360559439940373;
     m2[3] = -3.343738912424890;
-	
+
     MSG("Rosenbrock scheme ROSI2P2\n");
   }
 
@@ -311,7 +315,7 @@ namespace AMDiS {
     gamma = 4.3586652150845e-01;
 
     createData();
-	
+
     a[0][0] =  0.0;
     a[1][0] =  2.0;
     a[1][1] =  0.871733043016918;
@@ -322,7 +326,7 @@ namespace AMDiS {
     a[3][1] =  15.4503745896552;
     a[3][2] = -15.0445558288081;
     a[3][3] =  1.0;
-	
+
     c[0][0] = gamma;
     c[1][0] = -4.58856072055827;
     c[1][1] = -gamma;
@@ -333,7 +337,7 @@ namespace AMDiS {
     c[3][1] = -42.6472578877056;
     c[3][2] =  43.6510246478391;
     c[3][3] =  0.0;
-	
+
     m1[0] =  3.28685750853379;
     m1[1] =  15.4503745896552;
     m1[2] = -15.0445558288081;
@@ -343,10 +347,10 @@ namespace AMDiS {
     m2[1] =  5.865078412615;
     m2[2] = -4.96246395067988;
     m2[3] =  0.260825116305751;
-	
+
     MSG("Rosenbrock scheme ROSI2Pw\n");
   }
-  
+
 
   ROSI2PW::ROSI2PW()
   {
@@ -355,7 +359,7 @@ namespace AMDiS {
     gamma = 4.3586652150845e-01;
 
     createData();
-	
+
     a[0][0] =  0.0;
     a[1][0] =  2.0;
     a[1][1] =  0.871733043016918;
@@ -377,7 +381,7 @@ namespace AMDiS {
     c[3][1] = -1.14714018013959;
     c[3][2] = -0.0745075552140216;
     c[3][3] =  0.0;
-    
+
     m1[0] =  4.33856072055832;
     m1[1] =  1.14714018013958;
     m1[2] = -0.0595593546375007;
@@ -387,10 +391,10 @@ namespace AMDiS {
     m2[1] =  1.14714018013955;
     m2[2] =  0.00847038665840751;
     m2[3] =  0.260825116305751;
-	
+
     MSG("Rosenbrock scheme ROSI2PW\n");
   }
-    
+
 
   Ros3Pw::Ros3Pw()
   {
@@ -402,7 +406,7 @@ namespace AMDiS {
     gamma = 7.8867513459481287e-01;
 
     createData();
-	
+
     a[0][0] = 0.0;
     a[1][0] = 2.0;
     a[1][1] = 1.57735026918963;
@@ -424,11 +428,11 @@ namespace AMDiS {
     m2[0] =  1.99444650053487  ;
     m2[1] =  0.654700538379252;
     m2[2] =  1.07179676972449;
-	
+
     MSG("Rosenbrock scheme Ros3Pw\n");
   }
-  
-    
+
+
 
   Ros34PW2::Ros34PW2()
   {
@@ -440,7 +444,7 @@ namespace AMDiS {
     gamma = 4.3586652150845e-01;
 
     createData();
-	
+
     a[0][0] =  0.0;
     a[1][0] =  2.0;
     a[1][1] =  0.871733043016918;
@@ -451,7 +455,7 @@ namespace AMDiS {
     a[3][1] = -0.285192017355496;
     a[3][2] =  2.29428036027904;
     a[3][3] =  1.0;
-	
+
     c[0][0] =  gamma;
     c[1][0] = -4.58856072055809;
     c[1][1] = -gamma;
@@ -472,7 +476,7 @@ namespace AMDiS {
     m2[1] =  1.1180478778205;
     m2[2] =  0.521650232611491;
     m2[3] =  0.5;
-	
+
     MSG("Rosenbrock scheme Ros34PW2\n");
   }
 }

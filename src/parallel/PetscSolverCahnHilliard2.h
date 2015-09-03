@@ -5,7 +5,7 @@
  * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
  * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
  *
- * Authors: 
+ * Authors:
  * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
  *
  * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
@@ -15,7 +15,7 @@
  * This file is part of AMDiS
  *
  * See also license.opensource.txt in the distribution.
- * 
+ *
  ******************************************************************************/
 
 
@@ -27,92 +27,97 @@
 
 #include "parallel/PetscSolverGlobalMatrix.h"
 
-namespace AMDiS { namespace Parallel {
-
-  struct CahnHilliardData2 {
-    KSP kspMass, kspMinusDeltaK, kspMplusK;
-    Mat matMass, matMinusDeltaK;
-    double *eps, *delta;
-    MPI::Intracomm *mpiCommGlobal;
-  };
-
- class PetscSolverCahnHilliard2 : public PetscSolverGlobalMatrix
+namespace AMDiS
+{
+  namespace Parallel
   {
-  public:
-    /// Creator class
-    class Creator : public LinearSolverCreator
-    {
-    public:
-      virtual ~Creator() {}
 
-      /// Returns a new PetscSolver object.
-      LinearSolverInterface* create() 
-      { 
-	return new PetscSolverCahnHilliard2(this->name); 
-      }
+    struct CahnHilliardData2
+    {
+      KSP kspMass, kspMinusDeltaK, kspMplusK;
+      Mat matMass, matMinusDeltaK;
+      double* eps, *delta;
+      MPI::Intracomm* mpiCommGlobal;
     };
 
-    PetscSolverCahnHilliard2(std::string name);
-
-    void setChData(double *epsPtr, double *deltaPtr)
+    class PetscSolverCahnHilliard2 : public PetscSolverGlobalMatrix
     {
-      eps = epsPtr;
-      delta = deltaPtr;
-    }
-    
-    void setChData2(double *epsPtr, double *tauPtr, SystemVector* vec=NULL)
-    {
-      eps = epsPtr;
-      tau = tauPtr;
-      solution = vec;
-    }
-    
-    
-    void setPhase(DOFVector<double> *d, double eP3=0)
-    {
-      phase = d;
-      epsPhase3 = eP3;
-    }
+    public:
+      /// Creator class
+      class Creator : public LinearSolverCreator
+      {
+      public:
+        virtual ~Creator() {}
 
-  protected:
-    void initSolver(KSP &ksp);
+        /// Returns a new PetscSolver object.
+        LinearSolverInterface* create()
+        {
+          return new PetscSolverCahnHilliard2(this->name);
+        }
+      };
 
-    void initPreconditioner(PC pc);
+      PetscSolverCahnHilliard2(std::string name);
 
-    void exitPreconditioner(PC pc);
+      void setChData(double* epsPtr, double* deltaPtr)
+      {
+        eps = epsPtr;
+        delta = deltaPtr;
+      }
 
-  private:
-    int pressureComponent;
+      void setChData2(double* epsPtr, double* tauPtr, SystemVector* vec=NULL)
+      {
+        eps = epsPtr;
+        tau = tauPtr;
+        solution = vec;
+      }
 
-    bool pressureNullSpace;
 
-    /// If true, old solution is used for initial guess in solver phase.
-    bool useOldInitialGuess;
+      void setPhase(DOFVector<double>* d, double eP3=0)
+      {
+        phase = d;
+        epsPhase3 = eP3;
+      }
 
-    /// 0: approximate solve   1: direct solver
-    int velocitySolutionMode;
+    protected:
+      void initSolver(KSP& ksp);
 
-    /// 0: approximate solve   1: direct solver
-    int massSolutionMode;
+      void initPreconditioner(PC pc);
 
-    /// 0: approximate solve   1: direct solver
-    int laplaceSolutionMode;
+      void exitPreconditioner(PC pc);
 
-    PetscSolver *massMatrixSolver, *laplaceMatrixSolver, *deltaKMatrixSolver;
+    private:
+      int pressureComponent;
 
-    CahnHilliardData2 matShellContext;
+      bool pressureNullSpace;
 
-    double *eps, *delta, *tau;
-    
-    
-    double epsPhase3;
+      /// If true, old solution is used for initial guess in solver phase.
+      bool useOldInitialGuess;
 
-    SystemVector* solution;
+      /// 0: approximate solve   1: direct solver
+      int velocitySolutionMode;
 
-    DOFVector<double>* phase;
+      /// 0: approximate solve   1: direct solver
+      int massSolutionMode;
 
-  };
+      /// 0: approximate solve   1: direct solver
+      int laplaceSolutionMode;
 
-} }
+      PetscSolver* massMatrixSolver, *laplaceMatrixSolver, *deltaKMatrixSolver;
+
+      CahnHilliardData2 matShellContext;
+
+      double* eps, *delta, *tau;
+
+
+      double epsPhase3;
+
+      SystemVector* solution;
+
+      DOFVector<double>* phase;
+
+    };
+
+  }
+}
 
 #endif

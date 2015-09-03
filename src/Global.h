@@ -30,7 +30,7 @@
 #include "Log.h"
 #include "traits/meta_basic.hpp"
 
-namespace AMDiS 
+namespace AMDiS
 {
   /** \ingroup Common
    * \brief
@@ -42,7 +42,7 @@ namespace AMDiS
   public:
     /// returns a pointer to \ref referenceElement [dim]. With this pointer you
     /// can get information about the element via Element's getGeo method.
-    static const Element *getReferenceElement(int dim) 
+    static const Element* getReferenceElement(int dim)
     {
       FUNCNAME("Global::getReferenceElement()");
       TEST_EXIT(dim > 0 && dim < 4)("invalid dim: %d\n", dim);
@@ -51,16 +51,16 @@ namespace AMDiS
 
     /// returns geometrical information. Currently this is only dimOfWorld.
 #if FIXED_SIZE && defined(DOW)
-    constexpr static int getGeo(GeoIndex p) 
+    constexpr static int getGeo(GeoIndex p)
     {
       return DOW;
-//       return p == WORLD ? DOW : throw std::runtime_error("Illegal request for geometry data!");
+      //       return p == WORLD ? DOW : throw std::runtime_error("Illegal request for geometry data!");
     }
 #else
-    static int getGeo(GeoIndex p) 
+    static int getGeo(GeoIndex p)
     {
-      if (WORLD == p) 
-        return dimOfWorld; 
+      if (WORLD == p)
+        return dimOfWorld;
 
       ERROR_EXIT("Illegal request for geometry data: part = %d!\n", p);
       return 0;
@@ -69,14 +69,14 @@ namespace AMDiS
 
     /// Returns geometrical information about elements of the dimension dim.
     /// getGeo(VERTEX, 3) returns 4 because a Tetrahedron has 4 vertices.
-    static int getGeo(GeoIndex p, int dim) 
+    static int getGeo(GeoIndex p, int dim)
     {
       TEST_EXIT_DBG(p >= MINPART && p <= MAXPART)
-        ("Calling for invalid geometry value %d\n",p);
+      ("Calling for invalid geometry value %d\n",p);
       TEST_EXIT_DBG(dim >= 0 && dim < 4)
-        ("invalid dim: %d\n", dim);
+      ("invalid dim: %d\n", dim);
       TEST_EXIT_DBG((dim != 0) || (p == PARTS || p == VERTEX || p == EDGE || p == FACE))
-        ("dim = 0\n");
+      ("dim = 0\n");
 
       return geoIndexTable[dim][p - MINPART];
     }
@@ -104,14 +104,14 @@ namespace AMDiS
     /// the dimension index.
     /// referenceElement[3]->getGeo(VERTEX) gives the number of vertices of a
     /// Tetrahedron wich is 4 => no switch statement is necessary.
-    static Element *referenceElement[4];
+    static Element* referenceElement[4];
 
     /// Stores the precalculated results that should be returned by Global::getGeo.
-    static std::vector<std::vector<int> > geoIndexTable;
+    static std::vector<std::vector<int>> geoIndexTable;
   };
 
-  
-  
+
+
   /// Size-policy used in definition of WorldVector and FixVec
   template <GeoIndex G>
   struct FixedSize
@@ -129,13 +129,13 @@ namespace AMDiS
     {
       return Global::getGeo(H, dim);
     }
-    
+
     /// calculate size for WorldVector
     static constexpr size_t aux(_geo<WORLD>, size_t = 0)
     {
       return Global::getGeo(WORLD);
     }
   };
-  
+
 } // end namespace AMDiS
 

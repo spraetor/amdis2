@@ -6,11 +6,11 @@
 
 #include "AMDiS_fwd.h"
 
-namespace AMDiS 
+namespace AMDiS
 {
 
   /** \ingroup Traverse
-   * \brief 
+   * \brief
    * Stores a stack of ElInfo object. Is used by meshes for recursive mesh
    * traverse. The use of a stack is cheaper than allocating the ElInfo objects
    * at every recursive step.
@@ -19,8 +19,8 @@ namespace AMDiS
   {
   public:
     /// Constructer, creates the stack.
-    ElInfoStack(Mesh *mesh);
-    
+    ElInfoStack(Mesh* mesh);
+
     /// Destructor, deletes all ElInfos on the stack.
     ~ElInfoStack();
 
@@ -35,7 +35,7 @@ namespace AMDiS
 
   protected:
     /// The mesh on which the traverse is done.
-    Mesh *mesh_;
+    Mesh* mesh_;
 
     /// The stack of pointers to ElInfo objects.
     std::vector<ElInfo*> elInfoStack_;
@@ -43,5 +43,5 @@ namespace AMDiS
     /// Current position (depth) of the recursive mesh traverse.
     int stackPosition_;
   };
-  
+
 } // end namespace AMDiS

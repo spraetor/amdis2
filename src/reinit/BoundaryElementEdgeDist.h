@@ -5,7 +5,7 @@
  * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
  * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
  *
- * Authors: 
+ * Authors:
  * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
  *
  * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
@@ -15,7 +15,7 @@
  * This file is part of AMDiS
  *
  * See also license.opensource.txt in the distribution.
- * 
+ *
  ******************************************************************************/
 
 
@@ -31,29 +31,30 @@
 
 #include "BoundaryElementDist.h"
 
-namespace reinit {
-  
+namespace reinit
+{
+
   using namespace AMDiS;
 
-class BoundaryElementEdgeDist : public BoundaryElementDist
-{
-public:
+  class BoundaryElementEdgeDist : public BoundaryElementDist
+  {
+  public:
 
-  BoundaryElementEdgeDist(ElementLevelSet *elLS_,
-			  int dim_)
-    : BoundaryElementDist(elLS_, dim_)
-  {}
+    BoundaryElementEdgeDist(ElementLevelSet* elLS_,
+                            int dim_)
+      : BoundaryElementDist(elLS_, dim_)
+    {}
 
-  /**
-   * Calculates distance from the interface for all vertices of a boundary 
-   * element.
-   * Distance is here the distance along edges.
-   *
-   * Return value: Status of element elInfo.
-   */
-  int calcDistOnBoundaryElement(ElInfo *elInfo,
-				FixVec<double, VERTEX> &dVec);
-};
+    /**
+     * Calculates distance from the interface for all vertices of a boundary
+     * element.
+     * Distance is here the distance along edges.
+     *
+     * Return value: Status of element elInfo.
+     */
+    int calcDistOnBoundaryElement(ElInfo* elInfo,
+                                  FixVec<double, VERTEX>& dVec);
+  };
 
 }
 

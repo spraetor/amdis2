@@ -5,7 +5,7 @@
  * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
  * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
  *
- * Authors: 
+ * Authors:
  * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
  *
  * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
@@ -15,7 +15,7 @@
  * This file is part of AMDiS
  *
  * See also license.opensource.txt in the distribution.
- * 
+ *
  ******************************************************************************/
 
 /** \file DataCollector.hh */
@@ -30,14 +30,15 @@
 #include "ElementRegion_ED.h"
 #include "Projection.h"
 
-namespace AMDiS {
+namespace AMDiS
+{
 
   template<typename T>
-  DataCollector<T>::DataCollector(const FiniteElemSpace *fe,
-				  DOFVector<T> *val,
-				  int l,
-				  Flag flag,
-				  bool (*writeElemFct)(ElInfo*))
+  DataCollector<T>::DataCollector(const FiniteElemSpace* fe,
+                                  DOFVector<T>* val,
+                                  int l,
+                                  Flag flag,
+                                  bool (*writeElemFct)(ElInfo*))
     : values(val),
       level(l),
       traverseFlag(flag),
@@ -54,22 +55,22 @@ namespace AMDiS {
     FUNCNAME("DataCollector<T>::DataCollector()");
 
     TEST_EXIT(feSpace)("No finite elem space defined!\n");
-   
-    // === get mesh  ===    
+
+    // === get mesh  ===
     mesh = feSpace->getMesh();
 
-    // === get admin ===    
+    // === get admin ===
     localAdmin = const_cast<DOFAdmin*>(feSpace->getAdmin());
     // === create vertex info vector ===
-    vertexInfos = new DOFVector<std::list<VertexInfo> >(feSpace, "vertex infos");
+    vertexInfos = new DOFVector<std::list<VertexInfo>>(feSpace, "vertex infos");
 
     interpPointInd = new DOFVector<int>(feSpace, "interpolation point indices");
-    interpPointCoords = new DOFVector< std::list<WorldVector<double> > >(feSpace, "interpolation point coordinates");
-    dofCoord = new DOFVector< std::list<WorldVector<double> > >(feSpace, "dof coords");
+    interpPointCoords = new DOFVector<std::list<WorldVector<double>>>(feSpace, "interpolation point coordinates");
+    dofCoord = new DOFVector<std::list<WorldVector<double>>>(feSpace, "dof coords");
 
-    dim = mesh->getDim();    
+    dim = mesh->getDim();
     nPreDofs = localAdmin->getNumberOfPreDofs(VERTEX);
-  } 
+  }
 
 
   template<typename T>
@@ -100,8 +101,8 @@ namespace AMDiS {
   void DataCollector<T>::startCollectingElementData()
   {
     Flag flag = traverseFlag;
-    flag |= 
-      Mesh::FILL_NEIGH      | 
+    flag |=
+      Mesh::FILL_NEIGH      |
       Mesh::FILL_COORDS     |
       Mesh::FILL_OPP_COORDS |
       Mesh::FILL_BOUND;
@@ -111,19 +112,21 @@ namespace AMDiS {
     TraverseStack stack;
 
     // Traverse elements to create continuous element indices
-    ElInfo *elInfo = stack.traverseFirst(mesh, level, flag);
-    while (elInfo) {
+    ElInfo* elInfo = stack.traverseFirst(mesh, level, flag);
+    while (elInfo)
+    {
       if (!writeElem || writeElem(elInfo))
-	outputIndices[elInfo->getElement()->getIndex()] = nElements++;
+        outputIndices[elInfo->getElement()->getIndex()] = nElements++;
       elInfo = stack.traverseNext(elInfo);
     }
 
     // Traverse elements to create element information
     elInfo = stack.traverseFirst(mesh, level, flag);
 
-    while (elInfo) {
+    while (elInfo)
+    {
       if (!writeElem || writeElem(elInfo))
-	addElementData(elInfo);
+        addElementData(elInfo);
 
       elInfo = stack.traverseNext(elInfo);
     }
@@ -143,80 +146,86 @@ namespace AMDiS {
 
     basisFcts = const_cast<BasisFunction*>(feSpace->getBasisFcts());
     nBasisFcts = basisFcts->getNumber();
-  
+
     // Traverse elements to add value information and to mark
     // interpolation points.
     TraverseStack stack;
-    ElInfo *elInfo = stack.traverseFirst(mesh, level, 
-					 traverseFlag | Mesh::FILL_COORDS);
-    while (elInfo) {
+    ElInfo* elInfo = stack.traverseFirst(mesh, level,
+                                         traverseFlag | Mesh::FILL_COORDS);
+    while (elInfo)
+    {
       if (!writeElem || writeElem(elInfo))
-	addValueData(elInfo);
+        addValueData(elInfo);
       elInfo = stack.traverseNext(elInfo);
     }
 
-    // If there are interpolation points, add them to the corresponding 
+    // If there are interpolation points, add them to the corresponding
     // data array.
-    if (nInterpPoints > 0) {
+    if (nInterpPoints > 0)
+    {
       // Remove all interpolation marks and, instead, set to each
       // interpolation point its continous index starting from 0.
       int i = 0;
       for (intPointIt.reset(); !intPointIt.end(); ++intPointIt)
-	if (*intPointIt == -3)
-	  *intPointIt = i++;
-      
+        if (*intPointIt == -3)
+          *intPointIt = i++;
+
       // Traverse elements to create interpolation values.
       elInfo = stack.traverseFirst(mesh, level, traverseFlag | Mesh::FILL_COORDS);
-      while (elInfo) {
-	if (!writeElem || writeElem(elInfo))
-	  addInterpData(elInfo);
-	elInfo = stack.traverseNext(elInfo);
+      while (elInfo)
+      {
+        if (!writeElem || writeElem(elInfo))
+          addInterpData(elInfo);
+        elInfo = stack.traverseNext(elInfo);
       }
     }
-   
+
     valueDataCollected = true;
   }
 
 
   template<typename T>
   void DataCollector<T>::startCollectingPeriodicData()
-  {    
+  {
     periodicConnections.clear();
-    
-    TraverseStack stack;
-    ElInfo *elInfo = stack.traverseFirst(mesh, level, traverseFlag);
-    while (elInfo) {
-      if (!writeElem || writeElem(elInfo)) {
-	LeafDataPeriodic *ldp = dynamic_cast<LeafDataPeriodic*>
-	  (elInfo->getElement()->
-	   getElementData()->
-	   getElementData(PERIODIC));
-	
-	if (ldp)
-	  nConnection += dynamic_cast<LeafDataPeriodic*>(ldp)->getInfoList().size();
 
-	periodicConnections.push_back(DimVec<bool>(dim, false));
+    TraverseStack stack;
+    ElInfo* elInfo = stack.traverseFirst(mesh, level, traverseFlag);
+    while (elInfo)
+    {
+      if (!writeElem || writeElem(elInfo))
+      {
+        LeafDataPeriodic* ldp = dynamic_cast<LeafDataPeriodic*>
+                                (elInfo->getElement()->
+                                 getElementData()->
+                                 getElementData(PERIODIC));
+
+        if (ldp)
+          nConnection += dynamic_cast<LeafDataPeriodic*>(ldp)->getInfoList().size();
+
+        periodicConnections.push_back(DimVec<bool>(dim, false));
       }
       elInfo = stack.traverseNext(elInfo);
-    }   
+    }
 
     nConnection /= 2;
 
     periodicInfos.clear();
 
     Flag flag = traverseFlag;
-    flag |= 
+    flag |=
       Mesh::FILL_COORDS    |
       Mesh::FILL_OPP_COORDS|
-      Mesh::FILL_NEIGH     | 
+      Mesh::FILL_NEIGH     |
       Mesh::FILL_BOUND;
 
     elInfo = stack.traverseFirst(mesh, level, flag);
-    while (elInfo) {
+    while (elInfo)
+    {
       if (!writeElem || writeElem(elInfo))
-	addPeriodicData(elInfo);
+        addPeriodicData(elInfo);
       elInfo = stack.traverseNext(elInfo);
-    }   
+    }
 
     periodicDataCollected = true;
   }
@@ -225,65 +234,68 @@ namespace AMDiS {
   template<typename T>
   void DataCollector<T>::addElementData(ElInfo* elInfo)
   {
-    const DegreeOfFreedom **dof = elInfo->getElement()->getDof();
+    const DegreeOfFreedom** dof = elInfo->getElement()->getDof();
 
     // create ElementInfo
     ElementInfo elementInfo(dim);
-    
+
     // read element region
-    ElementData *ed = elInfo->getElement()->getElementData(ELEMENT_REGION);
-    
+    ElementData* ed = elInfo->getElement()->getElementData(ELEMENT_REGION);
+
     if (ed)
       elementInfo.elementRegion = dynamic_cast<ElementRegion_ED*>(ed)->getRegion();
-    else 
-      elementInfo.elementRegion = -1;    
-   
+    else
+      elementInfo.elementRegion = -1;
+
     // read surface regions to element info
     ed = elInfo->getElement()->getElementData(SURFACE_REGION);
     elementInfo.surfaceRegions.set(-1);
-    while (ed) {
-      SurfaceRegion_ED *sr = dynamic_cast<SurfaceRegion_ED*>(ed);
+    while (ed)
+    {
+      SurfaceRegion_ED* sr = dynamic_cast<SurfaceRegion_ED*>(ed);
       elementInfo.surfaceRegions[sr->getSide()] = sr->getRegion();
       ed = ed->getDecorated(SURFACE_REGION);
     }
 
     // for all vertices
-    for (int i = 0; i < mesh->getGeo(VERTEX); i++) {
+    for (int i = 0; i < mesh->getGeo(VERTEX); i++)
+    {
       // get coords of this vertex
-      WorldVector<double> &vertexCoords = elInfo->getCoord(i);
-      
+      WorldVector<double>& vertexCoords = elInfo->getCoord(i);
+
       // get dof index of this vertex
       DegreeOfFreedom vertexDof = dof[i][nPreDofs];
 
       // search for coords at this dof
       std::list<VertexInfo>::iterator it =
-	  find((*vertexInfos)[vertexDof].begin(), (*vertexInfos)[vertexDof].end(),
-	       vertexCoords);
-      
+        find((*vertexInfos)[vertexDof].begin(), (*vertexInfos)[vertexDof].end(),
+             vertexCoords);
+
       // coords not yet in list?
-      if (it == (*vertexInfos)[vertexDof].end()) {
-	// create new vertex info and increment number of vertices
-	VertexInfo newVertexInfo = {vertexCoords, nVertices};
+      if (it == (*vertexInfos)[vertexDof].end())
+      {
+        // create new vertex info and increment number of vertices
+        VertexInfo newVertexInfo = {vertexCoords, nVertices};
 
-	// add new vertex info to list
-	(*vertexInfos)[vertexDof].push_front(newVertexInfo);
+        // add new vertex info to list
+        (*vertexInfos)[vertexDof].push_front(newVertexInfo);
 
-	// set iterator to new vertex info
-	it = (*vertexInfos)[vertexDof].begin();	
+        // set iterator to new vertex info
+        it = (*vertexInfos)[vertexDof].begin();
 
-	nVertices++;
+        nVertices++;
       }
-      
+
       // fill element info
       elementInfo.vertexInfo[i] = it;
       elementInfo.boundary[i] = elInfo->getBoundary(i);
       elementInfo.projection[i] = elInfo->getProjection(i);
-      elementInfo.neighbour[i] = 
-	elInfo->getNeighbour(i) ?
-	outputIndices[elInfo->getNeighbour(i)->getIndex()] :
-	-1;
+      elementInfo.neighbour[i] =
+        elInfo->getNeighbour(i) ?
+        outputIndices[elInfo->getNeighbour(i)->getIndex()] :
+        -1;
     }
-    
+
     if (dim == 3)
       elementInfo.type = elInfo->getType();
 
@@ -293,7 +305,7 @@ namespace AMDiS {
 
 
   template<typename T>
-  void DataCollector<T>::addValueData(ElInfo *elInfo)
+  void DataCollector<T>::addValueData(ElInfo* elInfo)
   {
     std::vector<DegreeOfFreedom> localDOFs(basisFcts->getNumber());
     basisFcts->getLocalIndices(elInfo->getElement(), localAdmin, localDOFs);
@@ -301,57 +313,62 @@ namespace AMDiS {
     WorldVector<double> vertexCoords;
     // First, traverse all DOFs at the vertices of the element, determine
     // their coordinates and add them to the corresponding entry in dofCoords.
-    for (int i = 0; i < mesh->getGeo(VERTEX); i++) {
+    for (int i = 0; i < mesh->getGeo(VERTEX); i++)
+    {
       DegreeOfFreedom dofi = localDOFs[i];
 
       (*interpPointInd)[dofi] = -2; // mark as vertex
-      
+
       // get coords of this vertex
       vertexCoords = elInfo->getCoord(i);
 
       // search for coords at this dof
-      std::list<WorldVector<double> >::iterator it =
-	  find((*dofCoord)[dofi].begin(),
-	       (*dofCoord)[dofi].end(),
-	       vertexCoords);
-      
+      std::list<WorldVector<double>>::iterator it =
+                                    find((*dofCoord)[dofi].begin(),
+                                         (*dofCoord)[dofi].end(),
+                                         vertexCoords);
+
       // coords not yet in list?
-      if (it == (*dofCoord)[dofi].end()) {
-	// add new coords to list
-	(*dofCoord)[dofi].push_back(vertexCoords);
+      if (it == (*dofCoord)[dofi].end())
+      {
+        // add new coords to list
+        (*dofCoord)[dofi].push_back(vertexCoords);
       }
     }
-   
+
     // Then, traverse all interpolation DOFs of the element, determine
-    // their coordinates and add them to the corresponding entry in 
+    // their coordinates and add them to the corresponding entry in
     // interpPointCoords.
-    for (int i = mesh->getGeo(VERTEX); i < nBasisFcts; i++) {
+    for (int i = mesh->getGeo(VERTEX); i < nBasisFcts; i++)
+    {
       DegreeOfFreedom dofi = localDOFs[i];
 
       elInfo->coordToWorld(*basisFcts->getCoords(i), vertexCoords);
-      
-      if ((*interpPointInd)[dofi] == -1) {
-	// mark as interpolation point
-	(*interpPointInd)[dofi] = -3; 
-	
-	// search for interpolation point coordinates, and insert them to the 
-	// dof-entry, if not contained in the list
-	std::list<WorldVector<double> >::iterator it =
-		find((*interpPointCoords)[dofi].begin(), 
-		     (*interpPointCoords)[dofi].end(),
-		     vertexCoords);
-	
-	if (it == (*interpPointCoords)[dofi].end()) {
-	  (*interpPointCoords)[dofi].push_back(vertexCoords); 
-	  nInterpPoints++;
-	}
-      }      
-    }  
+
+      if ((*interpPointInd)[dofi] == -1)
+      {
+        // mark as interpolation point
+        (*interpPointInd)[dofi] = -3;
+
+        // search for interpolation point coordinates, and insert them to the
+        // dof-entry, if not contained in the list
+        std::list<WorldVector<double>>::iterator it =
+                                      find((*interpPointCoords)[dofi].begin(),
+                                           (*interpPointCoords)[dofi].end(),
+                                           vertexCoords);
+
+        if (it == (*interpPointCoords)[dofi].end())
+        {
+          (*interpPointCoords)[dofi].push_back(vertexCoords);
+          nInterpPoints++;
+        }
+      }
+    }
   }
 
 
   template<typename T>
-  void DataCollector<T>::addInterpData(ElInfo *elInfo)
+  void DataCollector<T>::addInterpData(ElInfo* elInfo)
   {
     std::vector<DegreeOfFreedom> localDOFs(basisFcts->getNumber());
     basisFcts->getLocalIndices(elInfo->getElement(), localAdmin, localDOFs);
@@ -359,66 +376,72 @@ namespace AMDiS {
     std::vector<int> elemInterpPoints(0);
     for (int i = mesh->getGeo(VERTEX); i < nBasisFcts; i++)
       elemInterpPoints.push_back((*interpPointInd)[localDOFs[i]]);
-    
-    interpPoints.push_back(elemInterpPoints); 
+
+    interpPoints.push_back(elemInterpPoints);
   }
 
 
   template<typename T>
-  void DataCollector<T>::addPeriodicData(ElInfo *elInfo)
+  void DataCollector<T>::addPeriodicData(ElInfo* elInfo)
   {
-    LeafDataPeriodic *ldp = dynamic_cast<LeafDataPeriodic*>
-      (elInfo->getElement()->
-       getElementData()->
-       getElementData(PERIODIC));
-    
-    if (ldp) {
-      std::list<LeafDataPeriodic::PeriodicInfo>::iterator it;
-      
-      for (it = dynamic_cast<LeafDataPeriodic*>(ldp)->getInfoList().begin();
-	   it != dynamic_cast<LeafDataPeriodic*>(ldp)->getInfoList().end();
-	   ++it) {
+    LeafDataPeriodic* ldp = dynamic_cast<LeafDataPeriodic*>
+                            (elInfo->getElement()->
+                             getElementData()->
+                             getElementData(PERIODIC));
 
-	int outputIndex = outputIndices[elInfo->getElement()->getIndex()];
-	int neighIndex  = outputIndices[elInfo->
-					 getNeighbour(it->elementSide)->
-					 getIndex()];
-	
-	if (!periodicConnections[outputIndex][it->elementSide]) {
-	  PeriodicInfo periodicInfo;
-	  
-	  periodicInfo.mode = it->periodicMode;
-	  periodicInfo.type = it->type;
-	  periodicInfo.outputIndex = outputIndex;
-	  periodicInfo.neighIndex = neighIndex;
-	  periodicInfo.vertexMap.clear();
-	  
-	  periodicConnections[outputIndex][it->elementSide] = true;
-	  periodicConnections
-	    [neighIndex][elInfo->getOppVertex(it->elementSide)] = true;
-	    
-  
-	  for (int i = 0; i < dim; i++) {
-	    int index1 = elInfo->getElement()->getVertexOfPosition(INDEX_OF_DIM(dim - 1, dim),
-								   it->elementSide,
-								   i);
-	    DegreeOfFreedom dof1 = elInfo->getElement()->getDof(index1, nPreDofs);
-	    
-	    for (int j = 0; j < dim; j++) {
-	      int index2 = elInfo->getElement()->getVertexOfPosition(INDEX_OF_DIM(dim - 1, dim),
-								     elInfo->getOppVertex(it->elementSide),
-								     j);
-	      DegreeOfFreedom dof2 = elInfo->getNeighbour(it->elementSide)->getDof(index2, nPreDofs);
-	      
-	      if ((dof1 == dof2) || (mesh->associated(dof1, dof2))) {
-		periodicInfo.vertexMap[index1] = index2;
-		break;
-	      } 
-	    }
-	  }
-	  
-	  periodicInfos.push_back(periodicInfo);
-	}
+    if (ldp)
+    {
+      std::list<LeafDataPeriodic::PeriodicInfo>::iterator it;
+
+      for (it = dynamic_cast<LeafDataPeriodic*>(ldp)->getInfoList().begin();
+           it != dynamic_cast<LeafDataPeriodic*>(ldp)->getInfoList().end();
+           ++it)
+      {
+
+        int outputIndex = outputIndices[elInfo->getElement()->getIndex()];
+        int neighIndex  = outputIndices[elInfo->
+                                        getNeighbour(it->elementSide)->
+                                        getIndex()];
+
+        if (!periodicConnections[outputIndex][it->elementSide])
+        {
+          PeriodicInfo periodicInfo;
+
+          periodicInfo.mode = it->periodicMode;
+          periodicInfo.type = it->type;
+          periodicInfo.outputIndex = outputIndex;
+          periodicInfo.neighIndex = neighIndex;
+          periodicInfo.vertexMap.clear();
+
+          periodicConnections[outputIndex][it->elementSide] = true;
+          periodicConnections
+          [neighIndex][elInfo->getOppVertex(it->elementSide)] = true;
+
+
+          for (int i = 0; i < dim; i++)
+          {
+            int index1 = elInfo->getElement()->getVertexOfPosition(INDEX_OF_DIM(dim - 1, dim),
+                         it->elementSide,
+                         i);
+            DegreeOfFreedom dof1 = elInfo->getElement()->getDof(index1, nPreDofs);
+
+            for (int j = 0; j < dim; j++)
+            {
+              int index2 = elInfo->getElement()->getVertexOfPosition(INDEX_OF_DIM(dim - 1, dim),
+                           elInfo->getOppVertex(it->elementSide),
+                           j);
+              DegreeOfFreedom dof2 = elInfo->getNeighbour(it->elementSide)->getDof(index2, nPreDofs);
+
+              if ((dof1 == dof2) || (mesh->associated(dof1, dof2)))
+              {
+                periodicInfo.vertexMap[index1] = index2;
+                break;
+              }
+            }
+          }
+
+          periodicInfos.push_back(periodicInfo);
+        }
       }
     }
   }
@@ -426,16 +449,16 @@ namespace AMDiS {
 
   template<typename T>
   std::list<ElementInfo>* DataCollector<T>::getElementInfos()
-  {        
+  {
     if (!elementDataCollected)
       startCollectingElementData();
-      
+
     return &elements;
   }
 
 
   template<typename T>
-  DOFVector< std::list<VertexInfo> >* DataCollector<T>::getVertexInfos()
+  DOFVector<std::list<VertexInfo>>* DataCollector<T>::getVertexInfos()
   {
     if (!elementDataCollected)
       startCollectingElementData();
@@ -495,7 +518,7 @@ namespace AMDiS {
 
 
   template<typename T>
-  DOFVector< std::list<WorldVector<double> > >* DataCollector<T>::getDofCoords()
+  DOFVector<std::list<WorldVector<double>>>* DataCollector<T>::getDofCoords()
   {
     if (!valueDataCollected)
       startCollectingValueData();
@@ -515,7 +538,7 @@ namespace AMDiS {
 
 
   template<typename T>
-  DOFVector< std::list<WorldVector<double> > >* DataCollector<T>::getInterpPointCoords()
+  DOFVector<std::list<WorldVector<double>>>* DataCollector<T>::getInterpPointCoords()
   {
     if (!valueDataCollected)
       startCollectingValueData();
@@ -525,7 +548,7 @@ namespace AMDiS {
 
 
   template<typename T>
-  std::vector< std::vector<int> >* DataCollector<T>::getInterpPoints()
+  std::vector<std::vector<int>>* DataCollector<T>::getInterpPoints()
   {
     if (!valueDataCollected)
       startCollectingValueData();

@@ -2,7 +2,7 @@
 
 #pragma once
 
-namespace AMDiS 
+namespace AMDiS
 {
 
   /** \ingroup Adaption
@@ -18,7 +18,7 @@ namespace AMDiS
     {}
 
     /// Implements RefinementManager::refineMesh.
-    Flag refineMesh(Mesh *aMesh);
+    Flag refineMesh(Mesh* aMesh);
 
     /// Implements RefinementManager::setNewCoords
     void setNewCoords(int macroEl = -1);
@@ -28,7 +28,7 @@ namespace AMDiS
     void recursiveRefineFunction(ElInfo* el_info);
 
     /// Used by \ref setNewCoords
-    void newCoordsFct(ElInfo *el_info);
+    void newCoordsFct(ElInfo* el_info);
   };
 
 } // end namespace AMDiS

@@ -7,15 +7,15 @@
 #include "AMDiS_fwd.h"
 #include "SubAssembler.h"
 
-namespace AMDiS 
+namespace AMDiS
 {
-  /** 
+  /**
    * \ingroup Assembler
-   * 
+   *
    * \brief
-   * Base class for ZeroOrderTerm, FirstOrderTerm and SecondOrderTerm. 
+   * Base class for ZeroOrderTerm, FirstOrderTerm and SecondOrderTerm.
    * OperatorTerms are the building blocks of an Operator. Each OperatorTerm
-   * has its properties which are regarded, when constructing 
+   * has its properties which are regarded, when constructing
    * an Assembler for the corresponding Operator.
    */
   class OperatorTerm
@@ -23,12 +23,12 @@ namespace AMDiS
   public:
     /// Constructs an OperatorTerm with initially no properties.
     /// degree_ is used to determine the degree of the needed quadrature
-    /// for the assemblage.  
-    OperatorTerm(int deg) 
-      : properties(0), 
-      	degree(deg),
-      	dimOfWorld(Global::getGeo(WORLD)),
-      	bOne(-1)
+    /// for the assemblage.
+    OperatorTerm(int deg)
+      : properties(0),
+        degree(deg),
+        dimOfWorld(Global::getGeo(WORLD)),
+        bOne(-1)
     {}
 
     /// Destructor.
@@ -37,13 +37,13 @@ namespace AMDiS
     /// Virtual method. It's called by SubAssembler::initElement() for
     /// each OperatorTerm belonging to this SubAssembler. E.g., vectors
     /// and coordinates at quadrature points can be calculated here.
-    void initElement(const ElInfo* elInfo, SubAssembler* subAssembler, 
-		                 Quadrature *quad = NULL) 
+    void initElement(const ElInfo* elInfo, SubAssembler* subAssembler,
+                     Quadrature* quad = NULL)
     {
       initImpl(elInfo, subAssembler, quad);
     }
 
-    /// Returs \auxFeSpaces, the list of all aux fe spaces the operator makes 
+    /// Returs \auxFeSpaces, the list of all aux fe spaces the operator makes
     /// use off.
     std::set<const FiniteElemSpace*>& getAuxFeSpaces()
     {
@@ -55,7 +55,7 @@ namespace AMDiS
 
     /// Returns true, if the term is piecewise constant, returns false otherwise.
     bool isPWConst() const
-    { 
+    {
       return (degree == 0);
     }
 
@@ -64,8 +64,8 @@ namespace AMDiS
 
     /// Returns \ref degree.
     int getDegree() const
-    { 
-      return degree; 
+    {
+      return degree;
     }
 
     /// Sets one component of the b vector to be one. See \ref bOne.
@@ -74,29 +74,34 @@ namespace AMDiS
       bOne = b;
     }
 
+    void setOperator(Operator* op)
+    {
+      operat = op;
+    }
+
     /// Evaluation of the OperatorTerm at all quadrature points.
     void eval(int nPoints,
-      	      const DenseVector<double>& uhAtQP,
-      	      const DenseVector<WorldVector<double> >& grdUhAtQP,
-      	      const DenseVector<WorldMatrix<double> >& D2UhAtQP,
-      	      DenseVector<double>& result,
-      	      double factor) const
+              const DenseVector<double>& uhAtQP,
+              const DenseVector<WorldVector<double>>& grdUhAtQP,
+              const DenseVector<WorldMatrix<double>>& D2UhAtQP,
+              DenseVector<double>& result,
+              double factor) const
     {
       evalImpl(nPoints, uhAtQP, grdUhAtQP, D2UhAtQP, result, factor);
     }
-    
+
   private:
     // default behavior: init nothing
     virtual void initImpl(const ElInfo*, SubAssembler*, Quadrature*) { }
-    
+
     // must be implemented by derived class
     virtual void evalImpl(int nPoints,
-                  			  const DenseVector<double>& uhAtQP,
-                  			  const DenseVector<WorldVector<double> >& grdUhAtQP,
-                  			  const DenseVector<WorldMatrix<double> >& D2UhAtQP,
-                  			  DenseVector<double>& result,
-                  			  double factor) const = 0;
-    
+                          const DenseVector<double>& uhAtQP,
+                          const DenseVector<WorldVector<double>>& grdUhAtQP,
+                          const DenseVector<WorldMatrix<double>>& D2UhAtQP,
+                          DenseVector<double>& result,
+                          double factor) const = 0;
+
   protected:
     /// Stores the properties of this OperatorTerm
     Flag properties;
@@ -125,47 +130,40 @@ namespace AMDiS
 
     /// Flag for symmetric terms
     static const Flag SYMMETRIC;
-
-    // TODO: remove friend declaration
-    friend class SubAssembler;
-    friend class ZeroOrderAssembler;
-    friend class FirstOrderAssembler;
-    friend class SecondOrderAssembler;
-    friend class Operator;
   };
-  
-  
+
+
   // forward declarations
   class ZeroOrderTerm;
   class FirstOrderTerm;
   class SecondOrderTerm;
-  
+
   /// helper class to adopt the correct OperatorTerm based on the term order
   template <int Order>
-  struct GetTerm 
+  struct GetTerm
   {
-    typedef if_then_else< Order == 0, ZeroOrderTerm, 
-	          if_then_else< Order == 1, FirstOrderTerm, 
-	          if_then_else< Order == 2, SecondOrderTerm,
-				                              OperatorTerm > > > type;
+    using type =  if_then_else<Order == 0, ZeroOrderTerm,
+          if_then_else<Order == 1, FirstOrderTerm,
+          if_then_else<Order == 2, SecondOrderTerm,
+          OperatorTerm>>>;
   };
 
-  
+
   /// basic interface for OperatorTerms based on expressions
   template <class Term, int Order = -1>
   struct GenericOperatorTerm : public GetTerm<Order>::type
   {
-    typedef typename GetTerm<Order>::type Super;
-    
+    using Super = typename GetTerm<Order>::type;
+
     /// Expression term stored as copy
     Term term;
-    
+
     /// constructor
     /// adds all feSpaces provided by the expression term to auxFeSpaces liste
     template <class Term_>
     GenericOperatorTerm(Term_&& term_)
-      : Super(term_.getDegree()), 
-        term{term_} 
+      : Super(term_.getDegree()),
+        term{term_}
     {
       term.insertFeSpaces(this->auxFeSpaces);
 #ifndef NDEBUG
@@ -173,48 +171,51 @@ namespace AMDiS
 #endif
     }
 
-  private:
+private:
     /// \brief Implements OperatorTerm::initImpl().
     /// calls init() for \ref term
     virtual void initImpl(const ElInfo* elInfo,
-                  			  SubAssembler* subAssembler,
-                  			  Quadrature* quad) override
+                          SubAssembler* subAssembler,
+                          Quadrature* quad) override
     {
       term.initElement(elInfo, subAssembler, quad, NULL);
     }
-    
+
     /// test for only one mesh allowed in expressions
     template <class FeSpaceList>
     void test_auxFeSpaces(FeSpaceList const& auxFeSpaces)
     {
-      if (auxFeSpaces.size() > 0) {
-      	Mesh* mesh0 = (*begin(auxFeSpaces))->getMesh();
-      	for (auto const* feSpace : auxFeSpaces) {
-      	  if (feSpace->getMesh() != mesh0) {
-      	    ERROR_EXIT("Only one mesh allowed in expression.\n");
-      	  }
-      	}
+      if (auxFeSpaces.size() > 0)
+      {
+        Mesh* mesh0 = (*begin(auxFeSpaces))->getMesh();
+        for (auto const* feSpace : auxFeSpaces)
+        {
+          if (feSpace->getMesh() != mesh0)
+          {
+            ERROR_EXIT("Only one mesh allowed in expression.\n");
+          }
+        }
       }
     }
   };
-  
+
 
   template <class Term>
   struct GenericOperatorTerm<Term, -1> : public GenericOperatorTerm<Term, -2>
   {
-    typedef GenericOperatorTerm<Term, -2> Super;
+    using Super = GenericOperatorTerm<Term, -2>;
     template <class Term_>
-    GenericOperatorTerm(Term_&& term_) 
+    GenericOperatorTerm(Term_&& term_)
       : Super(std::forward<Term_>(term_)) { }
-    
+
   private:
     // Implements OperatorTerm::eval().
     virtual void evalImpl(int nPoints,
-                  			  const DenseVector<double>& uhAtQP,
-                  			  const DenseVector<WorldVector<double> >& grdUhAtQP,
-                  			  const DenseVector<WorldMatrix<double> >& D2UhAtQP,
-                  			  DenseVector<double>& result,
-                  			  double factor) const override {};
+                          const DenseVector<double>& uhAtQP,
+                          const DenseVector<WorldVector<double>>& grdUhAtQP,
+                          const DenseVector<WorldMatrix<double>>& D2UhAtQP,
+                          DenseVector<double>& result,
+                          double factor) const override {};
   };
-  
+
 } // end namespace AMDiS

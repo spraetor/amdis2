@@ -10,11 +10,12 @@
 #include "Math.h"
 #include "MatrixVector.h"
 
-namespace AMDiS 
+namespace AMDiS
 {
 
   /// determines how to initialize a FixVec when constructed.
-  enum InitType {
+  enum InitType
+  {
     NO_INIT = 0,       /**< no initialisation */
     VALUE_LIST = 1,    /**< a complete value list is given */
     DEFAULT_VALUE = 2, /**< all values ar set to a given default value */
@@ -24,21 +25,21 @@ namespace AMDiS
 
   /** \ingroup Common
    * \brief
-   * Contains an vector of FixVecs of same type. To simply allocate an array of 
+   * Contains an vector of FixVecs of same type. To simply allocate an array of
    * FixVecs
    * isn't possible, because the FixVec constructor normally needs at least
    * the corresponding dimension. So you must create an array of FixVec pointers
-   * and call the constructor of each FixVec manually. When you use 
+   * and call the constructor of each FixVec manually. When you use
    * VectorOfFixVecs, this work is done by VectorOfFixVecs's constructor.
    */
   template <class FixVecType>
   class VectorOfFixVecs
   {
   public:
-    /// constructs a VectorOfFixVecs without initialisation. dim is passed to 
+    /// constructs a VectorOfFixVecs without initialisation. dim is passed to
     /// FixVec's constructors. size_ is the number of contained FixVecs. initType
     /// must be NO_INIT.
-    VectorOfFixVecs(int d, int s, InitType initType) 
+    VectorOfFixVecs(int d, int s, InitType initType)
       : size(s),
         dim(d)
     {
@@ -49,7 +50,7 @@ namespace AMDiS
         vec[i] = new FixVecType(dim);
     }
 
-    /// constructs a VectorOfFixVecs via an value list.  dim is passed to 
+    /// constructs a VectorOfFixVecs via an value list.  dim is passed to
     /// FixVec's constructors. size_ is the number of contained FixVecs. initType
     /// must be VALUE_LIST. ini contains the initialisation values.
     VectorOfFixVecs(int d, int s, InitType initType, FixVecType const* ini)
@@ -60,10 +61,10 @@ namespace AMDiS
 
       vec.resize(size);
       for (int i = 0; i < size; i++)
-      	vec[i] = new FixVecType(ini[i]);
+        vec[i] = new FixVecType(ini[i]);
     }
 
-    /// constructs a VectorOfFixVecs with an default value.  dim is passed to 
+    /// constructs a VectorOfFixVecs with an default value.  dim is passed to
     /// FixVec's constructors. size_ is the number of contained FixVecs. initType
     /// must be DEFAULT_VALUE. All entries are set to ini.
     VectorOfFixVecs(int d, int s, InitType initType, const FixVecType& ini)
@@ -73,8 +74,8 @@ namespace AMDiS
       TEST_EXIT_DBG(initType == DEFAULT_VALUE)("wrong initType or wrong initializer\n");
 
       vec.resize(size);
-      for (int i = 0; i < size; i++) 
-      	vec[i] = new FixVecType(ini);
+      for (int i = 0; i < size; i++)
+        vec[i] = new FixVecType(ini);
     }
 
     /// Copy constructor
@@ -84,15 +85,15 @@ namespace AMDiS
       dim = rhs.getDim();
 
       vec.resize(size);
-      for (int i = 0; i < size; i++) 
-      	vec[i] = new FixVecType(*(rhs.vec[i]));
+      for (int i = 0; i < size; i++)
+        vec[i] = new FixVecType(*(rhs.vec[i]));
     }
 
     /// Destructor
     ~VectorOfFixVecs()
     {
       for (int i = 0; i < size; i++)
-      	delete vec[i];
+        delete vec[i];
 
       vec.clear();
     }
@@ -104,7 +105,7 @@ namespace AMDiS
       return *(vec[index]);
     }
 
-    /// Allows the access like in a normal array via []. 
+    /// Allows the access like in a normal array via [].
     inline FixVecType& operator[](int index)
     {
       TEST_EXIT_DBG(index >= 0 && index < size)("invalid index\n");
@@ -112,13 +113,14 @@ namespace AMDiS
     }
 
     /// Assignment operator
-    VectorOfFixVecs<FixVecType>& 
+    VectorOfFixVecs<FixVecType>&
     operator=(const VectorOfFixVecs<FixVecType>& rhs)
     {
       TEST_EXIT_DBG(size == rhs.size)("vectors of different size\n");
-      if (this != &rhs) {
-      	for (int i = 0; i < size; i++)
-      	  *(vec[i]) = *(rhs.vec[i]);
+      if (this != &rhs)
+      {
+        for (int i = 0; i < size; i++)
+          *(vec[i]) = *(rhs.vec[i]);
       }
       return *this;
     }
@@ -128,26 +130,26 @@ namespace AMDiS
     {
       vec.resize(newsize);
       for (int i = size; i < newsize; i++)
-      	vec[i] = new FixVecType(dim);
+        vec[i] = new FixVecType(dim);
       size = newsize;
     }
 
     /// Returns the \ref size of this VectorOfFixVecs
-    inline int getSize() const 
-    { 
+    inline int getSize() const
+    {
       return size;
     }
 
     /// Returns \ref dim
-    inline int getDim() const 
+    inline int getDim() const
     {
       return dim;
     }
 
     /// Returns the size of the contained FixVecs
-    inline int getSizeOfFixVec() const 
-    { 
-      return vec[0]->getSize(); 
+    inline int getSizeOfFixVec() const
+    {
+      return vec[0]->getSize();
     }
 
   protected:
@@ -175,48 +177,48 @@ namespace AMDiS
     /// c is the number of columns. The other parameters are analog to the
     /// VectorOfFixVecs constructors.
     MatrixOfFixVecs(int dim, int r, int c, InitType initType)
-      : rows(r), 
-      	columns(c)
+      : rows(r),
+        columns(c)
     {
       TEST_EXIT_DBG(initType == NO_INIT)("wrong initType or wrong initializer\n");
-      vec = new VectorOfFixVecs<FixVecType>*[rows];
+      vec = new VectorOfFixVecs<FixVecType>* [rows];
       for (VectorOfFixVecs<FixVecType>** i = &vec[0]; i < &vec[rows]; i++)
-      	*i = new VectorOfFixVecs<FixVecType>(dim, columns, NO_INIT);
+        *i = new VectorOfFixVecs<FixVecType>(dim, columns, NO_INIT);
     }
 
     /// destructor
     ~MatrixOfFixVecs()
     {
       for (VectorOfFixVecs<FixVecType>** i = &vec[0]; i < &vec[rows]; i++)
-      	delete *i;
+        delete *i;
 
       delete [] vec;
     }
 
     /// assignment operator
-    inline VectorOfFixVecs<FixVecType >& operator[](int index)
+    inline VectorOfFixVecs<FixVecType>& operator[](int index)
     {
       TEST_EXIT_DBG(index >= 0 && index < rows)("invalid index\n");
       return *(vec[index]);
     }
 
     /// assignment operator
-    inline const VectorOfFixVecs<FixVecType >& operator[](int index) const
+    inline const VectorOfFixVecs<FixVecType>& operator[](int index) const
     {
       TEST_EXIT_DBG(index >= 0 && index < rows)("invalid index\n");
       return *(vec[index]);
     }
 
     /// Returns \ref rows
-    inline int getNumberOfRows() const 
-    { 
-      return rows; 
+    inline int getNumberOfRows() const
+    {
+      return rows;
     }
 
     /// Returns \ref columns
-    inline int getNumberOfColumns() const 
-    { 
-      return columns; 
+    inline int getNumberOfColumns() const
+    {
+      return columns;
     }
 
   private:
@@ -227,21 +229,22 @@ namespace AMDiS
     int columns;
 
     /// array of pointers to VectorOfFixVecs
-    VectorOfFixVecs<FixVecType> **vec;
+    VectorOfFixVecs<FixVecType>** vec;
   };
 
   /// creates and inits a VectorOfFixVecs<DimVec<double> >
-  VectorOfFixVecs<DimVec<double> > *createAndInit(int dim, int size, ...);
+  VectorOfFixVecs<DimVec<double>>* createAndInit(int dim, int size, ...);
 
   /// creates and inits and double array
-  double *createAndInitArray(int size, ...); 
+  double* createAndInitArray(int size, ...);
 
   template <class T>
   struct GradientType
   {
     typedef WorldVector<T> type;
-    
-    static DenseVector<double> getValues(type &t) {
+
+    static DenseVector<double> getValues(type& t)
+    {
       DenseVector<double> result(t.getSize());
       for (size_t i = 0; i < t.getSize(); i++)
         result[i] = static_cast<T>(t[i]);
@@ -250,11 +253,12 @@ namespace AMDiS
   };
 
   template <class T>
-  struct GradientType<WorldVector<T> >
+  struct GradientType<WorldVector<T>>
   {
-    typedef WorldVector<WorldVector<T> > type;
+    typedef WorldVector<WorldVector<T>> type;
 
-    static DenseVector<double> getValues(type &t) {
+    static DenseVector<double> getValues(type& t)
+    {
       DenseVector<double> result(sqr(t.getSize()));
       for (size_t i = 0; i < t.getSize(); i++)
         for (size_t j = 0; j < t.getSize(); j++)
@@ -262,7 +266,7 @@ namespace AMDiS
       return result;
     }
   };
-  
+
   template <class T>
   using Gradient_t = typename GradientType<T>::type;
 
@@ -270,8 +274,9 @@ namespace AMDiS
   struct D2Type
   {
     typedef WorldMatrix<T> type;
-    
-    static DenseVector<double> getValues(type &t) {
+
+    static DenseVector<double> getValues(type& t)
+    {
       DenseVector<double> result(t.numRows() * t.numCols());
       for (size_t i = 0; i < t.numRows(); i++)
         for (size_t j = 0; j < t.numCols(); j++)
@@ -279,14 +284,14 @@ namespace AMDiS
       return result;
     }
   };
-  
+
   template <class T>
   using D2_t = typename D2Type<T>::type;
-  
+
   template <class T,GeoIndex d>
   inline void resize(FixVec<T,d>& vec, size_t newSize)
   { }
-  
+
 } // end namespace AMDiS
 
 
@@ -295,36 +300,36 @@ namespace AMDiS
 #include <boost/numeric/mtl/utility/category.hpp>
 #include <boost/numeric/mtl/utility/is_row_major.hpp>
 
-namespace mtl 
+namespace mtl
 {
   template <typename T>
-  struct Collection<AMDiS::WorldVector<AMDiS::WorldVector<T> > >
+  struct Collection<AMDiS::WorldVector<AMDiS::WorldVector<T>>>
   {
     typedef T      value_type;
     typedef int    size_type;
   };
 
-  namespace ashape 
+  namespace ashape
   {
-    template <typename T> 
-    struct ashape_aux<AMDiS::WorldVector<AMDiS::WorldVector<T> > > 
-    { 
+    template <typename T>
+    struct ashape_aux<AMDiS::WorldVector<AMDiS::WorldVector<T>>>
+    {
       typedef mat<typename ashape<T>::type> type;  // nonscal
     };
-  } // end namespace ashape  
-  
+  } // end namespace ashape
+
   namespace traits
   {
     template <typename T>
-    struct category<AMDiS::WorldVector<AMDiS::WorldVector<T> > > 
+    struct category<AMDiS::WorldVector<AMDiS::WorldVector<T>>>
     {
-	typedef tag::dense2D type;
+      typedef tag::dense2D type;
     };
-    
+
     template <typename T>
-    struct is_row_major<AMDiS::WorldVector<AMDiS::WorldVector<T> > >
+    struct is_row_major<AMDiS::WorldVector<AMDiS::WorldVector<T>>>
       : boost::mpl::true_ {};
-      
+
   } // end namespace traits
-  
+
 } // end namespace mtl

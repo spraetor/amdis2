@@ -22,27 +22,27 @@
 // #include "nonlin/NonLinSolver.h"
 
 #ifdef HAVE_SEQ_PETSC
-  #include "solver/PetscSolver.h"
+#include "solver/PetscSolver.h"
 #endif
 
 #ifdef MTL_HAS_HYPRE
-  #include "solver/HypreSolver.h"
+#include "solver/HypreSolver.h"
 #endif
 
 #if defined HAVE_PARALLEL_PETSC || defined HAVE_SEQ_PETSC
-  #include "solver/PetscTypes.h"
+#include "solver/PetscTypes.h"
 #endif
 
-namespace AMDiS 
+namespace AMDiS
 {
   template<>
   void CreatorMap<LinearSolverInterface>::addDefaultCreators()
   {
-    LinearSolverCreator *creator;
+    LinearSolverCreator* creator;
 
     // creators for MTL4 krylov solvers
     // _________________________________________________________________________
-    
+
     creator = new CGSolver::Creator;
     addCreator("mtl_cg", creator);
 
@@ -71,11 +71,11 @@ namespace AMDiS
     addCreator("mtl_gmres", creator);
 
     creator = new GcrSolver::Creator;
-    addCreator("mtl_gcr", creator);    
+    addCreator("mtl_gcr", creator);
 
     creator = new FGMResSolver::Creator;
-    addCreator("mtl_fgmres", creator);   
-    
+    addCreator("mtl_fgmres", creator);
+
     creator = new IDRsSolver::Creator;
     addCreator("mtl_idr_s", creator);
 
@@ -91,12 +91,12 @@ namespace AMDiS
     addCreator("mtl_umfpack", creator);
     addCreator("mtl_direct", creator);
 #endif
-    
+
 #ifdef MTL_HAS_HYPRE
     creator = new HypreSolver::Creator;
     addCreator("mtl_hypre", creator);
-#endif 
-    
+#endif
+
     // creators for block krylov solvers
     // _________________________________________________________________________
 #if 0
@@ -106,20 +106,20 @@ namespace AMDiS
     creator = new B_CGSSolver::Creator;
     addCreator("bmtl_cgs", creator);
 
-//     creator = new B_BiCGSolver::Creator;
-//     addCreator("mtl_bicg", creator);
+    //     creator = new B_BiCGSolver::Creator;
+    //     addCreator("mtl_bicg", creator);
 
     creator = new B_BiCGStabSolver::Creator;
     addCreator("bmtl_bicgstab", creator);
 
-//     creator = new B_BiCGStab2Solver::Creator;
-//     addCreator("bmtl_bicgstab2", creator);      // MTL Error
+    //     creator = new B_BiCGStab2Solver::Creator;
+    //     addCreator("bmtl_bicgstab2", creator);      // MTL Error
 
-//     creator = new B_BiCGStabEllSolver::Creator;
-//     addCreator("bmtl_bicgstab_ell", creator);   // MTL Error
+    //     creator = new B_BiCGStabEllSolver::Creator;
+    //     addCreator("bmtl_bicgstab_ell", creator);   // MTL Error
 
-//     creator = new QMRSolver::Creator;
-//     addCreator("mtl_qmr", creator);
+    //     creator = new QMRSolver::Creator;
+    //     addCreator("mtl_qmr", creator);
 
     creator = new B_TFQMRSolver::Creator;
     addCreator("bmtl_tfqmr", creator);
@@ -128,13 +128,13 @@ namespace AMDiS
     addCreator("bmtl_gmres", creator);
 
     creator = new B_GcrSolver::Creator;
-    addCreator("bmtl_gcr", creator);    
+    addCreator("bmtl_gcr", creator);
 
     creator = new B_FGMResSolver::Creator;
-    addCreator("bmtl_fgmres", creator);   
-    
-//     creator = new B_IDRsSolver::Creator;
-//     addCreator("bmtl_idr_s", creator);     // MTL Error
+    addCreator("bmtl_fgmres", creator);
+
+    //     creator = new B_IDRsSolver::Creator;
+    //     addCreator("bmtl_idr_s", creator);     // MTL Error
 
     creator = new B_MinResSolver::Creator;
     addCreator("bmtl_minres", creator);
@@ -145,34 +145,35 @@ namespace AMDiS
 #endif
     // creators for PETSc solvers
     // _________________________________________________________________________
-    
+
 #if defined HAVE_SEQ_PETSC
     // sequential PETSc-Solver
     creator = new PetscSolver::Creator;
     addCreator("petsc_petsc", creator); // standard creator for petsc solver
     addCreator("petsc", creator);
-    
+
     LinearSolverCreator* creator2 = new PetscSolverNested::Creator;
     addCreator("bpetsc_petsc", creator2); // standard creator for petsc solver
     addCreator("bpetsc", creator2);
-        
+
     std::map<std::string,std::string>::iterator it;
     PetscParameters params;
     for (it = params.solverMap.begin();
-	 it!= params.solverMap.end();
-	 it++) {
-      CreatorMap< LinearSolverInterface >::addCreator("petsc_" + it->first, creator);
-      CreatorMap< LinearSolverInterface >::addCreator("bpetsc_" + it->first, creator2);
+         it!= params.solverMap.end();
+         it++)
+    {
+      CreatorMap<LinearSolverInterface>::addCreator("petsc_" + it->first, creator);
+      CreatorMap<LinearSolverInterface>::addCreator("bpetsc_" + it->first, creator2);
     }
 #endif
   }
 
 
   template<>
-  void CreatorMap<ITL_PreconditionerBase< MTLTypes::MTLMatrix, MTLTypes::MTLVector > >::addDefaultCreators()
+  void CreatorMap<ITL_PreconditionerBase<MTLTypes::MTLMatrix, MTLTypes::MTLVector>>::addDefaultCreators()
   {
-    using PreconditionCreator = CreatorInterfaceName<ITL_PreconditionerBase< MTLTypes::MTLMatrix, MTLTypes::MTLVector > >;
-    PreconditionCreator *creator;
+    using PreconditionCreator = CreatorInterfaceName<ITL_PreconditionerBase<MTLTypes::MTLMatrix, MTLTypes::MTLVector>>;
+    PreconditionCreator* creator;
 
     creator =  new DiagonalPreconditioner::Creator;
     addCreator("diag", creator);
@@ -197,7 +198,7 @@ namespace AMDiS
 
 #if 0
   template<>
-  void CreatorMap<ITL_PreconditionerBase<BlockMTLMatrix, MTLTypes::MTLVector> >::addDefaultCreators()
+  void CreatorMap<ITL_PreconditionerBase<BlockMTLMatrix, MTLTypes::MTLVector>>::addDefaultCreators()
   {
     addCreator("no", new BlockIdentityPreconditioner::Creator);
     addCreator("diag", new BlockDiagonalPreconditioner::Creator);
@@ -207,7 +208,7 @@ namespace AMDiS
 #if defined HAVE_SEQ_PETSC
   template<>
   void CreatorMap<PetscPreconditioner>::addDefaultCreators() { }
-  
+
   template<>
   void CreatorMap<PetscPreconditionerNested>::addDefaultCreators() { }
 #endif
@@ -215,7 +216,7 @@ namespace AMDiS
   template<>
   void CreatorMap<Estimator>::addDefaultCreators()
   {
-    EstimatorCreator *creator;
+    EstimatorCreator* creator;
 
     creator = new ResidualEstimator::Creator;
     addCreator("residual", creator);
@@ -231,10 +232,11 @@ namespace AMDiS
   template<>
   void CreatorMap<BasisFunction>::addDefaultCreators()
   {
-    BasisFunctionCreator *creator;
+    BasisFunctionCreator* creator;
 
     // Lagrange-functions up to order 4
-    for (int i = 1; i <= MAX_DEGREE; i++) {
+    for (int i = 1; i <= MAX_DEGREE; i++)
+    {
       creator = new Lagrange::Creator(i);
       addCreator("P" + std::to_string(i), creator);
       addCreator("Lagrange" + std::to_string(i), creator);
@@ -250,7 +252,7 @@ namespace AMDiS
   template<>
   void CreatorMap<ElementData>::addDefaultCreators()
   {
-    CreatorInterface<ElementData> *creator;
+    CreatorInterface<ElementData>* creator;
 
     creator = new LeafDataEstimatable::Creator;
     addCreator("LeafDataEstimatable", creator);

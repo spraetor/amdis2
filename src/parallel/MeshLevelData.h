@@ -5,7 +5,7 @@
  * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
  * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
  *
- * Authors: 
+ * Authors:
  * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
  *
  * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
@@ -15,7 +15,7 @@
  * This file is part of AMDiS
  *
  * See also license.opensource.txt in the distribution.
- * 
+ *
  ******************************************************************************/
 
 
@@ -32,98 +32,102 @@
 #include <mpi.h>
 #include "Global.h"
 
-namespace AMDiS { namespace Parallel {
-
-  class MeshLevelData 
+namespace AMDiS
+{
+  namespace Parallel
   {
-  public:
-    MeshLevelData();
 
-    void init(std::set<int> &neighbourRanks);
-
-    void addLevel(std::set<int> &ranksInDomain, int domainId);
-
-    void addLevelMode1();
-
-    // Writes all data of this object to an output stream.
-    void serialize(std::ostream &out);
-
-    // Reads the object data from an input stream.
-    void deserialize(std::istream &in);
-
-    void print();
-
-    std::set<int>& getLevelRanks(int level)
+    class MeshLevelData
     {
-      TEST_EXIT_DBG(level < nLevel)("Should not happen!\n");
-      
-      return levelRanks[level];
-    }
+    public:
+      MeshLevelData();
 
-    std::set<int>& getLevelNeighbours(int level)
-    {      
-      TEST_EXIT_DBG(level < nLevel)("Should not happen!\n");
-      
-      return levelNeighbours[level];
-    } 
+      void init(std::set<int>& neighbourRanks);
 
-    inline int getNumberOfLevels()
-    {
-      return nLevel;
-    }
+      void addLevel(std::set<int>& ranksInDomain, int domainId);
 
-    MPI::Intracomm& getMpiComm(int level)
-    {
-      FUNCNAME("MeshLevelData::getMpiComm()");
-      
-      TEST_EXIT_DBG(level < nLevel)
-	("Asked for level %d, but defined only for %d levels!\n", level, nLevel);
-      
-      return mpiComms[level];
-    }
-    
-    MPI::Group& getMpiGroup(int level)
-    {
-      TEST_EXIT_DBG(level < nLevel)("Should not happen!\n");
-      
-      return mpiGroups[level];
-    }
+      void addLevelMode1();
 
-    int getLevelId(int level, int rank) 
-    {
-      FUNCNAME("MeshLevelData::getLevelId()");
+      // Writes all data of this object to an output stream.
+      void serialize(std::ostream& out);
 
-      TEST_EXIT_DBG(level < nLevel)
-	("Wrong level number: %d  nLevel = %d\n", level, nLevel);
+      // Reads the object data from an input stream.
+      void deserialize(std::istream& in);
 
-      return mpiComms[level].Get_rank();				    
-    }
+      void print();
 
-    int mapRank(int fromRank, int fromLevel, int toLevel);
+      std::set<int>& getLevelRanks(int level)
+      {
+        TEST_EXIT_DBG(level < nLevel)("Should not happen!\n");
 
-    bool rankInSubdomain(int rank, int level)
-    {
-      TEST_EXIT_DBG(level < nLevel)("Should not happen!\n");
+        return levelRanks[level];
+      }
 
-      return static_cast<bool>(levelRanks[level].count(rank));
-    }
+      std::set<int>& getLevelNeighbours(int level)
+      {
+        TEST_EXIT_DBG(level < nLevel)("Should not happen!\n");
 
-    bool isLevelBoundary(int rank, int level);
+        return levelNeighbours[level];
+      }
 
-    bool rankInLevel(int rank, int level);
+      inline int getNumberOfLevels()
+      {
+        return nLevel;
+      }
 
-  protected:
-    int nLevel;
+      MPI::Intracomm& getMpiComm(int level)
+      {
+        FUNCNAME("MeshLevelData::getMpiComm()");
 
-    std::vector<std::set<int> > levelRanks;
-    
-    std::vector<std::set<int> > levelNeighbours;
+        TEST_EXIT_DBG(level < nLevel)
+        ("Asked for level %d, but defined only for %d levels!\n", level, nLevel);
 
-    std::vector<MPI::Intracomm> mpiComms;
+        return mpiComms[level];
+      }
 
-    std::vector<MPI::Group> mpiGroups;
-  };
+      MPI::Group& getMpiGroup(int level)
+      {
+        TEST_EXIT_DBG(level < nLevel)("Should not happen!\n");
 
-} }
+        return mpiGroups[level];
+      }
+
+      int getLevelId(int level, int rank)
+      {
+        FUNCNAME("MeshLevelData::getLevelId()");
+
+        TEST_EXIT_DBG(level < nLevel)
+        ("Wrong level number: %d  nLevel = %d\n", level, nLevel);
+
+        return mpiComms[level].Get_rank();
+      }
+
+      int mapRank(int fromRank, int fromLevel, int toLevel);
+
+      bool rankInSubdomain(int rank, int level)
+      {
+        TEST_EXIT_DBG(level < nLevel)("Should not happen!\n");
+
+        return static_cast<bool>(levelRanks[level].count(rank));
+      }
+
+      bool isLevelBoundary(int rank, int level);
+
+      bool rankInLevel(int rank, int level);
+
+    protected:
+      int nLevel;
+
+      std::vector<std::set<int>> levelRanks;
+
+      std::vector<std::set<int>> levelNeighbours;
+
+      std::vector<MPI::Intracomm> mpiComms;
+
+      std::vector<MPI::Group> mpiGroups;
+    };
+
+  }
+}
 
 #endif

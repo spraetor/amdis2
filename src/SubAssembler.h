@@ -11,47 +11,47 @@
 #include "FixVec.h"
 #include "Flag.h"
 
-namespace AMDiS 
+namespace AMDiS
 {
   /**
    * \ingroup Assembler
-   * 
+   *
    * \brief
-   * Base class for SecondOrderAssembler, FirstOrderAssembler, 
-   * ZeroOrderAssembler. The task of a SubAssembler is to assemble a list of 
-   * terms of a special order and add their contributions to a DOFMatrix or a 
-   * DOFVector. An Assembler can consist of up to four SubAssemblers: one 
-   * SecondOrderAssembler for second order terms, one ZeroOrderAssembler for 
+   * Base class for SecondOrderAssembler, FirstOrderAssembler,
+   * ZeroOrderAssembler. The task of a SubAssembler is to assemble a list of
+   * terms of a special order and add their contributions to a DOFMatrix or a
+   * DOFVector. An Assembler can consist of up to four SubAssemblers: one
+   * SecondOrderAssembler for second order terms, one ZeroOrderAssembler for
    * terms of order zero, and two FirstOrderAssemblers. One for terms with
-   * derivatives of the basis functions connected to to row DOFs and one for 
+   * derivatives of the basis functions connected to to row DOFs and one for
    * those connected to the column DOFs.
    */
   class SubAssembler
   {
   public:
-    /// Creates a SubAssembler belonging to assembler for the terms of given 
-    /// order of Operator op. If order is equal to one, type spezifies what kind 
+    /// Creates a SubAssembler belonging to assembler for the terms of given
+    /// order of Operator op. If order is equal to one, type spezifies what kind
     /// of FirstOrderType are to assemble. During construction of a SubAssembler
     /// the needs and properties of the terms are considered.
-    SubAssembler(Operator *op,
-            		 Assembler *assembler,
-            		 Quadrature *quadrat,
-            		 int order, 
-            		 bool optimized,
-            		 FirstOrderType type = GRD_PHI);
+    SubAssembler(Operator* op,
+                 Assembler* assembler,
+                 Quadrature* quadrat,
+                 int order,
+                 bool optimized,
+                 FirstOrderType type = GRD_PHI);
 
     /// Calculates the element matrix for elInfo and adds it to mat. Memory for
     /// mat must be provided by the caller.
-    void calculateElementMatrix(const ElInfo *elInfo,
-				                        ElementMatrix& mat)
+    void calculateElementMatrix(const ElInfo* elInfo,
+                                ElementMatrix& mat)
     {
       calculateElementMatrixImpl(elInfo, mat);
     }
 
     /// Calculates the element vector for elInfo and adds it to vec. Memory for
     /// vec must be provided by the caller.
-    void calculateElementVector(const ElInfo *elInfo,
-			                          DenseVector<double>& vec)
+    void calculateElementVector(const ElInfo* elInfo,
+                                DenseVector<double>& vec)
     {
       calculateElementVectorImpl(elInfo, vec);
     }
@@ -59,17 +59,17 @@ namespace AMDiS
     /// Called once for each ElInfo when \ref calculateElementMatrix() or
     /// \ref calculateElementVector() is called for the first time for this
     /// Element.
-    void initElement(const ElInfo *smallElInfo,
-            		     const ElInfo *largeElInfo = NULL,
-            		     Quadrature *quad = NULL)
+    void initElement(const ElInfo* smallElInfo,
+                     const ElInfo* largeElInfo = NULL,
+                     Quadrature* quad = NULL)
     {
       initImpl(smallElInfo, largeElInfo, quad);
     }
-    
+
     /// Returns \ref terms
     std::vector<OperatorTerm*>* getTerms()
-    { 
-      return &terms; 
+    {
+      return &terms;
     }
 
     /// Returns \ref quadrature.
@@ -79,15 +79,15 @@ namespace AMDiS
     }
 
     /// Returns \ref psiFast.
-    const FastQuadrature* getPsiFast() const 
-    { 
-      return psiFast; 
+    const FastQuadrature* getPsiFast() const
+    {
+      return psiFast;
     }
 
     // Returns \ref phiFast.
-    const FastQuadrature* getPhiFast() const 
-    { 
-      return phiFast; 
+    const FastQuadrature* getPhiFast() const
+    {
+      return phiFast;
     }
 
     /// Returns \ref name.
@@ -97,75 +97,75 @@ namespace AMDiS
     }
 
     /// Sets \ref quadrature to q.
-    void setQuadrature(Quadrature* q) 
+    void setQuadrature(Quadrature* q)
     {
       quadrature = q;
     }
-  
+
     /// Creates a vector with the world coordinates of the quadrature points
-    /// of \ref quadrature on the element of elInfo. 
+    /// of \ref quadrature on the element of elInfo.
     /// Used by \ref OperatorTerm::initElement().
-    void getCoordsAtQPs(const ElInfo* elInfo, 
-                  			Quadrature *quad,
-                  			DenseVector<WorldVector<double> >& coordsAtQPs);
+    void getCoordsAtQPs(const ElInfo* elInfo,
+                        Quadrature* quad,
+                        DenseVector<WorldVector<double>>& coordsAtQPs);
 
     /// DOFVector dv evaluated at quadrature points.
     /// Used by \ref OperatorTerm::initElement().
     template <class T>
-    void getVectorAtQPs(DOFVectorBase<T> const* dv, 
-                  			const ElInfo* elInfo,
-                  			Quadrature *quad,
-                  			DenseVector<T>& vecAtQPs);
-    
+    void getVectorAtQPs(DOFVectorBase<T> const* dv,
+                        const ElInfo* elInfo,
+                        Quadrature* quad,
+                        DenseVector<T>& vecAtQPs);
+
     /// Gradients of DOFVector dv evaluated at quadrature points.
     /// Used by \ref OperatorTerm::initElement().
     template <class T>
     void getGradientsAtQPs(DOFVectorBase<T> const* dv,
-                  			   const ElInfo* elInfo,
-                  			   Quadrature *quad,
-                  			   DenseVector<Gradient_t<T>>& grdAtQPs);
+                           const ElInfo* elInfo,
+                           Quadrature* quad,
+                           DenseVector<Gradient_t<T>>& grdAtQPs);
 
     /// The comp'th component of the derivative of DOFVector dv evaluated at
     /// quadrature points. Used by \ref OperatorTerm::initElement().
-    /// Attention: not caching at the moment! Using cache if gradients for read 
+    /// Attention: not caching at the moment! Using cache if gradients for read
     /// but not for write.
     template <class T>
     void getDerivativeAtQPs(DOFVectorBase<T> const* dv,
-                  			    const ElInfo* elInfo,
-                  			    Quadrature *quad,
-                  			    int comp,
-                  			    DenseVector<T>& grdAtQPs);
-    
+                            const ElInfo* elInfo,
+                            Quadrature* quad,
+                            int comp,
+                            DenseVector<T>& grdAtQPs);
+
   private:
     // must be implemented by derived class
-    virtual void calculateElementMatrixImpl(const ElInfo *elInfo,
-				                                    ElementMatrix& mat) = 0;
+    virtual void calculateElementMatrixImpl(const ElInfo* elInfo,
+                                            ElementMatrix& mat) = 0;
 
     // must be implemented by derived class.
-    virtual void calculateElementVectorImpl(const ElInfo *elInfo,
-					                                  DenseVector<double>& vec) = 0;
+    virtual void calculateElementVectorImpl(const ElInfo* elInfo,
+                                            DenseVector<double>& vec) = 0;
 
     // calls initElement for all OperatorTerms
-    virtual void initImpl(const ElInfo *smallElInfo, 
-                  			  const ElInfo *largeElInfo,
-                  			  Quadrature *quad);
-    
-    
+    virtual void initImpl(const ElInfo* smallElInfo,
+                          const ElInfo* largeElInfo,
+                          Quadrature* quad);
+
+
   protected:
     /// Updates \ref psiFast and \ref phiFast.
-    FastQuadrature *updateFastQuadrature(FastQuadrature *quadFast,
-                              					 const BasisFunction *psi,
-                              					 Flag updateFlag);
-  
+    FastQuadrature* updateFastQuadrature(FastQuadrature* quadFast,
+                                         const BasisFunction* psi,
+                                         Flag updateFlag);
+
   protected:
     /// Problem dimension
     int dim;
 
     /// Row FiniteElemSpace.
-    const FiniteElemSpace *rowFeSpace;
+    const FiniteElemSpace* rowFeSpace;
 
     /// Column FiniteElemSpace.
-    const FiniteElemSpace *colFeSpace;
+    const FiniteElemSpace* colFeSpace;
 
     /// Number of rows of the element matrix and length of the element
     /// vector. Is equal to the number of row basis functions
@@ -177,41 +177,42 @@ namespace AMDiS
 
     // TODO: try to remove boost::any
     /// Used for \ref getVectorAtQPs() and \ref getGradientsAtQPs().
-    struct ValuesAtQPs {
+    struct ValuesAtQPs
+    {
       ValuesAtQPs()
         : valid(false), quad(NULL)
       {}
       ValuesAtQPs(boost::any values_, bool valid_, Quadrature* quad_=NULL)
         : values(values_), valid(valid_), quad(quad_)
       {}
-      
+
       boost::any values; // used for DenseVector<T>
       bool valid;
       Quadrature* quad;
     };
 
-    std::map<const DOFIndexedBase*, ValuesAtQPs* > cachedValuesAtQPs;
-    std::map<const DOFIndexedBase*, ValuesAtQPs* > cachedGradientsAtQPs;
-    
-    /// Set and updated by \ref initElement() for each ElInfo. 
+    std::map<const DOFIndexedBase*, ValuesAtQPs*> cachedValuesAtQPs;
+    std::map<const DOFIndexedBase*, ValuesAtQPs*> cachedGradientsAtQPs;
+
+    /// Set and updated by \ref initElement() for each ElInfo.
     /// coordsAtQPs[i] points to the coordinates of the i-th quadrature point.
-    DenseVector<WorldVector<double> > cacheCoordsAtQPs;
+    DenseVector<WorldVector<double>> cacheCoordsAtQPs;
 
     /// Used for \ref getCoordsAtQPs().
     bool coordsValid;
 
-    /// Used for \ref getCoordsAtQP(). Stores the number of allocated 
+    /// Used for \ref getCoordsAtQP(). Stores the number of allocated
     /// WorldVectors.
     int coordsNumAllocated;
 
     /// Quadrature object to be used for assembling.
-    Quadrature *quadrature;
+    Quadrature* quadrature;
 
     /// FastQuadrature for row basis functions
-    FastQuadrature *psiFast;
+    FastQuadrature* psiFast;
 
     /// FastQuadrature for column basis functions
-    FastQuadrature *phiFast;
+    FastQuadrature* phiFast;
 
     /// Flag that specifies whether the element matrix is symmetric.
     bool symmetric;
@@ -225,11 +226,9 @@ namespace AMDiS
     ///
     bool firstCall;
 
-    /// Name of the assembler. Is used to print information about 
+    /// Name of the assembler. Is used to print information about
     /// used assembler.
     std::string name;
-
-    friend class Assembler;
   };
 
 } // end namespace AMDiS

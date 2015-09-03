@@ -9,11 +9,12 @@
 #include "Log.h"
 #include "Math.h"
 
-namespace AMDiS {
+namespace AMDiS
+{
 
   /**
    * \ingroup Adaption
-   * 
+   *
    * \brief
    * Holds adapt parameters and infos about the problem. Base class
    * for AdaptInfoScal and AdaptInfoVec.
@@ -22,10 +23,11 @@ namespace AMDiS {
   {
   protected:
     /** \brief
-     * Stores adapt infos for a scalar problem or for one component of a 
+     * Stores adapt infos for a scalar problem or for one component of a
      * vector valued problem.
      */
-    class ScalContent {
+    class ScalContent
+    {
     public:
       /// Constructor.
       ScalContent(std::string prefix);
@@ -41,7 +43,7 @@ namespace AMDiS {
 
       /// Maximum of all time error estimates
       double est_t_max;
-      
+
       /// factors to combine max and integral time estimate
       double fac_max, fac_sum;
 
@@ -50,7 +52,7 @@ namespace AMDiS {
 
       /// Time tolerance.
       double timeTolerance;
-      
+
       /// Relative time tolerance
       double timeRelativeTolerance;
 
@@ -64,7 +66,7 @@ namespace AMDiS {
       int refinementAllowed;
 
       /** \brief
-       * parameter to tell the marking strategy how many bisections should be 
+       * parameter to tell the marking strategy how many bisections should be
        * performed when an element is marked for refinement; usually the value is
        * 1 or DIM
        */
@@ -72,10 +74,10 @@ namespace AMDiS {
 
       /** \brief
        * parameter to tell the marking strategy how many bisections should
-       * be undone when an element is marked for coarsening; usually the value is 
+       * be undone when an element is marked for coarsening; usually the value is
        * 1 or DIM
-       */                          
-      int coarseBisections;    
+       */
+      int coarseBisections;
     };
 
   public:
@@ -83,7 +85,7 @@ namespace AMDiS {
     AdaptInfo(std::string name_, int size = 1);
 
     /// Destructor.
-    virtual ~AdaptInfo() 
+    virtual ~AdaptInfo()
     {
       for (size_t i = 0;  i < scalContents.size(); i++)
         delete scalContents[i];
@@ -95,7 +97,8 @@ namespace AMDiS {
     /// Returns whether space tolerance is reached.
     virtual bool spaceToleranceReached() const
     {
-      for (size_t i = 0; i < scalContents.size(); i++) {
+      for (size_t i = 0; i < scalContents.size(); i++)
+      {
         if (!(scalContents[i]->est_sum < scalContents[i]->spaceTolerance))
           return false;
       }
@@ -140,13 +143,13 @@ namespace AMDiS {
 
       return true;
     }
-    /// Returns the time estimation as a combination 
-    /// of maximal and integral time error 
-    double getTimeEstCombined(unsigned i) const 
-    { 
-      return 
-      	scalContents[i]->est_t_max * scalContents[i]->fac_max +
-      	scalContents[i]->est_t_sum * scalContents[i]->fac_sum; 
+    /// Returns the time estimation as a combination
+    /// of maximal and integral time error
+    double getTimeEstCombined(unsigned i) const
+    {
+      return
+        scalContents[i]->est_t_max * scalContents[i]->fac_max +
+        scalContents[i]->est_t_sum * scalContents[i]->fac_sum;
     }
 
 
@@ -155,106 +158,106 @@ namespace AMDiS {
 
     /// Returns \ref spaceIteration.
     int getSpaceIteration() const
-    { 
-      return spaceIteration; 
+    {
+      return spaceIteration;
     }
 
     /// Sets \ref spaceIteration.
-    void setSpaceIteration(int it) 
-    { 
-      spaceIteration = it; 
+    void setSpaceIteration(int it)
+    {
+      spaceIteration = it;
     }
-  
+
     /// Returns \ref maxSpaceIteration.
     int getMaxSpaceIteration() const
-    { 
+    {
       return maxSpaceIteration;
     }
 
     /// Sets \ref maxSpaceIteration.
-    void setMaxSpaceIteration(int it) 
-    { 
-      maxSpaceIteration = it; 
+    void setMaxSpaceIteration(int it)
+    {
+      maxSpaceIteration = it;
     }
-  
+
     /// Increments \ref spaceIteration by 1;
-    void incSpaceIteration() 
-    { 
-      spaceIteration++; 
+    void incSpaceIteration()
+    {
+      spaceIteration++;
     }
 
     /// Sets \ref timestepIteration.
-    void setTimestepIteration(int it) 
-    { 
-      timestepIteration = it; 
+    void setTimestepIteration(int it)
+    {
+      timestepIteration = it;
     }
-  
+
     /// Returns \ref timestepIteration.
     int getTimestepIteration() const
-    { 
-      return timestepIteration; 
+    {
+      return timestepIteration;
     }
 
     /// Increments \ref timestepIteration by 1;
-    void incTimestepIteration() 
-    { 
-      timestepIteration++; 
+    void incTimestepIteration()
+    {
+      timestepIteration++;
     }
 
     /// Returns \ref maxTimestepIteration.
     int getMaxTimestepIteration() const
-    { 
-      return maxTimestepIteration; 
+    {
+      return maxTimestepIteration;
     }
 
     /// Sets \ref maxTimestepIteration.
-    void setMaxTimestepIteration(int it) 
-    { 
-      maxTimestepIteration = it; 
+    void setMaxTimestepIteration(int it)
+    {
+      maxTimestepIteration = it;
     }
-  
+
     /// Sets \ref timeIteration.
-    void setTimeIteration(int it) 
-    { 
-      timeIteration = it; 
+    void setTimeIteration(int it)
+    {
+      timeIteration = it;
     }
-  
+
     /// Returns \ref timeIteration.
     int getTimeIteration() const
-    { 
-      return timeIteration; 
+    {
+      return timeIteration;
     }
 
     /// Increments \ref timesIteration by 1;
-    void incTimeIteration() 
-    { 
-      timeIteration++; 
+    void incTimeIteration()
+    {
+      timeIteration++;
     }
 
     /// Returns \ref maxTimeIteration.
     int getMaxTimeIteration() const
-    { 
-      return maxTimeIteration; 
+    {
+      return maxTimeIteration;
     }
 
     /// Sets \ref maxTimeIteration.
-    void setMaxTimeIteration(int it) 
-    { 
-      maxTimeIteration = it; 
+    void setMaxTimeIteration(int it)
+    {
+      maxTimeIteration = it;
     }
-  
+
     /// Returns \ref timestepNumber.
     int getTimestepNumber() const
-    { 
-      return timestepNumber; 
+    {
+      return timestepNumber;
     }
 
     /// Sets \ref timestepNumber.
-    void setTimestepNumber(int num) 
+    void setTimestepNumber(int num)
     {
       timestepNumber = std::min(nTimesteps, num);
     }
-    
+
     /// Returns \ref nTimesteps.
     int getNumberOfTimesteps() const
     {
@@ -262,85 +265,85 @@ namespace AMDiS {
     }
 
     /// Sets \ref nTimesteps.
-    void setNumberOfTimesteps(int num) 
+    void setNumberOfTimesteps(int num)
     {
       nTimesteps = std::max(0, num);
     }
 
     /// Increments \ref timestepNumber by 1;
-    void incTimestepNumber() 
-    { 
-      timestepNumber++; 
+    void incTimestepNumber()
+    {
+      timestepNumber++;
     }
 
     /// Sets \ref est_sum.
-    void setEstSum(double e, int index) 
+    void setEstSum(double e, int index)
     {
       scalContents[index]->est_sum = e;
     }
 
     /// Sets \ref est_max.
-    void setEstMax(double e, int index) 
+    void setEstMax(double e, int index)
     {
       scalContents[index]->est_max = e;
     }
 
     /// Sets \ref est_max.
-    void setTimeEstMax(double e, int index) 
+    void setTimeEstMax(double e, int index)
     {
       scalContents[index]->est_t_max = e;
     }
 
     /// Sets \ref est_t_sum.
-    void setTimeEstSum(double e, int index) 
+    void setTimeEstSum(double e, int index)
     {
       scalContents[index]->est_t_sum = e;
     }
 
     /// Returns \ref est_sum.
     double getEstSum(int index) const
-    { 
+    {
       FUNCNAME_DBG("AdaptInfo::getEstSum()");
       TEST_EXIT_DBG(static_cast<size_t>(index) < scalContents.size())
-        ("Wrong index for adaptInfo!\n");
+      ("Wrong index for adaptInfo!\n");
 
-      return scalContents[index]->est_sum; 
+      return scalContents[index]->est_sum;
     }
 
     /// Returns \ref est_t_sum.
     double getEstTSum(int index) const
-    { 
-      return scalContents[index]->est_t_sum; 
+    {
+      return scalContents[index]->est_t_sum;
     }
 
     /// Returns \ref est_max.
     double getEstMax(int index) const
-    { 
+    {
       FUNCNAME_DBG("AdaptInfo::getEstSum()");
       TEST_EXIT_DBG(static_cast<size_t>(index) < scalContents.size())
-        ("Wrong index for adaptInfo!\n");
+      ("Wrong index for adaptInfo!\n");
 
-      return scalContents[index]->est_max; 
+      return scalContents[index]->est_max;
     }
 
     /// Returns \ref est_max.
     double getTimeEstMax(int index) const
-    { 
-      return scalContents[index]->est_t_max; 
+    {
+      return scalContents[index]->est_t_max;
     }
 
     /// Returns \ref est_t_sum.
     double getTimeEstSum(int index) const
-    { 
-      return scalContents[index]->est_t_sum; 
+    {
+      return scalContents[index]->est_t_sum;
     }
-    
+
     /// Returns \ref est_t the estimated overall time error
     double getTimeEst() const
     {
       return est_t;
     }
-    
+
     void setTimeEst(double value)
     {
       est_t = value;
@@ -348,35 +351,35 @@ namespace AMDiS {
 
     /// Returns \ref spaceTolerance.
     double getSpaceTolerance(int index) const
-    { 
-      return scalContents[index]->spaceTolerance; 
-    }  
+    {
+      return scalContents[index]->spaceTolerance;
+    }
 
     /// Sets \ref spaceTolerance.
-    void setSpaceTolerance(int index, double tol) 
-    { 
-      scalContents[index]->spaceTolerance = tol; 
-    }  
+    void setSpaceTolerance(int index, double tol)
+    {
+      scalContents[index]->spaceTolerance = tol;
+    }
 
     /// Returns \ref timeTolerance.
     double getTimeTolerance(int index) const
-    { 
-      return scalContents[index]->timeTolerance; 
-    }  
+    {
+      return scalContents[index]->timeTolerance;
+    }
 
     /// Returns \ref timeRelativeTolerance.
     double getTimeRelativeTolerance(int index) const
-    { 
-      return scalContents[index]->timeRelativeTolerance; 
-    }  
+    {
+      return scalContents[index]->timeRelativeTolerance;
+    }
 
     /// Sets \ref time
-    double setTime(double t) 
-    { 
-      time = t; 
-      if (time > endTime) 
+    double setTime(double t)
+    {
+      time = t;
+      if (time > endTime)
         time = endTime;
-      if (time < startTime) 
+      if (time < startTime)
         time = startTime;
 
       return time;
@@ -384,50 +387,50 @@ namespace AMDiS {
 
     /// Gets \ref time
     double getTime() const
-    { 
-      return time; 
-    }  
+    {
+      return time;
+    }
 
     /// Gets \ref &time
     double* getTimePtr()
-    { 
-      return &time; 
-    }  
+    {
+      return &time;
+    }
 
     /// Sets \ref timestep
-    double setTimestep(double t) 
-    { 
-      timestep = t; 
+    double setTimestep(double t)
+    {
+      timestep = t;
       if (timestep > maxTimestep)
         timestep = maxTimestep;
       if (timestep < minTimestep)
         timestep = minTimestep;
       if (time + timestep > endTime)
         timestep = endTime - time;
-      
+
       return timestep;
     }
     /// Gets \ref timestep
     double getTimestep() const
-    { 
-      return timestep; 
+    {
+      return timestep;
     }
 
     void setLastProcessedTimestep(double t)
     {
       lastProcessedTimestep = t;
-    } 
+    }
 
     double getLastProcessedTimestep() const
     {
       return lastProcessedTimestep;
-    } 
+    }
 
     /// Returns true, if the end time is reached and no more timestep
     /// computations must be done.
     bool reachedEndTime() const
     {
-      if (nTimesteps > 0) 
+      if (nTimesteps > 0)
         return !(timestepNumber < nTimesteps);
 
       return !(std::abs(time - endTime) > DBL_TOL);
@@ -435,64 +438,64 @@ namespace AMDiS {
 
 
     /// Sets \ref minTimestep
-    void setMinTimestep(double t) 
-    { 
-      minTimestep = t; 
+    void setMinTimestep(double t)
+    {
+      minTimestep = t;
     }
 
     /// Gets \ref minTimestep
     double getMinTimestep() const
-    { 
-      return minTimestep; 
-    }  
+    {
+      return minTimestep;
+    }
 
     /// Sets \ref maxTimestep
-    void setMaxTimestep(double t) 
-    { 
-      maxTimestep = t; 
+    void setMaxTimestep(double t)
+    {
+      maxTimestep = t;
     }
 
     /// Gets \ref maxTimestep
     double getMaxTimestep() const
-    { 
-      return maxTimestep; 
-    }  
-    
+    {
+      return maxTimestep;
+    }
+
     /// Gets \ref &timestep
     double* getTimestepPtr()
-    { 
-      return &timestep; 
-    }  
+    {
+      return &timestep;
+    }
 
     /// Sets \ref startTime = time
-    void setStartTime(double time) 
-    { 
-      startTime = time; 
+    void setStartTime(double time)
+    {
+      startTime = time;
     }
 
     /// Sets \ref endTime = time
-    void setEndTime(double time) 
-    { 
-      endTime = time; 
+    void setEndTime(double time)
+    {
+      endTime = time;
     }
 
     /// Returns \ref startTime
     double getStartTime() const
-    { 
-      return startTime; 
+    {
+      return startTime;
     }
 
     /// Returns \ref endTime
     double getEndTime() const
-    { 
-      return endTime; 
+    {
+      return endTime;
     }
 
     /// Returns \ref timeErrLow.
     double getTimeErrLow(int index) const
-    { 
-      return scalContents[index]->timeErrLow; 
-    }  
+    {
+      return scalContents[index]->timeErrLow;
+    }
 
     /// Returns whether coarsening is allowed or not.
     bool isCoarseningAllowed(int index) const
@@ -507,32 +510,32 @@ namespace AMDiS {
     }
 
     ///
-    void allowRefinement(bool allow, int index) 
+    void allowRefinement(bool allow, int index)
     {
       scalContents[index]->refinementAllowed = allow;
     }
 
     ///
-    void allowCoarsening(bool allow, int index) 
+    void allowCoarsening(bool allow, int index)
     {
       scalContents[index]->coarsenAllowed = allow;
     }
 
     /// Returns \ref refineBisections
-    int getRefineBisections(int index) const 
+    int getRefineBisections(int index) const
     {
       return scalContents[index]->refineBisections;
     }
 
     /// Returns \ref coarseBisections
-    int getCoarseBisections(int index) const 
+    int getCoarseBisections(int index) const
     {
       return scalContents[index]->coarseBisections;
-    }    
+    }
 
     int getSize() const
-    { 
-      return static_cast<int>(scalContents.size()); 
+    {
+      return static_cast<int>(scalContents.size());
     }
 
     // TODO: remove from AdaptInfo
@@ -541,51 +544,51 @@ namespace AMDiS {
       return rosenbrockMode;
     }
 
-    void setSolverIterations(int it) 
+    void setSolverIterations(int it)
     {
       solverIterations = it;
     }
-  
+
     int getSolverIterations() const
     {
       return solverIterations;
     }
-  
-    void setMaxSolverIterations(int it) 
+
+    void setMaxSolverIterations(int it)
     {
       maxSolverIterations = it;
     }
-  
+
     int getMaxSolverIterations() const
     {
       return maxSolverIterations;
     }
-  
-    void setSolverTolerance(double tol) 
+
+    void setSolverTolerance(double tol)
     {
       solverTolerance = tol;
     }
-  
+
     double getSolverTolerance() const
     {
       return solverTolerance;
     }
-  
-    void setSolverResidual(double res) 
+
+    void setSolverResidual(double res)
     {
       solverResidual = res;
     }
-  
+
     double getSolverResidual() const
     {
       return solverResidual;
     }
-  
-    void setGlobalTimeTolerance(double tol) 
+
+    void setGlobalTimeTolerance(double tol)
     {
       globalTimeTolerance = tol;
     }
-  
+
     double getGlobalTimeTolerance() const
     {
       return globalTimeTolerance;
@@ -605,8 +608,8 @@ namespace AMDiS {
      * any check. Is used by the parareal algorithm.
      */
     void resetTimeValues(double newTimeStep,
-                  			 double newStartTime,
-                  			 double newEndTime)
+                         double newStartTime,
+                         double newEndTime)
     {
       time = newStartTime;
       startTime = newStartTime;
@@ -623,7 +626,7 @@ namespace AMDiS {
     int spaceIteration;
 
     /** \brief
-     * maximal allowed number of iterations of the adaptive procedure; if 
+     * maximal allowed number of iterations of the adaptive procedure; if
      * maxIteration <= 0, no iteration bound is used
      */
     int maxSpaceIteration;
@@ -660,7 +663,7 @@ namespace AMDiS {
 
     /// Maximal step size
     double maxTimestep;
-    
+
     /// Number of current time step
     int timestepNumber;
 
@@ -670,7 +673,7 @@ namespace AMDiS {
      * fixed timestep.
      */
     int nTimesteps;
-  
+
     /// number of iterations needed of linear or nonlinear solver
     int solverIterations;
 
@@ -682,7 +685,7 @@ namespace AMDiS {
 
     ///
     double solverResidual;
-    
+
     /// tolerance for the overall time error
     double globalTimeTolerance;
 
@@ -694,7 +697,7 @@ namespace AMDiS {
 
     /// Is true, if the time adaption is controlled by a Rosenbrock Method.
     bool rosenbrockMode;
-    
+
     /// overall time error estimate
     double est_t;
   };

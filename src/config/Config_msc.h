@@ -34,15 +34,15 @@ typedef __declspec(align(CACHE_LINE)) size_t aligned_size_t;
 #if __cplusplus > 199711L
 
 #if MSC_VERSION >= 1800
-  #define HAS_VARIADIC_TEMPLATES 1
+#define HAS_VARIADIC_TEMPLATES 1
 #endif
 
 #if MSC_VERSION >= 1800
-  #define HAS_ALIAS_TEMPLATES 1
+#define HAS_ALIAS_TEMPLATES 1
 #endif
 
 #if MSC_VERSION >= 1600
-  #define HAS_DECLTYPE 1
+#define HAS_DECLTYPE 1
 #endif
 
 // #if MSC_VERSION >= 2000 (?)
@@ -50,27 +50,27 @@ typedef __declspec(align(CACHE_LINE)) size_t aligned_size_t;
 // #endif
 
 #if MSC_VERSION >= 1800
-  #define HAS_DELEGATING_CONSTRUCTORS 1
+#define HAS_DELEGATING_CONSTRUCTORS 1
 #endif
 
 #if MSC_VERSION >= 1700
-  #define HAS_RANGE_BASED_FOR 1
+#define HAS_RANGE_BASED_FOR 1
 #endif
 
 #if MSC_VERSION >= 1800
-  #define HAS_INITIALIZER_LISTS 1
+#define HAS_INITIALIZER_LISTS 1
 #endif
 
 #if MSC_VERSION >= 1700
-  #define HAS_OVERRIDE 1
+#define HAS_OVERRIDE 1
 #endif
 
 #if MSC_VERSION >= 1700
-  #define HAS_TYPED_ENUMS 1
+#define HAS_TYPED_ENUMS 1
 #endif
 
 #if MSC_VERSION >= 1600
-  #define HAS_RVALUE_REFERENCES 1
+#define HAS_RVALUE_REFERENCES 1
 #endif
 
 #endif
