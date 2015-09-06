@@ -12,10 +12,8 @@
 #include <boost/math/special_functions/pow.hpp>
 
 // AMDiS headers
-#include "traits/types.hpp"
-#include "traits/scalar_types.hpp"
-#include "traits/mult_type.hpp"
-#include "operations/meta.hpp"
+#include <traits/scalar_types.hpp>
+#include <operations/meta.hpp>
 
 namespace AMDiS
 {
@@ -27,36 +25,12 @@ namespace AMDiS
     }
 
     template <class... Ints>
-    typename enable_if<and_<std::is_integral<Ints>...>, int>::type
+      Requires_t<and_<concepts::Integral<Ints>...>, int>
     getDegree(Ints...) const
     {
       return 0;
     }
   };
-
-
-  template <class T, class Model>
-  struct UnaryFunctor : FunctorBase
-  {
-    using result_type = decltype( Model::eval(std::declval<T>()) );
-    constexpr result_type operator()(const T& v) const
-    {
-      return Model::eval(v);
-    }
-  };
-
-
-  template <class T1, class T2, class Model>
-  struct BinaryFunctor : FunctorBase
-  {
-    using result_type = decltype( Model::eval(std::declval<T1>(), std::declval<T2>()) );
-    constexpr result_type operator()(const T1& v1, const T2& v2) const
-    {
-      return Model::eval(v1, v2);
-    }
-  };
-
-
 
   namespace functors
   {
@@ -117,156 +91,6 @@ namespace AMDiS
         return val;
       }
     };
-
-    template <class T, class S=T>
-    struct add_constant : FunctorBase
-    {
-      using result_type = T;
-      S value;
-      constexpr add_constant(S value) : value(value) {}
-
-      result_type& operator()(T& v)
-      {
-        return (v += value);
-      }
-    };
-
-    template <class T, class S=T>
-    struct minus_constant : FunctorBase
-    {
-      using result_type = T;
-      S value;
-      constexpr minus_constant(S value) : value(value) {}
-
-      result_type& operator()(T& v)
-      {
-        return (v -= value);
-      }
-    };
-
-    template <class T, class S=T>
-    struct mult_constant : FunctorBase
-    {
-      using result_type = T;
-      S value;
-      constexpr mult_constant(S value) : value(value) {}
-
-      result_type& operator()(T& v)
-      {
-        return (v *= value);
-      }
-    };
-
-    template <class T, class S=T>
-    struct div_constant : FunctorBase
-    {
-      using result_type = T;
-      S value;
-      constexpr div_constant(S value) : value(value) {}
-
-      result_type& operator()(T& v)
-      {
-        return (v /= value);
-      }
-    };
-
-    /// functor for operator+=
-    template <class T>
-    struct assign : FunctorBase
-    {
-      using result_type = T;
-
-      constexpr static result_type& apply(T& v, T const& v0)
-      {
-        return (v = v0);
-      }
-      constexpr result_type& operator()(T& v, T const& v0)
-      {
-        return apply(v,v0);
-      }
-    };
-
-    /// functor for operator+=
-    template <class T>
-    struct add_assign : FunctorBase
-    {
-      using result_type = T;
-
-      constexpr static result_type& apply(T& v, T const& v0)
-      {
-        return (v += v0);
-      }
-      constexpr result_type& operator()(T& v, T const& v0)
-      {
-        return apply(v,v0);
-      }
-    };
-
-    /// functor for operator*=
-    template <class T>
-    struct mult_assign : FunctorBase
-    {
-      using result_type = T;
-
-      constexpr static result_type& apply(T& v, T const& v0)
-      {
-        return (v *= v0);
-      }
-      constexpr result_type& operator()(T& v, T const& v0)
-      {
-        return apply(v,v0);
-      }
-    };
-
-    /// functor for operator/=
-    template <class T>
-    struct div_assign : FunctorBase
-    {
-      using result_type = T;
-
-      constexpr static result_type& apply(T& v, T const& v0)
-      {
-        return (v /= v0);
-      }
-      constexpr result_type& operator()(T& v, T const& v0)
-      {
-        return apply(v,v0);
-      }
-    };
-
-    /// functor for v=max(v,w)
-    template <class T>
-    struct max_assign : FunctorBase
-    {
-      using result_type = T;
-
-      constexpr static result_type& apply(T& v, T const& v0)
-      {
-        return (v = std::max(v,v0));
-      }
-      constexpr result_type& operator()(T& v, T const& v0)
-      {
-        return apply(v,v0);
-      }
-    };
-
-    /// functor for operator/=
-    template <class T>
-    struct min_assign : FunctorBase
-    {
-      using result_type = T;
-
-      constexpr static result_type& apply(T& v, T const& v0)
-      {
-        return (v = std::min(v,v0));
-      }
-      constexpr result_type& operator()(T& v, T const& v0)
-      {
-        return apply(v,v0);
-      }
-    };
-
-    // -------------------------------------------------------------------------
 
     /// abs(v) == |v|
     template <class T>
@@ -420,7 +244,7 @@ namespace AMDiS
     template <class T1, class T2>
     struct MyCross : FunctorBase
     {
-      typedef typename traits::mult_type<T1, T2>::type value_type;
+      using value_type = decltype( std::declval<T1>() * std::declval<T2>() );
       constexpr int getDegree(int d, int d0, int d1) const
       {
         return d0+d1;
@@ -561,7 +385,7 @@ namespace AMDiS
     };
 
     /// root<p>(v) == p-th-root(v)
-    template <int p, class T, class Enabled = void>
+    template <int p, class T, class = void>
     struct root_dispatch;
 
     template <int p, class T>
@@ -583,7 +407,7 @@ namespace AMDiS
       }
     };
 
-    template <int p, class T, class Enabled>
+    template <int p, class T, class>
     struct root_dispatch
     {
       constexpr static T eval(const T& v)
@@ -593,7 +417,8 @@ namespace AMDiS
     };
 
     template <int p, class T>
-    struct root_dispatch<p, T, typename enable_if<typename meta::is_power_of<p, 3>::type>::type>
+    struct root_dispatch<p, T, 
+      Requires_t<meta::is_power_of<p, 3>> >
     {
       constexpr static T eval(const T& v)
       {
@@ -602,7 +427,8 @@ namespace AMDiS
     };
 
     template <int p, class T>
-    struct root_dispatch<p, T, typename enable_if<typename meta::is_power_of<p, 2>::type>::type>
+    struct root_dispatch<p, T, 
+      Requires_t<meta::is_power_of<p, 2>> >
     {
       constexpr static T eval(const T& v)
       {

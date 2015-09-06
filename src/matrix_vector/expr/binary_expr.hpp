@@ -8,7 +8,6 @@
 #include "base_expr.hpp" // for shaped_expr
 
 #include <operations/functors.hpp>
-#include <traits/mult_type.hpp>
 #include <Math.h>
 
 namespace AMDiS
@@ -22,7 +21,7 @@ namespace AMDiS
     using expr_base  = VectorExpr<Self>;
 
     using value_type = Value_t<E1>;
-    using size_type  = traits::max_size_type<E1,E2>;
+    using size_type  = traits::MaxSizeType<E1,E2>;
     using expr1_type = E1;
     using expr2_type = E2;
 

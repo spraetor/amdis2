@@ -4,6 +4,7 @@
 
 #include "AMDiS_base.h"
 #include "Log.h"
+#include <utility/amdis_parser.hpp>
 
 #include <string>
 
@@ -27,7 +28,7 @@ namespace AMDiS
     ("init-file '%s' cannot be opened for reading", fn.c_str());
 
     using namespace boost::property_tree;
-    json_parser::read_json(fn, pt);
+    amdis_parser::read_amdis(fn, pt);
   }
 
 

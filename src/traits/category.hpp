@@ -15,7 +15,6 @@
 #include <AMDiS_base.h>
 #include <traits/traits_fwd.hpp>
 #include "tag.hpp"
-#include "types.hpp"
 
 namespace AMDiS
 {
@@ -23,46 +22,32 @@ namespace AMDiS
   {
     // scalars
     template <class T>
-    struct category<T, typename enable_if<std::is_arithmetic<T>>::type>
+    struct category<T, Requires_t<concepts::Arithmetic<T>> >
     {
       typedef tag::scalar tag;
       typedef T           value_type;
       //       typedef size_t      size_type;
     };
 
-
+    
     // vectors
-    template <class T, class Allocator>
-    struct category<std::vector<T, Allocator>>
-    {
-      typedef tag::vector  tag;
-      typedef T           value_type;
-      typedef size_t      size_type;
-    };
-
-    template <class T, class Parameters>
-    struct category<mtl::dense_vector<T, Parameters>>
-    {
-      typedef tag::vector  tag;
-      typedef typename mtl::dense_vector<T, Parameters>::value_type  value_type;
-      typedef typename mtl::dense_vector<T, Parameters>::size_type   size_type;
-    };
-
-    template <class T>
-    struct category<AMDiS::DOFVector<T>>
-    {
-      typedef tag::vector      tag;
-      typedef T                value_type;
-      typedef DegreeOfFreedom  size_type;
-    };
-
-    template <class T>
-    struct category<AMDiS::DOFIndexed<T>>
-    {
-      typedef tag::vector      tag;
-      typedef T                value_type;
-      typedef DegreeOfFreedom  size_type;
-    };
+//     template <class T>
+//     struct category<T, Requires_t<and_<traits::HasValueType<T>, traits::HasSizeType<T>, concepts::Vector<T>>> >
+//     {
+//       using tag = tag::vector;
+//       using value_type = Value_t<T>;
+//       using size_type  = Size_t<T>;
+//     };
+// 
+//     
+//     // matrices
+//     template <class T>
+//     struct category<T, Requires_t<and_<traits::HasValueType<T>, traits::HasSizeType<T>, concepts::Matrix<T>>> >
+//     {
+//       using tag = tag::matrix;
+//       using value_type = Value_t<T>;
+//       using size_type  = Size_t<T>;
+//     };
 
     template <>
     struct category<AMDiS::SystemVector>
@@ -72,46 +57,12 @@ namespace AMDiS
       typedef int              size_type;
     };
 
-
-    // matrices
     template <class T>
     struct category<WorldVector<WorldVector<T>>>
     {
       typedef tag::matrix  tag;
       typedef T            value_type;
       typedef int          size_type;
-    };
-
-    template <class T, class Parameters>
-    struct category<mtl::dense2D<T, Parameters>>
-    {
-      typedef tag::matrix  tag;
-      typedef typename mtl::dense2D<T, Parameters>::value_type   value_type;
-      typedef typename mtl::dense2D<T, Parameters>::size_type    size_type;
-    };
-
-    template <class T, class Parameters>
-    struct category<mtl::compressed2D<T, Parameters>>
-    {
-      typedef tag::matrix  tag;
-      typedef typename mtl::compressed2D<T, Parameters>::value_type   value_type;
-      typedef typename mtl::compressed2D<T, Parameters>::size_type    size_type;
-    };
-
-    template <class T, class Parameters>
-    struct category<mtl::matrix::coordinate2D<T, Parameters>>
-    {
-      typedef tag::matrix  tag;
-      typedef typename mtl::coordinate2D<T, Parameters>::value_type   value_type;
-      typedef typename mtl::coordinate2D<T, Parameters>::size_type    size_type;
-    };
-
-    template <class T, std::size_t BitMask, class Parameters>
-    struct category<mtl::matrix::morton_dense<T, BitMask, Parameters>>
-    {
-      typedef tag::matrix  tag;
-      typedef typename mtl::morton_dense<T, BitMask, Parameters>::value_type value_type;
-      typedef typename mtl::morton_dense<T, BitMask, Parameters>::size_type  size_type;
     };
 
     template <class Matrix>
@@ -126,7 +77,7 @@ namespace AMDiS
 
     // -------------------------------------------------------------------------
 
-    template <class T, class S, class Enable = void>
+    template <class T, class S, class = void>
     struct IsConvertible : std::is_convertible<T, S> {};
 
     template <class T, class S>

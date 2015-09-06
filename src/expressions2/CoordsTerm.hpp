@@ -12,7 +12,7 @@
 #include <MatrixVector.h>
 #include <Quadrature.h>
 #include <SubAssembler.h>
-#include <expressions/LazyOperatorTerm.h>
+#include <expressions2/_LazyOperatorTerm.h>
 
 #include "BaseTerms.hpp"
 

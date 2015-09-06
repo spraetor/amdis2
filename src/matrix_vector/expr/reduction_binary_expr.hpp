@@ -18,7 +18,7 @@ namespace AMDiS
     using expr_base = BaseExpr<Self>;
 
     using value_type = Result_t<Functor>;
-    using size_type  = traits::max_size_type<E1,E2>;
+    using size_type  = traits::MaxSizeType<E1,E2>;
     using expr1_type = E1;
     using expr2_type = E2;
 

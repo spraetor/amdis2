@@ -868,4 +868,41 @@ namespace AMDiS
     friend class Mesh;
   };
 
+  class BoundaryWrapper
+  {
+  public:
+    BoundaryWrapper(BoundaryType nr, Mesh* mesh = NULL)
+      : nr(nr),
+        mesh(mesh)
+    {}
+    
+    Mesh* getMesh() 
+    { 
+      return mesh; 
+    }
+    
+    Mesh const* getMesh() const
+    { 
+      return mesh; 
+    }
+    
+    BoundaryType getBoundary() const
+    { 
+      return nr; 
+    }
+    
+  private:
+    BoundaryType nr;
+    Mesh* mesh;
+  };
+  
+  
+  // generator function for \ref BoundaryWrapper
+  inline auto boundary(BoundaryType nr, Mesh* mesh = NULL)
+    -> BoundaryWrapper
+  {
+    return {nr, mesh};
+  }
+  
+  
 } // end namespace AMDiS

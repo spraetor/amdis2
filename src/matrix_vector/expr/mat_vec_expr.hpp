@@ -53,7 +53,7 @@ namespace AMDiS
     using expr_base = VectorExpr<Self>;
 
     using value_type = Value_t<VecE>;
-    using size_type  = traits::max_size_type<MatE, VecE>;
+    using size_type  = traits::MaxSizeType<MatE, VecE>;
 
     using matrix_type = MatE;
     using vector_type = BufferType<VecE, use_buffer>;

@@ -24,21 +24,21 @@ namespace AMDiS
 
     /// constructor takes two terms
     template <class Term1_, class Term2_,
-              class = Requires_t<traits::IsCompatible<Types<Term1,Term2>, Types<Term1_,Term2_>>>>
-                                 constexpr BinaryTerm(Term1_&& A, Term2_&& B)
-                                   : Super(std::forward<Term1_>(A), std::forward<Term2_>(B)),
-                                     term1{A},
-                                     term2{B}
+      class = Requires_t<traits::IsCompatible<Types<Term1,Term2>, Types<Term1_,Term2_>>>>
+    constexpr BinaryTerm(Term1_&& A, Term2_&& B)
+      : Super(std::forward<Term1_>(A), std::forward<Term2_>(B)),
+        term1{A},
+        term2{B}
     {}
 
     /// constructor takes two terms and the functor
     template <class Term1_, class Term2_, class Functor_,
-              class = Requires_t<traits::IsCompatible<Types<Term1,Term2,Functor>, Types<Term1_,Term2_,Functor_>>>>
-                                 constexpr BinaryTerm(Term1_&& A, Term2_&& B, Functor_&& f)
-                                   : Super(std::forward<Term1_>(A), std::forward<Term2_>(B)),
-                                     term1{A},
-                                     term2{B},
-                                     fct{f}
+      class = Requires_t<traits::IsCompatible<Types<Term1,Term2,Functor>, Types<Term1_,Term2_,Functor_>>>>
+    constexpr BinaryTerm(Term1_&& A, Term2_&& B, Functor_&& f)
+      : Super(std::forward<Term1_>(A), std::forward<Term2_>(B)),
+        term1{A},
+        term2{B},
+        fct{f}
     {}
 
     int getDegree() const
@@ -103,29 +103,29 @@ namespace AMDiS
     {
       using tag        = typename category<Term1>::tag;
       using value_type = Result_t<F>;
-      using size_type  = int; //max_size_type<Term1,Term2>;
-                                 };
+      using size_type  = int; //MaxSizeType<Term1,Term2>;
+    };
     /// \endcond
-                                          }
+  }
 
   // Term1 + Term2
   template <class Term1, class Term2>
   using PlusTerm = BinaryTerm<Term1, Term2,
-                              functors::plus<Value_t<Term1>, Value_t<Term2>>>;
+      functors::plus<Value_t<Term1>, Value_t<Term2>>>;
 
-                              // Term1 - Term2
-                              template <class Term1, class Term2>
-                              using MinusTerm = BinaryTerm<Term1, Term2,
-                                  functors::minus<Value_t<Term1>, Value_t<Term2>>>;
+  // Term1 - Term2
+  template <class Term1, class Term2>
+  using MinusTerm = BinaryTerm<Term1, Term2,
+      functors::minus<Value_t<Term1>, Value_t<Term2>>>;
 
-                                  // Term1 * Term2
-                                  template <class Term1, class Term2>
-                                  using MultipliesTerm = BinaryTerm<Term1, Term2,
-                                      functors::multiplies<Value_t<Term1>, Value_t<Term2>>>;
+  // Term1 * Term2
+  template <class Term1, class Term2>
+  using MultipliesTerm = BinaryTerm<Term1, Term2,
+      functors::multiplies<Value_t<Term1>, Value_t<Term2>>>;
 
-                                      // Term1 / Term2
-                                      template <class Term1, class Term2>
-                                      using DividesTerm = BinaryTerm<Term1, Term2,
-                                          functors::divides<Value_t<Term1>, Value_t<Term2>>>;
+  // Term1 / Term2
+  template <class Term1, class Term2>
+  using DividesTerm = BinaryTerm<Term1, Term2,
+      functors::divides<Value_t<Term1>, Value_t<Term2>>>;
 
 } // end namespace AMDiS

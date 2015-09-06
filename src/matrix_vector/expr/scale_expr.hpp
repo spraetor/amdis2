@@ -6,6 +6,8 @@
 
 #include <traits/basic.hpp>
 #include <traits/traits_fwd.hpp>
+#include <traits/scalar_types.hpp>
+#include <traits/traits.hpp>
 
 #include "base_expr.hpp" // for shaped_expr
 
@@ -115,20 +117,23 @@ namespace AMDiS
 
   // s * V
   template <class Value, class E>
-  using LeftScaleExpr = typename enable_if<
-                        and_<traits::is_multiplicable<Value_t<E>, Value>, traits::is_scalar<Value>>,
-                        ScaleExpr<Value, E, true, functors::multiplies<Value_t<E>, Value>> >::type;
+  using LeftScaleExpr 
+    = Requires_t<and_<concepts::Multiplicable<Value_t<E>, Value>, 
+                      concepts::Arithmetic<Value>>,
+      ScaleExpr<Value, E, true, functors::multiplies<Value_t<E>, Value>> >;
 
   // V * s
   template <class Value, class E>
-  using RightScaleExpr = typename enable_if<
-                         and_<traits::is_multiplicable<Value_t<E>, Value>, traits::is_scalar<Value>>,
-                         ScaleExpr<Value, E, false, functors::multiplies<Value_t<E>, Value>> >::type;
+  using RightScaleExpr
+    = Requires_t<and_<concepts::Multiplicable<Value_t<E>, Value>, 
+                      concepts::Arithmetic<Value>>,
+      ScaleExpr<Value, E, false, functors::multiplies<Value_t<E>, Value>> >;
 
   // V / s
   template <class Value, class E>
-  using RightDivideExpr = typename enable_if<
-                          and_<traits::is_multiplicable<Value_t<E>, Value>, traits::is_scalar<Value>>,
-                          ScaleExpr<Value, E, false, functors::divides<Value_t<E>, Value>> >::type;
+  using RightDivideExpr
+    = Requires_t<and_<concepts::Multiplicable<Value_t<E>, Value>, 
+                      concepts::Arithmetic<Value>>,
+      ScaleExpr<Value, E, false, functors::divides<Value_t<E>, Value>> >;
 
 } // end namespace AMDiS

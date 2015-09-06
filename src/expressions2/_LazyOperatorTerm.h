@@ -5,6 +5,8 @@
 #include <AMDiS_fwd.h>
 #include <Traits.h>
 #include <traits/basic.hpp>
+#include <utility/foreach.hpp>
+#include "TermConcepts.hpp"
 
 namespace AMDiS
 {
@@ -37,7 +39,7 @@ namespace AMDiS
     struct InsertFeSpaces
     {
       InsertFeSpaces(List& feSpaces_)
-        : feSpaces{feSpaces_}
+        : feSpaces(feSpaces_)
       {}
 
       template <class Term>
@@ -62,10 +64,10 @@ namespace AMDiS
                   SubAssembler* subAssembler_,
                   Quadrature* quad_,
                   BasisFunction const* basisFct_)
-        : elInfo{elInfo_},
-          subAssembler{subAssembler_},
-          quad{quad_},
-          basisFct{basisFct_}
+        : elInfo(elInfo_),
+          subAssembler(subAssembler_),
+          quad(quad_),
+          basisFct(basisFct_)
       {}
 
       template <class Term>
@@ -87,8 +89,8 @@ namespace AMDiS
 
     template <class... Terms_,
               class = Requires_t<concepts::Term<Terms_...>>>
-                                 constexpr LazyOperatorTerms(Terms_&&... terms_)
-                                   : terms(std::forward<Terms_>(terms_)...)
+    constexpr LazyOperatorTerms(Terms_&&... terms_)
+      : terms(std::forward<Terms_>(terms_)...)
     {}
 
     template <class List>

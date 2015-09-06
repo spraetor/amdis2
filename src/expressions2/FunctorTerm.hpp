@@ -7,9 +7,10 @@
 #include <utility>
 
 // AMDiS headers
-#include <expressions/LazyOperatorTerm.h>
+#include <expressions2/_LazyOperatorTerm.h>
 #include <traits/basic.hpp>
 #include <traits/traits_fwd.hpp>
+#include <traits/traits.hpp>
 #include <traits/meta_basic.hpp>
 
 #include "TermConcepts.hpp"
