@@ -12,7 +12,7 @@
 #include <MatrixVector.h>
 #include <Quadrature.h>
 #include <SubAssembler.h>
-#include <expressions2/_LazyOperatorTerm.h>
+#include <expressions/LazyOperatorTerm.h>
 
 #include "BaseTerms.hpp"
 
@@ -22,8 +22,9 @@ namespace AMDiS
   // Comp == -1: WorldVector, Comp == -2: component given in constructor
   // Comp != {-1, -2}: component given as template parameter
   template <int Comp = -1>
-  struct CoordsTerm : public VectorTerm<CoordsTerm<Comp>>,
-        public LazyOperatorTermBase
+  struct CoordsTerm 
+    : public VectorTerm<CoordsTerm<Comp>>,
+      public LazyOperatorTermBase
   {
     using coords_type = WorldVector<double>;
     using value_type  = if_then_else< Comp == -1, coords_type, double >;
@@ -76,7 +77,6 @@ namespace AMDiS
     {
       return eval(int_<Comp>(), x);
     }
-
 
     std::string str() const
     {

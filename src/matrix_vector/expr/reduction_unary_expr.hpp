@@ -9,7 +9,6 @@
 
 namespace AMDiS
 {
-
   /// Expression with one argument, that reduces to a scalar
   template <class E, class Functor>
   struct ReductionUnaryExpr
@@ -53,6 +52,7 @@ namespace AMDiS
     }
 
   protected:
+    // reduce the expression, if length is known at compiletime
     template <int N>
     value_type reduce(int_<N>) const
     {
@@ -67,6 +67,7 @@ namespace AMDiS
       return Functor::post_reduction(erg);
     }
 
+    // reduce the expression, if length is known only at runtime
     value_type reduce(int_<-1>) const
     {
       value_type erg;
@@ -112,70 +113,71 @@ namespace AMDiS
       using size_type  = Size_t<ReductionUnaryExpr<E,F>>;
     };
     /// \endcond
-  }
+    
+  } // end namespace traits
 
 
   // norm |V|_1
   template <class E>
   struct OneNormExpr
   {
-    typedef ReductionUnaryExpr<E, functors::one_norm_functor<Value_t<E>>> type;
+    using type = ReductionUnaryExpr<E, functors::one_norm_functor<Value_t<E>>>;
   };
 
   // norm |V|_2
   template <class E>
   struct TwoNormExpr
   {
-    typedef ReductionUnaryExpr<E, functors::two_norm_functor<Value_t<E>>> type;
+    using type = ReductionUnaryExpr<E, functors::two_norm_functor<Value_t<E>>>;
   };
 
   // V*V
   template <class E>
   struct UnaryDotExpr
   {
-    typedef ReductionUnaryExpr<E, functors::unary_dot_functor<Value_t<E>>> type;
+    using type = ReductionUnaryExpr<E, functors::unary_dot_functor<Value_t<E>>>;
   };
 
   // max(V)
   template <class E>
   struct MaxExpr
   {
-    typedef ReductionUnaryExpr<E, functors::max_reduction_functor<Value_t<E>>> type;
+    using type = ReductionUnaryExpr<E, functors::max_reduction_functor<Value_t<E>>>;
   };
 
   // abs_max(V)
   template <class E>
   struct AbsMaxExpr
   {
-    typedef ReductionUnaryExpr<E, functors::abs_max_reduction_functor<Value_t<E>>> type;
+    using type = ReductionUnaryExpr<E, functors::abs_max_reduction_functor<Value_t<E>>>;
   };
 
   // min(V)
   template <class E>
   struct MinExpr
   {
-    typedef ReductionUnaryExpr<E, functors::min_reduction_functor<Value_t<E>>> type;
+    using type = ReductionUnaryExpr<E, functors::min_reduction_functor<Value_t<E>>>;
   };
 
   // max(V)
   template <class E>
   struct AbsMinExpr
   {
-    typedef ReductionUnaryExpr<E, functors::abs_min_reduction_functor<Value_t<E>>> type;
+    using type = ReductionUnaryExpr<E, functors::abs_min_reduction_functor<Value_t<E>>>;
   };
 
   // sum(V)
   template <class E>
   struct SumExpr
   {
-    typedef ReductionUnaryExpr<E, functors::sum_reduction_functor<Value_t<E>>> type;
+    using type = ReductionUnaryExpr<E, functors::sum_reduction_functor<Value_t<E>>>;
   };
 
   // prod(V)
   template <class E>
   struct ProdExpr
   {
-    typedef ReductionUnaryExpr<E, functors::prod_reduction_functor<Value_t<E>>> type;
+    using type = ReductionUnaryExpr<E, functors::prod_reduction_functor<Value_t<E>>>;
   };
 
 } // end namespace AMDiS

@@ -10,6 +10,7 @@
 // AMDiS headers
 #include <Log.h>
 #include <traits/traits_fwd.hpp>
+#include <traits/basic.hpp>
 #include <matrix_vector/expr/base_expr.hpp> // VectorExpr
 #include "MatrixVectorBase.hpp"	            // MatrixVectorBase
 
@@ -24,45 +25,45 @@ namespace AMDiS
     : public MatrixVectorBase<VectorBase<MemoryPolicy, SizePolicy>, MemoryPolicy>,
       public VectorExpr<VectorBase<MemoryPolicy, SizePolicy>>
   {
-    typedef VectorBase                             self;
-    typedef MatrixVectorBase<self, MemoryPolicy>  super;
+    using Self  = VectorBase;
+    using Super = MatrixVectorBase<Self, MemoryPolicy>;
 
-    typedef typename super::value_type     value_type;
-    typedef typename super::size_type       size_type;
+    using value_type     = Value_t<Super>;
+    using size_type      = Size_t<Super>;
 
-    typedef value_type*                       pointer;
-    typedef value_type const*           const_pointer;
-    typedef pointer                          iterator;
-    typedef const_pointer              const_iterator;
+    using pointer        = value_type*;
+    using const_pointer  = value_type const*;
+    using iterator       = pointer;
+    using const_iterator = const_pointer;
 
   protected:
-    using super::_elements;
-    using super::_size;
+    using Super::_elements;
+    using Super::_size;
     using S = SizePolicy;
 
   public:
-    using super::set;
+    using Super::set;
 
     // ----- constructors / assignment -------------------------------------------
   public:
     /// \brief Default constructor.
     /// allocates memory for a vector of size \p s
     explicit VectorBase(size_type s = 0)
-      : super(S::eval(s))
-    { }
+      : Super(S::eval(s))
+    {}
 
     /// \brief Constructor with initializer.
     /// allocates memory for a vector of size \p s and sets all
     /// entries to \p value0
     explicit VectorBase(size_type s, value_type value0)
-      : super(S::eval(s))
+      : Super(S::eval(s))
     {
       set(value0);
     }
 
     /// Copy constructor
-    VectorBase(self const& other)
-      : super(other._size)
+    VectorBase(Self const& other)
+      : Super(other._size)
     {
       std::copy(other._elements, other._elements + _size, _elements);
     }
@@ -71,14 +72,14 @@ namespace AMDiS
     /// Use the assignment operator for expressions to copy values elementwise
     template <class Expr>
     VectorBase(VectorExpr<Expr> const& expr)
-      : super(size(expr))
+      : Super(size(expr))
     {
       this->operator=(expr);
     }
 
     /// constructor using initializer list
     VectorBase(std::initializer_list<value_type> l)
-      : super(l.size())
+      : Super(l.size())
     {
       TEST_EXIT_DBG( _size == l.size() )
       ("Initializer-list must have exactly the number of entries, as the size of the vector!");
@@ -86,12 +87,11 @@ namespace AMDiS
     }
 
     /// destructor
-    ~VectorBase() { }
+    ~VectorBase() {}
 
 #ifndef _MSC_VER // bug in MSVC <= 2013
-
     /// copy assignment operator
-    self& operator=(self const& other)
+    Self& operator=(Self const& other)
     {
       this->resize( other._size );
       std::copy(other.begin(), other.end(), _elements);
@@ -99,11 +99,11 @@ namespace AMDiS
     }
 #endif
 
-    using super::operator= ;
-    using super::operator+= ;
-    using super::operator-= ;
-    using super::operator*= ;
-    using super::operator/= ;
+    using Super::operator= ;
+    using Super::operator+= ;
+    using Super::operator-= ;
+    using Super::operator*= ;
+    using Super::operator/= ;
 
     // need non-templated arguments in order to eliminate a friend declaration
     // warning in gcc
@@ -116,8 +116,8 @@ namespace AMDiS
 
     // ----- element access functions  -------------------------------------------
   public:
-    // import operator() from super-class
-    using super::operator() ;
+    // import operator() from Super-class
+    using Super::operator() ;
 
     /// Access to the i-th vector element.
     value_type& operator[](size_type i) // [[expects: i < _size]]
@@ -126,7 +126,7 @@ namespace AMDiS
     }
 
     /// Access to the i-th vector element. (const variant)
-    const value_type& operator[](size_type i) const // [[expects: i < _size]]
+    value_type const& operator[](size_type i) const // [[expects: i < _size]]
     {
       return _elements[i];
     }
@@ -139,7 +139,7 @@ namespace AMDiS
     }
 
     /// Access to the i-th vector element with index checking. (const variant)
-    const value_type& at(size_type i) const
+    value_type const& at(size_type i) const
     {
       TEST_EXIT_DBG(i < _size)("Index " << i << " out of range [0, " << _size << ")!\n");
       return _elements[i];

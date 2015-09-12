@@ -34,7 +34,7 @@ namespace AMDiS
     VectorBinaryExpr(expr1_type const& A, expr2_type const& B)
       : expr1(A), expr2(B)
     {
-      assert( size(A) == size(B) );
+      TEST_EXIT_DBG( size(A) == size(B) )("Sizes do not match!\n");
     }
 
     /// access the elements of an expr.
@@ -53,6 +53,7 @@ namespace AMDiS
     {
       return expr1;
     }
+    
     expr2_type const& get_second() const
     {
       return expr2;
@@ -95,6 +96,7 @@ namespace AMDiS
       using tag = typename category<value_type>::tag;
     };
     /// \endcond
-  }
+    
+  } // end namespace traits
 
 } // end namespace AMDiS

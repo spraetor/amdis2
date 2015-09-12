@@ -9,13 +9,12 @@
 
 namespace AMDiS
 {
-
   /// Expression with one argument
   template <class E, class Functor>
   struct ElementwiseUnaryExpr
     : public ShapedExpr_t<E, ElementwiseUnaryExpr<E, Functor>>
   {
-    using Self = ElementwiseUnaryExpr;
+    using Self      = ElementwiseUnaryExpr;
     using expr_base = ShapedExpr_t<E, Self>;
 
     using value_type = typename std::result_of<Functor(Value_t<E>)>::type;
@@ -82,5 +81,6 @@ namespace AMDiS
     template <class M, class F>
     struct category<ElementwiseUnaryExpr<M,F>> : category<M> {};
     /// \endcond
-  }
+    
+  } // end namespace traits
 } // end namespace AMDiS

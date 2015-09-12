@@ -144,7 +144,7 @@ namespace AMDiS
       : _size(s),
         _capacity(s),
         _elements(_size ? (aligned ? ALIGNED_ALLOC(T, s) : new T[s]) : NULL)
-    { }
+    {}
 
   public:
     /// destructor
@@ -296,7 +296,7 @@ namespace AMDiS
 
   public:
     /// destructor
-    virtual ~MemoryBaseHybrid() { }
+    virtual ~MemoryBaseHybrid() {}
 
   public:
     /// return the \ref _size of the vector.

@@ -14,7 +14,7 @@ namespace AMDiS
   struct ReductionBinaryExpr
     : public BaseExpr<ReductionBinaryExpr<E1, E2, Functor>>
   {
-    using Self = ReductionBinaryExpr;
+    using Self      = ReductionBinaryExpr;
     using expr_base = BaseExpr<Self>;
 
     using value_type = Result_t<Functor>;
@@ -59,6 +59,7 @@ namespace AMDiS
     }
 
   protected:
+    // reduce the expression, if length is known at compiletime
     template <int N>
     value_type reduce(int_<N>) const
     {
@@ -71,6 +72,7 @@ namespace AMDiS
       return Functor::post_reduction(erg);
     }
 
+    // reduce the expression, if length is known only at runtime
     value_type reduce(int_<-1>) const
     {
       value_type erg;

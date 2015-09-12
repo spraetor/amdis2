@@ -3,7 +3,7 @@
 #pragma once
 
 #include "BoundaryCondition.h"
-#include <expressions2/TermGenerator.hpp>
+#include <expressions/TermGenerator.hpp>
 #include <traits/basic.hpp>
 
 namespace AMDiS

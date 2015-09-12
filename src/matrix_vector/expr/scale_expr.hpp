@@ -13,7 +13,6 @@
 
 namespace AMDiS
 {
-
   /// Expression with one argument
   template <class Value, class E, bool from_left, class Functor>
   struct ScaleExpr
@@ -34,7 +33,7 @@ namespace AMDiS
     /// constructor takes the factor \p v and and expression \p A
     constexpr ScaleExpr(Value v, expr_type const& A)
       : value(v), expr(A)
-    { }
+    {}
 
     /// access the elements of an expr.
     constexpr value_type operator()(size_type i) const
@@ -113,7 +112,9 @@ namespace AMDiS
     template <class V, class E, bool l, class F>
     struct category<ScaleExpr<V,E,l,F>> : category<E> {};
     /// \endcond
-  }
+    
+  } // end namespace traits
+  
 
   // s * V
   template <class Value, class E>

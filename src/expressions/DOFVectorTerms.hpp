@@ -6,13 +6,17 @@
 #include <SubAssembler.h>
 #include <BasisFunction.h>
 #include <DOFVectorBase.h>
-#include <expressions2/_LazyOperatorTerm.h>
+#include <expressions/LazyOperatorTerm.h>
 
 #include "BaseTerms.hpp"
 
 namespace AMDiS
 {
-  struct _unknown {};
+  // a dummy name assigned by default to each DOFVector term
+  namespace name
+  {
+    struct u {};
+  }
 
   /// Expressions that extracts the values of a DOFVector at QPs
   template <class Vector, class Name, class = void>
@@ -129,7 +133,7 @@ namespace AMDiS
         vecDV->getGrdAtQPs(elInfo, quad, NULL, values);
       else if (basisFct)
       {
-        const BasisFunction* localBasisFct = vecDV->getFeSpace()->getBasisFcts();
+        BasisFunction const* localBasisFct = vecDV->getFeSpace()->getBasisFcts();
 
         // get coefficients of DOFVector
         DenseVector<T> coeff{(size_t)localBasisFct->getNumber()};
@@ -159,7 +163,7 @@ namespace AMDiS
       if (found && elInfo != NULL)
       {
         auto& grdLambda = elInfo->getGrdLambda();
-        const BasisFunction* localBasisFct = vecDV->getFeSpace()->getBasisFcts();
+        BasisFunction const* localBasisFct = vecDV->getFeSpace()->getBasisFcts();
         // get coefficients of DOFVector
         DenseVector<T> coeff{(size_t)localBasisFct->getNumber()};
         vecDV->getLocalVector(elInfo->getElement(), coeff);

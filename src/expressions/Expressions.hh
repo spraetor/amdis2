@@ -14,7 +14,7 @@ namespace AMDiS
     M term = term_base.sub();
     using TOut = Assign_t<Value_t<M>>;
 
-    std::set<const FiniteElemSpace*> feSpaces;
+    std::set<FiniteElemSpace const*> feSpaces;
     term.insertFeSpaces(feSpaces);
 
     TEST_EXIT(mesh_opt || !feSpaces.empty())
@@ -60,7 +60,7 @@ namespace AMDiS
     M term = term_base.sub();
     using TOut = Assign_t<Value_t<M>>;
 
-    std::set<const FiniteElemSpace*> feSpaces;
+    std::set<FiniteElemSpace const*> feSpaces;
     term.insertFeSpaces(feSpaces);
 
     Mesh* mesh_opt = b.getMesh();
@@ -74,7 +74,7 @@ namespace AMDiS
 
 
     // create barycentric coords for each vertex of each side
-    const Element* refElement = Global::getReferenceElement(dim);
+    Element const* refElement = Global::getReferenceElement(dim);
     std::vector<VectorOfFixVecs<DimVec<double>>> coords;
 
     // for all element sides
@@ -136,15 +136,15 @@ namespace AMDiS
     accumulate(BaseTerm<M> const& term_base, Functor f, Value_t<M> value0)
     {
       M term = term_base.sub();
-      std::set<const FiniteElemSpace*> feSpaces;
+      std::set<FiniteElemSpace const*> feSpaces;
       term.insertFeSpaces(feSpaces);
 
       TEST_EXIT(!feSpaces.empty())
       ("The expression must contain a DOFVector or FeSpace depended value!\n");
-      const FiniteElemSpace* feSpace0 = *feSpaces.begin();
+      FiniteElemSpace const* feSpace0 = *feSpaces.begin();
       Mesh* mesh = feSpace0->getMesh();
 
-      const BasisFunction* basisFcts = feSpace0->getBasisFcts();
+      BasisFunction const* basisFcts = feSpace0->getBasisFcts();
       int nBasisFcts = basisFcts->getNumber();
 
       DOFVector<bool> assigned(feSpace0, "assigned");
@@ -184,7 +184,7 @@ namespace AMDiS
       static_assert( traits::IsConvertible<TOut, T>::value,
         "ValueType of expression not convertible to ValueType of DOFVector!" );
 
-      std::set<const FiniteElemSpace*> feSpaces;
+      std::set<FiniteElemSpace const*> feSpaces;
       term.insertFeSpaces(feSpaces);
 
       Mesh* mesh = result->getFeSpace()->getMesh();
@@ -195,8 +195,8 @@ namespace AMDiS
       DOFVector<TOut> temp(result->getFeSpace(), "temp");
       DOFVector<int> assigned(result->getFeSpace(), "assigned");
 
-      const FiniteElemSpace* resultFeSpace = temp.getFeSpace();
-      const BasisFunction* basisFcts = resultFeSpace->getBasisFcts();
+      FiniteElemSpace const* resultFeSpace = temp.getFeSpace();
+      BasisFunction const* basisFcts = resultFeSpace->getBasisFcts();
       int nBasisFcts = basisFcts->getNumber();
 
       std::vector<DegreeOfFreedom> localIndices(nBasisFcts);

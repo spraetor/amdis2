@@ -35,53 +35,54 @@ namespace AMDiS
     template <class M> struct category<VectorExpr<M>> : category<M> {};
     template <class M> struct category<MatrixExpr<M>> : category<M> {};
     /// \endcond
-  }
+    
+  } // end namespace traits
 
 
   template <class M>
-  inline size_t num_cols(const VectorExpr<M>& t)
+  inline size_t num_cols(VectorExpr<M> const& t)
   {
     return num_cols(t.sub());
   }
   template <class M>
-  inline size_t num_cols(const MatrixExpr<M>& t)
+  inline size_t num_cols(MatrixExpr<M> const& t)
   {
     return num_cols(t.sub());
   }
 
   template <class T>
-  inline size_t num_rows(const VectorExpr<T>& t)
+  inline size_t num_rows(VectorExpr<T> const& t)
   {
     return num_rows(t.sub());
   }
   template <class T>
-  inline size_t num_rows(const MatrixExpr<T>& t)
+  inline size_t num_rows(MatrixExpr<T> const& t)
   {
     return num_rows(t.sub());
   }
 
   template <class T>
-  inline size_t size(const VectorExpr<T>& t)
+  inline size_t size(VectorExpr<T> const& t)
   {
     return size(t.sub());
   }
   template <class T>
-  inline size_t size(const MatrixExpr<T>& t)
+  inline size_t size(MatrixExpr<T> const& t)
   {
     return size(t.sub());
   }
 
 
   // determine shape of expression
-  template <class Sub, class Model, class Enable = void>
+  template <class Sub, class Model, class = void>
   struct ShapedExpr
   {
-    using type = if_then_else<
-                 traits::is_vector<Sub>::value,
-                 VectorExpr<Model>,
-                 if_then_else<traits::is_matrix<Sub>::value,
-                 MatrixExpr<Model>,
-                 BaseExpr<Model>> >;
+    using type 
+      = if_then_else< traits::is_vector<Sub>::value,
+	  VectorExpr<Model>,
+	  if_then_else< traits::is_matrix<Sub>::value,
+	    MatrixExpr<Model>,
+	    BaseExpr<Model> > >;
   };
 
   template <class Sub, class Model>

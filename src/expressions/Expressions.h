@@ -19,13 +19,15 @@ namespace AMDiS
   template <class M>
   inline Value_t<M> integrate(BaseTerm<M> const& term, Mesh* mesh_opt = NULL);
 
+  
   /// Integrate an term over the boundary of a domain.
   /** If the term does not contain any DOFVector, a mesh must be given as second 
    *  argument to the boundary_wrapper. */
   template <class M>
   inline Value_t<M> integrate(BaseTerm<M> const& term, BoundaryWrapper b);
+  
 
-  /* ----- ACCUMULATION OF AND EXPRESSION OVER DOFS ------------------------- */
+  // ________ ACCUMULATION OF AND EXPRESSION OVER DOFS ______________________________________
   
 
   namespace detail
@@ -36,6 +38,7 @@ namespace AMDiS
     
   } // end namespace detail
 
+  
   /// Maximum of an term at DOFs, using the \ref accumulate function.
   template <class T>
   inline Value_t<T>
@@ -95,8 +98,10 @@ namespace AMDiS
     return value0;
   }
   
-  /* ------ ASSIGNMENT OF AN EXRESION TO A DOFVECTOR ------------------------ */
+  
+  // _________ ASSIGNMENT OF AN EXRESION TO A DOFVECTOR __________________________________
 
+  
   namespace detail
   {
     /// Assign an term to a DOFVector
@@ -133,7 +138,8 @@ namespace AMDiS
     return result;
   }
 
-  /* ----- CONVERT EXPRESSION TO STRING ------------------------------------- */
+  
+  // _________ CONVERT EXPRESSION TO STRING __________________________________
 
 
   /// Print an term to an output stream
@@ -146,7 +152,7 @@ namespace AMDiS
   }
 
 
-  /* ----- IMPLEMENTATION OF DOFVECTOR::INTERPOL METHODS --------------------- */
+  // _________ IMPLEMENTATION OF DOFVECTOR::INTERPOL METHODS __________________________________
 
 
   template <class T>
@@ -165,4 +171,4 @@ namespace AMDiS
 
 } // end namespace AMDiS
 
-#include "_Expressions.hh"
+#include "Expressions.hh"

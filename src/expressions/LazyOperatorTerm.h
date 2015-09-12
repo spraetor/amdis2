@@ -11,9 +11,6 @@
 namespace AMDiS
 {
   class SubAssembler;
-  // class Quadrature;
-  // class BasisFunction;
-  // class ElInfo;
 
   struct LazyOperatorTermBase
   {
@@ -82,13 +79,13 @@ namespace AMDiS
 
   /// Operator term with arbitrary number of sub-term (expressions)
   template <class... Terms>
-  struct LazyOperatorTerms : public LazyOperatorTermBase
+  struct LazyOperatorTerms 
+    : public LazyOperatorTermBase
   {
     using Self = LazyOperatorTerms;
-    std::tuple<Terms...> terms;
 
     template <class... Terms_,
-              class = Requires_t<concepts::Term<Terms_...>>>
+      class = Requires_t<concepts::Term<Terms_...>>>
     constexpr LazyOperatorTerms(Terms_&&... terms_)
       : terms(std::forward<Terms_>(terms_)...)
     {}
@@ -108,7 +105,7 @@ namespace AMDiS
     }
 
     template <int N>
-    /*constexpr*/int getDegree(int_<N>) const
+    int getDegree(int_<N>) const
     {
       return std::get<N>(terms).getDegree();
     }
@@ -126,6 +123,9 @@ namespace AMDiS
     {
       return std::get<N>(Self::terms);
     }
+    
+  private:
+    std::tuple<Terms...> terms;
   };
 
 } // end namespace AMDiS

@@ -31,10 +31,10 @@ namespace AMDiS
     constexpr static int _COLS = math::max(E1::_COLS, E2::_COLS);
 
     /// constructor takes two expressions
-    constexpr ElementwiseBinaryExpr(expr1_type const& A, expr2_type const& B)
+    ElementwiseBinaryExpr(expr1_type const& A, expr2_type const& B)
       : expr1(A), expr2(B)
     {
-      //       TEST_EXIT_DBG( size(A) == size(B) )("Sizes do not match!\n");
+      TEST_EXIT_DBG( size(A) == size(B) )("Sizes do not match!\n");
     }
 
     /// access the elements of an expr.
@@ -98,17 +98,18 @@ namespace AMDiS
       using size_type  = MaxSizeType<E1,E2>;
     };
     /// \endcond
-  }
+    
+  } // end namespace traits
 
   // E1 + E2
   template <class E1, class E2>
-  using PlusExpr = ElementwiseBinaryExpr<E1, E2,
-        functors::plus<Value_t<E1>, Value_t<E2>>>;
+  using PlusExpr 
+    = ElementwiseBinaryExpr<E1, E2, functors::plus<Value_t<E1>, Value_t<E2>>>;
 
   // E1 - E2
   template <class E1, class E2>
-  using MinusExpr = ElementwiseBinaryExpr<E1, E2,
-        functors::minus<Value_t<E1>, Value_t<E2>>>;
+  using MinusExpr 
+    = ElementwiseBinaryExpr<E1, E2, functors::minus<Value_t<E1>, Value_t<E2>>>;
 
 
 } // end namespace AMDiS
