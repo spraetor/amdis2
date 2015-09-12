@@ -141,13 +141,13 @@ namespace AMDiS
     }
 
     /// Access to the i-th vector element.
-    value_type& operator()(size_type i, size_type j)
+    value_type& operator()(size_type i, size_type j) // [[expects: i < _rows && j < _cols]]
     {
       return _elements[i * _cols + j];
     }
 
     /// Access to the i-th vector element. (const variant)
-    const value_type& operator()(size_type i, size_type j) const
+    const value_type& operator()(size_type i, size_type j) const // [[expects: i < _rows && j < _cols]]
     {
       return _elements[i * _cols + j];
     }

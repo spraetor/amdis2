@@ -120,13 +120,13 @@ namespace AMDiS
     using super::operator() ;
 
     /// Access to the i-th vector element.
-    value_type& operator[](size_type i)
+    value_type& operator[](size_type i) // [[expects: i < _size]]
     {
       return _elements[i];
     }
 
     /// Access to the i-th vector element. (const variant)
-    const value_type& operator[](size_type i) const
+    const value_type& operator[](size_type i) const // [[expects: i < _size]]
     {
       return _elements[i];
     }

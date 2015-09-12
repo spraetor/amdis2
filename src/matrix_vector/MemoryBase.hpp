@@ -181,7 +181,7 @@ namespace AMDiS
     size_type getMemoryUsage() const
     {
       return (aligned ? ALIGNED_SIZE(_capacity*sizeof(T), CACHE_LINE)
-              : _capacity*sizeof(T))
+                      : _capacity*sizeof(T))
              + 2*sizeof(size_type);
     }
 
