@@ -115,18 +115,18 @@ namespace AMDiS
     }
 
     template <int N>
-//     typename std::tuple_element<N, decltype(Self::terms)>::type&
-    auto getTerm(int_<N>) RETURNS_REF
-    (
-      std::get<N>(Self::terms)
-    )
+    typename std::tuple_element<N, decltype(Self::terms)>::type&
+    getTerm(int_<N>)
+    {
+      return std::get<N>(Self::terms);
+    }
 
     template <int N>
-//     typename std::tuple_element<N, decltype(Self::terms)>::type const&
-    auto getTerm(int_<N>) const RETURNS_REF
-    (
-      std::get<N>(Self::terms)
-    )
+    typename std::tuple_element<N, decltype(Self::terms)>::type const&
+    getTerm(int_<N>) const
+    {
+      return std::get<N>(Self::terms);
+    }
   };
 
 } // end namespace AMDiS

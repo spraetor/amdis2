@@ -13,6 +13,9 @@
 #define RETURNS_REF(...) \
   -> decltype(__VA_ARGS__) & { return (__VA_ARGS__); }
 
+#define RETURNS_CONST_REF(...) \
+  -> decltype(__VA_ARGS__) const & { return (__VA_ARGS__); }
+
 namespace AMDiS
 {
   template <class T>
