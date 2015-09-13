@@ -143,15 +143,5 @@ namespace AMDiS
     /// \endcond
     
   } // end namespace traits
-  
-
-  // ---------------------------------------------------------------------------
-
-  template <class F, class... Terms>
-  requires::Term<FunctorTerm<F, ToTerm_t<Terms>...>, Terms...>
-  inline func(F&& f, Terms&& ... ts)
-  {
-    return {std::forward<F>(f), toTerm(std::forward<Terms>(ts))...};
-  }
 
 } // end namespace AMDiS

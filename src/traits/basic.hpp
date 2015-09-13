@@ -9,6 +9,9 @@
 // a helper macro to reduce typing
 #define RETURNS(...) \
   -> decltype(__VA_ARGS__) { return (__VA_ARGS__); }
+  
+#define RETURNS_REF(...) \
+  -> decltype(__VA_ARGS__) & { return (__VA_ARGS__); }
 
 namespace AMDiS
 {

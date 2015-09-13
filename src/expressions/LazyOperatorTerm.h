@@ -83,7 +83,11 @@ namespace AMDiS
     : public LazyOperatorTermBase
   {
     using Self = LazyOperatorTerms;
+    
+  private:
+    std::tuple<Terms...> terms;
 
+  public:
     template <class... Terms_,
       class = Requires_t<concepts::Term<Terms_...>>>
     constexpr LazyOperatorTerms(Terms_&&... terms_)
@@ -111,21 +115,18 @@ namespace AMDiS
     }
 
     template <int N>
-    typename std::tuple_element<N, decltype(Self::terms)>::type&
-    getTerm(int_<N>)
-    {
-      return std::get<N>(Self::terms);
-    }
+//     typename std::tuple_element<N, decltype(Self::terms)>::type&
+    auto getTerm(int_<N>) RETURNS_REF
+    (
+      std::get<N>(Self::terms)
+    )
 
     template <int N>
-    typename std::tuple_element<N, decltype(Self::terms)>::type const&
-    getTerm(int_<N>) const
-    {
-      return std::get<N>(Self::terms);
-    }
-    
-  private:
-    std::tuple<Terms...> terms;
+//     typename std::tuple_element<N, decltype(Self::terms)>::type const&
+    auto getTerm(int_<N>) const RETURNS_REF
+    (
+      std::get<N>(Self::terms)
+    )
   };
 
 } // end namespace AMDiS

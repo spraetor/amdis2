@@ -69,6 +69,15 @@ namespace AMDiS
   {
     return {};
   }
+  
+
+  /// Returns an expression that evaluates a functor \param f at the evaluated terms \param ts.
+  template <class F, class... Terms>
+  requires::Term<FunctorTerm<F, ToTerm_t<Terms>...>, Terms...>
+  inline func(F&& f, Terms&& ... ts)
+  {
+    return {std::forward<F>(f), toTerm(std::forward<Terms>(ts))...};
+  }
 
   
   // ______ generator functions for values and gradients of DOFVectors __________________
