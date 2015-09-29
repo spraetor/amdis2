@@ -14,24 +14,32 @@
 
 namespace AMDiS
 {
-  /// Integrate an termession over a domain.
-  /** If the termession does not contain any DOFVector, a mesh must be given as second argument */
+  /// Integrate an term over a domain.
+  /** If the term does not contain any DOFVector, a mesh must be given as second argument */
   template <class M>
   inline Value_t<M> integrate(BaseTerm<M> const& term, Mesh* mesh_opt = NULL);
 
+  
+  /// Integrate an term over the boundary of a domain.
+  /** If the term does not contain any DOFVector, a mesh must be given as second 
+   *  argument to the boundary_wrapper. */
+  template <class M>
+  inline Value_t<M> integrate(BaseTerm<M> const& term, BoundaryWrapper b);
+  
 
-  /* ----- ACCUMULATION OF AND EXPRESSION OVER DOFS ------------------------- */
+  // ________ ACCUMULATION OF AND EXPRESSION OVER DOFS ______________________________________
   
 
   namespace detail
   {
-    /// Accumulate the values of an termession at the Degrees of freedom
+    /// Accumulate the values of an term at the Degrees of freedom
     template <class M, class F>
     inline Value_t<M> accumulate(BaseTerm<M> const& term, F f, Value_t<M> value0);
     
   } // end namespace detail
 
-  /// Maximum of an termession at DOFs, using the \ref accumulate function.
+  
+  /// Maximum of an term at DOFs, using the \ref accumulate function.
   template <class T>
   inline Value_t<T>
   max(BaseTerm<T> const& term)
@@ -46,7 +54,7 @@ namespace AMDiS
   }
 
 
-  /// Minimum of an termession at DOFs, using the \ref accumulate function.
+  /// Minimum of an term at DOFs, using the \ref accumulate function.
   template <class T>
   inline Value_t<T>
   min(BaseTerm<T> const& term)
@@ -61,7 +69,7 @@ namespace AMDiS
   }
 
 
-  /// Maximum of  absolute values of an termession at DOFs, using the \ref accumulate function.
+  /// Maximum of  absolute values of an term at DOFs, using the \ref accumulate function.
   template <class T>
   inline Value_t<T>
   abs_max(BaseTerm<T> const& term)
@@ -76,7 +84,7 @@ namespace AMDiS
   }
 
 
-  /// Minimum of  absolute values of an termession at DOFs, using the \ref accumulate function.
+  /// Minimum of  absolute values of an term at DOFs, using the \ref accumulate function.
   template <class T>
   inline Value_t<T>
   abs_min(BaseTerm<T> const& term)
@@ -90,8 +98,10 @@ namespace AMDiS
     return value0;
   }
   
-  /* ------ ASSIGNMENT OF AN EXRESION TO A DOFVECTOR ------------------------ */
+  
+  // _________ ASSIGNMENT OF AN EXRESION TO A DOFVECTOR __________________________________
 
+  
   namespace detail
   {
     /// Assign an term to a DOFVector
@@ -102,8 +112,7 @@ namespace AMDiS
 
   /// Assign an term to a DOFVector
   template <class T, class M>
-  inline DOFVector<T>&
-  operator<<(DOFVector<T>& result, BaseTerm<M> const& term)
+  DOFVector<T>& operator<<(DOFVector<T>& result, BaseTerm<M> const& term)
   {
     detail::transformDOF(term.sub(), &result);
     return result;
@@ -112,7 +121,7 @@ namespace AMDiS
 
   /// Assign a coords-functor to a DOFVector
   template <class T, class F>
-  inline requires::CoordsFunctor<DOFVector<T>&, F>
+    requires::CoordsFunctor<DOFVector<T>&, F>
   operator<<(DOFVector<T>& result, F&& f)
   {
     detail::transformDOF(toTerm(std::forward<F>(f)), &result);
@@ -122,27 +131,28 @@ namespace AMDiS
 
   /// Assign a scalar value to a DOFVector
   template <class T, class S>
-  inline Requires_t<traits::is_arithmetic<S>, DOFVector<T>> &
+    Requires_t<concepts::Arithmetic<S>, DOFVector<T>> &
   operator<<(DOFVector<T>& result, S scalar)
   {
     detail::transformDOF(toTerm(scalar), &result);
     return result;
   }
 
-  /* ----- CONVERT EXPRESSION TO STRING ------------------------------------- */
+  
+  // _________ CONVERT EXPRESSION TO STRING __________________________________
 
 
-  /// Print an termession to an output stream
+  /// Print an term to an output stream
   template <class Term>
-  inline requires::Term<std::ostream&, Term>
-  operator<<(std::ostream& result, const Term& term)
+  requires::Term<std::ostream&, Term>
+  inline operator<<(std::ostream& result, const Term& term)
   {
     result << term.str();
     return result;
   }
 
 
-  /* ----- IMPLEMENTATION OF DOFVECTOR::INTERPOL METHODS --------------------- */
+  // _________ IMPLEMENTATION OF DOFVECTOR::INTERPOL METHODS __________________________________
 
 
   template <class T>
@@ -161,4 +171,4 @@ namespace AMDiS
 
 } // end namespace AMDiS
 
-#include "_Expressions.hh"
+#include "Expressions.hh"

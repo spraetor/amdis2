@@ -14,6 +14,7 @@
 
 namespace AMDiS
 {
+  // helper class for matrix element access
   template <class MatE>
   struct ColumnIndex
   {
@@ -36,12 +37,13 @@ namespace AMDiS
 
   // if necessary assign vector_expr to buffer-vector, otherwise store an expr.
   template <class VecE, bool use_buffer>
-  using BufferType = if_then_else<use_buffer,
-        if_then_else<(VecE::_SIZE> 0),
-        VectorBase<MemoryBaseStatic<Value_t<VecE>, math::max(0,VecE::_SIZE), 1>,
-        StaticSizePolicy<math::max(0,VecE::_SIZE)>>,
-        VectorBase<MemoryBaseDynamic<Value_t<VecE>, false>>>,
-        VecE const& >;
+  using BufferType 
+    = if_then_else< use_buffer,
+	if_then_else< (VecE::_SIZE> 0),
+	  VectorBase<MemoryBaseStatic<Value_t<VecE>, math::max(0,VecE::_SIZE), 1>,
+		     StaticSizePolicy<math::max(0,VecE::_SIZE)> >,
+	  VectorBase<MemoryBaseDynamic<Value_t<VecE>, false>> >,
+	VecE const& >;
 
 
   /// Expression with two arguments, that multiplied a matrix_expr with a vector_expr
@@ -49,11 +51,11 @@ namespace AMDiS
   struct MatVecExpr
     : public VectorExpr<MatVecExpr<MatE, VecE, use_buffer>>
   {
-    using Self = MatVecExpr;
+    using Self      = MatVecExpr;
     using expr_base = VectorExpr<Self>;
 
     using value_type = Value_t<VecE>;
-    using size_type  = traits::max_size_type<MatE, VecE>;
+    using size_type  = traits::MaxSizeType<MatE, VecE>;
 
     using matrix_type = MatE;
     using vector_type = BufferType<VecE, use_buffer>;
@@ -91,6 +93,7 @@ namespace AMDiS
     }
 
   protected:
+    // reduce the expression, if length is known at compiletime
     template <int N>
     value_type reduce(size_type row, int_<N>) const
     {
@@ -102,6 +105,7 @@ namespace AMDiS
       return erg;
     }
 
+    // reduce the expression, if length is known only at runtime
     value_type reduce(size_type r, int_<-1>) const
     {
       using ::math::zero;
@@ -149,6 +153,7 @@ namespace AMDiS
       using size_type  = Size_t<MatVecExpr<E1,E2,b>>;
     };
     /// \endcond
-  }
+    
+  } // end namespace traits
 
 } // end namespace AMDiS

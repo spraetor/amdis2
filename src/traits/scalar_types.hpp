@@ -7,15 +7,23 @@
 namespace AMDiS
 {
   namespace traits
-  {
-    // type-traits
-    // _________________________________________________________________________
+  {    
     template <class T>
-    using is_integral = std::is_integral<typename std::decay<T>::type>;
+    using IsIntegral = std::is_integral<typename std::decay<T>::type>;
 
     template <class T>
-    using is_arithmetic = std::is_arithmetic<typename std::decay<T>::type>;
+    using IsArithmetic = std::is_arithmetic<typename std::decay<T>::type>;
 
   } // end namespace traits
 
+  namespace concepts
+  {
+    template <class T>
+    using Integral = traits::IsIntegral<T>;
+    
+    template <class T>
+    using Arithmetic = traits::IsArithmetic<T>;
+    
+  } // end namespace concepts
+  
 } // end namespace AMDiS

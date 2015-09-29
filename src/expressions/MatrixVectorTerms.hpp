@@ -154,6 +154,7 @@ namespace AMDiS
       {
         return d0+d1;
       }
+      
       template <class T1, class T2>
       auto operator()(T1&& t1, T2&& t2) const RETURNS
       (
@@ -169,8 +170,8 @@ namespace AMDiS
       }
 
       template <class Vec1, class Vec2,
-                class = Requires_t<and_<traits::is_vector<Vec1>, traits::is_vector<Vec2>>>>
-                                   Assign_t<Vec1> operator()(Vec1 const& v1, Vec2 const& v2) const
+	class = Requires_t<and_<traits::is_vector<Vec1>, traits::is_vector<Vec2>>>>
+      Assign_t<Vec1> operator()(Vec1 const& v1, Vec2 const& v2) const
       {
         using size_type = Size_t<traits::category<Vec1>>;
         Assign_t<Vec1> result(size(v1));
@@ -195,8 +196,8 @@ namespace AMDiS
     }
 
     template <class Vec1, class Vec2,
-              class = Requires_t<and_<traits::is_vector<Vec1>, traits::is_vector<Vec2>>>>
-                                 VectorToMatrix_t<Vec1> operator()(Vec1 const& v1, Vec2 const& v2) const
+      class = Requires_t<and_<traits::is_vector<Vec1>, traits::is_vector<Vec2>>>>
+    VectorToMatrix_t<Vec1> operator()(Vec1 const& v1, Vec2 const& v2) const
     {
       using size_type1 = Size_t<traits::category<Vec1>>;
       using size_type2 = Size_t<traits::category<Vec2>>;
@@ -216,15 +217,16 @@ namespace AMDiS
     struct Distance
     {
       constexpr int getDegree(int d0, int d1) const
-    {
-      return d0+d1+1;
-    }
-    template <class T1, class T2>
-    auto operator()(T1&& t1, T2&& t2) const RETURNS
-    (
-      distance(std::forward<T1>(t1), std::forward<T2>(t2))
-                           )
-              };
+      {
+	return d0+d1+1;
+      }
+      
+      template <class T1, class T2>
+      auto operator()(T1&& t1, T2&& t2) const RETURNS
+      (
+	distance(std::forward<T1>(t1), std::forward<T2>(t2))
+      )
+    };
   }
 
 
@@ -272,57 +274,6 @@ namespace AMDiS
   {
     return {t.sub()};
   }
-  
-#if 0
-  template <class T>
-  FunctorTerm<functors::Max, T>
-  inline max(BaseTerm<T> const& t)
-  {
-    return {t.sub()};
-  }
-
-  template <class T>
-  FunctorTerm<functors::AbsMax, T>
-  inline abs_max(BaseTerm<T> const& t)
-  {
-    return {t.sub()};
-  }
-
-  template <class T>
-  FunctorTerm<functors::Min, T>
-  inline min(BaseTerm<T> const& t)
-  {
-    return {t.sub()};
-  }
-
-  template <class T>
-  FunctorTerm<functors::AbsMin, T>
-  inline min(BaseTerm<T> const& t)
-  {
-    return {t.sub()};
-  }
-
-  template <class T>
-  FunctorTerm<functors::Sum, T>
-  inline sum(BaseTerm<T> const& t)
-  {
-    return {t.sub()};
-  }
-
-  template <class T>
-  FunctorTerm<functors::Mean, T>
-  inline mean(BaseTerm<T> const& t)
-  {
-    return {t.sub()};
-  }
-
-  template <class T>
-  FunctorTerm<functors::Prod, T>
-  inline prod(BaseTerm<T> const& t)
-  {
-    return {t.sub()};
-  }
-#endif
 
   template <class T>
   FunctorTerm<functors::Diagonal, T>

@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "traits/meta_basic.hpp"
+#include <traits/meta_basic.hpp>
 
 namespace AMDiS
 {
@@ -70,53 +70,6 @@ namespace AMDiS
 
     template <int U>
     using is_odd = not_<is_even<U>>;
-
-    /// generic loops
-    // _________________________________________________________________________
-    //     template <long I, long N>
-    //     struct FOR
-    //     {
-    //       template <class A, class B, class Op>
-    //       static void transform(A const& a, B& b, Op op, size_t shift = 0)
-    //       {
-    //         b[I+shift] = op(a[I+shift]);
-    //         FOR<I+1,N>::transform(a, b, op, shift);
-    //       }
-    //
-    //       template <class A, class T, class Op, class BinaryOp>
-    //       static T accumulate(A const& a, T init, Op op, BinaryOp binary_op, size_t shift = 0)
-    //       {
-    //         return binary_op(FOR<I+1,N>::accumulate(a, init, op, binary_op, shift),
-    //                          op(a[I+shift]));
-    //       }
-    //
-    //       template <class A, class B, class T, class BinaryOp1, class BinaryOp2>
-    //       static T inner_product(A const& a, B const& b, T init, BinaryOp1 binary_op1, BinaryOp2 binary_op2, size_t shift = 0)
-    //       {
-    //         return binary_op1(FOR<I+1,N>::inner_product(a, b, init, binary_op1, binary_op2, shift),
-    //                           binary_op2(a[I+shift], b[I+shift]));
-    //       }
-    //     };
-    //
-    //     // Abbruchbedingung I==N
-    //     template <long N>
-    //     struct FOR<N, N>
-    //     {
-    //       template <class A, class B, class Op>
-    //       static void transform(A const& a, B& b, Op op, size_t shift = 0) {}
-    //
-    //       template <class A, class T, class Op, class BinaryOp>
-    //       static T accumulate(A const& a, T init, Op op, BinaryOp binary_op, size_t shift = 0)
-    //       {
-    //         return init;
-    //       }
-    //
-    //       template <class A, class B, class T, class BinaryOp1, class BinaryOp2>
-    //       static T inner_product(A const& a, B const& b, T init, BinaryOp1 binary_op1, BinaryOp2 binary_op2, size_t shift = 0)
-    //       {
-    //         return init;
-    //       }
-    //     };
 
   } // end namespace meta
 

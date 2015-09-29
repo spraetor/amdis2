@@ -16,7 +16,7 @@
 #include "SecondOrderTerm.h"
 
 #include <traits/category.hpp>
-#include <expressions2/TermGenerator.hpp>
+#include <expressions/TermGenerator.hpp>
 
 namespace AMDiS
 {

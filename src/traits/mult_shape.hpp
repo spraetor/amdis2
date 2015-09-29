@@ -23,43 +23,43 @@ namespace AMDiS
 
       /// Scalar*Scalar => Scalar
       template <>
-      struct mult_shape<shape::scalar, shape::scalar> : id_<shape::scalar> {};
+      struct mult_shape<shape::scalar, shape::scalar> : Id<shape::scalar> {};
 
       /// Vec*Vec => Scalar (dot-product) - if no orientation of the vector is given
       template <>
-      struct mult_shape<shape::vector, shape::vector> : id_<shape::scalar> {};
+      struct mult_shape<shape::vector, shape::vector> : Id<shape::scalar> {};
 
       // inner product
       template <>
-      struct mult_shape<shape::row_vector, shape::col_vector> : id_<shape::scalar> {};
+      struct mult_shape<shape::row_vector, shape::col_vector> : Id<shape::scalar> {};
 
       // outer product
       template <>
-      struct mult_shape<shape::col_vector, shape::row_vector> : id_<shape::matrix> {};
+      struct mult_shape<shape::col_vector, shape::row_vector> : Id<shape::matrix> {};
 
       /// Mat*Mat => Mat
       template <>
-      struct mult_shape<shape::matrix, shape::matrix> : id_<shape::matrix> {};
+      struct mult_shape<shape::matrix, shape::matrix> : Id<shape::matrix> {};
 
       /// Vec*Scalar => Vector
       template <>
-      struct mult_shape<shape::vector, shape::scalar> : id_<shape::vector> {};
+      struct mult_shape<shape::vector, shape::scalar> : Id<shape::vector> {};
 
       /// Scalar*Vector => Vector
       template <>
-      struct mult_shape<shape::scalar, shape::vector> : id_<shape::vector> {};
+      struct mult_shape<shape::scalar, shape::vector> : Id<shape::vector> {};
 
       /// Matrix*Scalar => Matrix
       template <>
-      struct mult_shape<shape::matrix, shape::scalar> : id_<shape::matrix> {};
+      struct mult_shape<shape::matrix, shape::scalar> : Id<shape::matrix> {};
 
       /// Scalar*Matrix => Matrix
       template <>
-      struct mult_shape<shape::scalar, shape::matrix> : id_<shape::matrix> {};
+      struct mult_shape<shape::scalar, shape::matrix> : Id<shape::matrix> {};
 
       /// Matrix*Vector => Vector
       template <>
-      struct mult_shape<shape::matrix, shape::vector> : id_<shape::vector> {};
+      struct mult_shape<shape::matrix, shape::vector> : Id<shape::vector> {};
 
     } // end namespace detail
 
@@ -90,15 +90,15 @@ namespace AMDiS
 
       /// add types of the same shape
       template <class Shape>
-      struct add_shape<Shape, Shape> : id_<Shape> {};
+      struct add_shape<Shape, Shape> : Id<Shape> {};
 
       /// shape + scalar => shape
       template <class Shape>
-      struct add_shape<Shape, shape::scalar> : id_<Shape> {};
+      struct add_shape<Shape, shape::scalar> : Id<Shape> {};
 
       /// scalar + shape => shape
       template <class Shape>
-      struct add_shape<shape::scalar, Shape> : id_<Shape> {};
+      struct add_shape<shape::scalar, Shape> : Id<Shape> {};
 
     } // end namespace detail
 

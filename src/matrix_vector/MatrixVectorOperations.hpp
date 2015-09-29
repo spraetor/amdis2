@@ -74,7 +74,7 @@ namespace AMDiS
   /// scalar product V*V
   template <class E1, class E2>
   Value_t<DotExpr<E1, E2>>
-                        dot(VectorExpr<E1> const& expr1, VectorExpr<E2> const& expr2)
+  dot(VectorExpr<E1> const& expr1, VectorExpr<E2> const& expr2)
   {
     return DotExpr<E1, E2>(expr1.sub(), expr2.sub())();
   }
@@ -82,7 +82,7 @@ namespace AMDiS
   /// expression for V * W (dot product)
   template <class E1, class E2>
   Value_t<DotExpr<E1, E2>>
-                        operator*(VectorExpr<E1> const& expr1, VectorExpr<E2> const& expr2)
+  operator*(VectorExpr<E1> const& expr1, VectorExpr<E2> const& expr2)
   {
     return dot(expr1, expr2);
   }
@@ -90,7 +90,7 @@ namespace AMDiS
   // E1 x E2
   template <class E1, class E2> // assume vector shape for E1 and E2
   using CrossExpr = VectorBinaryExpr<E1, E2,
-        functors::MyCross<Value_t<E1>, Value_t<E2>>>;
+			functors::MyCross<Value_t<E1>, Value_t<E2>>>;
 
   /// expression for V x W (cross product / outer product / tensor product)
   template <class E1, class E2>
@@ -108,7 +108,7 @@ namespace AMDiS
   Value_t<typename OneNormExpr<E>::type>
   one_norm(VectorExpr<E> const& expr)
   {
-    typedef typename OneNormExpr<E>::type op;
+    using op = typename OneNormExpr<E>::type;
     return op(expr.sub())();
   }
 
@@ -117,7 +117,7 @@ namespace AMDiS
   Value_t<typename TwoNormExpr<E>::type>
   two_norm(VectorExpr<E> const& expr)
   {
-    typedef typename TwoNormExpr<E>::type op;
+    using op = typename TwoNormExpr<E>::type;
     return op(expr.sub())();
   }
 
@@ -126,7 +126,7 @@ namespace AMDiS
   Value_t<typename TwoNormExpr<E>::type>
   frobenius_norm(MatrixExpr<E> const& expr)
   {
-    typedef typename TwoNormExpr<E>::type op;
+    using op = typename TwoNormExpr<E>::type;
     return op(expr.sub())();
   }
 
@@ -151,7 +151,7 @@ namespace AMDiS
   Value_t<typename UnaryDotExpr<E>::type>
   unary_dot(VectorExpr<E> const& expr)
   {
-    typedef typename UnaryDotExpr<E>::type op;
+    using op = typename UnaryDotExpr<E>::type;
     return op(expr.sub())();
   }
 
@@ -160,7 +160,7 @@ namespace AMDiS
   Value_t<typename MaxExpr<E>::type>
   max(BaseExpr<E> const& expr)
   {
-    typedef typename MaxExpr<E>::type op;
+    using op = typename MaxExpr<E>::type;
     return op(expr.sub())();
   }
 
@@ -169,7 +169,7 @@ namespace AMDiS
   Value_t<typename AbsMaxExpr<E>::type>
   abs_max(BaseExpr<E> const& expr)
   {
-    typedef typename AbsMaxExpr<E>::type op;
+    using op = typename AbsMaxExpr<E>::type;
     return op(expr.sub())();
   }
 
@@ -186,7 +186,7 @@ namespace AMDiS
   Value_t<typename AbsMaxExpr<E>::type>
   inf_norm(MatrixExpr<E> const& expr)
   {
-    return abs_max(expr) * std::sqrt(size(expr));
+    return abs_max(expr) * std::sqrt(static_cast<double>(size(expr)));
   }
 
   /// expression for min(V)
@@ -194,7 +194,7 @@ namespace AMDiS
   Value_t<typename MinExpr<E>::type>
   min(BaseExpr<E> const& expr)
   {
-    typedef typename MinExpr<E>::type op;
+    using op = typename MinExpr<E>::type;
     return op(expr.sub())();
   }
 
@@ -203,7 +203,7 @@ namespace AMDiS
   Value_t<typename AbsMinExpr<E>::type>
   abs_min(BaseExpr<E> const& expr)
   {
-    typedef typename AbsMinExpr<E>::type op;
+    using op = typename AbsMinExpr<E>::type;
     return op(expr.sub())();
   }
 
@@ -212,7 +212,7 @@ namespace AMDiS
   Value_t<typename SumExpr<E>::type>
   sum(BaseExpr<E> const& expr)
   {
-    typedef typename SumExpr<E>::type op;
+    using op = typename SumExpr<E>::type;
     return op(expr.sub())();
   }
 
@@ -229,7 +229,7 @@ namespace AMDiS
   Value_t<typename ProdExpr<E>::type>
   prod(BaseExpr<E> const& expr)
   {
-    typedef typename ProdExpr<E>::type op;
+    using op = typename ProdExpr<E>::type;
     return op(expr.sub())();
   }
 

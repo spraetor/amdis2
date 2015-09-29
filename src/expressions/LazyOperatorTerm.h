@@ -2,16 +2,15 @@
 
 #pragma once
 
-#include "AMDiS_fwd.h"
-#include "Traits.h"
+#include <AMDiS_fwd.h>
+#include <Traits.h>
 #include <traits/basic.hpp>
+#include <utility/foreach.hpp>
+#include "TermConcepts.hpp"
 
 namespace AMDiS
 {
   class SubAssembler;
-  // class Quadrature;
-  // class BasisFunction;
-  // class ElInfo;
 
   struct LazyOperatorTermBase
   {
@@ -36,28 +35,37 @@ namespace AMDiS
     template <class List>
     struct InsertFeSpaces
     {
-      List& feSpaces;
-      InsertFeSpaces(List& feSpaces_) : feSpaces(feSpaces_) {};
+      InsertFeSpaces(List& feSpaces_)
+        : feSpaces(feSpaces_)
+      {}
 
       template <class Term>
       void operator()(Term& term)
       {
         term.insertFeSpaces(feSpaces);
       }
+
+    private:
+      List& feSpaces;
     };
 
     /// Functor that is called on each term to initialize it on an element
     struct InitElement
     {
-      const ElInfo* elInfo;
+      ElInfo const* elInfo;
       SubAssembler* subAssembler;
       Quadrature* quad;
-      const BasisFunction* basisFct;
+      BasisFunction const* basisFct;
 
-      InitElement(const ElInfo* elInfo_, SubAssembler* subAssembler_,
-                  Quadrature* quad_, const BasisFunction* basisFct_)
-        : elInfo(elInfo_), subAssembler(subAssembler_),
-          quad(quad_), basisFct(basisFct_) {}
+      InitElement(ElInfo const* elInfo_,
+                  SubAssembler* subAssembler_,
+                  Quadrature* quad_,
+                  BasisFunction const* basisFct_)
+        : elInfo(elInfo_),
+          subAssembler(subAssembler_),
+          quad(quad_),
+          basisFct(basisFct_)
+      {}
 
       template <class Term>
       void operator()(Term& term)
@@ -71,16 +79,20 @@ namespace AMDiS
 
   /// Operator term with arbitrary number of sub-term (expressions)
   template <class... Terms>
-  struct LazyOperatorTerms : public LazyOperatorTermBase
+  struct LazyOperatorTerms 
+    : public LazyOperatorTermBase
   {
     using Self = LazyOperatorTerms;
+    
+  private:
     std::tuple<Terms...> terms;
 
+  public:
     template <class... Terms_,
-              class = Requires_t<traits::IsCompatible<Types<Terms...>, Types<Terms_...>>>>
-                                 //class = typename enable_if< concepts::Term<Terms_...> >::type>
-                                 constexpr LazyOperatorTerms(Terms_&&... terms_)
-                                   : terms(std::forward<Terms_>(terms_)...) {}
+      class = Requires_t<concepts::Term<Terms_...>>>
+    constexpr LazyOperatorTerms(Terms_&&... terms_)
+      : terms(std::forward<Terms_>(terms_)...)
+    {}
 
     template <class List>
     void insertFeSpaces(List& feSpaces)
@@ -88,15 +100,16 @@ namespace AMDiS
       for_each(terms, detail::InsertFeSpaces<List>(feSpaces));
     }
 
-    void initElement(const ElInfo* elInfo,
-                     SubAssembler* subAssembler, Quadrature* quad,
-                     const BasisFunction* basisFct = NULL)
+    void initElement(ElInfo const* elInfo,
+                     SubAssembler* subAssembler,
+                     Quadrature* quad,
+                     BasisFunction const* basisFct = NULL)
     {
       for_each(terms, detail::InitElement(elInfo, subAssembler, quad, basisFct));
     }
 
     template <int N>
-    /*constexpr*/int getDegree(int_<N>) const
+    int getDegree(int_<N>) const
     {
       return std::get<N>(terms).getDegree();
     }

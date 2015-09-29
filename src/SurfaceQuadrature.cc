@@ -6,7 +6,7 @@
 namespace AMDiS
 {
   SurfaceQuadrature::SurfaceQuadrature(Quadrature* q,
-                                       VectorOfFixVecs<DimVec<double>>& c)
+                                       VectorOfFixVecs<DimVec<double>> const& c)
     : Quadrature((q->getName() + " surface").c_str(),
                  q->getDegree(),
                  q->getDim() + 1,

@@ -10,6 +10,7 @@
 // AMDiS headers
 #include <Log.h>
 #include <traits/traits_fwd.hpp>
+#include <traits/basic.hpp>
 #include <matrix_vector/expr/base_expr.hpp> // MatrixExpr
 #include "MatrixVectorBase.hpp"	            // MatrixVectorBase
 
@@ -25,40 +26,40 @@ namespace AMDiS
     : public MatrixVectorBase<MatrixBase<MemoryPolicy, SizePolicy>, MemoryPolicy>,
       public MatrixExpr<MatrixBase<MemoryPolicy, SizePolicy>>
   {
-    typedef MatrixBase                           self;
-    typedef MatrixVectorBase<self, MemoryPolicy>  super;
+    using Self  = MatrixBase;
+    using Super = MatrixVectorBase<Self, MemoryPolicy>;
 
-    typedef typename super::value_type     value_type;
-    typedef typename super::size_type       size_type;
+    using value_type = Value_t<Super>;
+    using size_type  = Size_t<Super>;
 
-    typedef value_type*                       pointer;
-    typedef value_type const*           const_pointer;
-    typedef pointer                          iterator;
-    typedef const_pointer              const_iterator;
+    using pointer        = value_type*;
+    using const_pointer  = value_type const*;
+    using iterator       = pointer;
+    using const_iterator = const_pointer;
 
   protected:
-    using super::_elements;
-    using super::_size;
+    using Super::_elements;
+    using Super::_size;
     using S = SizePolicy;
 
   public:
-    using super::set;
+    using Super::set;
 
     // ----- constructors / assignment -------------------------------------------
   public:
     /// \brief Default constructor.
     /// allocates memory for a matrix of size \p r x \p c
     explicit MatrixBase(size_type r = 0, size_type c = 0)
-      : super(S::eval(r) * S::eval(c == 0 ? r : c)),
+      : Super(S::eval(r) * S::eval(c == 0 ? r : c)),
         _rows(S::eval(r)),
         _cols(S::eval(c == 0 ? r : c))
-    { }
+    {}
 
     /// \brief Constructor with initializer.
     /// allocates memory for a matrix of size \p r x \p c and sets all
     /// entries to \p value0
     explicit MatrixBase(size_type r, size_type c, value_type value0)
-      : super(S::eval(r) * S::eval(c)),
+      : Super(S::eval(r) * S::eval(c)),
         _rows(S::eval(r)),
         _cols(S::eval(c))
     {
@@ -66,8 +67,8 @@ namespace AMDiS
     }
 
     /// Copy constructor
-    MatrixBase(self const& other)
-      : super(other._size),
+    MatrixBase(Self const& other)
+      : Super(other._size),
         _rows(other._rows),
         _cols(other._cols)
     {
@@ -78,7 +79,7 @@ namespace AMDiS
     /// Use the assignment operator for expressions to copy values elementwise
     template <class Expr>
     MatrixBase(MatrixExpr<Expr> const& expr)
-      : super(size(expr)),
+      : Super(size(expr)),
         _rows(num_rows(expr)),
         _cols(num_cols(expr))
     {
@@ -86,23 +87,23 @@ namespace AMDiS
     }
 
     /// destructor
-    ~MatrixBase() { }
+    ~MatrixBase() {}
 
 #ifndef _MSC_VER // bug in MSVC <= 2013
     /// copy assignment operator
-    self& operator=(self const& other)
+    Self& operator=(Self const& other)
     {
       std::copy(other.begin(), other.end(), _elements);
       return *this;
     }
 #endif
 
-    // import (compound)-assignment operators from super-class
-    using super::operator= ;
-    using super::operator+= ;
-    using super::operator-= ;
-    using super::operator*= ;
-    using super::operator/= ;
+    // import (compound)-assignment operators from Super-class
+    using Super::operator= ;
+    using Super::operator+= ;
+    using Super::operator-= ;
+    using Super::operator*= ;
+    using Super::operator/= ;
 
     // need non-templated arguments in order to eliminate a friend declaration
     // warning in gcc
@@ -120,7 +121,7 @@ namespace AMDiS
     {
       if (r != _rows || c != _cols)
       {
-        super::resize(r*c);
+        Super::resize(r*c);
         _rows = r;
         _cols = c;
       }
@@ -141,19 +142,19 @@ namespace AMDiS
     }
 
     /// Access to the i-th vector element.
-    value_type& operator()(size_type i, size_type j)
+    value_type& operator()(size_type i, size_type j) // [[expects: i < _rows && j < _cols]]
     {
       return _elements[i * _cols + j];
     }
 
     /// Access to the i-th vector element. (const variant)
-    const value_type& operator()(size_type i, size_type j) const
+    value_type const& operator()(size_type i, size_type j) const // [[expects: i < _rows && j < _cols]]
     {
       return _elements[i * _cols + j];
     }
 
     // contiguous memory access (used by expressions)
-    using super::operator() ;
+    using Super::operator() ;
 
     /// Access to the i-th vector element with index checking.
     value_type& at(size_type i, size_type j)
@@ -164,7 +165,7 @@ namespace AMDiS
     }
 
     /// Access to the i-th vector element with index checking. (const variant)
-    const value_type& at(size_type i, size_type j) const
+    value_type const& at(size_type i, size_type j) const
     {
       TEST_EXIT_DBG(i < _rows && j < _cols)
       ("Index (" << i << ", " << j << ") out of range [0, " << _rows << ")x[0," << _cols << ")!\n");
@@ -183,7 +184,6 @@ namespace AMDiS
       return _cols;
     }
 
-#if 1
     /// initialize the matrix as a diagonal matrix
     void setDiag(value_type v)
     {
@@ -192,7 +192,6 @@ namespace AMDiS
       for (size_t i = 0; i < _rows; ++i)
         this->operator()(i,i) = v;
     }
-#endif
 
     // ---------------------------------------------------------------------------
   private:

@@ -11,11 +11,7 @@
 #include <boost/numeric/mtl/operation/dot.hpp>
 #include <boost/numeric/linear_algebra/identity.hpp>
 
-// boost headers
-#include <boost/integer_traits.hpp>
-
 // AMDiS headers
-#include <traits/mult_type.hpp>
 #include <operations/functors.hpp>
 #include <operations/assign.hpp>
 
@@ -23,7 +19,6 @@ namespace AMDiS
 {
   namespace functors
   {
-
     // unary reduction functors: import from mtl
     using MTL_VEC::infinity_norm_functor;
     using MTL_VEC::sum_functor;
@@ -41,30 +36,30 @@ namespace AMDiS
     template <class A>
     struct one_norm_functor
     {
-      typedef A result_type;
+      using result_type = A;
 
-      template <typename Value>
-      static inline void init(Value& value)
+      template <class Value>
+      constexpr static void init(Value& value)
       {
         using ::math::zero;
         value= zero(value);
       }
 
-      template <typename Value, typename Element>
-      static inline void update(Value& value, const Element& x)
+      template <class Value, class Element>
+      constexpr static void update(Value& value, const Element& x)
       {
         using std::abs;
         value+= abs(x);
       }
 
-      template <typename Value>
-      static inline void finish(Value& value, const Value& value2)
+      template <class Value>
+      constexpr static void finish(Value& value, const Value& value2)
       {
         value+= value2;
       }
 
-      template <typename Value>
-      static inline Value post_reduction(const Value& value)
+      template <class Value>
+      constexpr static Value post_reduction(const Value& value)
       {
         return value;
       }
@@ -83,28 +78,28 @@ namespace AMDiS
     {
       typedef A result_type;
 
-      template <typename Value>
-      static inline void init(Value& value)
+      template <class Value>
+      constexpr static void init(Value& value)
       {
         using ::math::zero;
         value= zero(value);
       }
 
-      template <typename Value, typename Element>
-      static inline void update(Value& value, const Element& x)
+      template <class Value, class Element>
+      constexpr static void update(Value& value, const Element& x)
       {
         using mtl::squared_abs;
         value+= squared_abs(x);
       }
 
-      template <typename Value>
-      static inline void finish(Value& value, const Value& value2)
+      template <class Value>
+      constexpr static void finish(Value& value, const Value& value2)
       {
         value+= value2;
       }
 
       // After reduction compute square root
-      template <typename Value>
+      template <class Value>
       static inline Value post_reduction(const Value& value)
       {
         using std::sqrt;
@@ -131,32 +126,29 @@ namespace AMDiS
     template <class A, class B, class ConjOp>
     struct dot_functor_aux
     {
-      using A_ = if_then_else<std::is_same<ConjOp, MTL_VEC::detail::with_conj>::value,
-            typename mtl::sfunctor::conj<A>::result_type, A>;
+      using result_type = decltype( std::declval<ConjOp>()(std::declval<A>()) * std::declval<B>() );
 
-      using result_type = typename traits::mult_type<A_, B>::type;
-
-      template <typename Value>
-      static inline void init(Value& value)
+      template <class Value>
+      constexpr static void init(Value& value)
       {
         using ::math::zero;
         value= zero(value);
       }
 
-      template <typename Value, typename Element1, typename Element2>
-      static inline void update(Value& value, const Element1& x, const Element2& y)
+      template <class Value, class Element1, class Element2>
+      constexpr static void update(Value& value, const Element1& x, const Element2& y)
       {
         value+= ConjOp()(x) * y;
       }
 
-      template <typename Value>
-      static inline void finish(Value& value, const Value& value2, const Value& value3)
+      template <class Value>
+      constexpr static void finish(Value& value, const Value& value2, const Value& value3)
       {
         value+= ConjOp()(value2) * value3;
       }
 
-      template <typename Value>
-      static inline Value post_reduction(const Value& value)
+      template <class Value>
+      constexpr static Value post_reduction(const Value& value)
       {
         return value;
       }
@@ -171,8 +163,8 @@ namespace AMDiS
      *  post_reduction: result =result
      **/
     template <class A, class B>
-    struct dot_functor
-      : dot_functor_aux<A,B, MTL_VEC::detail::with_conj> {};
+    using dot_functor
+      = dot_functor_aux<A,B, MTL_VEC::detail::with_conj>;
 
 
     /// Binary reduction functor (scalar product)
@@ -182,83 +174,79 @@ namespace AMDiS
      *  post_reduction: result =result
      **/
     template <class A, class B>
-    struct dot_real_functor
-      : dot_functor_aux<A,B, MTL_VEC::detail::without_conj> {};
+    using dot_real_functor
+      = dot_functor_aux<A,B, MTL_VEC::detail::without_conj>;
 
 
     template <class ResultType, class InitAssign, class UpdateAssign,
               class PostOp = identity<ResultType>, class FinishAssign = UpdateAssign>
     struct general_unary_reduction_functor
     {
-      typedef ResultType result_type;
+      using result_type = ResultType;
 
       template <class Value>
-      static inline void init(Value& value)
+      constexpr static void init(Value& value)
       {
-        InitAssign op;
-        op(value);
+        InitAssign()(value);
       }
 
       template <class Value, class Element>
-      static inline void update(Value& value, const Element& x)
+      constexpr static void update(Value& value, const Element& x)
       {
-        UpdateAssign op;
-        op(value, x);
+        UpdateAssign()(value, x);
       }
 
       template <class Value>
-      static inline void finish(Value& value, const Value& value2)
+      constexpr static void finish(Value& value, const Value& value2)
       {
-        FinishAssign op;
-        op(value, value2);
+        FinishAssign()(value, value2);
       }
 
       // After reduction compute square root
       template <class Value>
-      static inline Value post_reduction(const Value& value)
+      constexpr static Value post_reduction(const Value& value)
       {
-        PostOp op;
-        return op(value);
+        return PostOp()(value);
       }
     };
 
     // max(v0, v1, v2, v3,...)
     template <class T>
-    struct max_reduction_functor
-      : general_unary_reduction_functor<T,
-        AMDiS::assign::min_value<T>, AMDiS::assign::max<T>> {};
+    using max_reduction_functor
+      = general_unary_reduction_functor<T,
+        AMDiS::assign::min_value<T>, AMDiS::assign::max<T>>;
 
     // max(|v0|,|v1|,|v2|,...)
     template <class T>
-    struct abs_max_reduction_functor
-      : general_unary_reduction_functor<T,
+    using abs_max_reduction_functor
+      = general_unary_reduction_functor<T,
         AMDiS::assign::ct_value<T, int, 0>,
-        compose<AMDiS::assign::max<T>, 2, abs<T>>> {};
+        compose<AMDiS::assign::max<T>, 2, abs<T>>>;
 
     // min(v0, v1, v2, v3, ...)
     template <class T>
-    struct min_reduction_functor
-      : general_unary_reduction_functor<T,
-        AMDiS::assign::max_value<T>, AMDiS::assign::min<T>> {};
+    using min_reduction_functor
+      = general_unary_reduction_functor<T,
+        AMDiS::assign::max_value<T>, AMDiS::assign::min<T>>;
 
     // min(|v0|,|v1|,|v2|,...)
     template <class T>
-    struct abs_min_reduction_functor
-      : general_unary_reduction_functor<T,
+    using abs_min_reduction_functor
+      = general_unary_reduction_functor<T,
         AMDiS::assign::max_value<T>,
-        compose<AMDiS::assign::min<T>, 2, abs<T>>> {};
+        compose<AMDiS::assign::min<T>, 2, abs<T>>>;
 
     // v0+v1+v2+v3+...
     template <class T>
-    struct sum_reduction_functor
-      : general_unary_reduction_functor<T,
-        AMDiS::assign::ct_value<T, int, 0>, AMDiS::assign::plus<T>> {};
+    using sum_reduction_functor
+      = general_unary_reduction_functor<T,
+        AMDiS::assign::ct_value<T, int, 0>, AMDiS::assign::plus<T>>;
 
     // v0*v1*v2*v3*...
     template <class T>
-    struct prod_reduction_functor
-      : general_unary_reduction_functor<T,
-        AMDiS::assign::ct_value<T, int, 1>, AMDiS::assign::multiplies<T>> {};
+    using prod_reduction_functor
+      = general_unary_reduction_functor<T,
+        AMDiS::assign::ct_value<T, int, 1>, AMDiS::assign::multiplies<T>>;
 
   } // end namespace functors
 } // end namespace AMDiS

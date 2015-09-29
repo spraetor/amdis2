@@ -19,7 +19,7 @@ namespace AMDiS
   {
   public:
     /// Constructs a SurfaceQuadrature based on a standard Quadrature of dim-1.
-    SurfaceQuadrature(Quadrature* quad, VectorOfFixVecs<DimVec<double>>& coords);
+    SurfaceQuadrature(Quadrature* quad, VectorOfFixVecs<DimVec<double>> const& coords);
 
     /// Adapts SurfaceQuadrature to \ref coords.
     void scaleSurfaceQuadrature(VectorOfFixVecs<DimVec<double>>& coords);

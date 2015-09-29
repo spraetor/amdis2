@@ -4,6 +4,7 @@
 
 #include "AMDiS_base.h"
 #include "Log.h"
+#include <boost/property_tree/json_parser.hpp>
 
 #include <string>
 

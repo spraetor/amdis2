@@ -27,33 +27,33 @@ namespace AMDiS
   struct MatrixVectorBase
     : public MemoryPolicy
   {
-    typedef MatrixVectorBase                  self;
-    typedef MemoryPolicy                     super;
-    typedef Model                            model;
+    using Self  = MatrixVectorBase;
+    using Super = MemoryPolicy;
+    using model = Model;
 
-    typedef typename super::value_type  value_type;
-    typedef typename super::size_type    size_type;
+    using value_type = Value_t<Super>;
+    using size_type  = Size_t<Super>;
 
-    typedef value_type*                    pointer;
-    typedef value_type const*        const_pointer;
-    typedef pointer                       iterator;
-    typedef const_pointer           const_iterator;
+    using pointer        = value_type*;
+    using const_pointer  = value_type const*;
+    using iterator       = pointer;
+    using const_iterator = const_pointer;
 
-    using super::_elements;
-    using super::_size;
+    using Super::_elements;
+    using Super::_size;
 
     // ---------------------------------------------------------------------------
   protected:
     /// default constructor
     explicit MatrixVectorBase(size_type s = 0)
-      : super(s)
-    { }
+      : Super(s)
+    {}
 
   public:
     /// assignment of an expression
     template <class Expr>
     explicit MatrixVectorBase(BaseExpr<Expr> const& expr)
-      : super(size(expr))
+      : Super(size(expr))
     {
       this->operator=(expr);
     }
@@ -63,8 +63,8 @@ namespace AMDiS
 
     /// fill vector with scalar value
     template <class S>
-    typename enable_if<std::is_convertible<S, value_type>>::type
-        set(S const& value)
+    Requires_t<std::is_convertible<S, value_type>>
+    set(S const& value)
     {
       std::fill(_elements, _elements + _size, value);
     }
@@ -82,7 +82,7 @@ namespace AMDiS
     }
 
     /// Access to the i-th data element. (const variant)
-    const value_type& operator()(size_type i) const
+    value_type const& operator()(size_type i) const
     {
       return _elements[i];
     }
@@ -157,7 +157,7 @@ namespace AMDiS
   public:
     /// Assignment operator for scalars
     template <class S>
-    typename enable_if<std::is_convertible<S, value_type>, model>::type&
+    Requires_t<std::is_convertible<S, value_type>, model> &
     operator=(S value)
     {
       for_each(assign::value<value_type, S>(value));
@@ -166,7 +166,7 @@ namespace AMDiS
 
     /// compound assignment *= of a scalar
     template <class S>
-    typename enable_if<std::is_convertible<S, value_type>, model>::type&
+    Requires_t<std::is_convertible<S, value_type>, model> &
     operator*=(S value)
     {
       for_each(assign::mult_value<value_type, S>(value));
@@ -175,7 +175,7 @@ namespace AMDiS
 
     /// compound assignment /= of a scalar
     template <class S>
-    typename enable_if<std::is_convertible<S, value_type>, model>::type&
+    Requires_t<std::is_convertible<S, value_type>, model> &
     operator/=(S value)
     {
       for_each(assign::div_value<value_type, S>(value));
@@ -190,14 +190,14 @@ namespace AMDiS
     void assign(Expr const& expr, Assigner assigner)
     {
       TEST_EXIT_DBG( _size == size(expr) )("Sizes do not match!\n");
-      super::assign_aux(static_cast<Model&>(*this), expr, assigner);
+      Super::assign_aux(static_cast<Model&>(*this), expr, assigner);
     }
 
     /// basic assignment for compound operators given by the Assigner
     template <class Functor>
     inline void for_each(Functor f)
     {
-      super::for_each_aux(f);
+      Super::for_each_aux(f);
     }
   };
 
@@ -231,9 +231,9 @@ namespace AMDiS
   template <class charT, class traits, class Model, class Memory>
   std::basic_ostream<charT, traits>&
   operator<<(std::basic_ostream<charT,traits>& out,
-             const MatrixVectorBase<Model, Memory>& vector)
+             MatrixVectorBase<Model, Memory> const& vector)
   {
-    typename MatrixVectorBase<Model, Memory>::const_iterator it = vector.begin();
+    auto it = vector.begin();
     out << *it;
     ++it;
     for (; it != vector.end(); ++it)

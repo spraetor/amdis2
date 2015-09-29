@@ -44,7 +44,7 @@ namespace AMDiS
 
   namespace requires
   {
-    // test whether one of the arguments is term
+    // test whether one of the arguments is an expression
     template <class Result, class... Args>
     using Expr = Requires_t<or_<concepts::Expr<Args>...>, Result>;
 

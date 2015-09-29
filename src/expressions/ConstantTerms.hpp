@@ -9,8 +9,9 @@ namespace AMDiS
 {
   /// Expression that encapsulates a runtime value
   template <class T>
-  struct RTConstant : public BaseTerm<RTConstant<T>>,
-        public LazyOperatorTermBase
+  struct RTConstant 
+    : public BaseTerm<RTConstant<T>>,
+      public LazyOperatorTermBase
   {
     using Self = RTConstant;
     using value_type = Decay_t<T>;
@@ -41,8 +42,9 @@ namespace AMDiS
 
   /// Expression that encapsulates a compiletime value
   template <int V>
-  struct CTConstant : public BaseTerm<CTConstant<V>>,
-        public LazyOperatorTermBase
+  struct CTConstant 
+    : public BaseTerm<CTConstant<V>>,
+      public LazyOperatorTermBase
   {
     using Self = CTConstant;
     using value_type = int;
@@ -71,8 +73,9 @@ namespace AMDiS
 
   /// Expression that points to a value given by reference
   template <class T>
-  struct Reference : public BaseTerm<Reference<T>>,
-        public LazyOperatorTermBase
+  struct Reference 
+    : public BaseTerm<Reference<T>>,
+      public LazyOperatorTermBase
   {
     using Self = Reference;
     using value_type = Decay_t<T>;

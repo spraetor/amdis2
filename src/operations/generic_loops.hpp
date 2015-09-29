@@ -6,7 +6,6 @@ namespace AMDiS
 {
   namespace meta
   {
-
     // _________________________________________________________________________
     // generic loops
 
@@ -287,36 +286,6 @@ namespace AMDiS
     // Abbruchbedingung I==N
     template<long N>
     struct FOR<N, N> : LOOP<N,N> {};
-
-    //     {
-    //       template<class A, class Op>
-    //       static void for_each(A&, Op, size_t = 0) {}
-    //
-    //       template<class A, class B, class Op>
-    //       static void transform(A const&, B&, Op, size_t = 0) {}
-    //
-    //       template<class A, class B, class Assigner>
-    //       static void assign(A&, B const&, Assigner, size_t = 0) {}
-    //
-    //       template<class A, class T, class Op, class BinaryOp>
-    //       static T accumulate(A const&, T init, Op, BinaryOp, size_t = 0)
-    //       {
-    // 	return init;
-    //       }
-    //
-    //       template<class A, class T, class Functor>
-    //       static void accumulate(A const&, T&, Functor) { }
-    //
-    //       template<class A, class B, class T, class BinaryOp1, class BinaryOp2>
-    //       static T inner_product(A const&, B const&, T init, BinaryOp1, BinaryOp2, size_t = 0)
-    //       {
-    // 	return init;
-    //       }
-    //
-    //       template<class A, class B, class T, class Functor>
-    //       static void inner_product(A const&, B const&, T&, Functor) { }
-    //     };
-    /// \endcond
 
   } // end namespace meta
 } // end namespace AMDiS

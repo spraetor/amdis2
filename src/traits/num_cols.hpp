@@ -4,80 +4,28 @@
 
 #include <AMDiS_fwd.h>
 #include <traits/traits_fwd.hpp>
+#include <traits/scalar_types.hpp>
 
 namespace AMDiS
 {
-  namespace traits
+  template <class T, class = Requires_t<concepts::Arithmetic<T>>>
+  inline size_t num_cols(T const& v)
   {
-    template <typename T>
-    struct num_cols<T, typename enable_if<is_scalar<T>>::type>
-    {
-      typedef size_t type;
-      type operator()(const T& v) const
-      {
-        return 1;
-      }
-    };
+    return 1;
+  }
+  
+  /// size implementation for AMDiS::VectorOfFixVecs
+  template <class FixVecType>
+  inline size_t num_cols(VectorOfFixVecs<FixVecType> const& v)
+  {
+    return v.getSize() == 0 ? 0 : v[0].getSize();
+  }
 
-    // == vectors ===
-
-    template <typename T>
-    struct num_cols<T, typename enable_if<and_<is_vector<T>, is_mtl<T>>>::type>
-    {
-      typedef typename T::size_type type;
-      type operator()(const T& v) const
-      {
-        return ::mtl::vector::num_cols(v);
-      }
-    };
-
-    /// size implementation for AMDiS::DOFVector
-    template <typename Value>
-    struct num_cols<AMDiS::DOFVector<Value>>
-    {
-      typedef typename category<AMDiS::DOFVector<Value>>::size_type   type;
-      type operator()(const AMDiS::DOFVector<Value>& v) const
-      {
-        return 1;
-      }
-    };
-
-    // === matrices ===
-
-    template <typename T>
-    struct num_cols<T, typename enable_if<and_<is_matrix<T>, is_mtl<T>>>::type>
-    {
-      typedef typename T::size_type type;
-      type operator()(const T& v) const
-      {
-        return ::mtl::matrix::num_cols(v);
-      }
-    };
-
-    // === multi-vector or multi-multi-vector ===
-
-    /// size implementation for AMDiS::VectorOfFixVecs
-    template <typename FixVecType>
-    struct num_cols<AMDiS::VectorOfFixVecs<FixVecType>>
-    {
-      typedef typename category<AMDiS::VectorOfFixVecs<FixVecType>>::size_type   type;
-      type operator()(const AMDiS::VectorOfFixVecs<FixVecType>& v) const
-      {
-        return v.getSize() == 0 ? 0 : v[0].getSize();
-      }
-    };
-
-    /// AMDiS::MatrixOfFixVecs
-    template <typename FixVecType>
-    struct num_cols<AMDiS::MatrixOfFixVecs<FixVecType>>
-    {
-      typedef typename category<AMDiS::MatrixOfFixVecs<FixVecType>>::size_type   type;
-      type operator()(const AMDiS::MatrixOfFixVecs<FixVecType>& v) const
-      {
-        return v.getNumberOfColumns();
-      }
-    };
-
-  } // end namespace traits
+  /// AMDiS::MatrixOfFixVecs
+  template <class FixVecType>
+  inline size_t num_cols(MatrixOfFixVecs<FixVecType> const& v)
+  {
+    return v.getNumberOfColumns();
+  }
 
 } // end namespace AMDiS

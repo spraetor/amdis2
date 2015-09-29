@@ -29,7 +29,7 @@
 #include "parallel/MeshDistributor.h"
 #endif
 
-#include <expressions2/_Expressions.h>
+#include <expressions/Expressions.h>
 
 // Defining the interface for MTL4
 namespace mtl

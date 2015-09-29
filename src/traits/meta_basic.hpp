@@ -4,7 +4,6 @@
 
 // std c++ headers
 #include <type_traits>
-#include <tuple>
 
 namespace AMDiS
 {
@@ -23,6 +22,10 @@ namespace AMDiS
 
   using true_ = bool_<true>;
   using false_ = bool_<false>;
+  
+  static constexpr bool_<true> _true {};
+  static constexpr bool_<false> _false {};
+  
 
   // --- some boolean operations -----------------------------------------------
   namespace detail
@@ -75,33 +78,4 @@ namespace AMDiS
   template <class T, class... Ts>
   using is_one_of = or_<std::is_same<T, Ts>...>;
 
-
-  /// for_each for std::tuple
-  template <int I = 0, class FuncT, class... Tp>
-  inline typename std::enable_if<(I == sizeof...(Tp)), void>::type
-  for_each(std::tuple<Tp...>&, FuncT) { }
-
-  template <int I = 0, class FuncT, class... Tp>
-  inline typename std::enable_if<(I < sizeof...(Tp)), void>::type
-  for_each(std::tuple<Tp...>& t, FuncT f)
-  {
-    f(std::get<I>(t));
-    for_each< (I + 1), FuncT, Tp...>(t, f);
-  }
-
-
-  namespace detail
-  {
-    template <class T, class = decltype(&T::operator[])>
-    static true_ isVectorImpl(int);
-
-    template <typename T>
-    static false_ isVectorImpl(...);
-
-  } // end namespace detail
-
-  template <class T>
-  struct IsVector
-  : decltype(detail::isVectorImpl<T>(int {}))
-  {};
 } // end namespace AMDiS

@@ -12,7 +12,7 @@ namespace AMDiS
     template <class T, class S=T>
     struct value
     {
-      typedef T result_type;
+      using result_type = T;
       value(S val = 0) : val(val) {}
 
       T& operator()(T& v) const
@@ -47,7 +47,7 @@ namespace AMDiS
     template <class T, class S=T>
     struct plus_value
     {
-      typedef T result_type;
+      using result_type = T;
       plus_value(S val) : val(val) {}
 
       T& operator()(T& v) const
@@ -63,7 +63,7 @@ namespace AMDiS
     template <class T, class S=T>
     struct minus_value
     {
-      typedef T result_type;
+      using result_type = T;
       minus_value(S val) : val(val) {}
 
       T& operator()(T& v) const
@@ -79,7 +79,7 @@ namespace AMDiS
     template <class T, class S=T>
     struct mult_value
     {
-      typedef T result_type;
+      using result_type = T;
       mult_value(S val) : val(val) {}
 
       T& operator()(T& v) const
@@ -95,7 +95,7 @@ namespace AMDiS
     template <class T, class S=T>
     struct div_value
     {
-      typedef T result_type;
+      using result_type = T;
       div_value(S val) : val(val) {}
 
       T& operator()(T& v)
@@ -107,6 +107,7 @@ namespace AMDiS
       S val;
     };
 
+    
     // -------------------------------------------------------------------------
     /// binary assigners
 
@@ -115,9 +116,9 @@ namespace AMDiS
     template <class T>
     struct assign
     {
-      typedef T result_type;
+      using result_type = T;
 
-      static T& apply(T& v, T const& v0)
+      constexpr static T& apply(T& v, T const& v0)
       {
         return (v = v0);
       }
@@ -131,9 +132,9 @@ namespace AMDiS
     template <class T>
     struct plus
     {
-      typedef T result_type;
+      using result_type = T;
 
-      static T& apply(T& v, T const& v0)
+      constexpr static T& apply(T& v, T const& v0)
       {
         return (v += v0);
       }
@@ -147,9 +148,9 @@ namespace AMDiS
     template <class T>
     struct multiplies
     {
-      typedef T result_type;
+      using result_type = T;
 
-      static T& apply(T& v, T const& v0)
+      constexpr static T& apply(T& v, T const& v0)
       {
         return (v *= v0);
       }
@@ -163,9 +164,9 @@ namespace AMDiS
     template <class T>
     struct divides
     {
-      typedef T result_type;
+      using result_type = T;
 
-      static T& apply(T& v, T const& v0)
+      constexpr static T& apply(T& v, T const& v0)
       {
         return (v /= v0);
       }
@@ -179,9 +180,9 @@ namespace AMDiS
     template <class T>
     struct max
     {
-      typedef T result_type;
+      using result_type = T;
 
-      static T& apply(T& v, T const& v0)
+      constexpr static T& apply(T& v, T const& v0)
       {
         return v = std::max(v, v0);
       }
@@ -195,9 +196,9 @@ namespace AMDiS
     template <class T>
     struct min
     {
-      typedef T result_type;
+      using result_type = T;
 
-      static T& apply(T& v, T const& v0)
+      constexpr static T& apply(T& v, T const& v0)
       {
         return v = std::min(v, v0);
       }

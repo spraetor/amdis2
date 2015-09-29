@@ -419,7 +419,7 @@ INSTALL(FILES ${HEADERS}
 	DESTINATION include/amdis/)
 list(APPEND deb_add_dirs "include/amdis")
 
-set(include_sub_dirs "config" "parallel" "nonlin" "est" "expressions2" 
+set(include_sub_dirs "config" "parallel" "nonlin" "est" "expressions" 
 					 "matrix_vector" "matrix_vector/expr" "operations" 
 					 "traits" "utility" "time" "solver" "solver/details"
 					 "solver/itl" "io" "io/detail")

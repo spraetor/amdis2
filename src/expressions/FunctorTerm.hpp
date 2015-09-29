@@ -10,6 +10,7 @@
 #include <expressions/LazyOperatorTerm.h>
 #include <traits/basic.hpp>
 #include <traits/traits_fwd.hpp>
+#include <traits/traits.hpp>
 #include <traits/meta_basic.hpp>
 
 #include "TermConcepts.hpp"
@@ -56,17 +57,17 @@ namespace AMDiS
     using value_type = typename std::result_of<F(Value_t<Term1>, Value_t<Terms>...)>::type;
 
     template <class... Terms_,
-              class = Requires_t<traits::IsCompatible<Types<Term1,Terms...>, Types<Terms_...>>>>
-                                 FunctorTerm(Terms_&&... terms_)
-                                   : Super(std::forward<Terms_>(terms_)...),
-                                     fct{}
+      class = Requires_t<traits::IsCompatible<Types<Term1,Terms...>, Types<Terms_...>>>>
+    FunctorTerm(Terms_&&... terms_)
+      : Super(std::forward<Terms_>(terms_)...),
+	fct{}
     {}
 
     template <class F_, class... Terms_,
-              class = Requires_t<traits::IsCompatible<Types<F,Term1,Terms...>, Types<F_,Terms_...>>>>
-                                 FunctorTerm(F_&& f, Terms_&&... terms_)
-                                   : Super(std::forward<Terms_>(terms_)...),
-                                     fct(f)
+      class = Requires_t<traits::IsCompatible<Types<F,Term1,Terms...>, Types<F_,Terms_...>>>>
+    FunctorTerm(F_&& f, Terms_&&... terms_)
+      : Super(std::forward<Terms_>(terms_)...),
+	fct(f)
     {}
 
     /// return the required quadrature degree to integrate term
@@ -138,8 +139,9 @@ namespace AMDiS
       using tag        = typename category<Term1>::tag;
       using value_type = typename std::result_of<F(Value_t<Term1>, Value_t<Terms>...)>::type;
       using size_type  = int;
-                                                          };
+    };
     /// \endcond
-                                                  }
+    
+  } // end namespace traits
 
 } // end namespace AMDiS

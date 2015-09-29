@@ -373,7 +373,6 @@ namespace AMDiS
     std::vector<T> vec;
   };
 
-
   template<>
   double DOFVector<double>::IntOnBoundary(
     BoundaryType boundaryType, Quadrature* q) const;
@@ -470,6 +469,27 @@ namespace AMDiS
   std::vector<DOFVector<double>*>* transform(DOFVector<Gradient_t<T>>* vec,
       std::vector<DOFVector<double>*>* res);
 
+  
+      
+  template <class Value>
+  inline size_t size(DOFVector<Value> const& v)
+  {
+    return v.getUsedSize();
+  }
+  
+  template <class Value>
+  inline size_t num_rows(DOFVector<Value> const& v)
+  {
+    return v.getUsedSize();
+  }
+  
+  template <class Value>
+  inline size_t num_cols(DOFVector<Value> const& v)
+  {
+    return 1;
+  }
+  
+  
 } // end namespace AMDiS
 
 

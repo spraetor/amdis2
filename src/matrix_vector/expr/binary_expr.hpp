@@ -8,7 +8,6 @@
 #include "base_expr.hpp" // for shaped_expr
 
 #include <operations/functors.hpp>
-#include <traits/mult_type.hpp>
 #include <Math.h>
 
 namespace AMDiS
@@ -22,7 +21,7 @@ namespace AMDiS
     using expr_base  = VectorExpr<Self>;
 
     using value_type = Value_t<E1>;
-    using size_type  = traits::max_size_type<E1,E2>;
+    using size_type  = traits::MaxSizeType<E1,E2>;
     using expr1_type = E1;
     using expr2_type = E2;
 
@@ -35,7 +34,7 @@ namespace AMDiS
     VectorBinaryExpr(expr1_type const& A, expr2_type const& B)
       : expr1(A), expr2(B)
     {
-      assert( size(A) == size(B) );
+      TEST_EXIT_DBG( size(A) == size(B) )("Sizes do not match!\n");
     }
 
     /// access the elements of an expr.
@@ -54,6 +53,7 @@ namespace AMDiS
     {
       return expr1;
     }
+    
     expr2_type const& get_second() const
     {
       return expr2;
@@ -96,6 +96,7 @@ namespace AMDiS
       using tag = typename category<value_type>::tag;
     };
     /// \endcond
-  }
+    
+  } // end namespace traits
 
 } // end namespace AMDiS

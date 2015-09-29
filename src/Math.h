@@ -10,39 +10,40 @@
 #include <boost/math/special_functions/fpclassify.hpp>
 
 #include "AMDiS_fwd.h"
-#include "traits/scalar_types.hpp"
+#include <traits/basic.hpp>
+#include <traits/scalar_types.hpp>
 
 namespace AMDiS
 {
   namespace math
   {
     template <class T>
-    constexpr typename std::enable_if<traits::is_arithmetic<T>::value, T>::type
-    abs(T a)
+    Requires_t<concepts::Arithmetic<T>, T>
+    constexpr abs(T a)
     {
       return  a >= 0 ? a : -a;
     }
 
 
     template <class T>
-    constexpr typename std::enable_if<traits::is_arithmetic<T>::value, T>::type
-    sqr(T a)
+    Requires_t<concepts::Arithmetic<T>, T>
+    constexpr sqr(T a)
     {
       return a*a;
     }
 
 
     template <class T0, class T1>
-    constexpr typename std::common_type<T0, T1>::type
-    min(T0 a, T1 b)
+    Common_t<T0, T1>
+    constexpr min(T0 a, T1 b)
     {
       return a > b ? b : a;
     }
 
 
     template <class T0, class T1>
-    constexpr typename std::common_type<T0, T1>::type
-    max(T0 a, T1 b)
+    Common_t<T0, T1>
+    constexpr max(T0 a, T1 b)
     {
       return a > b ? a : b;
     }

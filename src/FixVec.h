@@ -241,9 +241,9 @@ namespace AMDiS
   template <class T>
   struct GradientType
   {
-    typedef WorldVector<T> type;
+    using type = WorldVector<T>;
 
-    static DenseVector<double> getValues(type& t)
+    static DenseVector<double> getValues(type const& t)
     {
       DenseVector<double> result(t.getSize());
       for (size_t i = 0; i < t.getSize(); i++)
@@ -255,9 +255,9 @@ namespace AMDiS
   template <class T>
   struct GradientType<WorldVector<T>>
   {
-    typedef WorldVector<WorldVector<T>> type;
+    using type = WorldVector<WorldVector<T>>;
 
-    static DenseVector<double> getValues(type& t)
+    static DenseVector<double> getValues(type const& t)
     {
       DenseVector<double> result(sqr(t.getSize()));
       for (size_t i = 0; i < t.getSize(); i++)
@@ -273,9 +273,9 @@ namespace AMDiS
   template <class T>
   struct D2Type
   {
-    typedef WorldMatrix<T> type;
+    using type = WorldMatrix<T>;
 
-    static DenseVector<double> getValues(type& t)
+    static DenseVector<double> getValues(type const& t)
     {
       DenseVector<double> result(t.numRows() * t.numCols());
       for (size_t i = 0; i < t.numRows(); i++)

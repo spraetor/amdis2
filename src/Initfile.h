@@ -10,15 +10,15 @@
 
 #include <boost/tokenizer.hpp>
 #include <boost/property_tree/ptree.hpp>
-#include <boost/property_tree/json_parser.hpp>
 
 #include <boost/type_traits.hpp>
 
 // a parser for arithmetic expressions
 #include "muParser.h"
-#include "traits/basic.hpp"
-#include "traits/scalar_types.hpp"
-#include "traits/meta_basic.hpp"
+#include <traits/basic.hpp>
+#include <traits/scalar_types.hpp>
+#include <traits/concepts_base.hpp>
+#include <traits/meta_basic.hpp>
 
 #include "Math.h"
 
@@ -37,7 +37,7 @@ namespace AMDiS
     };
 
     template <class T>
-    struct Convert<T, typename std::enable_if<traits::is_arithmetic<T>::value>::type>
+    struct Convert<T, Requires_t<concepts::Arithmetic<T>> >
     {
       static void eval(const std::string valStr, T& value)
       {
@@ -54,7 +54,7 @@ namespace AMDiS
 
     // convert string to vector
     template <class T>
-    struct Convert<T, typename std::enable_if<IsVector<T>::value>::type>
+    struct Convert<T, Requires_t<concepts::Vector<T>> >
     {
       static void eval(const std::string valStr, T& value)
       {

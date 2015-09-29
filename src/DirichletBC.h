@@ -8,7 +8,7 @@
 #include "OperatorTerm.h"
 #include "DOFVector.h"
 
-#include "expressions2/TermGenerator.hpp"
+#include "expressions/TermGenerator.hpp"
 
 namespace AMDiS
 {
