@@ -102,7 +102,7 @@ namespace compositeFEM
     }
 
     /// Adapts mesh to the appropriate element sizes.
-    void adaptMesh(AdaptInfo* adaptInfo);
+    void adaptMesh(AdaptInfo& adaptInfo);
 
     /// Get sizeInterf.
     inline double getSizeInterf()

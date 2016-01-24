@@ -1,30 +1,8 @@
-/******************************************************************************
- *
- * AMDiS - Adaptive multidimensional simulations
- *
- * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
- * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
- *
- * Authors:
- * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
- *
- * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
- * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
- *
- *
- * This file is part of AMDiS
- *
- * See also license.opensource.txt in the distribution.
- *
- ******************************************************************************/
-
-
 #include "time/RosenbrockStationary.h"
 #include "io/VtkWriter.h"
 #include "ProblemStat.h"
 #include "SystemVector.h"
-// #include "solver/OEMSolver.h"
-#include "Debug.h"
+// #include "Debug.h"
 
 #ifdef HAVE_PARALLEL_DOMAIN_AMDIS
 #include "parallel/MeshDistributor.h"
@@ -54,7 +32,7 @@ namespace AMDiS
     }
   }
 
-  Flag RosenbrockStationary::oneIteration(AdaptInfo* adaptInfo, Flag toDo)
+  Flag RosenbrockStationary::oneIteration(AdaptInfo& adaptInfo, Flag toDo)
   {
     Flag flag = 0, markFlag = 0;
 
@@ -85,7 +63,7 @@ namespace AMDiS
   }
 
 
-  Flag RosenbrockStationary::stageIteration(AdaptInfo* adaptInfo, Flag flag,
+  Flag RosenbrockStationary::stageIteration(AdaptInfo& adaptInfo, Flag flag,
       bool asmMatrix, bool asmVector)
   {
     FUNCNAME("RosenbrockStationary::stageIteration()");
@@ -169,21 +147,21 @@ namespace AMDiS
   }
 
 
-  void RosenbrockStationary::estimateTimeError(AdaptInfo* adaptInfo)
+  void RosenbrockStationary::estimateTimeError(AdaptInfo& adaptInfo)
   {
     for (int i = 0; i < nComponents; i++)
     {
       (*(lowSol->getDOFVector(i))) -= (*(newUn->getDOFVector(i)));
-      adaptInfo->setTimeEstSum(lowSol->getDOFVector(i)->L2Norm(), i+componentShift);
+      adaptInfo.setTimeEstSum(lowSol->getDOFVector(i)->L2Norm(), i+componentShift);
     }
   }
 
 
-  void RosenbrockStationary::acceptTimestep(AdaptInfo* adaptInfo)
+  void RosenbrockStationary::acceptTimestep(AdaptInfo& adaptInfo)
   {
     *solution = *newUn;
     *unVec = *newUn;
-    oldTime = adaptInfo->getTime();
+    oldTime = adaptInfo.getTime();
   }
 
 

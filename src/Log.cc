@@ -15,7 +15,6 @@
 
 namespace AMDiS
 {
-
   const char* funcName = NULL;
 
 #ifdef HAVE_PARALLEL_DOMAIN_AMDIS
@@ -50,65 +49,7 @@ namespace AMDiS
       std::cin >> line;
     }
   }
-
-
-  // void Msg::change_out(std::ostream  *fp)
-  // {
-  //     FUNCNAME("Msg::change_out()");
-  //
-  //     if (fp) {
-  //       if (out && *out != std::cout && *out != std::cerr) {
-  //         dynamic_cast< std::ofstream*>(out)->close();
-  //         delete out;
-  //       }
-  //
-  //       out = fp;
-  //     } else {
-  //       ERROR("file pointer is pointer to nil;\n");
-  //       ERROR("use previous stream for errors furthermore\n");
-  //     }
-  // }
-
-
-  // void Msg::change_error_out(std::ofstream *fp)
-  // {
-  //     FUNCNAME("Msg::change_error_out()");
-  //
-  //     if (fp) {
-  //       if (error && *error != std::cout && *error != std::cerr) {
-  //         dynamic_cast< std::ofstream*>(error)->close();
-  //         delete error;
-  //       }
-  //
-  //       error = fp;
-  //     } else {
-  //       ERROR("file pointer is pointer to nil;\n");
-  //       ERROR("use previous stream for errors furthermore\n");
-  //     }
-  // }
-
-
-  // void Msg::open_error_file(const char *filename, OPENMODE type)
-  // {
-  //     FUNCNAME("Msg::open_error_file()");
-  //     std::ofstream *fp;
-  //
-  //     if (filename && (fp = new std::ofstream(filename, type))) {
-  //       if (error && *error != std::cout && *error != std::cerr) {
-  // 	dynamic_cast< std::ofstream*>(error)->close();
-  // 	delete error;
-  //       }
-  //
-  //       error = fp;
-  //     } else {
-  //       if (filename)
-  // 	ERROR("can not open %s;\n", filename);
-  //       else
-  // 	ERROR("no filename specified;\n");
-  //       ERROR("use previous stream for errors furthermore\n");
-  //     }
-  // }
-
+  
 
   void Msg::print_funcname(const char* funcName)
   {

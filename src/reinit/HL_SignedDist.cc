@@ -29,12 +29,12 @@ namespace reinit
   const Flag HL_SignedDist::VEL_EXT                = 0X01L;
   const Flag HL_SignedDist::VEL_EXT_FROM_VEL_FIELD = 0X02L;
 
-  void HL_SignedDist::calcSignedDistFct(AdaptInfo* adaptInfo_,
+  void HL_SignedDist::calcSignedDistFct(AdaptInfo& adaptInfo_,
                                         const DOFVector<double>* lS_DOF_,
                                         DOFVector<double>* sD_DOF_,
                                         ElementFunction<double>* elFct)
   {
-    adaptInfo = adaptInfo_;
+    adaptInfo = &adaptInfo_;
 
     if (elFct == NULL)
     {
@@ -79,7 +79,7 @@ namespace reinit
   }
 
 
-  void HL_SignedDist::calcSignedDistFct(AdaptInfo* adaptInfo_, DOFVector<double>* lS_DOF_)
+  void HL_SignedDist::calcSignedDistFct(AdaptInfo& adaptInfo_, DOFVector<double>* lS_DOF_)
   {
     TEST_EXIT(lS_DOF_)("illegal level set function lS_DOF_ !\n");
 
@@ -93,7 +93,7 @@ namespace reinit
   }
 
 
-  void HL_SignedDist::calcVelocityExt(AdaptInfo* adaptInfo_,
+  void HL_SignedDist::calcVelocityExt(AdaptInfo& adaptInfo_,
                                       DOFVector<double>* origVel_DOF_,
                                       DOFVector<double>* vel_DOF_,
                                       const DOFVector<double>* lS_DOF_,
@@ -128,7 +128,7 @@ namespace reinit
   }
 
 
-  void HL_SignedDist::calcVelocityExt(AdaptInfo* adaptInfo_,
+  void HL_SignedDist::calcVelocityExt(AdaptInfo& adaptInfo_,
                                       DOFVector<double>* vel_DOF_,
                                       DOFVector<double>* lS_DOF_,
                                       bool calcSDFct,
@@ -174,7 +174,7 @@ namespace reinit
   }
 
 
-  void HL_SignedDist::calcVelocityExt(AdaptInfo* adaptInfo_,
+  void HL_SignedDist::calcVelocityExt(AdaptInfo& adaptInfo_,
                                       std::vector<DOFVector<double> *> origVel_DOF_,
                                       std::vector<DOFVector<double> *> vel_DOF_,
                                       const DOFVector<double>* lS_DOF_,
@@ -209,7 +209,7 @@ namespace reinit
   }
 
 
-  void HL_SignedDist::calcVelocityExt(AdaptInfo* adaptInfo_,
+  void HL_SignedDist::calcVelocityExt(AdaptInfo& adaptInfo_,
                                       std::vector<DOFVector<double> *> vel_DOF_,
                                       DOFVector<double>* lS_DOF_,
                                       bool calcSDFct,
@@ -263,7 +263,7 @@ namespace reinit
   }
 
 
-  void HL_SignedDist::calcVelocityExtFromVelocityField(AdaptInfo* adaptInfo_,
+  void HL_SignedDist::calcVelocityExtFromVelocityField(AdaptInfo& adaptInfo_,
       std::vector<DOFVector<double> *>& velField_,
       DOFVector<double>* vel_DOF_,
       const DOFVector<double>* lS_DOF_,
@@ -298,7 +298,7 @@ namespace reinit
   }
 
 
-  void HL_SignedDist::calcVelocityExtFromVelocityField(AdaptInfo* adaptInfo_,
+  void HL_SignedDist::calcVelocityExtFromVelocityField(AdaptInfo& adaptInfo_,
       std::vector<DOFVector<double> *>& velField_,
       DOFVector<double>* vel_DOF_,
       DOFVector<double>* lS_DOF_,

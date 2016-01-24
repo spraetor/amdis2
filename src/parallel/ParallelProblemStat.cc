@@ -99,7 +99,7 @@ namespace AMDiS
     }
 
 
-    void ParallelProblemStat::buildAfterCoarsen(AdaptInfo* adaptInfo, Flag flag,
+    void ParallelProblemStat::buildAfterCoarsen(AdaptInfo& adaptInfo, Flag flag,
         bool assembleMatrix,
         bool assembleVector)
     {

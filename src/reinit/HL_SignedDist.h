@@ -130,7 +130,7 @@ namespace reinit
      * If elFct != NULL, this ElementFunction is used as level set function.
      * In this case: only calculation of distance function (positive sign) !
      */
-    void calcSignedDistFct(AMDiS::AdaptInfo* adaptInfo_,
+    void calcSignedDistFct(AMDiS::AdaptInfo& adaptInfo_,
                            const AMDiS::DOFVector<double>* lS_DOF_,
                            AMDiS::DOFVector<double>* sD_DOF_,
                            AMDiS::ElementFunction<double>* elFct = NULL);
@@ -140,7 +140,7 @@ namespace reinit
      * implicitly by the zero level set of lS_DOF_. The result
      * is stored in lS_DOF_.
      */
-    void calcSignedDistFct(AMDiS::AdaptInfo* adaptInfo_,
+    void calcSignedDistFct(AMDiS::AdaptInfo& adaptInfo_,
                            AMDiS::DOFVector<double>* lS_DOF_);
 
     /**
@@ -155,7 +155,7 @@ namespace reinit
      * If elFct != NULL, this ElementFunction is used as level set function.
      * In this case: only calculation of distance function (positive sign) !
      */
-    void calcVelocityExt(AMDiS::AdaptInfo* adaptInfo_,
+    void calcVelocityExt(AMDiS::AdaptInfo& adaptInfo_,
                          AMDiS::DOFVector<double>* origVel_DOF_,
                          AMDiS::DOFVector<double>* vel_DOF_,
                          const AMDiS::DOFVector<double>* lS_DOF_,
@@ -175,7 +175,7 @@ namespace reinit
      * If elFct != NULL, this ElementFunction is used as level set function.
      * In this case: only calculation of distance function (positive sign) !
      */
-    void calcVelocityExt(AMDiS::AdaptInfo* adaptInfo_,
+    void calcVelocityExt(AMDiS::AdaptInfo& adaptInfo_,
                          AMDiS::DOFVector<double>* vel_DOF_,
                          AMDiS::DOFVector<double>* lS_DOF_,
                          bool calcSDFct,
@@ -194,7 +194,7 @@ namespace reinit
      * If elFct != NULL, this ElementFunction is used as level set function.
      * In this case: only calculation of distance function (positive sign) !
      */
-    void calcVelocityExt(AMDiS::AdaptInfo* adaptInfo_,
+    void calcVelocityExt(AMDiS::AdaptInfo& adaptInfo_,
                          std::vector<AMDiS::DOFVector<double> *> origVel_DOF_,
                          std::vector<AMDiS::DOFVector<double> *> vel_DOF_,
                          const AMDiS::DOFVector<double>* lS_DOF_,
@@ -214,7 +214,7 @@ namespace reinit
      * If elFct != NULL, this ElementFunction is used as level set function.
      * In this case: only calculation of distance function (positive sign) !
      */
-    void calcVelocityExt(AMDiS::AdaptInfo* adaptInfo_,
+    void calcVelocityExt(AMDiS::AdaptInfo& adaptInfo_,
                          std::vector<AMDiS::DOFVector<double> *> vel_DOF_,
                          AMDiS::DOFVector<double>* lS_DOF_,
                          bool calcSDFct,
@@ -234,7 +234,7 @@ namespace reinit
      * In this case: only calculation of distance function (positive sign) !
      */
     void calcVelocityExtFromVelocityField(
-      AMDiS::AdaptInfo* adaptInfo_,
+      AMDiS::AdaptInfo& adaptInfo_,
       std::vector<AMDiS::DOFVector<double> *>& velField_,
       AMDiS::DOFVector<double>* vel_DOF_,
       const AMDiS::DOFVector<double>* lS_DOF_,
@@ -256,7 +256,7 @@ namespace reinit
      * In this case: only calculation of distance function (positive sign) !
      */
     void calcVelocityExtFromVelocityField(
-      AMDiS::AdaptInfo* adaptInfo_,
+      AMDiS::AdaptInfo& adaptInfo_,
       std::vector<AMDiS::DOFVector<double> *>& velField_,
       AMDiS::DOFVector<double>* vel_DOF_,
       AMDiS::DOFVector<double>* lS_DOF_,
@@ -272,7 +272,7 @@ namespace reinit
         "SignedDist->level set fct output",
         feSpace->getMesh(),
         const_cast<AMDiS::DOFVector<double> *>(lS_DOF));
-      fileWriter->writeFiles(adaptInfo, false);
+      fileWriter->writeFiles(*adaptInfo, false);
 
       delete fileWriter;
     };
@@ -286,7 +286,7 @@ namespace reinit
         "SignedDist->result output",
         feSpace->getMesh(),
         sD_DOF);
-      fileWriter->writeFiles(adaptInfo, false);
+      fileWriter->writeFiles(*adaptInfo, false);
 
       delete fileWriter;
     };
@@ -326,7 +326,7 @@ namespace reinit
       AMDiS::FileWriter* fileWriter = new AMDiS::FileWriter("SignedDist->boundary initialization output",
           feSpace->getMesh(),
           sD_DOF);
-      fileWriter->writeFiles(adaptInfo, false);
+      fileWriter->writeFiles(*adaptInfo, false);
 
       delete fileWriter;
     };

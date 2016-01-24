@@ -75,7 +75,7 @@ namespace AMDiS
       virtual ~FileWriter();
 
       /// Implementation of FileWriterInterface::writeFiles().
-      virtual void writeFiles(AdaptInfo* adaptInfo, bool force,
+      virtual void writeFiles(AdaptInfo& adaptInfo, bool force,
                               int level = -1,
                               Flag traverseFlag = Mesh::CALL_LEAF_EL,
                               bool (*writeElem)(ElInfo*) = NULL) override;
@@ -90,7 +90,7 @@ namespace AMDiS
         return writeParaViewFormat;
       }
 
-      std::string getParaViewFilename(AdaptInfo* info) const;
+      std::string getParaViewFilename(AdaptInfo& info) const;
 
       const std::vector<std::string>& getSolutionNames() const
       {
@@ -219,7 +219,7 @@ namespace AMDiS
                                    SystemVector* vecs);
 
     template<>
-    void FileWriter<double>::writeFiles(AdaptInfo* adaptInfo,
+    void FileWriter<double>::writeFiles(AdaptInfo& adaptInfo,
                                         bool force,
                                         int level,
                                         Flag flag,

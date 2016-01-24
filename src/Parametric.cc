@@ -8,7 +8,7 @@ namespace AMDiS
   ElInfo* ParametricFirstOrder::addParametricInfo(ElInfo* elInfo)
   {
     elInfo->setParametric(true);
-    int dow = Global::getGeo(WORLD);
+    const int dow = Global::getGeo(WORLD);
     Element* element = elInfo->getElement();
     const DegreeOfFreedom** dof = element->getDof();
 

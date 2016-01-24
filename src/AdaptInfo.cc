@@ -8,20 +8,6 @@ namespace AMDiS
 {
 
   AdaptInfo::ScalContent::ScalContent(std::string prefix)
-    : est_sum(0.0),
-      est_t_sum(0.0),
-      est_max(0.0),
-      est_t_max(0.0),
-      fac_max(0.0),
-      fac_sum(1.0),
-      spaceTolerance(0.0),
-      timeTolerance(0.0),
-      timeRelativeTolerance(0.0),
-      timeErrLow(0.0),
-      coarsenAllowed(0),
-      refinementAllowed(1),
-      refineBisections(1),
-      coarseBisections(1)
   {
     Parameters::get(prefix + "->tolerance", spaceTolerance);
     Parameters::get(prefix + "->time tolerance", timeTolerance);
@@ -41,29 +27,7 @@ namespace AMDiS
 
   AdaptInfo::AdaptInfo(std::string name_, int size)
     : name(name_),
-      spaceIteration(-1),
-      maxSpaceIteration(-1),
-      timestepIteration(0),
-      maxTimestepIteration(30),
-      timeIteration(0),
-      maxTimeIteration(30),
-      time(0.0),
-      startTime(0.0),
-      endTime(1.0),
-      timestep(0.0),
-      lastProcessedTimestep(0.0),
-      minTimestep(0.0),
-      maxTimestep(1.0),
-      timestepNumber(0),
-      nTimesteps(0),
-      solverIterations(0),
-      maxSolverIterations(0),
-      solverTolerance(1e-8),
-      solverResidual(0.0),
-      globalTimeTolerance(1.0),
-      scalContents(size),
-      deserialized(false),
-      rosenbrockMode(false)
+      scalContents(size)
   {
     // init();
     Parameters::get(name + "->start time", startTime);

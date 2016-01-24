@@ -126,7 +126,7 @@ namespace AMDiS
 
       PetscSolverNavierStokes(std::string name);
 
-      void solvePetscMatrix(SystemVector& vec, AdaptInfo* adaptInfo);
+      void solvePetscMatrix(SystemVector& vec, AdaptInfo& adaptInfo);
 
       void setStokesData(double* invTauPtr, SystemVector* vec, double* nu1_=NULL, double* nu2_=NULL, double* rho1_=NULL, double* rho2_=NULL)
       {

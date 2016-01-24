@@ -6,40 +6,30 @@
 
 namespace AMDiS
 {
-
   /// preconditioner structure that combines various block-preconditioners
   template <class MatrixType>
-  struct TriangularPreconditioner : CombinedPreconditioner<MatrixType>
+  struct TriangularPreconditioner : public CombinedPreconditioner<MatrixType>
   {
-    typedef CombinedPreconditioner<MatrixType>                         super;
-    typedef ITL_PreconditionerBase<MatrixType, MTLTypes::MTLVector>    precon_base;
-    typedef TriangularPreconditioner<MatrixType>                       self;
+    using Super = CombinedPreconditioner<MatrixType>;
+    using Self  = TriangularPreconditioner;
+    
+    using precon_base = ITL_PreconditionerBase<MatrixType, MTLTypes::MTLVector>;
 
     struct Creator : public CreatorInterfaceName<precon_base>
     {
-      Creator(int l0)
-      {
-        l.push_back(l0);
-      };
+      /// Constructor for a list of integer arguments, representing the sizes
+      /// of the sub-blocks
+      template <class... Ints,
+	class = Requires_t< and_< std::is_convertible<Ints, int>... > >>
+      Creator(Ints... ls) : l{int(ls)...} {}
 
-      Creator(int l0, int l1)
-      {
-        l.push_back(l0);
-        l.push_back(l1);
-      };
-
-      Creator(int l0, int l1, int l2)
-      {
-        l.push_back(l0);
-        l.push_back(l1);
-        l.push_back(l2);
-      };
-
-      Creator(const std::vector<int>& l) : l(l) {}
+      /// Constructor for a vector of integers, representing the sizes
+      /// of the sub-blocks
+      Creator(std::vector<int> const& l) : l(l) {}
 
       virtual precon_base* create() override
       {
-        return new self(l);
+        return new Self(l);
       }
 
     private:
@@ -47,16 +37,16 @@ namespace AMDiS
     };
 
     /// Constructor
-    TriangularPreconditioner(const std::vector<int>& parts_)
-      : super(parts_)
-    { }
+    TriangularPreconditioner(std::vector<int> const& parts_)
+      : Super(parts_)
+    {}
 
     /// Apply the preconditioners block-wise
     /**
      * solve Px = b, with
      * P = diag(P1, P2, ...)
      **/
-    virtual void solve(const MTLTypes::MTLVector& b,
+    virtual void solve(MTLTypes::MTLVector const& b,
                        MTLTypes::MTLVector& x) const override
     {
       FUNCNAME("CombinedPreconditioner::solve()");
@@ -66,7 +56,7 @@ namespace AMDiS
       c.change_dim(num_rows(b));
       set_to_zero(c);
 
-      for (size_t i = super::precon.size()-1; i >= 0; i--)
+      for (int i = int{super::precon.size()}-1; i >= 0; --i)
       {
         MTLTypes::MTLVector y_i(b[super::rows[i]]);
         if (i < super::precon.size()-1)

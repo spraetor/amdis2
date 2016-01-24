@@ -45,7 +45,7 @@ namespace AMDiS
   public:
     using Super::set;
 
-    // ----- constructors / assignment -------------------------------------------
+    // ----- constructors / assignment -----------------------------------------
   public:
     /// \brief Default constructor.
     /// allocates memory for a matrix of size \p r x \p c
@@ -127,7 +127,7 @@ namespace AMDiS
       }
     }
 
-    // ----- element access functions  -------------------------------------------
+    // ----- element access functions  -----------------------------------------
   public:
     /// Access to i-th matrix row.
     pointer operator[](size_type i)
@@ -160,7 +160,8 @@ namespace AMDiS
     value_type& at(size_type i, size_type j)
     {
       TEST_EXIT_DBG(i < _rows && j < _cols)
-      ("Index (" << i << ", " << j << ") out of range [0, " << _rows << ")x[0," << _cols << ")!\n");
+      ("Index (" << i << ", " << j << ") out of range "
+	<< "[0, " << _rows << ")x[0," << _cols << ")!\n");
       return this->operator()(i,j);
     }
 
@@ -168,7 +169,8 @@ namespace AMDiS
     value_type const& at(size_type i, size_type j) const
     {
       TEST_EXIT_DBG(i < _rows && j < _cols)
-      ("Index (" << i << ", " << j << ") out of range [0, " << _rows << ")x[0," << _cols << ")!\n");
+      ("Index (" << i << ", " << j << ") out of range "
+       << "[0, " << _rows << ")x[0," << _cols << ")!\n");
       return this->operator()(i,j);
     }
 
@@ -193,7 +195,7 @@ namespace AMDiS
         this->operator()(i,i) = v;
     }
 
-    // ---------------------------------------------------------------------------
+    // -------------------------------------------------------------------------
   private:
     size_type _rows;
     size_type _cols;

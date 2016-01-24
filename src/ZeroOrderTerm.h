@@ -4,6 +4,7 @@
 
 #include "AMDiS_fwd.h"
 #include "OperatorTerm.h"
+#include "traits/traits.hpp"
 
 namespace AMDiS
 {
@@ -26,7 +27,7 @@ namespace AMDiS
     }
 
   private:
-    virtual void getCImpl(ElInfo const* elInfo, int nPoints, DenseVector<double>& C) const = 0;
+    virtual void getCImpl(ElInfo const*, int, DenseVector<double>&) const = 0;
   };
 
 
@@ -34,22 +35,29 @@ namespace AMDiS
 
 
   template <class Term>
-  struct GenericZeroOrderTerm : public GenericOperatorTerm<Term, 0>
+  class GenericZeroOrderTerm : public GenericOperatorTerm<Term, 0>
   {
-    template <class Term_>
+    using Super = GenericOperatorTerm<Term, 0>;
+
+  public:
+    /// Constructor.
+    template <class Term_, 
+	      class = Requires_t<concepts::Compatible<Term, Term_>>>
     GenericZeroOrderTerm(Term_&& term_)
-      : GenericOperatorTerm<Term, 0>(std::forward<Term_>(term_))
+      : Super(std::forward<Term_>(term_))
     {}
 
   private:
-    /// Implemetation of ZeroOrderTerm::getC().
-    virtual void getCImpl(ElInfo const* elInfo, int nPoints, DenseVector<double>& C) const override
+    /// Implemetation of \ref ZeroOrderTerm::getC().
+    virtual void getCImpl(ElInfo const* elInfo, 
+			  int nPoints, 
+			  DenseVector<double>& C) const override
     {
       for (int iq = 0; iq < nPoints; iq++)
         C[iq] += this->term[iq];
     }
 
-    /// Implemetation of OperatorTerm::eval().
+    /// Implemetation of \ref OperatorTerm::eval().
     virtual void evalImpl(int nPoints,
                           DenseVector<double> const& uhAtQP,
                           DenseVector<WorldVector<double>> const& grdUhAtQP,
@@ -61,30 +69,5 @@ namespace AMDiS
         result[iq] += fac * this->term[iq] * uhAtQP[iq];
     }
   };
-
-  // ---------------------------------------------------------------------------
-#if 0
-  template <class Term>
-  struct ZOTWrapper
-  {
-    using OperatorTermType = GenericZeroOrderTerm<Term>;
-    ZOTWrapper(OperatorTermType* ot_) : ot(ot_) {}
-
-    OperatorTermType* getOperatorTerm()
-    {
-      return ot;
-    }
-    auto getTerm() RETURNS( this->ot->term )
-
-  private:
-    OperatorTermType* ot;
-  };
-
-
-  template <class C>
-  ZOTWrapper<Decay_t<C>> zot(C&& c)
-  {
-    return {new GenericZeroOrderTerm<Decay_t<C>>(std::forward<C>(c))};
-  }
-#endif
+  
 } // end namespace AMDiS

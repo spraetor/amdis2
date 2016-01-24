@@ -344,9 +344,9 @@ namespace AMDiS
       * Returns the problem with the given number. If only one problem
       * is managed by this master problem, the number hasn't to be given.
       */
-      virtual ProblemStatType* getProblem(int number = 0)
+      virtual ProblemStatType& getProblem(int number = 0)
       {
-        return problems[number];
+        return *problems[number];
       }
 
       /// Returns \ref meshes[i]

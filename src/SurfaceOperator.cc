@@ -69,7 +69,7 @@ namespace AMDiS
   }
 
 
-  void SurfaceOperator::getElementMatrix(const ElInfo* elInfo,
+  void SurfaceOperator::getElementMatrix(ElInfo const* elInfo,
                                          ElementMatrix& userMat,
                                          double factor = 1.0)
   {
@@ -93,7 +93,7 @@ namespace AMDiS
   }
 
 
-  void SurfaceOperator::getElementVector(const ElInfo* elInfo,
+  void SurfaceOperator::getElementVector(ElInfo const* elInfo,
                                          DenseVector<double>& userVec,
                                          double factor = 1.0)
   {

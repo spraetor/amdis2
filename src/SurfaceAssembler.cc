@@ -10,8 +10,8 @@ namespace AMDiS
 {
   /// Creates a SurfaceAssembler conforming to operate for the given \ref coords.
   SurfaceAssembler::SurfaceAssembler(Operator* operat,
-                                     const FiniteElemSpace* rowFeSpace,
-                                     const FiniteElemSpace* colFeSpace,
+                                     FiniteElemSpace const* rowFeSpace,
+                                     FiniteElemSpace const* colFeSpace,
                                      VectorOfFixVecs<DimVec<double>>& coords)
     : Assembler(operat, rowFeSpace, colFeSpace, -1),
       coords_(coords)
@@ -78,7 +78,7 @@ namespace AMDiS
   }
 
 
-  bool SurfaceAssembler::initElementVector(const ElInfo* elInfo)
+  bool SurfaceAssembler::initElementVector(ElInfo const* elInfo)
   {
     if (Assembler::initElementVector(elInfo))
     {

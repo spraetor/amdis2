@@ -11,7 +11,7 @@ namespace AMDiS
   /// A wrapper for AMDiS::SolverMatrix to be used in MTL/ITL solvers
   struct BlockMTLMatrix
   {
-    typedef mtl::Collection<MTLTypes::MTLMatrix>::size_type size_type;
+    using size_type = mtl::Collection<MTLTypes::MTLMatrix>::size_type;
 
     size_type n; // overall number of rows
     size_type m; // overall number of columns
@@ -20,16 +20,18 @@ namespace AMDiS
     size_t n_cols; // number of column blocks
 
     BlockMTLMatrix()
-      : initialized(false), A(NULL)
+      : initialized(false), 
+	A(NULL)
     { }
 
-    BlockMTLMatrix(const SolverMatrix<Matrix<DOFMatrix*>>& A_)
-      : initialized(false), A(&A_)
+    BlockMTLMatrix(SolverMatrix<Matrix<DOFMatrix*>> const& A_)
+      : initialized(false), 
+	A(&A_)
     {
       init();
     }
 
-    void setMatrix(const SolverMatrix<Matrix<DOFMatrix*>>& A_)
+    void setMatrix(SolverMatrix<Matrix<DOFMatrix*>> const& A_)
     {
       A = &A_;
       init();
@@ -66,26 +68,27 @@ namespace AMDiS
       initialized = true;
     }
 
-    inline const mtl::irange& getRowRange(size_t i) const
+    mtl::irange const& getRowRange(size_t i) const
     {
       return r_rows[i];
     }
 
-    inline const mtl::irange& getColRange(size_t i) const
+    mtl::irange const& getColRange(size_t i) const
     {
       return r_cols[i];
     }
 
-    const DOFMatrix::base_matrix_type& getSubMatrix(size_t i, size_t j) const
+    DOFMatrix::base_matrix_type const& getSubMatrix(size_t i, size_t j) const
     {
       return A->getSubMatrix(i, j);
     }
 
     /// perform blockwise multiplication A*b -> x
-    template <typename VectorIn, typename VectorOut, typename Assign>
-    void mult(const VectorIn& b, VectorOut& x, Assign) const
+    template <class VectorIn, class VectorOut, class Assign>
+    void mult(VectorIn const& b, VectorOut& x, Assign) const
     {
-      TEST_EXIT_DBG(initialized)("Block matrix not initialized. Assign a SolverMatrix first!\n");
+      TEST_EXIT_DBG(initialized)
+	("Block matrix not initialized. Assign a SolverMatrix first!\n");
 
       for (size_t i = 0; i < n_rows; i++)
       {
@@ -110,17 +113,18 @@ namespace AMDiS
       }
     }
 
-    template <typename VectorIn>
-    mtl::vector::mat_cvec_multiplier<BlockMTLMatrix, VectorIn> operator*(const VectorIn& v) const
+    template <class VectorIn>
+    mtl::vector::mat_cvec_multiplier<BlockMTLMatrix, VectorIn> 
+    operator*(VectorIn const& v) const
     {
-      return mtl::vector::mat_cvec_multiplier<BlockMTLMatrix, VectorIn>(*this, v);
+      return {*this, v};
     }
 
   protected:
     bool initialized;
 
   private:
-    const SolverMatrix<Matrix<DOFMatrix*>>* A;
+    SolverMatrix<Matrix<DOFMatrix*>> const* A;
     std::vector<mtl::irange> r_rows, r_cols;
   };
 
@@ -132,7 +136,9 @@ namespace AMDiS
     { }
 
     template<typename M>
-    void fillMatrix(BlockMTLMatrix& m, const SolverMatrix<Matrix<DOFMatrix*>>& source, MapperBase<M>& mapper)
+    void fillMatrix(BlockMTLMatrix& m, 
+		    SolverMatrix<Matrix<DOFMatrix*>> const& source, 
+		    MapperBase<M>& mapper)
     {
       m.setMatrix(source);
     }
@@ -145,24 +151,24 @@ namespace AMDiS
     template <>
     struct category<BlockMTLMatrix>
     {
-      typedef tag::matrix  tag;
-      typedef MTLTypes::value_type  value_type;
-      typedef MTLTypes::size_type   size_type;
+      using tag        = tag::matrix;
+      using value_type = MTLTypes::value_type;
+      using size_type  = MTLTypes::size_type;
     };
   }
 
 
-  inline size_t size(const BlockMTLMatrix& A)
+  inline size_t size(BlockMTLMatrix const& A)
   {
     return (A.n) * (A.m);
   }
 
-  inline size_t num_rows(const BlockMTLMatrix& A)
+  inline size_t num_rows(BlockMTLMatrix const& A)
   {
     return A.n;
   }
 
-  inline size_t num_cols(const BlockMTLMatrix& A)
+  inline size_t num_cols(BlockMTLMatrix const& A)
   {
     return A.m;
   }
@@ -176,15 +182,16 @@ namespace mtl
   template <>
   struct Collection<AMDiS::BlockMTLMatrix>
   {
-    typedef AMDiS::MTLTypes::value_type value_type;
-    typedef AMDiS::MTLTypes::size_type size_type;
+    using value_type = AMDiS::MTLTypes::value_type;
+    using size_type  = AMDiS::MTLTypes::size_type;
   };
 
   namespace ashape
   {
-    template <> struct ashape_aux<AMDiS::BlockMTLMatrix>
+    template <> 
+    struct ashape_aux<AMDiS::BlockMTLMatrix>
     {
-      typedef nonscal type;
+      using type = nonscal;
     };
 
   } // end namespace ashape

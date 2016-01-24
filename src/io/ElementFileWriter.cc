@@ -112,7 +112,7 @@ namespace AMDiS
     }
 
 
-    void ElementFileWriter::writeFiles(AdaptInfo* adaptInfo, bool force,
+    void ElementFileWriter::writeFiles(AdaptInfo& adaptInfo, bool force,
                                        int level, Flag traverseFlag,
                                        bool (*writeElem)(ElInfo*))
     {
@@ -136,7 +136,7 @@ namespace AMDiS
         sprintf(formatStr, "%%0%d.%df", indexLength, indexDecimals);
 
         char timeStr[20];
-        sprintf(timeStr, formatStr, adaptInfo ? adaptInfo->getTime() : 0.0);
+        sprintf(timeStr, formatStr, adaptInfo.getTime());
 
         fn += timeStr;
       }
@@ -146,7 +146,7 @@ namespace AMDiS
         TEST_EXIT(mesh)("no mesh\n");
 
         writeMeshDatValues(const_cast<char*>((fn + amdisMeshDatExt).c_str()),
-                           adaptInfo ? adaptInfo->getTime() : 0.0);
+                           adaptInfo.getTime());
         MSG("MeshDat file written to %s\n", (fn + amdisMeshDatExt).c_str());
       }
 

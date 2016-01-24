@@ -11,9 +11,9 @@
 
 #define CACHE_LINE 16
 
-// if FIXED_SIZE == 1 use static arrays
-#ifndef FIXED_SIZE
-#define FIXED_SIZE 0
+// if AMDIS_FIXED_SIZE == 1 use static arrays
+#ifndef AMDIS_FIXED_SIZE
+#define AMDIS_FIXED_SIZE 0
 //  #define DOW 2
 //  #define DIM 2
 #endif

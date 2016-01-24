@@ -13,64 +13,38 @@ namespace AMDiS
 {
   using namespace std;
 
-  void ProblemInstatBase::solveInitialProblem(AdaptInfo* adaptInfo)
+  void ProblemInstatBase::solveInitialProblem(AdaptInfo& adaptInfo)
   {
     AdaptStationary initialAdapt((name + "->initial->adapt").c_str(),
-                                 *(new StandardProblemIteration(initialProblem)),
-                                 *adaptInfo);
+                                 *(new StandardProblemIteration(*initialProblem)),
+                                 adaptInfo);
 
     initialAdapt.adapt();
   }
 
 
-  void ProblemInstat::transferInitialSolution(AdaptInfo* adaptInfo)
+  void ProblemInstat::transferInitialSolution(AdaptInfo& adaptInfo)
   {
-    TEST_EXIT(adaptInfo->getTime() == adaptInfo->getStartTime())
+    TEST_EXIT(adaptInfo.getTime() == adaptInfo.getStartTime())
     ("after initial solution: time != start time\n");
-    problemStat->writeFiles(adaptInfo, true);
+    problemStat.writeFiles(adaptInfo, true);
   }
 
 
-  void ProblemInstat::closeTimestep(AdaptInfo* adaptInfo)
+  void ProblemInstat::closeTimestep(AdaptInfo& adaptInfo)
   {
 #ifdef HAVE_PARALLEL_DOMAIN_AMDIS
     FUNCNAME("ProblemInstat::closeTimestep()");
 #endif
 
-    bool force = (adaptInfo->getTime() >= adaptInfo->getEndTime());
-    problemStat->writeFiles(adaptInfo, force);
+    bool force = (adaptInfo.getTime() >= adaptInfo.getEndTime());
+    problemStat.writeFiles(adaptInfo, force);
 
 #ifdef HAVE_PARALLEL_DOMAIN_AMDIS
     MSG("Computational time for timestep: %.5f seconds\n",
         (MPI::Wtime() - lastTimepoint));
 #endif
   }
-
-
-  ProblemInstat::ProblemInstat(string sname,
-                               ProblemStatSeq* prob,
-                               ProblemStatBase* initialProb)
-    : ProblemInstatBase(sname, initialProb),
-      problemStat(prob),
-      oldSolution(NULL)
-  {}
-
-
-  ProblemInstat::ProblemInstat(string sname,
-                               ProblemStatSeq& prob)
-    : ProblemInstatBase(sname, NULL),
-      problemStat(&prob),
-      oldSolution(NULL)
-  {}
-
-
-  ProblemInstat::ProblemInstat(string sname,
-                               ProblemStatSeq& prob,
-                               ProblemStatBase& initialProb)
-    : ProblemInstatBase(sname, &initialProb),
-      problemStat(&prob),
-      oldSolution(NULL)
-  {}
 
 
   ProblemInstat::~ProblemInstat()
@@ -122,31 +96,30 @@ namespace AMDiS
     }
     else
     {
-      int size = problemStat->getNumComponents();
+      int size = problemStat.getNumComponents();
       // create oldSolution
-      oldSolution = new SystemVector("old solution", problemStat->getFeSpaces(), size);
+      oldSolution = new SystemVector("old solution", problemStat.getFeSpaces(), size);
       for (int i = 0; i < size; i++)
       {
-        oldSolution->setDOFVector(i, new DOFVector<double>(problemStat->getFeSpace(i),
+        oldSolution->setDOFVector(i, new DOFVector<double>(problemStat.getFeSpace(i),
                                   name + "_uOld", true));
         oldSolution->getDOFVector(i)->setCoarsenOperation(COARSE_INTERPOL);
 
-        if (problemStat->getEstimator(i))
-          problemStat->getEstimator(i)->
-          addUhOldToSystem(i, oldSolution->getDOFVector(i));
+        if (problemStat.getEstimator(i))
+          problemStat.getEstimator(i)->addUhOldToSystem(i, oldSolution->getDOFVector(i));
       }
     }
   }
 
 
-  void ProblemInstat::initTimestep(AdaptInfo* adaptInfo)
+  void ProblemInstat::initTimestep(AdaptInfo& adaptInfo)
   {
 #ifdef HAVE_PARALLEL_DOMAIN_AMDIS
     lastTimepoint = MPI::Wtime();
 #endif
 
     if (oldSolution)
-      oldSolution->copy(*(problemStat->getSolution()));
+      oldSolution->copy(*(problemStat.getSolution()));
   }
 
 }

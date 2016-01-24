@@ -297,7 +297,7 @@ namespace AMDiS
         std::string extract_relative_path(std::string valueFilename, std::string animationFilename);
 
         /// Adds a new entry to a ParaView animation file.
-        int updateAnimationFile(AdaptInfo* adaptInfo,
+        int updateAnimationFile(AdaptInfo& adaptInfo,
                                 std::string valueFilename,
                                 std::vector<std::pair<double, std::string>>* paraViewAnimationFrames,
                                 std::string animationFilename);

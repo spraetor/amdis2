@@ -15,7 +15,7 @@ namespace AMDiS
    * Base class for \ref ProblemInstat.
    */
   class ProblemInstatBase : public ProblemTimeInterface,
-    public ProblemStatBase   // NOTE: Why is this derived from ProblemStatBase
+			    public ProblemStatBase   // NOTE: Why is this derived from ProblemStatBase
   {
   public:
     /// Constructor.
@@ -28,63 +28,55 @@ namespace AMDiS
     /// Destructor.
     virtual ~ProblemInstatBase() {}
 
-    /// Initialisation of the problem.
-#if 0
-    virtual void initialize(Flag initFlag,
-                            ProblemInstat* adoptProblem = NULL,
-                            Flag adoptFlag = INIT_NOTHING)
-    {}
-#endif
-
-    virtual void setTime(AdaptInfo* adaptInfo)
+    virtual void setTime(AdaptInfo& adaptInfo)
     {
-      cTime = adaptInfo->getTime();
-      tau = adaptInfo->getTimestep();
+      cTime = adaptInfo.getTime();
+      tau = adaptInfo.getTimestep();
       invTau = 1.0 / tau;
     }
 
-    virtual void solve(AdaptInfo* adaptInfo) {}
+    virtual void solve(AdaptInfo& adaptInfo) {}
 
-    virtual void solve(AdaptInfo* adaptInfo, bool, bool)
+    virtual void solve(AdaptInfo& adaptInfo, bool, bool)
     {
       solve(adaptInfo);
     }
 
-    virtual void estimate(AdaptInfo* adaptInfo) {}
+    virtual void estimate(AdaptInfo& adaptInfo) {}
 
-    virtual void buildBeforeRefine(AdaptInfo* adaptInfo, Flag) {}
+    virtual void buildBeforeRefine(AdaptInfo& adaptInfo, Flag) {}
 
-    virtual void buildBeforeCoarsen(AdaptInfo* adaptInfo, Flag) {}
+    virtual void buildBeforeCoarsen(AdaptInfo& adaptInfo, Flag) {}
 
-    virtual void buildAfterCoarsen(AdaptInfo* adaptInfo, Flag, bool, bool) {}
+    virtual void buildAfterCoarsen(AdaptInfo& adaptInfo, Flag, bool, bool) {}
 
-    virtual Flag markElements(AdaptInfo* adaptInfo)
+    virtual Flag markElements(AdaptInfo& adaptInfo)
     {
       return 0;
     }
 
-    virtual Flag refineMesh(AdaptInfo* adaptInfo)
+    virtual Flag refineMesh(AdaptInfo& adaptInfo)
     {
       return 0;
     }
 
-    virtual Flag coarsenMesh(AdaptInfo* adaptInfo)
+    virtual Flag coarsenMesh(AdaptInfo& adaptInfo)
     {
       return 0;
     }
 
     /// Implementation of ProblemTimeInterface::closeTimestep().
-    virtual void closeTimestep(AdaptInfo* adaptInfo)
+    virtual void closeTimestep(AdaptInfo& adaptInfo)
     {}
 
     /// Returns \ref name.
-    inline std::string getName()
+    std::string getName() const
     {
       return name;
     }
 
     /// Used by \ref problemInitial
-    virtual void solveInitialProblem(AdaptInfo* adaptInfo);
+    virtual void solveInitialProblem(AdaptInfo& adaptInfo);
 
     double* getTime()
     {
@@ -129,13 +121,20 @@ namespace AMDiS
   {
   public:
     /// Constructs a ProblemInstatVec with prob as its stationary problem.
-    ProblemInstat(std::string name,
-                  ProblemStatSeq* prob,
-                  ProblemStatBase* initialProb = NULL);
-
-    ProblemInstat(std::string name, ProblemStatSeq& prob);
-
-    ProblemInstat(std::string name, ProblemStatSeq& prob, ProblemStatBase& initialProb);
+    ProblemInstat(std::string name, 
+		  ProblemStatSeq& prob)
+      : ProblemInstatBase(name, NULL),
+	problemStat(prob),
+	oldSolution(NULL)
+    {}
+    
+    ProblemInstat(std::string name, 
+		  ProblemStatSeq& prob,
+                  ProblemStatBase& initialProb)
+      : ProblemInstatBase(name, &initialProb),
+	problemStat(prob),
+	oldSolution(NULL)
+    {}
 
     /// Destructor.
     virtual ~ProblemInstat();
@@ -149,13 +148,13 @@ namespace AMDiS
     virtual void createUhOld();
 
     /// Implementation of ProblemTimeInterface::initTimestep().
-    virtual void initTimestep(AdaptInfo* adaptInfo);
+    virtual void initTimestep(AdaptInfo& adaptInfo);
 
     /// Implementation of ProblemTimeInterface::closeTimestep().
-    virtual void closeTimestep(AdaptInfo* adaptInfo);
+    virtual void closeTimestep(AdaptInfo& adaptInfo);
 
     /// Returns \ref problemStat.
-    ProblemStatSeq* getStatProblem()
+    ProblemStatSeq& getStatProblem()
     {
       return problemStat;
     }
@@ -172,11 +171,11 @@ namespace AMDiS
     }
 
     /// Used by \ref problemInitial
-    virtual void transferInitialSolution(AdaptInfo* adaptInfo);
+    virtual void transferInitialSolution(AdaptInfo& adaptInfo);
 
   protected:
     /// Space problem solved in each timestep.
-    ProblemStatSeq* problemStat;
+    ProblemStatSeq& problemStat;
 
     /// Solution of the last timestep.
     SystemVector* oldSolution;

@@ -70,8 +70,8 @@ namespace AMDiS
   template <> struct MaxSize<VERTEX> : int_<DIM+1> {};
   template <> struct MaxSize<PARTS>  : int_<DIM+1> {};
   template <> struct MaxSize<NEIGH>  : int_<DIM+1> {};
-  template <> struct MaxSize<EDGE>   : int_<(DIM==1?1:(DIM==2?3:6))> {};
-  template <> struct MaxSize<FACE>   : int_<(DIM==1?0:(DIM==2?1:4))> {};
+  template <> struct MaxSize<EDGE>   : int_<(DIM==1 ? 1 : (DIM==2 ? 3 : 6))> {};
+  template <> struct MaxSize<FACE>   : int_<(DIM==1 ? 0 : (DIM==2 ? 1 : 4))> {};
 #else
   // upper bounds
   template <> struct MaxSize<DIMEN>  : int_<3> {};

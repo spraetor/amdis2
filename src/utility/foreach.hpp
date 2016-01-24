@@ -4,36 +4,30 @@
 
 #include <tuple>
 #include <utility>
+
 #include <traits/meta_basic.hpp>
+#include <traits/size.hpp>
 
 namespace AMDiS
 {
   namespace detail
-  {
-    template <class Tuple>
-    constexpr int size(Tuple const&) { return std::tuple_size<Tuple>::value; }
+  {    
+    template <class F, class Tuple, int N>
+    inline void for_each(F&&, Tuple&&, empty_range_<N>) {}
     
-    template <template<class...> class Tuple, class... Ts>
-    constexpr int size(Tuple<Ts...> const&) { return sizeof...(Ts); }
-    
-    
-    template <class Tuple, class F, int N>
-    inline void for_each(Tuple, F, int_<N>, int_<N>) {}
-    
-    template <class Tuple, class F, int I, int N>
-    inline void for_each(Tuple&& t, F&& f, int_<I>, int_<N>)
+    template <class F, class Tuple, int I, int N>
+    inline void for_each(F&& f, Tuple&& t, range_<I,N>)
     {
-      f(std::get<I>(std::forward<Tuple>(t)));
-      for_each(std::forward<Tuple>(t), std::forward<F>(f), int_<I+1>(), int_<N>());
+      (std::forward<F>(f))(std::get<I>(std::forward<Tuple>(t)));
+      for_each(std::forward<F>(f), std::forward<Tuple>(t), range_<I+1,N>{});
     }
     
   } // end namespace detail
   
-  template <class Tuple, class F>
-  inline void for_each(Tuple&& t, F&& f)
+  template <class F, class Tuple, int N = Size<Decay_t<Tuple>>::value>
+  inline void for_each(F&& f, Tuple&& t)
   {
-    static constexpr int N = detail::size(t);
-    detail::for_each(std::forward<Tuple>(t), std::forward<F>(f), int_<0>(), int_<N>());
+    detail::for_each(std::forward<F>(f), std::forward<Tuple>(t), range_<0,N>{});
   }
 
 } // end namespace AMDiS

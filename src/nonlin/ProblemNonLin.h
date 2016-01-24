@@ -84,7 +84,7 @@ namespace AMDiS
      * Overrides ProblemStat::solve(). Uses the non linear solver
      * \ref nonLinSolver.
      */
-    void solve(AdaptInfo* adaptInfo,
+    void solve(AdaptInfo& adaptInfo,
                bool createMatrixData = true,
                bool storeMatrixData = false);
 

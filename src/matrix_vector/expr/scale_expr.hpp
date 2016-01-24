@@ -25,9 +25,9 @@ namespace AMDiS
     using size_type  = Size_t<E>;
     using expr_type  = E;
 
-    constexpr static int _SIZE = E::_SIZE;
-    constexpr static int _ROWS = E::_ROWS;
-    constexpr static int _COLS = E::_COLS;
+    static constexpr int _SIZE = E::_SIZE;
+    static constexpr int _ROWS = E::_ROWS;
+    static constexpr int _COLS = E::_COLS;
 
   public:
     /// constructor takes the factor \p v and and expression \p A

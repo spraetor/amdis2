@@ -71,7 +71,7 @@ namespace AMDiS
   }
 
   /// Calculates factorial of i
-  inline int fac(int i)
+  inline long fac(long i)
   {
     if (i <= 1)
       return 1;

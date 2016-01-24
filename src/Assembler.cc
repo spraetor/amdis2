@@ -12,12 +12,12 @@
 
 namespace AMDiS
 {
-  Assembler::Assembler(Operator* op,
-                       const FiniteElemSpace* row,
-                       const FiniteElemSpace* col)
+  Assembler::Assembler(not_null<Operator*> op,
+                       not_null<const FiniteElemSpace*> row,
+				const FiniteElemSpace*  col)
     : operat(op),
       rowFeSpace(row),
-      colFeSpace(col ? col : row),
+      colFeSpace(col ? col : row.get()),
       nRow(rowFeSpace->getBasisFcts()->getNumber()),
       nCol(colFeSpace->getBasisFcts()->getNumber()),
       remember(true),

@@ -26,24 +26,24 @@ namespace AMDiS
                     std::vector<AbstractFunction<WorldVector<double>, WorldVector<double>>*>* grdFct);
 
     /// No system assemblage.
-    virtual void buildbeforeRefine(AdaptInfo* adaptInfo, Flag) {}
+    virtual void buildbeforeRefine(AdaptInfo& adaptInfo, Flag) {}
 
     /// No system assemblage.
-    virtual void buildbeforeCoarsen(AdaptInfo* adaptInfo, Flag) {}
+    virtual void buildbeforeCoarsen(AdaptInfo& adaptInfo, Flag) {}
 
     /// No system assemblage.
-    virtual void buildAfterCoarsen(AdaptInfo* adaptInfo, Flag,
+    virtual void buildAfterCoarsen(AdaptInfo& adaptInfo, Flag,
                                    bool assembleMatrix = true,
                                    bool assembleVector = true)
     {}
 
     /// No equation system ins solved. Instead fct is interpolated to uh.
-    virtual void solve(AdaptInfo* adaptInfo,
+    virtual void solve(AdaptInfo& adaptInfo,
                        bool createMatrixData = true,
                        bool storeMatrixData = false);
 
     /// True H1 or L2 error is calculated.
-    virtual void estimate(AdaptInfo* adaptInfo);
+    virtual void estimate(AdaptInfo& adaptInfo);
 
   protected:
     /// Function to interpolate.

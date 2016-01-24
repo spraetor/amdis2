@@ -32,10 +32,10 @@ namespace AMDiS
      * Generates new coordinates on curved boundaries. Can be overriden by
      * sub classes if used.
      */
-    virtual void setNewCoords(int macroEl = -1)
+    virtual void setNewCoords(int /* macroEl */ = -1)
     {
-      FUNCNAME("RefinementManager::setNewCoords");
-      ERROR_EXIT("called for base class!\n");
+      FUNCNAME("RefinementManager::setNewCoords()");
+      ERROR_EXIT("Called for base class!\n");
     }
 
     /** \brief

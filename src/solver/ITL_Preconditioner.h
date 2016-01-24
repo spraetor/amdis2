@@ -2,10 +2,10 @@
 
 #pragma once
 
-#include "solver/LinearSolverInterface.h"
-#include "MTL4Types.h"
-#include "DOFMatrix.h"
-#include "CreatorInterface.h"
+#include <solver/LinearSolverInterface.h>
+#include <MTL4Types.h>
+#include <DOFMatrix.h>
+#include <CreatorInterface.h>
 
 #include <boost/numeric/itl/itl.hpp>
 #include <boost/numeric/itl/pc/ilu_0.hpp>
@@ -24,27 +24,29 @@ namespace AMDiS
   template <class MatrixType, class VectorType>
   struct ITL_PreconditionerBase : public PreconditionerInterface
   {
-    virtual void init(const SolverMatrix<Matrix<DOFMatrix*>>& A,
-                      const MatrixType& fullMatrix) = 0;
+    virtual void init(SolverMatrix<Matrix<DOFMatrix*>> const& A,
+                      MatrixType const& fullMatrix) = 0;
+		      
+    virtual void exit() {}
 
-    virtual void solve(const VectorType& x, VectorType& y) const = 0;
+    virtual void solve(VectorType const& x, VectorType& y) const = 0;
 
-    virtual void adjoint_solve(const VectorType& x, VectorType& y) const = 0;
+    virtual void adjoint_solve(VectorType const& x, VectorType& y) const = 0;
   };
 
 
   template <class MatrixType, class VectorType>
-  inline itl::pc::solver<ITL_PreconditionerBase<MatrixType, VectorType>, VectorType, false>
-  solve(const ITL_PreconditionerBase<MatrixType, VectorType>& P, const VectorType& vin)
+  itl::pc::solver<ITL_PreconditionerBase<MatrixType, VectorType>, VectorType, false>
+  solve(ITL_PreconditionerBase<MatrixType, VectorType> const& P, VectorType const& vin)
   {
-    return itl::pc::solver<ITL_PreconditionerBase<MatrixType, VectorType>, VectorType, false>(P, vin);
+    return {P, vin};
   }
 
   template <class MatrixType, class VectorType>
-  inline itl::pc::solver<ITL_PreconditionerBase<MatrixType, VectorType>, VectorType, true>
-  adjoint_solve(const ITL_PreconditionerBase<MatrixType, VectorType>& P, const VectorType& vin)
+  itl::pc::solver<ITL_PreconditionerBase<MatrixType, VectorType>, VectorType, true>
+  adjoint_solve(ITL_PreconditionerBase<MatrixType, VectorType> const& P, VectorType const& vin)
   {
-    return itl::pc::solver<ITL_PreconditionerBase<MatrixType, VectorType>, VectorType, true>(P, vin);
+    return {P, vin};
   }
 
 
@@ -57,118 +59,126 @@ namespace AMDiS
   class ITL_Preconditioner : public ITL_PreconditionerBase<MatrixType, VectorType>
   {
   public:
-    typedef ITL_PreconditionerBase<MatrixType, VectorType>              precon_base;
-    typedef ITL_Preconditioner<Preconditioner, MatrixType, VectorType>  self;
+    using Self        = ITL_Preconditioner;
+    using precon_base = ITL_PreconditionerBase<MatrixType, VectorType>;
 
     /// Creator class
     struct Creator : public CreatorInterfaceName<precon_base>
     {
       virtual precon_base* create() override
       {
-        return new self();
+        return new Self();
       }
     };
 
-    ITL_Preconditioner()
-      : precon(NULL)
-    { }
+    /// Constructor.
+//     ITL_Preconditioner() = default;
 
+    /// Destructor.
     ~ITL_Preconditioner()
     {
-      if (precon)
-      {
-        delete precon;
-        precon = NULL;
-      }
+      delete precon;
+      precon = NULL;
     }
 
     /// Implementation of \ref ITL_PreconditionerBase::init()
-    virtual void init(const SolverMatrix<Matrix<DOFMatrix*>>& A,
-                      const MatrixType& fullMatrix) override
+    virtual void init(SolverMatrix<Matrix<DOFMatrix*>> const& A,
+                      MatrixType const& fullMatrix) override
     {
-      if (precon)
-        delete precon;
+      delete precon;
       precon = new Preconditioner(fullMatrix);
     }
 
     /// Implementation of \ref PreconditionerInterface::exit()
     virtual void exit() override
     {
-      if (precon)
-      {
-        delete precon;
-        precon = NULL;
-      }
+      delete precon;
+      precon = NULL;
     }
 
     /// Implementation of \ref ITL_PreconditionerBase::solve()
-    virtual void solve(const VectorType& vin, VectorType& vout) const override
+    virtual void solve(VectorType const& vin, VectorType& vout) const override
     {
       TEST_EXIT_DBG(precon)("No preconditioner initialized!\n");
       precon->solve(vin, vout);
     }
 
     /// Implementation of \ref ITL_PreconditionerBase::adjoint_solve()
-    virtual void adjoint_solve(const VectorType& vin, VectorType& vout) const override
+    virtual void adjoint_solve(VectorType const& vin, VectorType& vout) const override
     {
       TEST_EXIT_DBG(precon)("No preconditioner initialized!\n");
       precon->adjoint_solve(vin, vout);
     }
 
   private:
-    Preconditioner* precon;
+    Preconditioner* precon = NULL;
   };
 
 
   /**
    * \ingroup Solver
    * \class AMDiS::DiagonalPreconditioner
-   * \brief ITL_Preconditioner implementation of diagonal (jacobi) preconditioner \implements ITL_Preconditioner
+   * \brief ITL_Preconditioner implementation of diagonal (jacobi) preconditioner,
+   * \implements ITL_Preconditioner
    *
    * Diagonal preconditioner \f$ M^{-1} \f$ for the system \f$ Ax=b \f$ is defined as: \f$ M=diag(A) \f$.
    */
-  typedef ITL_Preconditioner<itl::pc::diagonal<MTLTypes::MTLMatrix>, MTLTypes::MTLMatrix, MTLTypes::MTLVector> DiagonalPreconditioner;
+  using DiagonalPreconditioner = 
+    ITL_Preconditioner<itl::pc::diagonal<MTLTypes::MTLMatrix>, 
+		       MTLTypes::MTLMatrix, MTLTypes::MTLVector>;
 
   /**
    * \ingroup Solver
    * \class AMDiS::DiagonalPreconditioner
-   * \brief ITL_Preconditioner implementation of diagonal (jacobi) preconditioner \implements ITL_Preconditioner
+   * \brief ITL_Preconditioner implementation of diagonal (jacobi) preconditioner, 
+   * \implements ITL_Preconditioner
    *
    * Diagonal preconditioner \f$ M^{-1} \f$ for the system \f$ Ax=b \f$ is defined as: \f$ M_ii=sum_j(A_ij) \f$.
    */
-  typedef ITL_Preconditioner<itl::pc::masslumping<MTLTypes::MTLMatrix>, MTLTypes::MTLMatrix, MTLTypes::MTLVector> MassLumpingPreconditioner;
+  using MassLumpingPreconditioner = 
+    ITL_Preconditioner<itl::pc::masslumping<MTLTypes::MTLMatrix>, 
+		       MTLTypes::MTLMatrix, MTLTypes::MTLVector>;
 
 
   /**
    * \ingroup Solver
    * \class AMDiS::IdentityPreconditioner
-   * \brief ITL_Preconditioner implementation of identity preconditioner \implements ITL_Preconditioner
+   * \brief ITL_Preconditioner implementation of identity preconditioner,
+   * \implements ITL_Preconditioner
    *
    * Identity preconditioner. Behaves like no preconditioning.
    */
-  typedef ITL_Preconditioner<itl::pc::identity<MTLTypes::MTLMatrix>, MTLTypes::MTLMatrix, MTLTypes::MTLVector> IdentityPreconditioner;
+  using IdentityPreconditioner = 
+    ITL_Preconditioner<itl::pc::identity<MTLTypes::MTLMatrix>, 
+		       MTLTypes::MTLMatrix, MTLTypes::MTLVector>;
 
 
   /**
    * \ingroup Solver
    * \class AMDiS::ILUPreconditioner
-   * \brief ITL_Preconditioner implementation of ILU (Incomplete LU factorization) preconditioner. \implements ITL_Preconditioner
+   * \brief ITL_Preconditioner implementation of ILU (Incomplete LU factorization) 
+   * preconditioner. \implements ITL_Preconditioner
    *
    * The preconditioner is used from ITL. It corresponds for instance to
    * "Iterative Methods for Sparce Linear Systems", second edition, Yousef Saad.
    *  The preconditioner is described in chapter 10.3 (algorithm 10.4).
    */
-  typedef ITL_Preconditioner<itl::pc::ilu_0<MTLTypes::MTLMatrix>, MTLTypes::MTLMatrix, MTLTypes::MTLVector> ILUPreconditioner;
+  using ILUPreconditioner = 
+    ITL_Preconditioner<itl::pc::ilu_0<MTLTypes::MTLMatrix>, 
+		       MTLTypes::MTLMatrix, MTLTypes::MTLVector>;
 
 
   /**
    * \ingroup Solver
    * \class AMDiS::ICPreconditioner
-   * \brief ITL_Preconditioner implementation of IC (Incomplete Cholesky factorization) preconditioner. \implements ITL_Preconditioner
+   * \brief ITL_Preconditioner implementation of IC (Incomplete Cholesky factorization) 
+   * preconditioner. \implements ITL_Preconditioner
    *
    * IC (Incomplete Cholesky factorization) preconditioner.
    */
-  typedef ITL_Preconditioner<itl::pc::ic_0<MTLTypes::MTLMatrix>, MTLTypes::MTLMatrix, MTLTypes::MTLVector> ICPreconditioner;
+  using ICPreconditioner = 
+    ITL_Preconditioner<itl::pc::ic_0<MTLTypes::MTLMatrix>, 
+		       MTLTypes::MTLMatrix, MTLTypes::MTLVector>;
 
 
 } // namespace AMDiS

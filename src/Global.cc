@@ -9,7 +9,7 @@
 
 namespace AMDiS
 {
-#if !FIXED_SIZE || !defined(DOW)
+#if !AMDIS_FIXED_SIZE || !defined(DOW)
   int Global::dimOfWorld = 0;
 #endif
   std::vector<std::vector<int>> Global::geoIndexTable;
@@ -29,7 +29,7 @@ namespace AMDiS
     // get dimension
     TEST_EXIT(Parameters::initialized())("Parameters not initialized!\n");
     Parameters::get("dimension of world",d,0);
-#if !FIXED_SIZE || !defined(DOW)
+#if !AMDIS_FIXED_SIZE || !defined(DOW)
     TEST_EXIT(d > 0)("Cannot initialize dimension!\n");
     TEST_EXIT((d == 1) || (d == 2) || (d == 3))("Invalid world dimension %d!\n",d);
 

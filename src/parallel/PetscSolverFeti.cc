@@ -2860,7 +2860,7 @@ namespace AMDiS
     }
 
 
-    void PetscSolverFeti::solvePetscMatrix(SystemVector& vec, AdaptInfo* adaptInfo)
+    void PetscSolverFeti::solvePetscMatrix(SystemVector& vec, AdaptInfo& adaptInfo)
     {
       FUNCNAME("PetscSolverFeti::solvePetscMatrix()");
 

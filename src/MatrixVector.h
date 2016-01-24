@@ -20,9 +20,13 @@ namespace AMDiS
     template <class E>
     struct assign_type<E, Requires_t<concepts::Expr<E>>>
     {
-      using type = if_then_else<traits::is_vector<E>::value, Vector<Value_t<E>>,
-            if_then_else<traits::is_matrix<E>::value, Matrix<Value_t<E>>,
-            E>>;
+      using type = if_then_else<
+	/*if */ traits::is_vector<E>::value, 
+	/* then */ Vector<Value_t<E>>,
+	/* else */ if_then_else<
+	    /* if */ traits::is_matrix<E>::value, 
+	    /* then */ Matrix<Value_t<E>>,
+	    /* else */ E>>;
     };
 
   } // end namespace detail

@@ -14,11 +14,9 @@ using namespace std;
 
 namespace AMDiS
 {
-  ThreadPrivate<vector<SubAssembler*>>
-                                    ZeroOrderAssembler::optimizedSubAssemblers;
+  ThreadPrivate<vector<SubAssembler*>> ZeroOrderAssembler::optimizedSubAssemblers;
 
-  ThreadPrivate<vector<SubAssembler*>>
-                                    ZeroOrderAssembler::standardSubAssemblers;
+  ThreadPrivate<vector<SubAssembler*>> ZeroOrderAssembler::standardSubAssemblers;
 
 
   ZeroOrderAssembler::ZeroOrderAssembler(Operator* op,
@@ -38,8 +36,8 @@ namespace AMDiS
     if (!op->zeroOrderTerms())
       return NULL;
 
-    vector<SubAssembler*>& subAssemblers =
-      optimized ? optimizedSubAssemblers.get() : standardSubAssemblers.get();
+    auto& subAssemblers = optimized ? optimizedSubAssemblers.get() 
+				    : standardSubAssemblers.get();
 
     vector<OperatorTerm*> opTerms = op->getZeroOrder();
     sort(opTerms.begin(), opTerms.end());
@@ -58,11 +56,12 @@ namespace AMDiS
     }
 
     // check if all terms are pw_const
-    bool pwConst = std::all_of(begin(op->getZeroOrder()), end(op->getZeroOrder()),
-                               [](OperatorTerm* term)
-    {
-      return term->isPWConst();
-    });
+    bool pwConst = std::all_of(
+      begin(op->getZeroOrder()), end(op->getZeroOrder()),
+      [](OperatorTerm* term)
+      {
+	return term->isPWConst();
+      });
 
     // create new assembler
     ZeroOrderAssembler* newAssembler;
@@ -89,11 +88,10 @@ namespace AMDiS
   }
 
 
-  void StandardZOA::calculateElementMatrixImpl(const ElInfo* elInfo,
-      ElementMatrix& mat)
+  void StandardZOA::calculateElementMatrixImpl(ElInfo const* elInfo, ElementMatrix& mat)
   {
-    const BasisFunction* psi = rowFeSpace->getBasisFcts();
-    const BasisFunction* phi = colFeSpace->getBasisFcts();
+    BasisFunction const* psi = rowFeSpace->getBasisFcts();
+    BasisFunction const* phi = colFeSpace->getBasisFcts();
 
     int nPoints = quadrature->getNumPoints();
     DenseVector<double> c(nPoints, 0.0);
@@ -149,7 +147,7 @@ namespace AMDiS
   }
 
   // TODO: add combination of elementMatrix and elementVector assembling
-  void StandardZOA::calculateElementVectorImpl(const ElInfo* elInfo, DenseVector<double>& vec)
+  void StandardZOA::calculateElementVectorImpl(ElInfo const* elInfo, DenseVector<double>& vec)
   {
     int nPoints = quadrature->getNumPoints();
     DenseVector<double> c(nPoints, 0.0);
@@ -178,13 +176,13 @@ namespace AMDiS
   }
 
 
-  void FastQuadZOA::calculateElementMatrixImpl(const ElInfo* elInfo, ElementMatrix& mat)
+  void FastQuadZOA::calculateElementMatrixImpl(ElInfo const* elInfo, ElementMatrix& mat)
   {
     int nPoints = quadrature->getNumPoints();
 
     if (firstCall)
     {
-      const BasisFunction* basFcts = rowFeSpace->getBasisFcts();
+      BasisFunction const* basFcts = rowFeSpace->getBasisFcts();
       psiFast = updateFastQuadrature(psiFast, basFcts, INIT_PHI);
       basFcts = colFeSpace->getBasisFcts();
       phiFast = updateFastQuadrature(phiFast, basFcts, INIT_PHI);
@@ -198,8 +196,8 @@ namespace AMDiS
     for (auto& term : terms)
       (static_cast<ZeroOrderTerm*>(term))->getC(elInfo, nPoints, c);
 
-    const DenseMatrix<double>& psi = psiFast->getPhi();
-    const DenseMatrix<double>& phi = phiFast->getPhi();
+    DenseMatrix<double> const& psi = psiFast->getPhi();
+    DenseMatrix<double> const& phi = phiFast->getPhi();
 
     if (symmetric)
     {
@@ -238,13 +236,13 @@ namespace AMDiS
   }
 
 
-  void FastQuadZOA::calculateElementVectorImpl(const ElInfo* elInfo, DenseVector<double>& vec)
+  void FastQuadZOA::calculateElementVectorImpl(ElInfo const* elInfo, DenseVector<double>& vec)
   {
     int nPoints = quadrature->getNumPoints();
 
     if (firstCall)
     {
-      const BasisFunction* basFcts = rowFeSpace->getBasisFcts();
+      BasisFunction const* basFcts = rowFeSpace->getBasisFcts();
       psiFast = updateFastQuadrature(psiFast, basFcts, INIT_PHI);
       basFcts = colFeSpace->getBasisFcts();
       phiFast = updateFastQuadrature(phiFast, basFcts, INIT_PHI);
@@ -255,7 +253,7 @@ namespace AMDiS
     for (auto& term : terms)
       (static_cast<ZeroOrderTerm*>(term))->getC(elInfo, nPoints, c);
 
-    const DenseMatrix<double>& psi = psiFast->getPhi();
+    DenseMatrix<double> const& psi = psiFast->getPhi();
 
     for (int iq = 0; iq < nPoints; iq++)
     {
@@ -274,8 +272,7 @@ namespace AMDiS
   }
 
 
-  void PrecalcZOA::calculateElementMatrixImpl(const ElInfo* elInfo,
-      ElementMatrix& mat)
+  void PrecalcZOA::calculateElementMatrixImpl(ElInfo const* elInfo, ElementMatrix& mat)
   {
     if (firstCall)
     {
@@ -314,8 +311,7 @@ namespace AMDiS
   }
 
 
-  void PrecalcZOA::calculateElementVectorImpl(const ElInfo* elInfo,
-      DenseVector<double>& vec)
+  void PrecalcZOA::calculateElementVectorImpl(ElInfo const* elInfo, DenseVector<double>& vec)
   {
     if (firstCall)
     {

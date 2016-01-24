@@ -2,23 +2,29 @@
 
 #pragma once
 
-#include "solver/LinearSolverInterface.h"
+#include <solver/LinearSolverInterface.h>
+#include <solver/Mapper.h>
 #ifdef HAVE_PARALLEL_DOMAIN_AMDIS
-#include "parallel/ParallelSolver.h"
+#include <parallel/ParallelSolver.h>
 #endif
 
-#include "solver/details/LinearSolver.h"
+#include <solver/details/LinearSolver.h>
+#include <traits/basic.hpp>
 
 namespace AMDiS
 {
   template <class MatrixType, class VectorType>
   struct RunnerBase : public RunnerInterface
   {
-    virtual void init(const SolverMatrix<Matrix<DOFMatrix*>>& A, const MatrixType& fullMatrix) = 0;
+    virtual void init(SolverMatrix<Matrix<DOFMatrix*>> const& A, 
+		      MatrixType const& fullMatrix) = 0;
 
-    virtual int solve(const MatrixType& A, VectorType& x, const VectorType& b) = 0;
+    virtual void exit() {}
 
-    virtual int adjoint_solve(const MatrixType& A, VectorType& x, const VectorType& b)
+    virtual int solve(MatrixType const& A, VectorType& x, VectorType const& b) = 0;
+
+    virtual int adjoint_solve(MatrixType const& A, VectorType& x, 
+			      VectorType const& b)
     {
       FUNCNAME("RunnerBase::adjoint_solve()");
       ERROR_EXIT("Must be implemented in derived class!\n");
@@ -28,13 +34,15 @@ namespace AMDiS
 
 
   /// Wrapper for template-argument dependent constructors
-  template <class MatrixType, class Mapper_ = BlockMapper, class Enable = void>
+  template <class MatrixType, class Mapper_ = BlockMapper, class = void>
   struct LinearSolverBase : public LinearSolverInterface
   {
-    typedef Mapper_ Mapper;
+    using Mapper = Mapper_;
+    using Super  = LinearSolverInterface;
 
     LinearSolverBase(std::string name)
-      : LinearSolverInterface(name) {}
+      : Super(name) 
+    {}
 
     MatrixType& getMatrix()
     {
@@ -44,7 +52,7 @@ namespace AMDiS
 
   protected:
     /// create a sequential BlockMapper
-    virtual void initMapper(const SolverMatrix<Matrix<DOFMatrix*>>& A)
+    virtual void initMapper(SolverMatrix<Matrix<DOFMatrix*>> const& A)
     {
       mapper = new Mapper(A);
     }
@@ -61,13 +69,16 @@ namespace AMDiS
 
 #ifdef HAVE_PARALLEL_MTL4
   template <class MatrixType>
-  struct LinearSolverBase<MatrixType, ParallelMapper, typename enable_if<mtl::traits::is_distributed<MatrixType>>>
+  struct LinearSolverBase<MatrixType, ParallelMapper, 
+			  Requires_t<mtl::traits::is_distributed<MatrixType>>>
     : public ParallelSolver
   {
-    typedef ParallelMapper Mapper;
+    using Mapper = ParallelMapper;
+    using Super  = ParallelSolver;
 
     LinearSolverBase(std::string name)
-      : ParallelSolver(name, false) {}
+      : Super(name, false) 
+    {}
 
     MatrixType& getMatrix()
     {
@@ -77,7 +88,7 @@ namespace AMDiS
   protected:
 
     /// create a parallel mapper based on local-to-global mapping
-    virtual void initMapper(const SolverMatrix<Matrix<DOFMatrix*>>& A)
+    virtual void initMapper(SolverMatrix<Matrix<DOFMatrix*>> const& A)
     {
       mapper = new ParallelMapper(*ParallelSolver::getDofMapping());
     }
@@ -101,13 +112,14 @@ namespace AMDiS
    * solvers where MTL4 provides an interface, can be assigned
    * by different Runner objects.
    **/
-  template <class MatrixType, class VectorType, class Runner, class Mapper_ = BlockMapper>
+  template <class MatrixType, class VectorType, class Runner, 
+	    class Mapper_ = BlockMapper>
   class LinearSolver : public LinearSolverBase<MatrixType, Mapper_>
   {
   protected:
-    typedef LinearSolverBase<MatrixType, Mapper_>                  super;
-    typedef LinearSolver<MatrixType, VectorType, Runner, Mapper_>  self;
-    typedef typename super::Mapper                                 Mapper;
+    using Self   = LinearSolver;
+    using Super  = LinearSolverBase<MatrixType, Mapper_>;
+    using Mapper = typename Super::Mapper;
 
   public:
     /// Creator class used in the LinearSolverInterfaceMap.
@@ -116,13 +128,13 @@ namespace AMDiS
       /// Returns a new LinearSolver object.
       virtual LinearSolverInterface* create() override
       {
-        return new self(this->name);
+        return new Self(this->name);
       }
     };
 
     /// Constructor
     LinearSolver(std::string name)
-      : super(name),
+      : Super(name),
         runner(this)
     { }
 
@@ -148,12 +160,12 @@ namespace AMDiS
     }
 
   protected:
-    /// Implementation of \ref LinearSolverInterface::solveLinearSystem()
-    virtual int solveLinearSystem(const SolverMatrix<Matrix<DOFMatrix*>>& A,
-                                  SystemVector& x,
-                                  SystemVector& b,
-                                  bool createMatrixData,
-                                  bool storeMatrixData) override
+    /// Implementation of \ref LinearSolverInterface::solveSystemImpl()
+    virtual int solveSystemImpl(SolverMatrix<Matrix<DOFMatrix*>> const& A,
+				SystemVector& x,
+				SystemVector& b,
+				bool createMatrixData,
+				bool storeMatrixData) override
     {
 #ifdef HAVE_PARALLEL_DOMAIN_AMDIS
       MPI::COMM_WORLD.Barrier();
@@ -163,21 +175,21 @@ namespace AMDiS
       Timer t;
       if (createMatrixData)
       {
-        initMatrix(super::matrix, A, *super::mapper);
-        runner.init(A, super::matrix);
+        initMatrix(Super::matrix, A, *Super::mapper);
+        runner.init(A, Super::matrix);
       }
 
       VectorType mtl_x;
-      initVector(mtl_x, x, *super::mapper);
+      initVector(mtl_x, x, *Super::mapper);
 
       VectorType mtl_b;
-      initVector(mtl_b, b, *super::mapper);
+      initVector(mtl_b, b, *Super::mapper);
 
-      INFO(self::getInfo(), 8)("fill MTL4 matrix needed %.5f seconds\n", t.elapsed());
+      INFO(Self::getInfo(), 8)("fill MTL4 matrix needed %.5f seconds\n", t.elapsed());
 
-      int error = runner.solve(super::matrix ,mtl_x, mtl_b);
+      int error = runner.solve(Super::matrix ,mtl_x, mtl_b);
 
-      VecMap<SystemVector, Mapper> xVecMap(x, *super::mapper);
+      VecMap<SystemVector, Mapper> xVecMap{x, *Super::mapper};
       mtl_x >> xVecMap;
 
       if (!storeMatrixData)
@@ -192,7 +204,7 @@ namespace AMDiS
 
     /// initialize a MTL matrix and assign values from an AMDiS matrix
     template <class Matrix1, class Matrix2, class M>
-    void initMatrix(Matrix1& target, const Matrix2& source, MapperBase<M>& mapper)
+    void initMatrix(Matrix1& target, Matrix2 const& source, MapperBase<M>& mapper)
     {
       dispatch::initMatrix(target, mapper.self());
       dispatch::fillMatrix(target, source, mapper.self());
@@ -200,9 +212,9 @@ namespace AMDiS
 
     /// initialize a MTL vector and assign values from an AMDiS vector
     template <class Vector1, class Vector2, class M>
-    void initVector(Vector1& target, const Vector2& source, MapperBase<M>& mapper)
+    void initVector(Vector1& target, Vector2 const& source, MapperBase<M>& mapper)
     {
-      dispatch::initVector(target, super::matrix);
+      dispatch::initVector(target, Super::matrix);
       dispatch::fillVector(target, source, mapper.self());
     }
 

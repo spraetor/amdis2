@@ -43,11 +43,11 @@ namespace AMDiS
 
     virtual int getPositionOfVertex(int side, int vertex) const override
     {
-      static constexpr int positionOfVertex[4][4] = {{-1, 0, 1, 2},
+      static constexpr int positionOfVertex[4][4] = 
+       {{-1, 0, 1, 2},
         {0, -1, 1, 2},
         {0, 1, -1, 2},
-        {0, 1, 2, -1}
-      };
+        {0, 1, 2, -1}};
       return positionOfVertex[side][vertex];
     }
 
@@ -243,20 +243,15 @@ namespace AMDiS
 
     void prepareNextBound(BoundaryObject& bound, int ithChild) const;
 
-    std::string getTypeName() const
-    {
-      return "Tetrahedron";
-    }
-
     /** \brief
      * childVertex[el_type][child][i] =
      * parent's local vertex index of new vertex i.
      * 4 stands for the newly generated vertex
      */
-    static constexpr int childVertex[3][2][4] = { {{0,2,3,4},{1,3,2,4}},
-      {{0,2,3,4},{1,2,3,4}},
-      {{0,2,3,4},{1,2,3,4}}
-    };
+    static constexpr int childVertex[3][2][4] = 
+    { {{0,2,3,4}, {1,3,2,4}},
+      {{0,2,3,4}, {1,2,3,4}},
+      {{0,2,3,4}, {1,2,3,4}} };
 
     /** \brief
      * childEdge[el_type][child][i] =
@@ -268,35 +263,35 @@ namespace AMDiS
      * Note: el_type, i.e., the first index of the array, defines the element type
      * of the parent elements.
      */
-    static constexpr int childEdge[3][2][6] = { {{1,2,0,5,5,4}, {4,3,0,5,5,4}},
+    static constexpr int childEdge[3][2][6] = 
+    { {{1,2,0,5,5,4}, {4,3,0,5,5,4}},
       {{1,2,0,5,4,5}, {3,4,0,5,4,5}},
-      {{1,2,0,5,4,5}, {3,4,0,5,4,5}}
-    };
+      {{1,2,0,5,4,5}, {3,4,0,5,4,5}} };
 
     /// edgeOfDOFs[i][j]: gives the local index of edge with vertices i and j
-    static constexpr unsigned char edgeOfDofs[4][4] = {{255, 0, 1, 2},
+    static constexpr unsigned char edgeOfDofs[4][4] = 
+    { {255, 0, 1, 2},
       {0, 255, 3, 4},
       {1, 3, 255, 5},
-      {2, 4, 5, 255}
-    };
+      {2, 4, 5, 255} };
 
   protected:
     /// nChildEdge[el_type][ichild][dir] gives local index of new edge on
     /// child[ichild] part of face [2 + dir] on the parent.
-    static constexpr unsigned char nChildEdge[3][2][2] = { {{5,4},{4,5}},
+    static constexpr unsigned char nChildEdge[3][2][2] = 
+    { {{5,4},{4,5}},
       {{5,4},{5,4}},
-      {{5,4},{5,4}}
-    };
+      {{5,4},{5,4}} };
 
     /** \brief
      * nChildFace[el_type][ichild][dir]
      * gives local index of sub-face on child[ichild] part of face [2+dir] on
      * the parent
      */
-    static constexpr unsigned char nChildFace[3][2][2] = { {{1,2},{2,1}},
+    static constexpr unsigned char nChildFace[3][2][2] = 
+    { {{1,2},{2,1}},
       {{1,2},{1,2}},
-      {{1,2},{1,2}}
-    };
+      {{1,2},{1,2}} };
 
     /** \brief
      * adjacentChild[position][ichild]
@@ -304,64 +299,66 @@ namespace AMDiS
      *   position = 0  same position of element and neigh at refinement edge,
      *   position = 1  different ...
      */
-    static constexpr unsigned char adjacentChild[2][2] = {{0,1}, {1,0}};
+    static constexpr unsigned char adjacentChild[2][2] = 
+    { {0,1}, 
+      {1,0} };
 
     /** \brief
      * childOrientation[el_type][child] =
      *   +1 if orientation is not changed during refinement,
      *   -1 if orientation is changed during refinement
      */
-    static constexpr signed char childOrientation[3][2] = {{1,1},
+    static constexpr signed char childOrientation[3][2] = 
+    { {1,1},
       {1,-1},
-      {1,-1}
-    };
+      {1,-1} };
 
     ///
-    static constexpr int edgeOfFace[4][3] = {{5, 4, 3},  // face 0
+    static constexpr int edgeOfFace[4][3] = 
+    { {5, 4, 3},  // face 0
       {5, 2, 1},  // face 1
       {4, 2, 0},  // face 2
-      {3, 1, 0}
-    }; // face 3
+      {3, 1, 0} };// face 3
 
     /// vertexOfEdge[i][j] is the local number of the j-vertex of edge i
-    static constexpr int vertexOfEdge[6][2] = {{0,1}, {0,2}, {0,3},
-      {1,2}, {1,3}, {2,3}
-    };
+    static constexpr int vertexOfEdge[6][2] = 
+    { {0,1}, 
+      {0,2}, 
+      {0,3},
+      {1,2}, 
+      {1,3}, 
+      {2,3} };
 
     /// vertexOfFace[i][j] is the local number of the j-vertex of face i
-    static constexpr int vertexOfFace[4][3] = {{1,2,3}, {0,2,3},
-      {0,1,3}, {0,1,2}
-    };
+    static constexpr int vertexOfFace[4][3] = 
+    { {1,2,3}, 
+      {0,2,3},
+      {0,1,3}, 
+      {0,1,2} };
 
     /// See \ref Element::getSideOfChild for more information.
-    static constexpr int sideOfChild[3][2][4]
-    = {{{-1, 3, 1, 2}, {3, -1, 2, 1}},  // type 0
+    static constexpr int sideOfChild[3][2][4] =
+    { {{-1, 3, 1, 2}, {3, -1, 2, 1}},  // type 0
       {{-1, 3, 1, 2}, {3, -1, 1, 2}},  // type 1
-      {{-1, 3, 1, 2}, {3, -1, 1, 2}}
-    }; // type 2
+      {{-1, 3, 1, 2}, {3, -1, 1, 2}} };// type 2
 
     /// edgeOfChild[elType][i][j] is the local edge number of the j-th edge within
     /// the i-th children of an element of elType. If the value is -1, the edge is
     /// not included in the element's child. Note that the 0 edge is included in
     /// both children only by its half.
-    static constexpr int edgeOfChild[3][2][6]
-    = {{{2, 0, 1, -1, -1, 3},   // type 0
-        {2, -1, -1, 1, 0, 3}
-      },
-      { {2, 0, 1, -1, -1, 3},   // type 1
-        {2, -1, -1, 0, 1, 3}
-      },
-      { {2, 0, 1, -1, -1, 3},   // type 2
-        {2, -1, -1, 0, 1, 3}
-      }
-    };
+    static constexpr int edgeOfChild[3][2][6] =
+    { {{2, 0, 1, -1, -1, 3},   // type 0
+       {2, -1, -1, 1, 0, 3} },
+      {{2, 0, 1, -1, -1, 3},   // type 1
+       {2, -1, -1, 0, 1, 3} },
+      {{2, 0, 1, -1, -1, 3},   // type 2
+       {2, -1, -1, 0, 1, 3} } };
 
     /// See \ref Element::getVertexOfParent for more information.
-    static constexpr int vertexOfParent[3][2][4]
-    = {{{0, 2, 3, -1}, {1, 3, 2, -1}}, // type 0
-      {{0, 2, 3, -1}, {1, 2, 3, -1}}, // type 1
-      {{0, 2, 3, -1}, {1, 2, 3, -1}}
-    }; // type 2
+    static constexpr int vertexOfParent[3][2][4] =
+    { {{0, 2, 3, -1}, {1, 3, 2, -1}},  // type 0
+      {{0, 2, 3, -1}, {1, 2, 3, -1}},  // type 1
+      {{0, 2, 3, -1}, {1, 2, 3, -1}} };// type 2
 
     friend class CoarseningManager3d;
     friend class RefinementManager3d;

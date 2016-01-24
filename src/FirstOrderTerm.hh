@@ -3,9 +3,8 @@
 namespace AMDiS
 {
   template <class Term>
-  void GenericFirstOrderTerm_1<Term>::getLbImpl(
-    const ElInfo* elInfo,
-    std::vector<DenseVector<double>>& Lb) const
+  void GenericFirstOrderTerm_1<Term>::getLbImpl(ElInfo const* elInfo,
+      std::vector<DenseVector<double>>& Lb) const
   {
     auto const& grdLambda = elInfo->getGrdLambda();
     const int nPoints = static_cast<int>(Lb.size());
@@ -16,9 +15,8 @@ namespace AMDiS
 
 
   template <int I, class Term>
-  void GenericFirstOrderTerm_i<I, Term>::getLbImpl(
-    const ElInfo* elInfo,
-    std::vector<DenseVector<double>>& Lb) const
+  void GenericFirstOrderTerm_i<I, Term>::getLbImpl(ElInfo const* elInfo,
+      std::vector<DenseVector<double>>& Lb) const
   {
     auto const& grdLambda = elInfo->getGrdLambda();
     const int nPoints = static_cast<int>(Lb.size());
@@ -29,9 +27,8 @@ namespace AMDiS
 
 
   template <class Term>
-  void GenericFirstOrderTerm_b<Term>::getLbImpl(
-    const ElInfo* elInfo,
-    std::vector<DenseVector<double>>& Lb) const
+  void GenericFirstOrderTerm_b<Term>::getLbImpl(ElInfo const* elInfo,
+      std::vector<DenseVector<double>>& Lb) const
   {
     auto const& grdLambda = elInfo->getGrdLambda();
     const int nPoints = static_cast<int>(Lb.size());

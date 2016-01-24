@@ -27,7 +27,6 @@ namespace AMDiS
     {
     public:
       Creator(int degree_) : degree(degree_) {}
-      virtual ~Creator() {}
 
       /// Returns a new Lagrange object.
       BasisFunction* create()
@@ -57,13 +56,13 @@ namespace AMDiS
     static Lagrange* getLagrange(int dim, int degree);
 
     /// Implements BasisFunction::interpol
-    void interpol(const ElInfo*, int, const int*,
+    void interpol(ElInfo const*, int, int const*,
                   std::function<double(WorldVector<double>)>,
                   DenseVector<double>&) const;
 
     /// Implements BasisFunction::interpol
-    void interpol(const ElInfo*, int,
-                  const int* b_no,
+    void interpol(ElInfo const*, int,
+                  int const* b_no,
                   std::function<WorldVector<double>(WorldVector<double>)>,
                   DenseVector<WorldVector<double>>&) const;
 
@@ -71,7 +70,7 @@ namespace AMDiS
     DimVec<double>* getCoords(int i) const;
 
     /// Implements BasisFunction::getBound
-    void getBound(const ElInfo*, BoundaryType*) const;
+    void getBound(ElInfo const*, BoundaryType*) const;
 
     /** \brief
      * Calculates the local vertex indices which are involved in evaluating
@@ -108,12 +107,12 @@ namespace AMDiS
     }
 
     /// Implements BasisFunction::getLocalIndices().
-    void getLocalIndices(const Element* el,
-                         const DOFAdmin* admin,
+    void getLocalIndices(Element const* el,
+                         DOFAdmin const* admin,
                          std::vector<DegreeOfFreedom>& dofs) const;
 
-    void getLocalDofPtrVec(const Element* el,
-                           const DOFAdmin* admin,
+    void getLocalDofPtrVec(Element const* el,
+                           DOFAdmin const* admin,
                            std::vector<const DegreeOfFreedom*>& vec) const;
 
     /// Implements BasisFunction::l2ScpFctBas
@@ -153,7 +152,7 @@ namespace AMDiS
     void setFunctionPointer();
 
     /// Used by \ref getVec
-    int* orderOfPositionIndices(const Element* el,
+    int* orderOfPositionIndices(Element const* el,
                                 GeoIndex position,
                                 int positionIndex) const;
 
@@ -290,10 +289,10 @@ namespace AMDiS
       int* vertices;
 
       /// Pointer to the evaluating function
-      double (*func)(const DimVec<double>& lambda, int* vert);
+      double (*func)(DimVec<double> const& lambda, int* vert);
 
       /// Returns \ref func(lambda, vertices)
-      double operator()(const DimVec<double>& lambda) const
+      double operator()(DimVec<double> const& lambda) const
       {
         return func(lambda, vertices);
       }
@@ -304,48 +303,48 @@ namespace AMDiS
 
       // ====== Lagrange, degree = 0 =====================================
       // center
-      static double phi0c(const DimVec<double>&, int*)
+      static double phi0c(DimVec<double> const&, int*)
       {
         return 1.0;
       }
 
       // ====== Lagrange, degree = 1 =====================================
       // vertex
-      static double phi1v(const DimVec<double>& lambda, int* vertices)
+      static double phi1v(DimVec<double> const& lambda, int* vertices)
       {
         return lambda[vertices[0]];
       }
 
       // ====== Lagrange, degree = 2 =====================================
       // vertex
-      static double phi2v(const DimVec<double>& lambda, int* vertices)
+      static double phi2v(DimVec<double> const& lambda, int* vertices)
       {
         return lambda[vertices[0]] * (2.0 * lambda[vertices[0]] - 1.0);
       }
 
       // edge
-      static double phi2e(const DimVec<double>& lambda, int* vertices)
+      static double phi2e(DimVec<double> const& lambda, int* vertices)
       {
         return (4.0 * lambda[vertices[0]] * lambda[vertices[1]]);
       }
 
       // ====== Lagrange, degree = 3 =====================================
       // vertex
-      static double phi3v(const DimVec<double>& lambda, int* vertices)
+      static double phi3v(DimVec<double> const& lambda, int* vertices)
       {
         return (4.5 * (lambda[vertices[0]] - 1.0) * lambda[vertices[0]] + 1.0) *
                lambda[vertices[0]];
       }
 
       // edge
-      static double phi3e(const DimVec<double>& lambda, int* vertices)
+      static double phi3e(DimVec<double> const& lambda, int* vertices)
       {
         return (13.5 * lambda[vertices[0]] - 4.5) *
                lambda[vertices[0]] * lambda[vertices[1]];
       }
 
       // face
-      static double phi3f(const DimVec<double>& lambda, int* vertices)
+      static double phi3f(DimVec<double> const& lambda, int* vertices)
       {
         return 27.0 * lambda[vertices[0]] * lambda[vertices[1]] *
                lambda[vertices[2]];
@@ -353,34 +352,34 @@ namespace AMDiS
 
       // ====== Lagrange, degree = 4 ======================================
       // vertex
-      static double phi4v(const DimVec<double>& lambda, int* vertices)
+      static double phi4v(DimVec<double> const& lambda, int* vertices)
       {
         return (((32.0 * lambda[vertices[0]] - 48.0) * lambda[vertices[0]] + 22.0)
                 * lambda[vertices[0]] - 3.0) * lambda[vertices[0]] / 3.0;
       }
 
       // edge
-      static double phi4e0(const DimVec<double>& lambda, int* vertices)
+      static double phi4e0(DimVec<double> const& lambda, int* vertices)
       {
         return ((128.0 * lambda[vertices[0]] - 96.0) * lambda[vertices[0]] + 16.0)
                * lambda[vertices[0]] * lambda[vertices[1]] / 3.0;
       }
 
-      static double phi4e1(const DimVec<double>& lambda, int* vertices)
+      static double phi4e1(DimVec<double> const& lambda, int* vertices)
       {
         return (4.0 * lambda[vertices[0]] - 1.0) * lambda[vertices[0]] *
                (4.0 * lambda[vertices[1]] - 1.0) * lambda[vertices[1]] * 4.0;
       }
 
       // face
-      static double phi4f(const DimVec<double>& lambda,  int* vertices)
+      static double phi4f(DimVec<double> const& lambda,  int* vertices)
       {
         return (4.0 * lambda[vertices[0]] - 1.0) * lambda[vertices[0]] *
                lambda[vertices[1]] * lambda[vertices[2]] * 32.0;
       }
 
       // center
-      static double phi4c(const DimVec<double>& lambda, int* vertices)
+      static double phi4c(DimVec<double> const& lambda, int* vertices)
       {
         return 256.0 * lambda[vertices[0]] * lambda[vertices[1]] *
                lambda[vertices[2]] * lambda[vertices[3]];
@@ -403,11 +402,11 @@ namespace AMDiS
     private:
       int* vertices;
 
-      void (*func)(const DimVec<double>& lambda,
+      void (*func)(DimVec<double> const& lambda,
                    int* vertices_,
                    DenseVector<double>& result);
 
-      void operator()(const DimVec<double>& lambda,
+      void operator()(DimVec<double> const& lambda,
                       DenseVector<double>& result) const
       {
         func(lambda, vertices, result);
@@ -415,7 +414,7 @@ namespace AMDiS
 
       // ====== Lagrange0 ================================================
       // center
-      static void grdPhi0c(const DimVec<double>&,
+      static void grdPhi0c(DimVec<double> const&,
                            int*,
                            DenseVector<double>& result)
       {
@@ -424,7 +423,7 @@ namespace AMDiS
 
       // ====== Lagrange1 ================================================
       // vertex
-      static void grdPhi1v(const DimVec<double>&,
+      static void grdPhi1v(DimVec<double> const&,
                            int* vertices,
                            DenseVector<double>& result)
       {
@@ -434,7 +433,7 @@ namespace AMDiS
 
       // ====== Lagrange2 ================================================
       // vertex
-      static void grdPhi2v(const DimVec<double>& lambda,
+      static void grdPhi2v(DimVec<double> const& lambda,
                            int* vertices,
                            DenseVector<double>& result)
       {
@@ -443,7 +442,7 @@ namespace AMDiS
       }
 
       // edge
-      static void grdPhi2e(const DimVec<double>& lambda,
+      static void grdPhi2e(DimVec<double> const& lambda,
                            int* vertices,
                            DenseVector<double>& result)
       {
@@ -454,7 +453,7 @@ namespace AMDiS
 
       // ===== Lagrange3 ================================================
       // vertex
-      static void grdPhi3v(const DimVec<double>& lambda,
+      static void grdPhi3v(DimVec<double> const& lambda,
                            int* vertices,
                            DenseVector<double>& result)
       {
@@ -464,7 +463,7 @@ namespace AMDiS
       }
 
       // edge
-      static void grdPhi3e(const DimVec<double>& lambda,
+      static void grdPhi3e(DimVec<double> const& lambda,
                            int* vertices,
                            DenseVector<double>& result)
       {
@@ -476,7 +475,7 @@ namespace AMDiS
       }
 
       // face
-      static void grdPhi3f(const DimVec<double>& lambda,
+      static void grdPhi3f(DimVec<double> const& lambda,
                            int* vertices,
                            DenseVector<double>& result)
       {
@@ -489,7 +488,7 @@ namespace AMDiS
 
       // ===== Lagrange4 ================================================
       // vertex
-      static void grdPhi4v(const DimVec<double>& lambda,
+      static void grdPhi4v(DimVec<double> const& lambda,
                            int* vertices,
                            DenseVector<double>& result)
       {
@@ -500,7 +499,7 @@ namespace AMDiS
       }
 
       // edge
-      static void grdPhi4e0(const DimVec<double>& lambda,
+      static void grdPhi4e0(DimVec<double> const& lambda,
                             int* vertices,
                             DenseVector<double>& result)
       {
@@ -511,7 +510,7 @@ namespace AMDiS
                                lambda[vertices[0]] + 16.0)*lambda[vertices[0]] / 3.0;
       }
 
-      static void grdPhi4e1(const DimVec<double>& lambda,
+      static void grdPhi4e1(DimVec<double> const& lambda,
                             int* vertices,
                             DenseVector<double>& result)
       {
@@ -523,7 +522,7 @@ namespace AMDiS
       }
 
       // face
-      static void grdPhi4f(const DimVec<double>& lambda,
+      static void grdPhi4f(DimVec<double> const& lambda,
                            int* vertices,
                            DenseVector<double>& result)
       {
@@ -537,7 +536,7 @@ namespace AMDiS
       }
 
       // center
-      static void grdPhi4c(const DimVec<double>& lambda,
+      static void grdPhi4c(DimVec<double> const& lambda,
                            int* vertices,
                            DenseVector<double>& result)
       {
@@ -566,30 +565,30 @@ namespace AMDiS
     private:
       int* vertices;
 
-      void (*func)(const DimVec<double>& lambda, int* vertices_, DimMat<double>& result);
+      void (*func)(DimVec<double> const& lambda, int* vertices_, DimMat<double>& result);
 
-      void operator()(const DimVec<double>& lambda, DimMat<double>& result) const
+      void operator()(DimVec<double> const& lambda, DimMat<double>& result) const
       {
         return func(lambda, vertices, result);
       }
 
       // ===== Lagrange0 ================================================
       // center
-      static void D2Phi0c(const DimVec<double>&, int*, DimMat<double>& result)
+      static void D2Phi0c(DimVec<double> const&, int*, DimMat<double>& result)
       {
         result.set(0.0);
       }
 
       // ===== Lagrange1 ================================================
       // vertex
-      static void D2Phi1v(const DimVec<double>&, int*, DimMat<double>& result)
+      static void D2Phi1v(DimVec<double> const&, int*, DimMat<double>& result)
       {
         result.set(0.0);
       }
 
       // ===== Lagrange2 ================================================
       // vertex
-      static void D2Phi2v(const DimVec<double>&, int* vertices,
+      static void D2Phi2v(DimVec<double> const&, int* vertices,
                           DimMat<double>& result)
       {
         result.set(0.0);
@@ -597,7 +596,7 @@ namespace AMDiS
       }
 
       // edge
-      static void D2Phi2e(const DimVec<double>&, int* vertices,
+      static void D2Phi2e(DimVec<double> const&, int* vertices,
                           DimMat<double>& result)
       {
         result.set(0.0);
@@ -608,7 +607,7 @@ namespace AMDiS
 
       // ===== Lagrange3 ================================================
       // vertex
-      static void D2Phi3v(const DimVec<double>& lambda, int* vertices,
+      static void D2Phi3v(DimVec<double> const& lambda, int* vertices,
                           DimMat<double>& result)
       {
         result.set(0.0);
@@ -616,7 +615,7 @@ namespace AMDiS
       }
 
       // edge
-      static void D2Phi3e(const DimVec<double>& lambda, int* vertices,
+      static void D2Phi3e(DimVec<double> const& lambda, int* vertices,
                           DimMat<double>& result)
       {
         result.set(0.0);
@@ -626,7 +625,7 @@ namespace AMDiS
       }
 
       // face
-      static void D2Phi3f(const DimVec<double>& lambda, int* vertices,
+      static void D2Phi3f(DimVec<double> const& lambda, int* vertices,
                           DimMat<double>& result)
       {
         result.set(0.0);
@@ -641,7 +640,7 @@ namespace AMDiS
 
       // ===== Lagrange4 ================================================
       // vertex
-      static void D2Phi4v(const DimVec<double>& lambda,
+      static void D2Phi4v(DimVec<double> const& lambda,
                           int* vertices,
                           DimMat<double>& result)
       {
@@ -651,7 +650,7 @@ namespace AMDiS
       }
 
       // edge
-      static void D2Phi4e0(const DimVec<double>& lambda, int* vertices,
+      static void D2Phi4e0(DimVec<double> const& lambda, int* vertices,
                            DimMat<double>& result)
       {
         result.set(0.0);
@@ -662,7 +661,7 @@ namespace AMDiS
             (128.0 * lambda[vertices[0]] - 64.0) * lambda[vertices[0]] + 16.0 / 3.0;
       }
 
-      static void D2Phi4e1(const DimVec<double>& lambda, int* vertices,
+      static void D2Phi4e1(DimVec<double> const& lambda, int* vertices,
                            DimMat<double>& result)
       {
         result.set(0.0);
@@ -676,7 +675,7 @@ namespace AMDiS
       }
 
       // face
-      static void D2Phi4f(const DimVec<double>& lambda, int* vertices,
+      static void D2Phi4f(DimVec<double> const& lambda, int* vertices,
                           DimMat<double>& result)
       {
         result.set(0.0);
@@ -694,7 +693,7 @@ namespace AMDiS
       }
 
       // center
-      static void D2Phi4c(const DimVec<double>& lambda, int* vertices,
+      static void D2Phi4c(DimVec<double> const& lambda, int* vertices,
                           DimMat<double>& result)
       {
         result.set(0.0);

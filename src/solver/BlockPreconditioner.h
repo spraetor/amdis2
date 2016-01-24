@@ -11,17 +11,19 @@ namespace AMDiS
   template <class MatrixType, class VectorType = MTLTypes::MTLVector>
   struct BlockPreconditioner : public ITL_PreconditionerBase<MatrixType, VectorType>
   {
-    typedef BlockPreconditioner                             self;
-    typedef ITL_PreconditionerBase<MatrixType, VectorType>  super;
-    typedef super                                           precon_base;
+    using Self        = BlockPreconditioner;
+    using Super       = ITL_PreconditionerBase<MatrixType, VectorType>;
+    using precon_base = Super;
 
     BlockPreconditioner()
-      : A(NULL), fullMatrix(NULL)
-    { }
+      : A(NULL), 
+	fullMatrix(NULL)
+    {}
 
-    /// extract iranges from BlockMatrix to be used to extract sub-vectors and sub-matrices.
-    virtual void init(const SolverMatrix<Matrix<DOFMatrix*>>& A_,
-                      const MatrixType& fullMatrix_) override
+    /// Implementation of \ref ITL_PreconditionerBase::init
+    /// Extract iranges from BlockMatrix to be used to extract sub-vectors and sub-matrices.
+    virtual void init(SolverMatrix<Matrix<DOFMatrix*>> const& A_,
+                      MatrixType const& fullMatrix_) override
     {
       A = &A_;
       fullMatrix = &fullMatrix_;
@@ -38,37 +40,43 @@ namespace AMDiS
       }
     }
 
-    virtual void solve(const VectorType& b, VectorType& x) const override
+    /// Implementation of \ref ITL_PreconditionerBase::solve
+    virtual void solve(VectorType const& b, VectorType& x) const override
     {
       FUNCNAME("BlockPreconditioner::solve()");
       TEST_EXIT(false)("Must be implemented in derived classes!\n");
     }
 
-    virtual void adjoint_solve(const VectorType& x, VectorType& y) const override
+    /// Implementation of \ref ITL_PreconditionerBase::adjoint_solve
+    virtual void adjoint_solve(VectorType const& x, VectorType& y) const override
     {
       FUNCNAME("BlockPreconditioner::adjoint_solve()");
       TEST_EXIT(false)("Must be implemented in derived classes!\n");
     }
 
-    const mtl::irange& getRowRange(size_t i) const
+    mtl::irange const& getRowRange(size_t i) const
     {
       return rows[i];
     }
 
-    const mtl::irange& getColRange(size_t i) const
+    mtl::irange const& getColRange(size_t i) const
     {
       return rows[i];
     }
 
-    const DOFMatrix::base_matrix_type& getSubMatrix(size_t i, size_t j) const
+    DOFMatrix::base_matrix_type const& getSubMatrix(size_t i, size_t j) const
     {
       return A->getSubMatrix(i, j);
     }
 
     template <class SolverType, class RunnerType>
-    static void createSubSolver(std::string param, SolverType*& solver, RunnerType*& runner,
-                                std::string solverType = "0", std::string preconType = "no",
-                                int max_iter = 100, double tol = 1.e-8)
+    static void createSubSolver(std::string param, 
+				SolverType*& solver, 
+				RunnerType*& runner,
+                                std::string solverType = "0", 
+				std::string preconType = "no",
+                                int max_iter = 100, 
+				double tol = 1.e-8)
     {
       // definition of standard-backends
 #if defined HAVE_PARALLEL_PETSC
@@ -120,8 +128,8 @@ namespace AMDiS
     }
 
   protected:
-    const SolverMatrix<Matrix<DOFMatrix*>>* A;
-    const MatrixType* fullMatrix;
+    SolverMatrix<Matrix<DOFMatrix*>> const* A;
+    MatrixType const* fullMatrix;
 
     std::vector<mtl::irange> rows;
   };

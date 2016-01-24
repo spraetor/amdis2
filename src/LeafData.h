@@ -86,12 +86,6 @@ namespace AMDiS
       return newObj;
     }
 
-    /// Returns the name of element data type.
-    std::string getTypeName() const
-    {
-      return "LeafDataEstimatable";
-    }
-
     virtual int getTypeID() const override
     {
       return ESTIMATABLE;
@@ -163,11 +157,6 @@ namespace AMDiS
 
       // return the clone
       return newObj;
-    }
-
-    std::string getTypeName() const
-    {
-      return "LeafDataEstimatableVec";
     }
 
     virtual int getTypeID() const override
@@ -255,11 +244,6 @@ namespace AMDiS
       return coarseningError;
     }
 
-    std::string getTypeName() const
-    {
-      return "LeafDataCoarsenable";
-    }
-
     virtual int getTypeID() const override
     {
       return COARSENABLE;
@@ -332,11 +316,6 @@ namespace AMDiS
     virtual double getCoarseningErrorEstimate(int index) const override
     {
       return coarseningError.at(index);
-    }
-
-    std::string getTypeName() const
-    {
-      return "LeafDataCoarsenableVec";
     }
 
     virtual int getTypeID() const override
@@ -424,11 +403,6 @@ namespace AMDiS
     std::list<PeriodicInfo>& getInfoList()
     {
       return periodicInfoList;
-    }
-
-    std::string getTypeName() const
-    {
-      return "LeafDataPeriodic";
     }
 
     virtual int getTypeID() const override

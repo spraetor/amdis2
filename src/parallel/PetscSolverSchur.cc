@@ -292,7 +292,7 @@ namespace AMDiS
 
 
     void PetscSolverSchur::solvePetscMatrix(SystemVector& vec,
-                                            AdaptInfo* adaptInfo)
+                                            AdaptInfo& adaptInfo)
     {
       //     FUNCNAME("PetscSolverSchur::solvePetscMatrix()");
 

@@ -33,7 +33,8 @@ namespace AMDiS
   class DOFIteratorBase
   {
   public:
-    typedef std::bidirectional_iterator_tag	iterator_category;
+    using Self = DOFIteratorBase;
+    using iterator_category = std::bidirectional_iterator_tag;
 
   public:
     /** \brief
@@ -93,7 +94,7 @@ namespace AMDiS
      * must implement incObjectIterator() which increments the object
      * iterator.
      */
-    inline const DOFIteratorBase& operator++()
+    Self const& operator++()
     {
       if (type == ALL_DOFS)
       {
@@ -127,14 +128,14 @@ namespace AMDiS
     }
 
     /// Postfix operator++.
-    inline DOFIteratorBase operator++(int)
+    Self operator++(int)
     {
-      DOFIteratorBase clone = *this;
+      Self clone = *this;
       operator++();
       return clone;
     }
 
-    inline const DOFIteratorBase& operator--()
+    Self const& operator--()
     {
       if (type == ALL_DOFS)
       {
@@ -156,9 +157,9 @@ namespace AMDiS
       return *this;
     }
 
-    inline DOFIteratorBase operator--(int)
+    Self operator--(int)
     {
-      DOFIteratorBase clone = *this;
+      Self clone = *this;
       operator--();
       return clone;
     }
@@ -227,14 +228,17 @@ namespace AMDiS
   class DOFIterator : public DOFIteratorBase
   {
   public:
-    typedef T 					value_type;
-    typedef typename DOFIndexed<T>::reference	reference;
-    typedef typename DOFIndexed<T>::pointer	pointer;
+    using Self  = DOFIterator;
+    using Super = DOFIteratorBase;
+    
+    using value_type = T;
+    using reference  = typename DOFIndexed<T>::reference;
+    using pointer    = typename DOFIndexed<T>::pointer;
 
   public:
     /// Constructs a DOFIterator for cont of type t
     DOFIterator(DOFIndexed<T>* obj, DOFIteratorType t)
-      : DOFIteratorBase(dynamic_cast<DOFAdmin*>(obj->getFeSpace()->getAdmin()), t),
+      : Super(dynamic_cast<DOFAdmin*>(obj->getFeSpace()->getAdmin()), t),
         iteratedObject(obj)
     {}
 
@@ -242,7 +246,7 @@ namespace AMDiS
     DOFIterator(DOFAdmin* admin,
                 DOFIndexed<T>* obj,
                 DOFIteratorType t)
-      : DOFIteratorBase(admin, t),
+      : Super(admin, t),
         iteratedObject(obj)
     {}
 
@@ -332,18 +336,18 @@ namespace AMDiS
     {}
 
     /// Dereference operator
-    inline const T& operator*() const
+    const T& operator*() const
     {
       return *it;
     }
 
     /// Dereference operator
-    inline const T* operator->() const
+    const T* operator->() const
     {
       return &(*it);
     }
 
-    inline bool operator!=(const DOFIterator<T>& rhs) const
+    bool operator!=(const DOFIterator<T>& rhs) const
     {
       if (this->iteratedObject != rhs.iteratedObject)
         return true;
@@ -354,39 +358,39 @@ namespace AMDiS
       return false;
     }
 
-    inline bool operator==(const DOFIterator<T>& rhs) const
+    bool operator==(const DOFIterator<T>& rhs) const
     {
       return !(this->operator==(rhs));
     }
 
   protected:
     /// Implementation of DOFIteratorBase::goToBeginOfIteratedObject()
-    inline void goToBeginOfIteratedObject()
+    void goToBeginOfIteratedObject()
     {
       it = iteratedObject->begin();
     }
 
     /// Implementation of DOFIteratorBase::goToEndOfIteratedObject()
-    inline void goToEndOfIteratedObject()
+    void goToEndOfIteratedObject()
     {
       it = iteratedObject->end();
     }
 
     /// Implementation of DOFIteratorBase::incObjectIterator()
-    inline void incObjectIterator()
+    void incObjectIterator()
     {
       ++it;
     }
 
     /// Implementation of DOFIteratorBase::incObjectIterator()
-    inline void decObjectIterator()
+    void decObjectIterator()
     {
       --it;
     }
 
   protected:
     /// Object that is iterated
-    const DOFIndexed<T>* iteratedObject;
+    DOFIndexed<T> const* iteratedObject;
 
     /// Iterator for \ref iteratedObject
     typename std::vector<T>::const_iterator it;
@@ -402,7 +406,7 @@ namespace AMDiS
   class DOFVectorIterator : public DOFIteratorBase
   {
   public:
-    typedef typename std::vector<T>::iterator VectorIterator;
+    using VectorIterator = typename std::vector<T>::iterator;
 
     /// Constructs a DOFIterator for cont of type t
     DOFVectorIterator(std::vector<DOFVector<T>*>& obj, DOFIteratorType t)
@@ -424,6 +428,7 @@ namespace AMDiS
         it.push_back(new VectorIterator);
     }
 
+    /// Destructor.
     ~DOFVectorIterator()
     {
       for (size_t i = 0; i < it.size(); i++)
@@ -431,7 +436,7 @@ namespace AMDiS
     }
 
     /// Dereference operator
-    inline std::vector<T> operator*()
+    std::vector<T> operator*()
     {
       std::vector<T> result(it.size());
       for (size_t i = 0; i < it.size(); i++)
@@ -440,13 +445,14 @@ namespace AMDiS
     }
 
     /// Dereference operator
-    inline T* operator->()
+    T* operator->()
     {
-      throw std::runtime_error("operator-> not available for DOFVectorIterator!");
+      FUNCNAME("DOFVectorIterator::operator->");
+      ERROR_EXIT("operator-> not available for DOFVectorIterator!\n");
       return &(*(*it[0]));
     }
 
-    inline bool operator!=(const DOFVectorIterator<T>& rhs)
+    bool operator!=(const DOFVectorIterator<T>& rhs)
     {
       if (this->iteratedObject != rhs.iteratedObject)
         return true;
@@ -457,35 +463,35 @@ namespace AMDiS
       return false;
     }
 
-    inline bool operator==(const DOFVectorIterator<T>& rhs)
+    bool operator==(const DOFVectorIterator<T>& rhs)
     {
       return !(this->operator==(rhs));
     }
 
   protected:
     /// Implementation of DOFIteratorBase::goToBeginOfIteratedObject()
-    inline void goToBeginOfIteratedObject()
+    void goToBeginOfIteratedObject()
     {
       for (size_t i = 0; i < it.size(); i++)
         *(it[i]) = iteratedObject[i]->begin();
     }
 
     /// Implementation of DOFIteratorBase::goToEndOfIteratedObject()
-    inline void goToEndOfIteratedObject()
+    void goToEndOfIteratedObject()
     {
       for (size_t i = 0; i < it.size(); i++)
         *(it[i]) = iteratedObject[i]->end();
     }
 
     /// Implementation of DOFIteratorBase::incObjectIterator()
-    inline void incObjectIterator()
+    void incObjectIterator()
     {
       for (size_t i = 0; i < it.size(); i++)
         ++(*(it[i]));
     }
 
     /// Implementation of DOFIteratorBase::incObjectIterator()
-    inline void decObjectIterator()
+    void decObjectIterator()
     {
       for (size_t i = 0; i < it.size(); i++)
         --(*(it[i]));
@@ -496,7 +502,7 @@ namespace AMDiS
     std::vector<DOFVector<T>*> iteratedObject;
 
     /// Iterator for \ref iteratedObject
-    std::vector<typename std::vector<T>::iterator*> it;
+    std::vector<VectorIterator*> it;
   };
 
 } // end namespace AMDiS

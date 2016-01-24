@@ -76,7 +76,7 @@ namespace AMDiS
 
 
     template<>
-    void FileWriter<double>::writeFiles(AdaptInfo* adaptInfo,
+    void FileWriter<double>::writeFiles(AdaptInfo& adaptInfo,
                                         bool force,
                                         int level,
                                         Flag flag,
@@ -132,12 +132,12 @@ namespace AMDiS
       {
         MacroWriter::writeMacro(dataCollectors[0],
                                 const_cast<char*>((fn +  amdisMeshExt).c_str()),
-                                adaptInfo ? adaptInfo->getTime() : 0.0);
+                                adaptInfo.getTime());
         MSG("macro file written to %s\n", (fn + amdisMeshExt).c_str());
 
         ValueWriter::writeValues(dataCollectors[0],
                                  (fn + amdisDataExt).c_str(),
-                                 adaptInfo ? adaptInfo->getTime() : 0.0);
+                                 adaptInfo.getTime());
         MSG("value file written to %s\n", (fn + amdisDataExt).c_str());
       }
 
@@ -238,7 +238,7 @@ namespace AMDiS
     }
 
     template<>
-    string FileWriter<double>::getParaViewFilename(AdaptInfo* adaptInfo) const
+    string FileWriter<double>::getParaViewFilename(AdaptInfo& adaptInfo) const
     {
       string ret(filename);
       if (appendIndex)
@@ -251,7 +251,7 @@ namespace AMDiS
         char timeStr[20];
 
         sprintf(formatStr, "%%0%d.%df", indexLength, indexDecimals);
-        sprintf(timeStr, formatStr, adaptInfo ? adaptInfo->getTime() : 0.0);
+        sprintf(timeStr, formatStr, adaptInfo.getTime());
 
         ret += timeStr;
       }

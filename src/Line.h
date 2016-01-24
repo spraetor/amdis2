@@ -23,25 +23,26 @@ namespace AMDiS
       : Element(aMesh)
     {}
 
-    /// implements Element::getVertexOfEdge
-    inline int getVertexOfEdge(int i, int j) const
+    /// Implementation of \ref Element::getVertexOfEdge
+    virtual int getVertexOfEdge(int i, int j) const override
     {
       return vertexOfEdge[i][j];
     }
 
-    /// implements Element::getVertexOfPosition
+    /// Implementation of \ref Element::getVertexOfPosition
     virtual int getVertexOfPosition(GeoIndex position,
                                     int positionIndex,
-                                    int vertexIndex) const;
+                                    int vertexIndex) const override;
 
-    virtual int getPositionOfVertex(int side, int vertex) const
+    /// Implementation of \ref Element::getPositionOfVertex
+    virtual int getPositionOfVertex(int side, int vertex) const override
     {
       static constexpr int positionOfVertex[2][2] = {{0, -1}, {-1, 0}};
       return positionOfVertex[side][vertex];
     }
 
-    /// implements Element::getGeo
-    inline int getGeo(GeoIndex i) const
+    /// Implementation of \ref Element::getGeo
+    virtual int getGeo(GeoIndex i) const override
     {
       switch (i)
       {
@@ -68,36 +69,42 @@ namespace AMDiS
       }
     }
 
-    inline int getEdgeOfFace(int /* face */, int /*edge*/ ) const
+    /// Implementation of \ref Element::getEdgeOfFace (should not be called)
+    virtual int getEdgeOfFace(int, int) const override
     {
+      FUNCNAME("Line::getEdgeOfFace()");
       ERROR_EXIT("This does not work in 1D!\n");
       return 0;
     }
 
-    DofEdge getEdge(int localEdgeIndex) const
+    /// Implementation of \ref Element::getEdge (should not be called)
+    virtual DofEdge getEdge(int) const override
     {
+      FUNCNAME("Line::getEdge()");
       ERROR_EXIT("This does not work in 1D!\n");
-      return DofEdge();
+      return {};
     }
 
-    DofFace getFace(int localFaceIndex) const
+    /// Implementation of \ref Element::getFace (should not be called)
+    virtual DofFace getFace(int) const override
     {
+      FUNCNAME("Line::getFace()");
       ERROR_EXIT("This does not work in 1D!\n");
-      return DofFace();
+      return {};
     }
 
-    /// implements Element::sortFaceIndices
-    void sortFaceIndices(int face, FixVec<int,WORLD>& vec) const;
+    /// Implementation of \ref Element::sortFaceIndices
+    virtual void sortFaceIndices(int face, FixVec<int,WORLD>& vec) const override;
 
 
-    /// implements Element::clone
-    inline Element* clone() const
+    /// Implementation of \ref Element::clone
+    virtual Element* clone() const override
     {
       return new Line(mesh);
     }
 
-    /// implements Element::getSideOfChild()
-    int getSideOfChild(int child, int side, int) const
+    /// Implementation of \ref Element::getSideOfChild
+    virtual int getSideOfChild(int child, int side, int) const override
     {
       FUNCNAME_DBG("Line::getSideOfChild()");
       TEST_EXIT_DBG(child == 0 || child == 1)("Child must be either 0 or 1!\n");
@@ -105,14 +112,16 @@ namespace AMDiS
       return sideOfChild[child][side];
     }
 
-    int getSubObjOfChild(int childnr, GeoIndex subObj, int ithObj, int elType) const
+    /// Implementation of \ref Element::getSubObjOfChild (not implemented)
+    virtual int getSubObjOfChild(int, GeoIndex, int, int) const override
     {
+      FUNCNAME("Line::getSubObjOfChild()");
       ERROR_EXIT("Not yet implemented!\n");
       return 0;
     }
 
-    /// implements Element::getVertexOfParent()
-    int getVertexOfParent(int child, int side, int) const
+    /// Implementation of \ref Element::getVertexOfParent
+    virtual int getVertexOfParent(int child, int side, int) const override
     {
       FUNCNAME_DBG("Line::getVertexOfParent()");
       TEST_EXIT_DBG(child == 0 || child == 1)("Child must be either 0 or 1!\n");
@@ -120,60 +129,63 @@ namespace AMDiS
       return vertexOfParent[child][side];
     }
 
-
-    /// implements Element::hasSide
-    inline bool hasSide(Element* /*sideElem*/) const
-    {
-      ERROR_EXIT("a Line has no side elements!\n");
-      return false;
-    }
-
+    /// Implementation of \ref Element::isLine
     /// Returns true because this element is a Line.
-    inline bool isLine() const
+    virtual bool isLine() const override
     {
       return true;
     }
 
+    /// Implementation of \ref Element::isTriangle
     /// Returns false because this element is a Line.
-    inline bool isTriangle() const
+    virtual bool isTriangle() const override
     {
       return false;
     }
 
+    /// Implementation of \ref Element::isTetrahedron
     /// Returns false because this element is a Line
-    inline bool isTetrahedron() const
+    virtual bool isTetrahedron() const override
     {
       return false;
     }
 
+
+    /// Implementation of \ref Element::hasSide (should not be called)
+    virtual bool hasSide(Element*) const override
+    {
+      FUNCNAME("Line::hasSide()");
+      ERROR_EXIT("A Line has no side elements!\n");
+      return false;
+    }
+
+    /// Implementation of \ref Element::getChildType
     /// Element type number is not used in 1d, so return 0.
-    inline int getChildType(int) const
+    virtual int getChildType(int) const override
     {
       return 0;
     }
 
-    std::string getTypeName() const
-    {
-      return "Line";
-    }
-
-    void getNodeDofs(const FiniteElemSpace*, BoundaryObject,
-                     DofContainer&, bool) const
+    /// Implementation of \ref Element::getNodeDofs (not implemented)
+    virtual void getNodeDofs(FiniteElemSpace const*, BoundaryObject,
+			     DofContainer&, bool) const override
     {
       FUNCNAME("Line::getNodeDofs()");
       ERROR_EXIT("Not yet implemented!\n");
     }
 
-    void getHigherOrderDofs(const FiniteElemSpace*, BoundaryObject,
-                            DofContainer&, bool, std::vector<GeoIndex>*) const
+    /// Implementation of \ref Element::getHigherOrderDofs (not implemented)
+    virtual void getHigherOrderDofs(FiniteElemSpace const*, BoundaryObject,
+		    DofContainer&, bool, std::vector<GeoIndex>*) const override
     {
       FUNCNAME("Line::getHigherOrderDofs()");
       ERROR_EXIT("Not yet implemented!\n");
     }
 
 
-    void getSubBoundary(BoundaryObject bound,
-                        std::vector<BoundaryObject>& subBound) const
+    /// Implementation of \ref Element::getSubBoundary (snot implemented)
+    virtual void getSubBoundary(BoundaryObject,
+				std::vector<BoundaryObject>&) const override
     {
       FUNCNAME("Line::getSubBoundary()");
       ERROR_EXIT("Not yet implemented!\n");

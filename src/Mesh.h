@@ -46,7 +46,7 @@ namespace AMDiS
     void initialize();
 
     /// Assignment operator
-    Mesh& operator=(const Mesh&);
+    Mesh& operator=(Mesh const&);
 
     /** \name getting methods
      * \{
@@ -126,7 +126,7 @@ namespace AMDiS
     }
 
     /// Returns \ref diam of the mesh
-    const WorldVector<double>& getDiameter() const
+    WorldVector<double> const& getDiameter() const
     {
       return diam;
     }
@@ -163,7 +163,7 @@ namespace AMDiS
     DegreeOfFreedom* getDof(GeoIndex position);
 
     /// Returns *(\ref admin[i]) of the mesh
-    const DOFAdmin& getDofAdmin(int i) const
+    DOFAdmin const& getDofAdmin(int i) const
     {
       return *(admin[i]);
     }
@@ -171,7 +171,7 @@ namespace AMDiS
     /// Creates a DOFAdmin with name lname. nDof specifies how many DOFs
     /// are needed at the different positions (see \ref DOFAdmin::nrDOF).
     /// A pointer to the created DOFAdmin is returned.
-    const DOFAdmin* createDOFAdmin(std::string lname, DimVec<int> nDof);
+    DOFAdmin const* createDOFAdmin(std::string lname, DimVec<int> nDof);
 
     /// Returns the size of \ref admin which is the number of the DOFAdmins
     /// belonging to this mesh
@@ -188,7 +188,7 @@ namespace AMDiS
     }
 
     /// Returns a DOFAdmin which at least manages vertex DOFs
-    const DOFAdmin* getVertexAdmin() const;
+    DOFAdmin const* getVertexAdmin() const;
 
     /// Allocates an array of DOF pointers. The array holds one pointer for
     /// each node.
@@ -297,7 +297,7 @@ namespace AMDiS
     }
 
     /// Sets *\ref diam to w
-    void setDiameter(const WorldVector<double>& w);
+    void setDiameter(WorldVector<double> const& w);
 
     /// Sets (*\ref diam)[i] to d
     void setDiameter(int i, double d);
@@ -380,7 +380,7 @@ namespace AMDiS
     /// case, that there are no global or local refinements, i.e., all macro
     /// elements have no children.
     void removeMacroElements(std::set<MacroElement*>& macros,
-                             std::vector<const FiniteElemSpace*>& feSpaces);
+                             std::vector<FiniteElemSpace const*>& feSpaces);
 
     void removeAllMacroElements();
 
@@ -388,11 +388,11 @@ namespace AMDiS
     void freeDofPtrs(DegreeOfFreedom** ptrs);
 
     /// Used by \ref findElementAtPoint.
-    bool findElInfoAtPoint(const WorldVector<double>& xy,
+    bool findElInfoAtPoint(WorldVector<double> const& xy,
                            ElInfo* el_info,
                            DimVec<double>& bary,
-                           const MacroElement* start_mel,
-                           const WorldVector<double>* xy0,
+                           MacroElement const* start_mel,
+                           WorldVector<double> const* xy0,
                            double* sp);
 
     /** \brief
@@ -430,11 +430,11 @@ namespace AMDiS
      * For non-convex domains, it is possible that in some cases a point inside
      * the domain is considered as external.
      */
-    bool findElementAtPoint(const WorldVector<double>& xy,
+    bool findElementAtPoint(WorldVector<double> const& xy,
                             Element** elp,
                             DimVec<double>& bary,
-                            const MacroElement* start_mel,
-                            const WorldVector<double>* xy0,
+                            MacroElement const* start_mel,
+                            WorldVector<double> const* xy0,
                             double* sp);
 
     /** \brief
@@ -450,8 +450,8 @@ namespace AMDiS
      *
      * The function returns true, if the dof was found, otherwise false.
      */
-    bool getDofIndexCoords(const DegreeOfFreedom* dof,
-                           const FiniteElemSpace* feSpace,
+    bool getDofIndexCoords(DegreeOfFreedom const* dof,
+                           FiniteElemSpace const* feSpace,
                            WorldVector<double>& coords)
     {
       return getDofIndexCoords(*dof, feSpace, coords);
@@ -461,7 +461,7 @@ namespace AMDiS
     /// This function is equal to \ref getDofIndexCoords as defined above, but
     /// takes a DOF index instead of a DOF pointer.
     bool getDofIndexCoords(DegreeOfFreedom dof,
-                           const FiniteElemSpace* feSpace,
+                           FiniteElemSpace const* feSpace,
                            WorldVector<double>& coords);
 
     /** \brief
@@ -480,11 +480,11 @@ namespace AMDiS
      * @param[in]   feSpace   The FE space to be used for collecting DOFs.
      * @param[out]  allDofs   The set which is filled with all DOFs.
      */
-    void getAllDofs(const FiniteElemSpace* feSpace,
-                    std::set<const DegreeOfFreedom*>& allDofs);
+    void getAllDofs(FiniteElemSpace const* feSpace,
+                    std::set<DegreeOfFreedom const*>& allDofs);
 
     /// Returns FILL_ANY_?D
-    static const Flag& getFillAnyFlag(int dim)
+    static Flag const& getFillAnyFlag(int dim)
     {
       switch (dim)
       {
@@ -510,7 +510,7 @@ namespace AMDiS
     }
 
     /// Returns \ref initialized.
-    bool isInitialized()
+    bool isInitialized() const
     {
       return initialized;
     }
@@ -540,7 +540,7 @@ namespace AMDiS
 
     /// Returns whether the given boundary type is periodic, i.e., if there is
     /// a periodic association for this boundary type.
-    bool isPeriodicAssociation(BoundaryType b)
+    bool isPeriodicAssociation(BoundaryType b) const
     {
       return (periodicAssociations.count(b) == 1 ? true : false);
     }
@@ -564,7 +564,7 @@ namespace AMDiS
     }
 
     /// Returns the mesh change index, see \ref changeIndex.
-    long getChangeIndex()
+    long getChangeIndex() const
     {
       return changeIndex;
     }
@@ -581,13 +581,13 @@ namespace AMDiS
 #ifdef HAVE_PARALLEL_DOMAIN_AMDIS
     /// In parallel computations the level of all macro elements is equal to the
     /// number of global pre refinements, \ref nParallelPreRefinements.
-    int getMacroElementLevel()
+    int getMacroElementLevel() const
     {
       return nParallelPreRefinements;
     }
 #else
     /// In sequentiel computations the level of all macro elements is always 0.
-    int getMacroElementLevel()
+    int getMacroElementLevel() const
     {
       return 0;
     }
@@ -665,7 +665,7 @@ namespace AMDiS
   protected:
     ///
     bool findElementAtPointRecursive(ElInfo* elinfo,
-                                     const DimVec<double>& lambda,
+                                     DimVec<double> const& lambda,
                                      int outside,
                                      ElInfo* final_el_info);
 
@@ -846,7 +846,7 @@ namespace AMDiS
 
     /// Temporary variables that are used in functions \ref findElInfoAtPoint
     /// and \ref findElementAtPointRecursive.
-    const WorldVector<double>* g_xy0, *g_xy;
+    WorldVector<double> const *g_xy0, *g_xy;
 
     /// Temporary variable that is used in functions \ref findElInfoAtPoint and
     /// \ref findElementAtPointRecursive.

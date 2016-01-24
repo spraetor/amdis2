@@ -29,13 +29,13 @@ namespace AMDiS
     using const_pointer = value_type const*;
 
     // static sizes
-    constexpr static int _SIZE = N*M;
-    constexpr static int _ROWS = N;
-    constexpr static int _COLS = M;
+    static constexpr int _SIZE = N*M;
+    static constexpr int _ROWS = N;
+    static constexpr int _COLS = M;
 
   protected:
-    constexpr static size_type _size = _SIZE;
-    constexpr static size_type _capacity = _SIZE; // TODO: eventuell aufrunden
+    static constexpr size_type _size = _SIZE;
+    static constexpr size_type _capacity = _SIZE; // TODO: eventuell aufrunden
 
     ALIGNED(T, _elements, _capacity);   // T _elements[N];
 
@@ -58,7 +58,7 @@ namespace AMDiS
     }
 
     /// return the \ref _capacity of the vector.
-    constexpr static size_type getCapacity()
+    static constexpr size_type getCapacity()
     {
       return _capacity;
     }
@@ -86,7 +86,7 @@ namespace AMDiS
     {
       if (s != _size)
       {
-        // Not supported
+        // Not allowed
         assert( false );
       }
     }
@@ -129,9 +129,9 @@ namespace AMDiS
     using const_pointer = value_type const*;
 
     // static sizes (by default -1 := dynamic size)
-    constexpr static int _SIZE = -1;
-    constexpr static int _ROWS = -1;
-    constexpr static int _COLS = -1;
+    static constexpr int _SIZE = -1;
+    static constexpr int _ROWS = -1;
+    static constexpr int _COLS = -1;
 
   protected:
     size_type  _size;
@@ -276,13 +276,13 @@ namespace AMDiS
     using const_pointer = value_type const*;
 
     // static sizes
-    constexpr static int _SIZE = -1;
-    constexpr static int _ROWS = -1;
-    constexpr static int _COLS = -1;
+    static constexpr int _SIZE = -1;
+    static constexpr int _ROWS = -1;
+    static constexpr int _COLS = -1;
 
   protected:
     size_type _size;
-    constexpr static size_type _capacity = N*M;
+    static constexpr size_type _capacity = N*M;
 
     ALIGNED(T, _elements, _capacity);   // T _elements[N];
 

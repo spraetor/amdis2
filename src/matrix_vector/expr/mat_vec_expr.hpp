@@ -61,12 +61,12 @@ namespace AMDiS
     using vector_type = BufferType<VecE, use_buffer>;
 
     // sizes of the resulting expr.
-    constexpr static int _SIZE = MatE::_ROWS;
-    constexpr static int _ROWS = MatE::_ROWS;
-    constexpr static int _COLS = math::max(VecE::_COLS, 1);
+    static constexpr int _SIZE = MatE::_ROWS;
+    static constexpr int _ROWS = MatE::_ROWS;
+    static constexpr int _COLS = math::max(VecE::_COLS, 1);
 
   private:
-    constexpr static int ARG_COLS = math::max(VecE::_ROWS, MatE::_COLS);
+    static constexpr int ARG_COLS = math::max(VecE::_ROWS, MatE::_COLS);
 
   public:
     /// constructor takes a matrix expression \p mat and a
@@ -119,6 +119,9 @@ namespace AMDiS
     matrix_type const&  matrix;
     vector_type vector;
   };
+  
+  // TODO: generalize MatVec expression to allow a functor passed to the expr.
+  //       Example: diagonal(matrix) -> vector_expr
 
 
   /// Size of MatVecExpr

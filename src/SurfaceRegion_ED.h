@@ -39,11 +39,6 @@ namespace AMDiS
 
     virtual ElementData* clone() const override;
 
-    std::string getTypeName() const
-    {
-      return "SurfaceRegion_ED";
-    }
-
     virtual int getTypeID() const override
     {
       return SURFACE_REGION;

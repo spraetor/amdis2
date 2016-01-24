@@ -61,13 +61,13 @@ namespace AMDiS
      * \param time time index of solution std::vector.
      * \param force enforces the output operation for the last timestep.
      */
-    virtual void writeFiles(AdaptInfo* adaptInfo, bool force,
+    virtual void writeFiles(AdaptInfo& adaptInfo, bool force,
                             int level = -1,
                             Flag traverseFlag = Mesh::CALL_LEAF_EL,
                             bool (*writeElem)(ElInfo*) = NULL) = 0;
 
     /// Test whether timestep should be written
-    virtual bool doWriteTimestep(AdaptInfo* adaptInfo, bool force);
+    virtual bool doWriteTimestep(AdaptInfo& adaptInfo, bool force);
 
     std::string getFilename()
     {
@@ -100,9 +100,9 @@ namespace AMDiS
 
     /// create a filename that includes the timestep and possibly a processor ID in parallel mode
 #ifdef HAVE_PARALLEL_DOMAIN_AMDIS
-    void getFilename(AdaptInfo* adaptInfo, std::string& fn, std::string& paraFilename, std::string& postfix);
+    void getFilename(AdaptInfo& adaptInfo, std::string& fn, std::string& paraFilename, std::string& postfix);
 #else
-    void getFilename(AdaptInfo* adaptInfo, std::string& fn);
+    void getFilename(AdaptInfo& adaptInfo, std::string& fn);
 #endif
 
     /// Used filename prefix.

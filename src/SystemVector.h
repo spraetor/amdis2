@@ -19,7 +19,7 @@ namespace AMDiS
   public:
     /// Constructor.
     SystemVector(std::string name_,
-                 std::vector<const FiniteElemSpace*> feSpace_,
+                 std::vector<FiniteElemSpace const*> feSpace_,
                  int size,
                  bool createVec_ = false);
 
@@ -68,13 +68,13 @@ namespace AMDiS
     }
 
     /// Returns the fe space for a given component.
-    const FiniteElemSpace* getFeSpace(int i) const
+    FiniteElemSpace const* getFeSpace(int i) const
     {
       return componentSpaces[i];
     }
 
     /// Returns the fe spaces for all components.
-    std::vector<const FiniteElemSpace*> getFeSpaces() const
+    std::vector<FiniteElemSpace const*> getFeSpaces() const
     {
       return componentSpaces;
     }
@@ -95,10 +95,10 @@ namespace AMDiS
     SystemVector& operator=(double value);
 
     /// Copy assignment function
-    void copy(const SystemVector& rhs);
+    void copy(SystemVector const& rhs);
 
     /// Copy-Assignement operator.
-    SystemVector& operator=(const SystemVector& rhs);
+    SystemVector& operator=(SystemVector const& rhs);
 
     /// Set the coarsen operation for all DOFVectors
     void setCoarsenOperation(RefineCoarsenOperation op);
@@ -117,7 +117,7 @@ namespace AMDiS
     std::string name;
 
     /// Finite element space.
-    std::vector<const FiniteElemSpace*> componentSpaces;
+    std::vector<FiniteElemSpace const*> componentSpaces;
 
     /// Local dof vectors.
     std::vector<DOFVector<double>*> vectors;
@@ -133,10 +133,16 @@ namespace AMDiS
   SystemVector& operator*=(SystemVector& x, double d);
 
   /// multiplication with a scalar
-  SystemVector operator*(SystemVector x, double d);
+  inline SystemVector operator*(SystemVector x, double d) 
+  { 
+    return x *= d; 
+  }
 
   /// multiplication with a scalar
-  SystemVector operator*(double d, SystemVector x);
+  inline SystemVector operator*(double d, SystemVector x) 
+  { 
+    return x *= d; 
+  }
 
   /// scalar product
   double operator*(SystemVector const& x, SystemVector const& y);
@@ -148,10 +154,16 @@ namespace AMDiS
   SystemVector& operator-=(SystemVector& x, SystemVector const& y);
 
   /// addition of two system vectors
-  SystemVector operator+(SystemVector x, SystemVector const& y);
+  inline SystemVector operator+(SystemVector x, SystemVector const& y) 
+  { 
+    return x += y; 
+  }
 
   /// addition of two system vectors
-  SystemVector operator-(SystemVector x, SystemVector const& y);
+  inline SystemVector operator-(SystemVector x, SystemVector const& y) 
+  { 
+    return x -= y; 
+  }
 
 
   /// Norm of system vector.

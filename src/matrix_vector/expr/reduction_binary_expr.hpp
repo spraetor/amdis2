@@ -22,12 +22,12 @@ namespace AMDiS
     using expr1_type = E1;
     using expr2_type = E2;
 
-    constexpr static int _SIZE = 1;
-    constexpr static int _ROWS = 1;
-    constexpr static int _COLS = 1;
+    static constexpr int _SIZE = 1;
+    static constexpr int _ROWS = 1;
+    static constexpr int _COLS = 1;
 
   private:
-    constexpr static int ARG_SIZE = math::max(E1::_SIZE, E2::_SIZE);
+    static constexpr int ARG_SIZE = math::max(E1::_SIZE, E2::_SIZE);
 
   public:
     /// constructor takes two expression \p A and \p B.

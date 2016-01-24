@@ -5,10 +5,10 @@
 
 #ifdef MTL_HAS_HYPRE
 
-#include "solver/LinearSolver.h"
-#include "solver/ITL_Preconditioner.h"
-#include "MTL4Types.h"
-#include "solver/itl/hypre.hpp"
+#include <solver/LinearSolver.h>
+#include <solver/ITL_Preconditioner.h>
+#include <MTL4Types.h>
+#include <solver/itl/hypre.hpp>
 
 #include <boost/numeric/itl/itl.hpp>
 #include <boost/numeric/mtl/mtl.hpp>
@@ -18,9 +18,9 @@ namespace AMDiS
 
   struct Hypre_Runner : public RunnerBase<MTLTypes::MTLMatrix, MTLTypes::MTLVector>
   {
-    typedef MTLTypes::MTLMatrix                   MatrixType;
-    typedef MTLTypes::MTLVector                   VectorType;
-    typedef RunnerBase<MatrixType, VectorType>  super;
+    using MatrixType = MTLTypes::MTLMatrix;
+    using VectorType = MTLTypes::MTLVector;
+    using Super      = RunnerBase<MatrixType, VectorType>;
 
     /** Interface to the HYPRE BoomerAMG solver [...]
      * Parameters provided by AMDiS:
@@ -81,14 +81,15 @@ namespace AMDiS
       config.printLevel(oem.getInfo());
     }
 
+    /// Destructor.
     ~Hypre_Runner()
     {
       exit();
     }
 
     /// Implementation of \ref RunnerBase::init()
-    virtual void init(const SolverMatrix<Matrix<DOFMatrix*>>& A,
-                      const MatrixType& mtlMatrix) override
+    virtual void init(SolverMatrix<Matrix<DOFMatrix*>> const& A,
+                      MatrixType const& mtlMatrix) override
     {
       setTransposed(typename MatrixType::orientation());
       // TODO: copy matrix directly from DOFMatrix to HYPRE matrix (?)
@@ -104,9 +105,9 @@ namespace AMDiS
     }
 
     /// Implementation of \ref RunnerBase::solve()
-    virtual int solve(const MatrixType& A ,
+    virtual int solve(MatrixType const& A ,
                       VectorType& mtlX,
-                      const VectorType& mtlB) override
+                      VectorType const& mtlB) override
     {
       mtl::HypreParVector x(mtlX);
       mtl::HypreParVector b(mtlB);
@@ -170,7 +171,7 @@ namespace AMDiS
    * \brief
    * Wrapper for the external HYPRE-AMG solver
    */
-  typedef LinearSolver<MTLTypes::MTLMatrix, MTLTypes::MTLVector, Hypre_Runner> HypreSolver;
+  using HypreSolver = LinearSolver<MTLTypes::MTLMatrix, MTLTypes::MTLVector, Hypre_Runner>;
 
 } // end namespace AMDiS
 

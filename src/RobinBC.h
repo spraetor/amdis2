@@ -25,9 +25,10 @@ namespace AMDiS
     /// Constructor. \f$ j \f$ and \f$ alpha \f$ are given as AbstractFunction objects.
     template <class JExpr, class AlphaExpr>
     RobinBC(BoundaryType type,
-            JExpr&& j_expr, AlphaExpr&& a_expr,
-            const FiniteElemSpace* rowFeSpace,
-            const FiniteElemSpace* colFeSpace = NULL)
+            JExpr&& j_expr, 
+	    AlphaExpr&& a_expr,
+            FiniteElemSpace const* rowFeSpace,
+            FiniteElemSpace const* colFeSpace = NULL)
       : BoundaryCondition(type, rowFeSpace, colFeSpace),
         neumannOperators(NULL),
         robinOperators(NULL)

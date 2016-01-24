@@ -23,7 +23,7 @@ namespace AMDiS
                                        ProblemTimeInterface& problemInstat,
                                        AdaptInfo& initialInfo,
                                        time_t initialTimestampSet)
-    : AdaptBase(name, &problemStat, &adaptInfo, &problemInstat, &initialInfo),
+    : AdaptBase(name, &problemStat, adaptInfo, &problemInstat, &initialInfo),
       breakWhenStable(0)
   {
     strategy = 0;
@@ -45,25 +45,25 @@ namespace AMDiS
     FUNCNAME("AdaptInstationary::explicitTimeStrategy()");
 
     // estimate before first adaption
-    if (adaptInfo->getTime() <= adaptInfo->getStartTime())
+    if (adaptInfo.getTime() <= adaptInfo.getStartTime())
       problemIteration->oneIteration(adaptInfo, ESTIMATE);
 
 
     // increment time
-    adaptInfo->setTime(adaptInfo->getTime() + adaptInfo->getTimestep());
+    adaptInfo.setTime(adaptInfo.getTime() + adaptInfo.getTimestep());
 
     problemTime->setTime(adaptInfo);
 
     INFO(info, 6)("time = %e, timestep = %e\n",
-                  adaptInfo->getTime(), adaptInfo->getTimestep());
+                  adaptInfo.getTime(), adaptInfo.getTimestep());
 
-    adaptInfo->setSpaceIteration(0);
+    adaptInfo.setSpaceIteration(0);
 
     // do the iteration
     problemIteration->beginIteration(adaptInfo);
     problemIteration->oneIteration(adaptInfo, FULL_ITERATION);
     problemIteration->endIteration(adaptInfo);
-    adaptInfo->setLastProcessedTimestep(adaptInfo->getTimestep());
+    adaptInfo.setLastProcessedTimestep(adaptInfo.getTimestep());
   }
 
 
@@ -73,33 +73,33 @@ namespace AMDiS
 
     do
     {
-      adaptInfo->setTime(adaptInfo->getTime() + adaptInfo->getTimestep());
+      adaptInfo.setTime(adaptInfo.getTime() + adaptInfo.getTimestep());
       problemTime->setTime(adaptInfo);
 
       INFO(info,6)("time = %e, try timestep = %e\n",
-                   adaptInfo->getTime(), adaptInfo->getTimestep());
+                   adaptInfo.getTime(), adaptInfo.getTimestep());
 
       problemIteration->oneIteration(adaptInfo, NO_ADAPTION);
 
-      adaptInfo->incTimestepIteration();
+      adaptInfo.incTimestepIteration();
 
       if (!fixedTimestep &&
-          !adaptInfo->timeToleranceReached() &&
-          adaptInfo->getTimestepIteration() <= adaptInfo->getMaxTimestepIteration() &&
-          !(adaptInfo->getTimestep() <= adaptInfo->getMinTimestep()))
+          !adaptInfo.timeToleranceReached() &&
+          adaptInfo.getTimestepIteration() <= adaptInfo.getMaxTimestepIteration() &&
+          !(adaptInfo.getTimestep() <= adaptInfo.getMinTimestep()))
       {
-        adaptInfo->setTime(adaptInfo->getTime() - adaptInfo->getTimestep());
-        adaptInfo->setTimestep(adaptInfo->getTimestep() * timeDelta1);
+        adaptInfo.setTime(adaptInfo.getTime() - adaptInfo.getTimestep());
+        adaptInfo.setTimestep(adaptInfo.getTimestep() * timeDelta1);
         continue;
       }
 
 
-      adaptInfo->setSpaceIteration(0);
+      adaptInfo.setSpaceIteration(0);
 
 
       // === Do space iterations only if the maximum is higher than 0. ===
 
-      if (adaptInfo->getMaxSpaceIteration() > 0)
+      if (adaptInfo.getMaxSpaceIteration() > 0)
       {
 
         // === Space iterations. ===
@@ -115,23 +115,23 @@ namespace AMDiS
           if (isAdapted == 0)
           {
             if (!fixedTimestep &&
-                !adaptInfo->timeToleranceReached() &&
-                !(adaptInfo->getTimestep() <= adaptInfo->getMinTimestep()))
+                !adaptInfo.timeToleranceReached() &&
+                !(adaptInfo.getTimestep() <= adaptInfo.getMinTimestep()))
             {
-              adaptInfo->setTime(adaptInfo->getTime() - adaptInfo->getTimestep());
-              adaptInfo->setTimestep(adaptInfo->getTimestep() * timeDelta2);
+              adaptInfo.setTime(adaptInfo.getTime() - adaptInfo.getTimestep());
+              adaptInfo.setTimestep(adaptInfo.getTimestep() * timeDelta2);
               problemIteration->endIteration(adaptInfo);
-              adaptInfo->incSpaceIteration();
+              adaptInfo.incSpaceIteration();
               break;
             }
           }
 
-          adaptInfo->incSpaceIteration();
+          adaptInfo.incSpaceIteration();
           problemIteration->endIteration(adaptInfo);
 
         }
-        while (!adaptInfo->spaceToleranceReached() &&
-               adaptInfo->getSpaceIteration() <= adaptInfo->getMaxSpaceIteration());
+        while (!adaptInfo.spaceToleranceReached() &&
+               adaptInfo.getSpaceIteration() <= adaptInfo.getMaxSpaceIteration());
 
       }
       else
@@ -141,23 +141,23 @@ namespace AMDiS
 
 
     }
-    while(!adaptInfo->timeToleranceReached() &&
-          !(adaptInfo->getTimestep() <= adaptInfo->getMinTimestep()) &&
-          adaptInfo->getTimestepIteration() <= adaptInfo->getMaxTimestepIteration());
+    while(!adaptInfo.timeToleranceReached() &&
+          !(adaptInfo.getTimestep() <= adaptInfo.getMinTimestep()) &&
+          adaptInfo.getTimestepIteration() <= adaptInfo.getMaxTimestepIteration());
 
-    adaptInfo->setLastProcessedTimestep(adaptInfo->getTimestep());
+    adaptInfo.setLastProcessedTimestep(adaptInfo.getTimestep());
 
     // After successful iteration/timestep the timestep will be changed according
     // adaption rules for next timestep.
     // First, check for increase of timestep
-    if (!fixedTimestep && adaptInfo->timeErrorLow())
-      adaptInfo->setTimestep(adaptInfo->getTimestep() * timeDelta2);
+    if (!fixedTimestep && adaptInfo.timeErrorLow())
+      adaptInfo.setTimestep(adaptInfo.getTimestep() * timeDelta2);
 
     // Second, check for decrease of timestep
     if (!fixedTimestep &&
-        !adaptInfo->timeToleranceReached() &&
-        !(adaptInfo->getTimestep() <= adaptInfo->getMinTimestep()))
-      adaptInfo->setTimestep(adaptInfo->getTimestep() * timeDelta1);
+        !adaptInfo.timeToleranceReached() &&
+        !(adaptInfo.getTimestep() <= adaptInfo.getMinTimestep()))
+      adaptInfo.setTimestep(adaptInfo.getTimestep() * timeDelta1);
   }
 
 
@@ -166,28 +166,28 @@ namespace AMDiS
     FUNCNAME("AdaptInstationary::simpleAdaptiveTimeStrategy()");
 
     // estimate before first adaption
-    if (adaptInfo->getTime() <= adaptInfo->getStartTime())
+    if (adaptInfo.getTime() <= adaptInfo.getStartTime())
       problemIteration->oneIteration(adaptInfo, ESTIMATE);
 
-    adaptInfo->setTime(adaptInfo->getTime() + adaptInfo->getTimestep());
+    adaptInfo.setTime(adaptInfo.getTime() + adaptInfo.getTimestep());
     problemTime->setTime(adaptInfo);
 
     INFO(info,6)("time = %e, timestep = %e\n",
-                 adaptInfo->getTime(), adaptInfo->getTimestep());
+                 adaptInfo.getTime(), adaptInfo.getTimestep());
 
     problemIteration->oneIteration(adaptInfo, FULL_ITERATION);
 
-    adaptInfo->setLastProcessedTimestep(adaptInfo->getTimestep());
+    adaptInfo.setLastProcessedTimestep(adaptInfo.getTimestep());
 
     // First, check for increase of timestep
-    if (!fixedTimestep && adaptInfo->timeErrorLow())
-      adaptInfo->setTimestep(adaptInfo->getTimestep() * timeDelta2);
+    if (!fixedTimestep && adaptInfo.timeErrorLow())
+      adaptInfo.setTimestep(adaptInfo.getTimestep() * timeDelta2);
 
     // Second, check for decrease of timestep
     if (!fixedTimestep &&
-        !adaptInfo->timeToleranceReached() &&
-        !(adaptInfo->getTimestep() <= adaptInfo->getMinTimestep()))
-      adaptInfo->setTimestep(adaptInfo->getTimestep() * timeDelta1);
+        !adaptInfo.timeToleranceReached() &&
+        !(adaptInfo.getTimestep() <= adaptInfo.getMinTimestep()))
+      adaptInfo.setTimestep(adaptInfo.getTimestep() * timeDelta1);
   }
 
 
@@ -195,7 +195,7 @@ namespace AMDiS
   {
     FUNCNAME("AdaptInstationary::oneTimestep()");
 
-    adaptInfo->setTimestepIteration(0);
+    adaptInfo.setTimestepIteration(0);
 
     switch (strategy)
     {
@@ -212,7 +212,7 @@ namespace AMDiS
       ERROR_EXIT("Unknown strategy = %d!\n", strategy);
     }
 
-    adaptInfo->incTimestepNumber();
+    adaptInfo.incTimestepNumber();
   }
 
 
@@ -221,37 +221,37 @@ namespace AMDiS
     FUNCNAME("AdaptInstationary::adapt()");
     int errorCode = 0;
 
-    TEST_EXIT(adaptInfo->getTimestep() >= adaptInfo->getMinTimestep())
+    TEST_EXIT(adaptInfo.getTimestep() >= adaptInfo.getMinTimestep())
     ("timestep < min timestep\n");
-    TEST_EXIT(adaptInfo->getTimestep() <= adaptInfo->getMaxTimestep())
+    TEST_EXIT(adaptInfo.getTimestep() <= adaptInfo.getMaxTimestep())
     ("timestep > max timestep\n");
 
-    TEST_EXIT(adaptInfo->getTimestep() > 0)("timestep <= 0!\n");
+    TEST_EXIT(adaptInfo.getTimestep() > 0)("timestep <= 0!\n");
 
 #if HAVE_PARALLEL_DOMAIN_AMDIS
     Parallel::MeshDistributor::globalMeshDistributor->initParallelization();
 #endif
 
-    if (adaptInfo->getTimestepNumber() == 0)
+    if (adaptInfo.getTimestepNumber() == 0)
     {
-      adaptInfo->setTime(adaptInfo->getStartTime());
-      initialAdaptInfo->setStartTime(adaptInfo->getStartTime());
-      initialAdaptInfo->setTime(adaptInfo->getStartTime());
+      adaptInfo.setTime(adaptInfo.getStartTime());
+      initialAdaptInfo->setStartTime(adaptInfo.getStartTime());
+      initialAdaptInfo->setTime(adaptInfo.getStartTime());
 
       problemTime->setTime(adaptInfo);
 
       // initial adaption
-      problemTime->solveInitialProblem(initialAdaptInfo);
+      problemTime->solveInitialProblem(*initialAdaptInfo);
       problemTime->transferInitialSolution(adaptInfo);
     }
 
-    while (!adaptInfo->reachedEndTime())
+    while (!adaptInfo.reachedEndTime())
     {
       problemTime->initTimestep(adaptInfo);
       oneTimestep();
       problemTime->closeTimestep(adaptInfo);
 
-      if (breakWhenStable && (adaptInfo->getSolverIterations() == 0))
+      if (breakWhenStable && (adaptInfo.getSolverIterations() == 0))
         break;
     }
 

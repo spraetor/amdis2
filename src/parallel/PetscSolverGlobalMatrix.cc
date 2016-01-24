@@ -427,7 +427,7 @@ namespace AMDiS
     /// 4.) destroy null-space
     /// 5.) transfer solution back to DOFVector
     void PetscSolverGlobalMatrix::solvePetscMatrix(SystemVector& vec,
-        AdaptInfo* adaptInfo)
+        AdaptInfo& adaptInfo)
     {
       FUNCNAME("PetscSolverGlobalMatrix::solvePetscMatrix()");
 

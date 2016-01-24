@@ -26,9 +26,8 @@ namespace AMDiS
    * PRINT_INFO, WAIT, WAIT_REALLY.
    * Don't use this class directly but only via these macros!
    */
-  class Msg
+  struct Msg
   {
-  public:
     /// Prints a formated message to the message stream
     static void print(const char* format, ...);
 
@@ -39,7 +38,7 @@ namespace AMDiS
     static void print_error_exit(const char* format, ...);
 
     ///
-    static void catch_error_exit(const char* format, ...) {}
+    static void catch_error_exit(const char* /* format */, ...) {}
 
     /// Prints an error message with funcname, file, and line to the error stream
     static void print_error_funcname(const char* funcname,
@@ -105,7 +104,6 @@ namespace AMDiS
       return error;
     }
 
-  public:
 #if HAVE_PARALLEL_DOMAIN_AMDIS
     /// In parallel computations, when this variable is true, only the 0 rank will
     /// print messages to the output stream. Error messages and warnings are always

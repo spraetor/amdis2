@@ -14,10 +14,6 @@ using namespace std;
 
 namespace AMDiS
 {
-
-  const int MeshStructure::structureSize = 64;
-
-
   void MeshStructure::insertElement(bool isLeaf)
   {
     // overflow? -> next index
@@ -391,7 +387,7 @@ namespace AMDiS
       while (elInfo)
       {
         Element* element = elInfo->getElement();
-        if (element->getElementData(MESH_STRUCTURE) != NULL)
+        if (element->getElementData(AMDIS_MESH_STRUCTURE) != NULL)
         {
           element->setMark(1);
           finished = false;
@@ -481,7 +477,7 @@ namespace AMDiS
 
 
   void MeshStructure::getMeshStructureValues(int macroElIndex,
-      const DOFVector<double>* vec,
+      DOFVector<double> const* vec,
       std::vector<double>& values,
       bool withElIndex)
   {

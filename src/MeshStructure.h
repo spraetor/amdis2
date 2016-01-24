@@ -45,7 +45,7 @@ namespace AMDiS
 
     void init(BoundaryObject& bound, Element* mesh = NULL);
 
-    void init(const std::vector<uint64_t>& initCode, int n)
+    void init(std::vector<uint64_t> const& initCode, int n)
     {
       code = initCode;
       nElements = n;
@@ -115,17 +115,17 @@ namespace AMDiS
     void print(bool resetCode = true);
 
     /// Returns the mesh structure code.
-    const std::vector<uint64_t>& getCode()
+    std::vector<uint64_t> const& getCode() const
     {
       return code;
     }
 
-    int getNumElements()
+    int getNumElements() const
     {
       return nElements;
     }
 
-    int getCurrentElement()
+    int getCurrentElement() const
     {
       return currentElement;
     }
@@ -151,7 +151,7 @@ namespace AMDiS
      * \param[out] values        Resulting value structure code.
      */
     void getMeshStructureValues(int macroElIndex,
-                                const DOFVector<double>* vec,
+                                DOFVector<double> const* vec,
                                 std::vector<double>& values,
                                 bool withElIndex = WITH_ELINDEX);
 
@@ -166,7 +166,7 @@ namespace AMDiS
      */
     void setMeshStructureValues(int macroElIndex,
                                 DOFVector<double>* vec,
-                                const std::vector<double>& values,
+                                std::vector<double> const& values,
                                 bool withElIndex = WITH_ELINDEX);
 
     /// Insert a new element to the structure code. Is used by the init function.
@@ -203,7 +203,7 @@ namespace AMDiS
     /// code generation.
     bool debugMode;
 
-    static const int structureSize;
+    static constexpr int structureSize = 64;
 
   };
 

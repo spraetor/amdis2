@@ -20,7 +20,7 @@ namespace AMDiS
     };
 
     /// Constructor
-    VertexVector(const DOFAdmin* admin, std::string name);
+    VertexVector(DOFAdmin const* admin, std::string name);
 
     /// Destructor, calls \ref removeDOFIndexed and \ref removeDOFContainer on \ref admin.
     ~VertexVector();
@@ -33,7 +33,7 @@ namespace AMDiS
       vec[dof] = dof;
     }
 
-    const DOFAdmin* getAdmin() const
+    DOFAdmin const* getAdmin() const
     {
       return admin;
     }
@@ -47,7 +47,7 @@ namespace AMDiS
     void changeDofIndices(std::map<DegreeOfFreedom, DegreeOfFreedom>& dofIndexMap);
 
   protected:
-    const DOFAdmin* admin;
+    DOFAdmin const* admin;
   };
 
 } // end namespace AMDiS

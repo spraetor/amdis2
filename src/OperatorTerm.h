@@ -6,6 +6,7 @@
 
 #include "AMDiS_fwd.h"
 #include "SubAssembler.h"
+#include <traits/traits.hpp>
 
 namespace AMDiS
 {
@@ -25,10 +26,8 @@ namespace AMDiS
     /// degree_ is used to determine the degree of the needed quadrature
     /// for the assemblage.
     OperatorTerm(int deg)
-      : properties(0),
-        degree(deg),
-        dimOfWorld(Global::getGeo(WORLD)),
-        bOne(-1)
+      : degree(deg),
+        dimOfWorld(Global::getGeo(WORLD))
     {}
 
     /// Destructor.
@@ -37,7 +36,8 @@ namespace AMDiS
     /// Virtual method. It's called by SubAssembler::initElement() for
     /// each OperatorTerm belonging to this SubAssembler. E.g., vectors
     /// and coordinates at quadrature points can be calculated here.
-    void initElement(const ElInfo* elInfo, SubAssembler* subAssembler,
+    void initElement(ElInfo const* elInfo, 
+		     SubAssembler* subAssembler,
                      Quadrature* quad = NULL)
     {
       initImpl(elInfo, subAssembler, quad);
@@ -45,7 +45,7 @@ namespace AMDiS
 
     /// Returs \auxFeSpaces, the list of all aux fe spaces the operator makes
     /// use off.
-    std::set<const FiniteElemSpace*>& getAuxFeSpaces()
+    std::set<FiniteElemSpace const*>& getAuxFeSpaces()
     {
       return auxFeSpaces;
     }
@@ -81,9 +81,9 @@ namespace AMDiS
 
     /// Evaluation of the OperatorTerm at all quadrature points.
     void eval(int nPoints,
-              const DenseVector<double>& uhAtQP,
-              const DenseVector<WorldVector<double>>& grdUhAtQP,
-              const DenseVector<WorldMatrix<double>>& D2UhAtQP,
+              DenseVector<double> const& uhAtQP,
+              DenseVector<WorldVector<double>> const& grdUhAtQP,
+              DenseVector<WorldMatrix<double>> const& D2UhAtQP,
               DenseVector<double>& result,
               double factor) const
     {
@@ -92,19 +92,19 @@ namespace AMDiS
 
   private:
     // default behavior: init nothing
-    virtual void initImpl(const ElInfo*, SubAssembler*, Quadrature*) { }
+    virtual void initImpl(ElInfo const*, SubAssembler*, Quadrature*) { }
 
     // must be implemented by derived class
     virtual void evalImpl(int nPoints,
-                          const DenseVector<double>& uhAtQP,
-                          const DenseVector<WorldVector<double>>& grdUhAtQP,
-                          const DenseVector<WorldMatrix<double>>& D2UhAtQP,
+                          DenseVector<double> const& uhAtQP,
+                          DenseVector<WorldVector<double>> const& grdUhAtQP,
+                          DenseVector<WorldMatrix<double>> const& D2UhAtQP,
                           DenseVector<double>& result,
                           double factor) const = 0;
 
   protected:
     /// Stores the properties of this OperatorTerm
-    Flag properties;
+    Flag properties = 0;
 
     /// Polynomial degree of the term. Used to detemine the degree of the quadrature.
     int degree;
@@ -113,7 +113,7 @@ namespace AMDiS
     int dimOfWorld;
 
     /// List off all fe spaces, the operator term makes use off.
-    std::set<const FiniteElemSpace*> auxFeSpaces;
+    std::set<FiniteElemSpace const*> auxFeSpaces;
 
     /// Pointer to the Operator this OperatorTerm belongs to.
     Operator* operat;
@@ -123,7 +123,7 @@ namespace AMDiS
     /// \ref lb is then unnecessary time consuming. Instead, this variable
     /// defines the component of the vector b to be one. The function \ref lb_one
     /// is used if this variable is not -1.
-    int bOne;
+    int bOne = -1;
 
     /// Flag for piecewise constant terms
     static const Flag PW_CONST;
@@ -143,38 +143,40 @@ namespace AMDiS
   struct GetTerm
   {
     using type =  if_then_else<Order == 0, ZeroOrderTerm,
-          if_then_else<Order == 1, FirstOrderTerm,
-          if_then_else<Order == 2, SecondOrderTerm,
-          OperatorTerm>>>;
+		  if_then_else<Order == 1, FirstOrderTerm,
+		  if_then_else<Order == 2, SecondOrderTerm,
+					   OperatorTerm >>>;
   };
 
 
   /// basic interface for OperatorTerms based on expressions
   template <class Term, int Order = -1>
-  struct GenericOperatorTerm : public GetTerm<Order>::type
+  class GenericOperatorTerm : public GetTerm<Order>::type
   {
     using Super = typename GetTerm<Order>::type;
 
+  public:
     /// Expression term stored as copy
     Term term;
 
     /// constructor
     /// adds all feSpaces provided by the expression term to auxFeSpaces liste
-    template <class Term_>
+    template <class Term_, class = 
+      Requires_t< concepts::Compatible<Term, Term_> >>
     GenericOperatorTerm(Term_&& term_)
       : Super(term_.getDegree()),
         term{term_}
     {
       term.insertFeSpaces(this->auxFeSpaces);
 #ifndef NDEBUG
-      test_auxFeSpaces(this->auxFeSpaces);
+      testAuxFeSpaces(this->auxFeSpaces);
 #endif
     }
 
-private:
-    /// \brief Implements OperatorTerm::initImpl().
-    /// calls init() for \ref term
-    virtual void initImpl(const ElInfo* elInfo,
+  private:
+    // Implements OperatorTerm::initImpl().
+    // calls initElement() on term
+    virtual void initImpl(ElInfo const* elInfo,
                           SubAssembler* subAssembler,
                           Quadrature* quad) override
     {
@@ -183,8 +185,9 @@ private:
 
     /// test for only one mesh allowed in expressions
     template <class FeSpaceList>
-    void test_auxFeSpaces(FeSpaceList const& auxFeSpaces)
+    void testAuxFeSpaces(FeSpaceList const& auxFeSpaces)
     {
+      FUNCNAME("GenericOperatorTerm::testAuxFeSpaces()");
       if (auxFeSpaces.size() > 0)
       {
         Mesh* mesh0 = (*begin(auxFeSpaces))->getMesh();
@@ -200,20 +203,26 @@ private:
   };
 
 
+  /// \brief Implementation of GenericOperatorTerm for the default Order parameter.
+  /// This class is instantiated if no Order parameter is given and inherits the
+  /// default implementation from the primary template (e.g. Order < -1)
   template <class Term>
-  struct GenericOperatorTerm<Term, -1> : public GenericOperatorTerm<Term, -2>
+  class GenericOperatorTerm<Term, -1> : public GenericOperatorTerm<Term, -2>
   {
     using Super = GenericOperatorTerm<Term, -2>;
-    template <class Term_>
+    
+  public:
+    template <class Term_, class = 
+      Requires_t< concepts::Compatible<Term, Term_> >>
     GenericOperatorTerm(Term_&& term_)
-      : Super(std::forward<Term_>(term_)) { }
+      : Super(std::forward<Term_>(term_)) {}
 
   private:
-    // Implements OperatorTerm::eval().
+    // Implements \ref OperatorTerm::eval().
     virtual void evalImpl(int nPoints,
-                          const DenseVector<double>& uhAtQP,
-                          const DenseVector<WorldVector<double>>& grdUhAtQP,
-                          const DenseVector<WorldMatrix<double>>& D2UhAtQP,
+                          DenseVector<double> const& uhAtQP,
+                          DenseVector<WorldVector<double>> const& grdUhAtQP,
+                          DenseVector<WorldMatrix<double>> const& D2UhAtQP,
                           DenseVector<double>& result,
                           double factor) const override {};
   };

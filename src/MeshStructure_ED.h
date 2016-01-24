@@ -11,7 +11,7 @@
 namespace AMDiS
 {
 
-  const int MESH_STRUCTURE = 10;
+#define AMDIS_MESH_STRUCTURE 10
 
   class MeshStructure_ED : public ElementData
   {
@@ -71,12 +71,12 @@ namespace AMDiS
 
     virtual int getTypeID() const
     {
-      return MESH_STRUCTURE;
+      return AMDIS_MESH_STRUCTURE;
     }
 
     virtual bool isOfType(int typeID) const
     {
-      if (typeID == MESH_STRUCTURE)
+      if (typeID == AMDIS_MESH_STRUCTURE)
         return true;
 
       return false;

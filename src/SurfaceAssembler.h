@@ -18,8 +18,8 @@ namespace AMDiS
   public:
     /// Creates a SurfaceAssembler conforming to operate for the given \ref coords.
     SurfaceAssembler(Operator* operat,
-                     const FiniteElemSpace* rowFeSpace,
-                     const FiniteElemSpace* colFeSpace,
+                     FiniteElemSpace const* rowFeSpace,
+                     FiniteElemSpace const* colFeSpace,
                      VectorOfFixVecs<DimVec<double>>& coords);
 
     /// Destructor
@@ -29,7 +29,7 @@ namespace AMDiS
     void adaptSurfaceAssembler(VectorOfFixVecs<DimVec<double>>& coords);
 
     ///
-    bool initElementVector(const ElInfo* elInfo);
+    bool initElementVector(ElInfo const* elInfo);
 
   protected:
     VectorOfFixVecs<DimVec<double>> coords_;

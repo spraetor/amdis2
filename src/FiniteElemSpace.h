@@ -29,7 +29,7 @@ namespace AMDiS
 
     ///
     static FiniteElemSpace* provideFeSpace(DOFAdmin* admin,
-                                           const BasisFunction* basFcts,
+                                           BasisFunction const* basFcts,
                                            Mesh* mesh,
                                            std::string name = "");
 
@@ -43,7 +43,7 @@ namespace AMDiS
     static FiniteElemSpace* provideFeSpace(Mesh* mesh);
 #endif
 
-    FiniteElemSpace& operator=(const FiniteElemSpace& feSpace);
+    FiniteElemSpace& operator=(FiniteElemSpace const& feSpace);
 
     /// Returns \ref name.
     std::string getName() const
@@ -64,7 +64,7 @@ namespace AMDiS
     }
 
     /// Returns \ref basFcts
-    const BasisFunction* getBasisFcts() const
+    BasisFunction const* getBasisFcts() const
     {
       return basFcts;
     }
@@ -81,14 +81,14 @@ namespace AMDiS
 
     /// Returns for a set of FE spaces that FE space having basis functions with
     /// the highest degree.
-    static const FiniteElemSpace*
-    getHighest(std::vector<const FiniteElemSpace*>& feSpaces);
+    static FiniteElemSpace const*
+    getHighest(std::vector<FiniteElemSpace const*>& feSpaces);
 
   protected:
     /// Constructs a FiniteElemSpace with name name_ and the given DOFAdmin,
     /// BasisFunction and Mesh.
     FiniteElemSpace(DOFAdmin* admin,
-                    const BasisFunction* basisFcts,
+                    BasisFunction const* basisFcts,
                     Mesh* mesh,
                     std::string name = "");
 
@@ -100,7 +100,7 @@ namespace AMDiS
     DOFAdmin* admin;
 
     /// Set of BasisFunction of this FiniteElemSpace.
-    const BasisFunction* basFcts;
+    BasisFunction const* basFcts;
 
     /// The Mesh this FiniteElemSpace belongs to.
     Mesh* mesh;

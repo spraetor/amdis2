@@ -74,17 +74,17 @@ namespace AMDiS
 
 
   /// access components of vectors
-  template <class Collection>
+  template <class Collection, class Collection_ = Decay_t<Collection>>
   auto at(Collection&& c, size_t rows) RETURNS
   (
-    traits::at<Collection>()(std::forward<Collection>(c), rows)
+    traits::at<Collection_>()(std::forward<Collection>(c), rows)
   )
 
   /// access components of matrices
-  template <class Collection>
+  template <class Collection, class Collection_ = Decay_t<Collection>>
   auto at(Collection&& c, size_t rows, size_t cols) RETURNS
   (
-    traits::at<Collection>()(std::forward<Collection>(c), rows, cols)
+    traits::at<Collection_>()(std::forward<Collection>(c), rows, cols)
   )
 
 } // end namespace AMDiS

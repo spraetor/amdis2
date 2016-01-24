@@ -26,64 +26,69 @@ namespace AMDiS
 {
   namespace traits
   {
-    template <class T>
-    struct HasValueType
-    {
-    private:
-      template <class T1> static typename T1::value_type test(int);
-      template <class> static void test(...);
-
-    public:
-      constexpr static bool value = !std::is_void<decltype(test<T>(0))>::value;
-    };
-
-    template <class T>
-    struct HasSizeType
-    {
-    private:
-      template <class T1> static typename T1::size_type test(int);
-      template <class> static void test(...);
-
-    public:
-      constexpr static bool value = !std::is_void<decltype(test<T>(0))>::value;
-    };
-
-    template <class T>
-    struct HasResultType
-    {
-    private:
-      template <class T1> static typename T1::result_type test(int);
-      template <class> static void test(...);
-
-    public:
-      constexpr static bool value = !std::is_void<decltype(test<T>(0))>::value;
-    };
+    // Some type traits to test for type-attributes of a class
+    // -------------------------------------------------------------------------
     
-  } // end namespace traits
+    namespace detail
+    {
+      template <class T, class = typename T::value_type >
+      true_ HasValueTypeImpl(int);
 
-  /// Namespace that implements basic concept checks
-  namespace concepts
-  {
-    /// @defgroup concepts Concepts definitions, using decltype and other c++11 features.
+      template <class T> false_ HasValueTypeImpl(...);
+      
+      
+      template <class T, class = typename T::size_type >
+      true_ HasSizeTypeImpl(int);
 
+      template <class T> false_ HasSizeTypeImpl(...);
+      
+      
+      template <class T, class = typename T::result_type >
+      true_ HasResultTypeImpl(int);
+
+      template <class T> false_ HasResultTypeImpl(...);
+
+    } // end namespace detail
+
+    
+    template <class T>
+    using HasValueType = decltype(detail::HasValueTypeImpl<T>(int{}));
+    
+    template <class T>
+    using HasSizeType = decltype(detail::HasSizeTypeImpl<T>(int{}));
+    
+    template <class T>
+    using HasResultType = decltype(detail::HasResultTypeImpl<T>(int{}));
+     
+    
+    // Type traits to test whether a class is a functor, i.e. has a operator()
+    // -------------------------------------------------------------------------
+    
     // source: http://stackoverflow.com/questions/25603240/checking-callable-template-parameter-types
     template <class, class, class = void>
-    struct check_functor : false_ {};
+    struct IsFunctor : false_ {};
 
     template <class F, class Return, class... Args>
-    struct check_functor<F, Return(Args...),
+    struct IsFunctor<F, Return(Args...),
         Requires_t< std::is_same< decltype(std::declval<F>()(std::declval<Args>()...)),
                                   Return >> >
       : true_ {};
 
     template <class, class, class = void>
-    struct check_functor_weak : false_ {};
+    struct IsFunctorWeak : false_ {};
 
     template <class F, class Return, class... Args>
-    struct check_functor_weak<F, Return(Args...),
+    struct IsFunctorWeak<F, Return(Args...),
         Requires_t< std::is_convertible< decltype(std::declval<F>()(std::declval<Args>()...)),
                                          Return >> >
       : true_ {};
+  } // end namespace traits
+
+  
+  /// Namespace that implements basic concept checks
+  namespace concepts
+  {
+    /// @defgroup concepts Concepts definitions, using decltype and other c++11 features.
 
     // -------------------------------------------------------------------------
 #if 0
@@ -107,18 +112,20 @@ namespace AMDiS
 #endif
        
       
-    template <class T, class = decltype(&T::operator[])>
-    static true_ VectorImpl(int);
+    namespace detail
+    {      
+      template <class T, class = decltype(&T::operator[])>
+      true_ VectorImpl(int);
+
+      template <class T> false_ VectorImpl(...);
+
+    } // end namespace detail
 
     template <class T>
-    static false_ VectorImpl(...);
-
-
-    template <class T>
-    using Vector = decltype(VectorImpl<T>(int {}));
+    using Vector = decltype(detail::VectorImpl<T>(int{}));
     
     template <class T>
-    using Matrix = check_functor_weak<T, Value_t<T>(size_t, size_t)>;
+    using Matrix = traits::IsFunctorWeak<T, Value_t<T>(size_t, size_t)>;
        
   } // end namespace concepts
 

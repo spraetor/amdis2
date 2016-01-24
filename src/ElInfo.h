@@ -334,7 +334,7 @@ namespace AMDiS
 
     /// Checks whether flag is set in ElInfo's \ref fillFlag. If not, the
     /// program exits.
-    void testFlag(const Flag& flag) const
+    void testFlag(const Flag& DBG_VAR(flag)) const
     {
       TEST_EXIT_DBG(fillFlag.isSet(flag))("flag not set\n");
     }

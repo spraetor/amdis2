@@ -5,8 +5,8 @@
 
 namespace AMDiS
 {
-  void SecondOrderTerm::lalt(const DimVec<WorldVector<double>>& Lambda,
-                             const WorldMatrix<double>& matrix,
+  void SecondOrderTerm::lalt(DimVec<WorldVector<double>> const& Lambda,
+                             WorldMatrix<double> const& matrix,
                              mtl::dense2D<double>& LALt,
                              bool symm,
                              double factor) const
@@ -53,7 +53,7 @@ namespace AMDiS
   }
 
 
-  void SecondOrderTerm::lalt_kl(const DimVec<WorldVector<double>>& Lambda,
+  void SecondOrderTerm::lalt_kl(DimVec<WorldVector<double>> const& Lambda,
                                 int k, int l,
                                 mtl::dense2D<double>& LALt,
                                 double factor) const
@@ -66,7 +66,7 @@ namespace AMDiS
   }
 
 
-  void SecondOrderTerm::l1lt(const DimVec<WorldVector<double>>& Lambda,
+  void SecondOrderTerm::l1lt(DimVec<WorldVector<double>> const& Lambda,
                              mtl::dense2D<double>& LALt,
                              double factor) const
   {

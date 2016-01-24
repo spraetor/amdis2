@@ -16,7 +16,7 @@ namespace AMDiS
   class DimVecLess
   {
   public:
-    bool operator()(const DimVec<T>& v1, const DimVec<T>& v2) const
+    bool operator()(DimVec<T> const& v1, DimVec<T> const& v2) const
     {
       int  size = v1.getSize();
       for (int i = 0; i < size; i++)
@@ -33,14 +33,14 @@ namespace AMDiS
   class PeriodicDOFMapping
   {
   public:
-    PeriodicDOFMapping(const BasisFunction* basFcts);
+    PeriodicDOFMapping(BasisFunction const* basFcts);
 
     ~PeriodicDOFMapping();
 
   public:
-    static PeriodicDOFMapping* providePeriodicDOFMapping(const BasisFunction* basFcts);
+    static PeriodicDOFMapping* providePeriodicDOFMapping(BasisFunction const* basFcts);
 
-    const DegreeOfFreedom* getDOFPermutation(const DimVec<int>& vertexPermutation);
+    const DegreeOfFreedom* getDOFPermutation(DimVec<int> const& vertexPermutation);
 
   protected:
     /// Basis functions the mapping object is defined on.
@@ -68,7 +68,7 @@ namespace AMDiS
   {
   public:
     /// Constructor.
-    PeriodicBC(BoundaryType type, const FiniteElemSpace* rowFeSpace);
+    PeriodicBC(BoundaryType type, FiniteElemSpace const* rowFeSpace);
 
     ~PeriodicBC();
 
@@ -76,8 +76,8 @@ namespace AMDiS
 
     virtual void fillBoundaryCondition(DOFMatrix* matrix,
                                        ElInfo* elInfo,
-                                       const DegreeOfFreedom* dofIndices,
-                                       const BoundaryType* localBound,
+                                       DegreeOfFreedom const* dofIndices,
+                                       BoundaryType const* localBound,
                                        int nBasFcts) override;
 
     virtual void exitMatrix(DOFMatrix* matrix) override;

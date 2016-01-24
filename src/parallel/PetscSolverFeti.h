@@ -80,7 +80,7 @@ namespace AMDiS
       void fillPetscRhs(SystemVector* vec);
 
       /// Solve the system using FETI-DP method.
-      void solvePetscMatrix(SystemVector& vec, AdaptInfo* adaptInfo);
+      void solvePetscMatrix(SystemVector& vec, AdaptInfo& adaptInfo);
 
       /// Just for the super trick
       void solveGlobal(Vec& rhs, Vec& sol);

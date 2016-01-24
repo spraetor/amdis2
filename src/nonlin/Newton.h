@@ -73,7 +73,7 @@ namespace AMDiS
     /// realisation of NonLinSolver::nlsolve
     int nlsolve(SolverMatrix<Matrix<DOFMatrix*>>& mat,
                 SystemVector& x, SystemVector& rhs,
-                AdaptInfo* adaptInfo,
+                AdaptInfo& adaptInfo,
                 ProblemStat* prob)
     {
       FUNCNAME("Newton::nlsolve()");

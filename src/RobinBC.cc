@@ -54,11 +54,8 @@ namespace AMDiS
     TEST_EXIT(matrix->getColFeSpace() == colFeSpace)("invalid col fe space\n");
 
     int dim = elInfo->getMesh()->getDim();
-    DimVec<double>  lambda(dim);
-    double n_A_grdUh, val = 0.0;
+    double val = 0.0;
     WorldVector<double> normal;
-    const DimVec<WorldVector<double>>& Lambda = elInfo->getGrdLambda();
-    double det = elInfo->getDet();
     bool neumannQuad = false;
     const BasisFunction* basFcts = dv->getFeSpace()->getBasisFcts();
 
@@ -121,8 +118,7 @@ namespace AMDiS
         for (int iq = 0; iq < nPoints; iq++)
         {
           A_grdUh[iq].set(0.0);
-          lambda = quadrature->getLambda(iq);
-          basFcts->evalGrdUh(lambda, Lambda, uhEl, grdUh[iq]);
+          basFcts->evalGrdUh(quadrature->getLambda(iq), elInfo->getGrdLambda(), uhEl, grdUh[iq]);
         }
 
         for (op = matrix->getOperatorsBegin(); op != matrix->getOperatorsEnd(); ++op)
@@ -134,13 +130,13 @@ namespace AMDiS
         val = 0.0;
         for (int iq = 0; iq < nPoints; iq++)
         {
-          n_A_grdUh = (normal * A_grdUh[iq]) - f[iq];
+          double n_A_grdUh = (normal * A_grdUh[iq]) - f[iq];
           val += quadrature->getWeight(iq) * math::sqr(n_A_grdUh);
         }
       }
     }
 
-    return det * val;
+    return elInfo->getDet() * val;
   }
 
 } // end namespace AMDiS

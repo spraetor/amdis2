@@ -19,6 +19,7 @@
 #include "PeriodicBC.h"
 #include "Lagrange.h"
 #include "Flag.h"
+#include "Timer.h"
 #include "est/Estimator.h"
 #include "io/VtkWriter.h"
 #include "io/ValueReader.h"
@@ -29,8 +30,7 @@ namespace AMDiS
 {
   using namespace std;
 
-  ProblemStatSeq::ProblemStatSeq(string nameStr,
-                                 ProblemIterationInterface* problemIteration)
+  ProblemStatSeq::ProblemStatSeq(string nameStr)
     : name(nameStr),
       nComponents(-1),
       nAddComponents(0),
@@ -40,7 +40,6 @@ namespace AMDiS
       solution(NULL),
       rhs(NULL),
       systemMatrix(NULL),
-      useGetBound(true),
       refinementManager(NULL),
       coarseningManager(NULL),
       info(10),
@@ -78,7 +77,7 @@ namespace AMDiS
     for (int i = 0; i < nComponents; i++)
       componentNames[i] = "solution[" + std::to_string(i) + "]";
 
-    // Parameters::get(name + "->name", componentNames);
+    // Parameters::get(name + "->names", componentNames);
     // componentNames.resize(nComponents);
     // TODO: need to be corrected
 
@@ -92,16 +91,19 @@ namespace AMDiS
 
   ProblemStatSeq::~ProblemStatSeq()
   {
-    if (rhs)
+    if (rhs) {
       delete rhs;
-    rhs = NULL;
-    if (solution)
+      rhs = NULL;
+    }
+    if (solution) {
       delete solution;
-    solution = NULL;
+      solution = NULL;
+    }
 
-    if (solver)
+    if (solver) {
       delete solver;
-    solver = NULL;
+      solver = NULL;
+    }
 
     if (systemMatrix)
     {
@@ -120,6 +122,7 @@ namespace AMDiS
     for (unsigned int i = 0; i < meshes.size(); i++)
       if (meshes[i])
       {
+	// TODO: Why are meshes not deleted????
         // 	delete meshes[i];
         // 	meshes[i] = NULL;
       }
@@ -335,8 +338,6 @@ namespace AMDiS
     for (unsigned int i = 0; i < meshes.size(); i++)
       if (initMesh && meshes[i])
         refinementManager->globalRefine(meshes[i], globalRefinements);
-
-    doOtherStuff();
   }
 
 
@@ -382,8 +383,7 @@ namespace AMDiS
   {
     FUNCNAME("ProblemStat::createRefCoarseManager()");
 
-    int dim = 0;
-    Parameters::get(name + "->dim", dim);
+    int dim = Parameters::get<int>(name + "->dim", 0);
     TEST_EXIT(dim)("No problem dimension specified for \"%s->dim\"!\n",
                    name.c_str());
 
@@ -412,8 +412,7 @@ namespace AMDiS
     FUNCNAME("ProblemStat::createFeSpace()");
 
     map<pair<Mesh*, string>, FiniteElemSpace*> feSpaceMap;
-    int dim = -1;
-    Parameters::get(name + "->dim", dim);
+    int dim = Parameters::get<int>(name + "->dim", -1);
     TEST_EXIT(dim != -1)("no problem dimension specified!\n");
 
     componentSpaces.resize(nComponents + nAddComponents, NULL);
@@ -442,9 +441,8 @@ namespace AMDiS
       // for backward compatibility also accept the old syntax
       if (feSpaceName.size() == 0)
       {
-        int degree = 1;
         initFileStr = name + "->polynomial degree" + componentString;
-        Parameters::get(initFileStr, degree);
+        int degree = Parameters::get<int>(initFileStr, -1);
         TEST_EXIT(degree > 0)
         ("Poynomial degree in component %d must be larger than zero!\n", i);
 
@@ -455,8 +453,8 @@ namespace AMDiS
       {
         BasisFunctionCreator* basisFctCreator =
           dynamic_cast<BasisFunctionCreator*>(CreatorMap<BasisFunction>::getCreator(feSpaceName, initFileStr));
-        TEST_EXIT(basisFctCreator)
-        ("No valid basisfunction type found in parameter \"%s\"\n", initFileStr.c_str());
+        TEST_EXIT(basisFctCreator)("No valid basisfunction type found in parameter \"%s\"\n", 
+				   initFileStr.c_str());
         basisFctCreator->setDim(dim);
 
         FiniteElemSpace* newFeSpace =
@@ -539,8 +537,7 @@ namespace AMDiS
     Parameters::get(initFileStr + "->backend", backend);
 
     // === read solver-name ===
-    string solverType("0");
-    Parameters::get(initFileStr, solverType);
+    string solverType = Parameters::get<string>(initFileStr, "0");
 
     if (backend != "0" && backend != "no" && backend != "")
       solverType = backend + "_" + solverType;
@@ -548,8 +545,8 @@ namespace AMDiS
     // === create solver ===
     LinearSolverCreator* solverCreator =
       dynamic_cast<LinearSolverCreator*>(CreatorMap<LinearSolverInterface>::getCreator(solverType, initFileStr));
-    TEST_EXIT(solverCreator)
-    ("No valid solver type found in parameter \"%s\"\n", initFileStr.c_str());
+    TEST_EXIT(solverCreator)("No valid solver type found in parameter \"%s\"\n", 
+			     initFileStr.c_str());
     solverCreator->setName(initFileStr);
     solver = solverCreator->create();
   }
@@ -560,9 +557,8 @@ namespace AMDiS
     FUNCNAME("ProblemStat::createEstimator()");
 
     // create and set leaf data prototype
-    for (unsigned int i = 0; i < meshes.size(); i++)
-      meshes[i]->setElementDataPrototype
-      (new LeafDataEstimatableVec(new LeafDataCoarsenableVec));
+    for (Mesh* mesh : meshes)
+      mesh->setElementDataPrototype(new LeafDataEstimatableVec(new LeafDataCoarsenableVec));
 
     for (int i = 0; i < nComponents; i++)
     {
@@ -570,8 +566,7 @@ namespace AMDiS
       string estName = name + "->estimator[" + std::to_string(i) + "]";
 
       // === create estimator ===
-      string estimatorType("0");
-      Parameters::get(estName, estimatorType);
+      string estimatorType = Parameters::get<string>(estName, "0");
       if (estimatorType == "0")
         Parameters::get(estName + "->name", estimatorType);
 
@@ -590,7 +585,7 @@ namespace AMDiS
         for (int j = 0; j < nComponents; j++)
           estimator[i]->addSystem((*systemMatrix)[i][j],
                                   solution->getDOFVector(j),
-                                  rhs->getDOFVector(i));      // NOTE: hier eventuell (i) statt (j) ??? --> corrected
+                                  rhs->getDOFVector(i));
     }
   }
 
@@ -622,8 +617,7 @@ namespace AMDiS
 
     // Create one filewriter for all components of the problem
     string numberedName  = name + "->output";
-    string filename = "";
-    Parameters::get(numberedName + "->filename", filename);
+    string filename = Parameters::get<string>(numberedName + "->filename", "");
 
     if (filename != "")
     {
@@ -656,35 +650,31 @@ namespace AMDiS
     }
 
     // create a filewrite for groups of components to write vector-valued output
-    int nVectors = 0;
-    Parameters::get(name + "->output->num vectors", nVectors);
+    int nVectors = Parameters::get<int>(name + "->output->num vectors", 0);
     if (nVectors > 0)
     {
       for (int j = 0; j < nVectors; j++)
       {
         numberedName = name + "->output->vector[" + std::to_string(j) + "]";
 
-        filename = "";
-        Parameters::get(numberedName + "->filename", filename);
-        std::string componentName = "";
-        Parameters::get(numberedName + "->name", componentName);
-        std::vector<std::string> names;
+        filename = Parameters::get<string>(numberedName + "->filename", "");
+        string componentName = Parameters::get<string>(numberedName + "->name", "");
+        vector<string> names;
         if (componentName != "")
           names.push_back(componentName);
-        std::vector<int> comp;
+        vector<int> comp;
         Parameters::get(numberedName + "->components", comp);
 
         if (filename != "" && comp.size() > 0)
         {
           // Create own filewriters for each component of the problem
-          std::vector<DOFVector<double>*> vectors;
+          vector<DOFVector<double>*> vectors;
           for (size_t i = 0; i < comp.size(); i++)
             vectors.push_back(solution->getDOFVector(comp[i]));
 
           fileWriters.push_back(new FileWriter(numberedName,
                                                componentMeshes[comp[0]],
-                                               vectors,
-                                               names
+                                               vectors, names
                                               ));
 
         }
@@ -693,11 +683,7 @@ namespace AMDiS
   }
 
 
-  void ProblemStatSeq::doOtherStuff()
-  {}
-
-
-  void ProblemStatSeq::solve(AdaptInfo* adaptInfo,
+  void ProblemStatSeq::solve(AdaptInfo& adaptInfo,
                              bool createMatrixData,
                              bool storeMatrixData)
   {
@@ -717,14 +703,14 @@ namespace AMDiS
                   t.elapsed());
     solutionTime = t.elapsed();
 
-    adaptInfo->setSolverIterations(solver->getIterations());
-    adaptInfo->setMaxSolverIterations(solver->getMaxIterations());
-    adaptInfo->setSolverTolerance(solver->getTolerance());
-    adaptInfo->setSolverResidual(solver->getResidual());
+    adaptInfo.setSolverIterations(solver->getIterations());
+    adaptInfo.setMaxSolverIterations(solver->getMaxIterations());
+    adaptInfo.setSolverTolerance(solver->getTolerance());
+    adaptInfo.setSolverResidual(solver->getResidual());
   }
 
 
-  void ProblemStatSeq::estimate(AdaptInfo* adaptInfo)
+  void ProblemStatSeq::estimate(AdaptInfo& adaptInfo)
   {
     FUNCNAME("ProblemStat::estimate()");
 
@@ -738,15 +724,15 @@ namespace AMDiS
       {
         traverseInfo.updateStatus();
         scalEstimator->setTraverseInfo(traverseInfo);
-        scalEstimator->estimate(adaptInfo->getTimestep());
+        scalEstimator->estimate(adaptInfo.getTimestep());
 
-        adaptInfo->setEstSum(scalEstimator->getErrorSum(), i);
-        adaptInfo->setEstMax(scalEstimator->getErrorMax(), i);
+        adaptInfo.setEstSum(scalEstimator->getErrorSum(), i);
+        adaptInfo.setEstMax(scalEstimator->getErrorMax(), i);
 
-        if (adaptInfo->getRosenbrockMode() == false)
+        if (adaptInfo.getRosenbrockMode() == false) // TODO: remove dependence on rosenbrock method
         {
-          adaptInfo->setTimeEstSum(scalEstimator->getTimeEst(), i);
-          adaptInfo->setTimeEstMax(scalEstimator->getTimeEstMax(), i);
+          adaptInfo.setTimeEstSum(scalEstimator->getTimeEst(), i);
+          adaptInfo.setTimeEstMax(scalEstimator->getTimeEstMax(), i);
         }
       }
     }
@@ -760,7 +746,7 @@ namespace AMDiS
   }
 
 
-  Flag ProblemStatSeq::markElements(AdaptInfo* adaptInfo)
+  Flag ProblemStatSeq::markElements(AdaptInfo& adaptInfo)
   {
     FUNCNAME_DBG("ProblemStat::markElements()");
 
@@ -776,44 +762,39 @@ namespace AMDiS
   }
 
 
-  Flag ProblemStatSeq::refineMesh(AdaptInfo* adaptInfo)
+  Flag ProblemStatSeq::refineMesh(AdaptInfo& adaptInfo)
   {
     int nMeshes = static_cast<int>(meshes.size());
     Flag refineFlag = 0;
     for (int i = 0; i < nMeshes; i++)
-      if (i >= nComponents || adaptInfo->isRefinementAllowed(i))
+      if (i >= nComponents || adaptInfo.isRefinementAllowed(i))
         refineFlag |= refinementManager->refineMesh(meshes[i]);
 
     return refineFlag;
   }
 
 
-  Flag ProblemStatSeq::coarsenMesh(AdaptInfo* adaptInfo)
+  Flag ProblemStatSeq::coarsenMesh(AdaptInfo& adaptInfo)
   {
     int nMeshes = static_cast<int>(meshes.size());
     Flag coarsenFlag = 0;
     for (int i = 0; i < nMeshes; i++)
-      if (i >= nComponents || adaptInfo->isCoarseningAllowed(i))
+      if (i >= nComponents || adaptInfo.isCoarseningAllowed(i))
         coarsenFlag |= coarseningManager->coarsenMesh(meshes[i]);
 
     return coarsenFlag;
   }
 
 
-  void ProblemStatSeq::buildAfterCoarsen(AdaptInfo* adaptInfo, Flag flag,
+  void ProblemStatSeq::buildAfterCoarsen(AdaptInfo& adaptInfo, Flag flag,
                                          bool asmMatrix, bool asmVector)
   {
     FUNCNAME("ProblemStat::buildAfterCoarsen()");
 
-    // if (dualMeshTraverseRequired()) {
-    //   dualAssemble(adaptInfo, flag, asmMatrix, asmVector);
-    //   return;
-    // }
-
     Timer t;
 
-    for (unsigned int i = 0; i < meshes.size(); i++)
-      meshes[i]->dofCompress();
+    for (Mesh* mesh : meshes)
+      mesh->dofCompress();
 
 
 #ifdef HAVE_PARALLEL_DOMAIN_AMDIS
@@ -832,8 +813,7 @@ namespace AMDiS
       Mesh::FILL_GRD_LAMBDA |
       Mesh::FILL_NEIGH;
 
-    if (useGetBound)
-      assembleFlag |= Mesh::FILL_BOUND;
+    assembleFlag |= Mesh::FILL_BOUND;
 
 
     traverseInfo.updateStatus();
@@ -970,296 +950,16 @@ namespace AMDiS
     buildTime = t.elapsed();
   }
 
-
-  //   bool ProblemStatSeq::dualMeshTraverseRequired()
-  //   {
-  //     FUNCNAME("ProblemStat::dualMeshTraverseRequired()");
-  //
-  //     TEST_EXIT(meshes.size() <= 2)("More than two meshes are not yet supported!\n");
-  //
-  //     return (meshes.size() == 2);
-  //   }
-
-
-  //   void ProblemStatSeq::dualAssemble(AdaptInfo *adaptInfo, Flag flag,
-  // 				    bool asmMatrix, bool asmVector)
-  //   {
-  //     FUNCNAME("ProblemStat::dualAssemble()");
-  //
-  //     TEST_EXIT(asmVector)("Not yet implemented!\n");
-  //
-  //     Timer t;
-  //
-  //     for (unsigned int i = 0; i < meshes.size(); i++)
-  //       meshes[i]->dofCompress();
-  //
-  // #ifdef HAVE_PARALLEL_DOMAIN_AMDIS
-  //     MPI::COMM_WORLD.Barrier();
-  //     INFO(info, 8)("dof compression needed %.5f seconds\n", t.elapsed());
-  // #endif
-  //     t.reset();
-  //
-  //     Flag assembleFlag =
-  //       flag |
-  //       (*systemMatrix)[0][0]->getAssembleFlag() |
-  //       rhs->getDOFVector(0)->getAssembleFlag()  |
-  //       Mesh::CALL_LEAF_EL                        |
-  //       Mesh::FILL_COORDS                         |
-  //       Mesh::FILL_DET                            |
-  //       Mesh::FILL_GRD_LAMBDA |
-  //       Mesh::FILL_NEIGH;
-  //
-  //     if (useGetBound)
-  //       assembleFlag |= Mesh::FILL_BOUND;
-  //
-  //     traverseInfo.updateStatus();
-  //
-  //     if (writeAsmInfo) {
-  //       MSG("TraverseInfo:\n");
-  //       for (int i = 0; i < nComponents; i++) {
-  // 	MSG("  component %d:   difAuxSpace = %d\n", i, traverseInfo.difAuxSpace(i));
-  //
-  // 	for (int j = 0; j < nComponents; j++) {
-  // 	  MSG("  component %d-%d:  difAuxSpace = %d\n",
-  // 	      i, j, traverseInfo.difAuxSpace(i, j));
-  // 	}
-  //       }
-  //     }
-  //
-  //     // Used to calculate the overall number of non zero entries.
-  //     int nnz = 0;
-  //
-  //     for (int i = 0; i < nComponents; i++) {
-  //       MSG("%d DOFs for %s\n",
-  // 	  componentSpaces[i]->getAdmin()->getUsedSize(),
-  // 	  componentSpaces[i]->getName().c_str());
-  //
-  //       rhs->getDOFVector(i)->set(0.0);
-  //
-  //       for (int j = 0; j < nComponents; j++) {
-  //
-  // 	if (writeAsmInfo)
-  // 	  cout << "-------" << i << " " << j << "----------------" << endl;
-  //
-  // 	// Only if this variable is true, the current matrix will be assembled.
-  // 	bool assembleMatrix = true;
-  // 	// The DOFMatrix which should be assembled (or not, if assembleMatrix
-  // 	// will be set to false).
-  // 	DOFMatrix *matrix = (asmMatrix ? (*systemMatrix)[i][j] : NULL);
-  //
-  // 	if (writeAsmInfo && matrix) {
-  // 	  for (vector<Operator*>::iterator it = matrix->getOperatorsBegin();
-  // 	       it != matrix->getOperatorsEnd(); ++it) {
-  // 	    Assembler *assembler = (*it)->getAssembler();
-  // 	    if (assembler->getZeroOrderAssembler())
-  // 	      cout << "ZOA: " << assembler->getZeroOrderAssembler()->getName() << endl;
-  // 	    if (assembler->getFirstOrderAssembler(GRD_PSI))
-  // 	      cout << "FOA GRD_PSI: " << assembler->getFirstOrderAssembler(GRD_PSI)->getName() << endl;
-  // 	    if (assembler->getFirstOrderAssembler(GRD_PHI))
-  // 	      cout << "FOA GRD_PHI: " << assembler->getFirstOrderAssembler(GRD_PHI)->getName() << endl;
-  // 	    if (assembler->getSecondOrderAssembler())
-  // 	      cout << "SOA: " << assembler->getSecondOrderAssembler()->getName() << endl;
-  // 	  }
-  // 	}
-  //
-  // 	if (matrix)
-  // 	  matrix->calculateNnz();
-  //
-  // 	// If the matrix was assembled before and it is marked to be assembled
-  // 	// only once, it will not be assembled.
-  // 	if (assembleMatrixOnlyOnce[i][j] && assembledMatrix[i][j]) {
-  // 	  assembleMatrix = false;
-  // 	} else if (matrix) {
-  // 	  matrix->getBaseMatrix().
-  // 	    change_dim(componentSpaces[i]->getAdmin()->getUsedSize(),
-  // 		       componentSpaces[j]->getAdmin()->getUsedSize());
-  //
-  // 	  set_to_zero(matrix->getBaseMatrix());
-  // 	  matrix->startInsertion(matrix->getNnz());
-  //
-  // 	  if (matrix->getBoundaryManager())
-  // 	    matrix->getBoundaryManager()->initMatrix(matrix);
-  // 	}
-  //
-  // 	// If there is no DOFMatrix, e.g., if it is completly 0, do not assemble.
-  // 	if (!matrix || !assembleMatrix)
-  // 	  assembleMatrix = false;
-  //
-  // 	// If the matrix should not be assembled, the rhs vector has to be considered.
-  // 	// This will be only done, if i == j. So, if both is not true, we can jump
-  // 	// to the next matrix.
-  // 	if (!assembleMatrix && i != j)
-  // 	  if (matrix)
-  // 	    nnz += matrix->getBaseMatrix().nnz();
-  //
-  // 	if (matrix && !assembleMatrix) {
-  // 	  ERROR_EXIT("Not yet implemented!\n");
-  // 	}
-  //       }
-  //     }
-  //
-  //     TEST_EXIT(meshes.size() == 2)("There is something wrong!\n");
-  //
-  //     const BasisFunction *basisFcts = componentSpaces[0]->getBasisFcts();
-  //     BoundaryType *bound =
-  //       useGetBound ? new BoundaryType[basisFcts->getNumber()] : NULL;
-  //
-  //     DualTraverse dualTraverse;
-  //     DualElInfo dualElInfo;
-  //     int oldElIndex0 = -1;
-  //     int oldElIndex1 = -1;
-  //     dualTraverse.setFillSubElemMat(true, basisFcts);
-  //     bool cont = dualTraverse.traverseFirst(meshes[0], meshes[1], -1, -1,
-  // 					   assembleFlag, assembleFlag, dualElInfo);
-  //
-  //     while (cont) {
-  //       bool newEl0 = (dualElInfo.rowElInfo->getElement()->getIndex() != oldElIndex0);
-  //       bool newEl1 = (dualElInfo.colElInfo->getElement()->getIndex() != oldElIndex1);
-  //       oldElIndex0 = dualElInfo.rowElInfo->getElement()->getIndex();
-  //       oldElIndex1 = dualElInfo.colElInfo->getElement()->getIndex();
-  //
-  //       for (int i = 0; i < nComponents; i++) {
-  // 	for (int j = 0; j < nComponents; j++) {
-  // 	  DOFMatrix *matrix = (asmMatrix ? (*systemMatrix)[i][j] : NULL);
-  //
-  // 	  if (!matrix)
-  // 	    continue;
-  //
-  // 	  if (traverseInfo.eqSpaces(i, j)) {
-  //
-  // 	    ElInfo *elInfo = NULL;
-  // 	    if (componentMeshes[i] == meshes[0] && newEl0)
-  // 	      elInfo = dualElInfo.rowElInfo;
-  // 	    if (componentMeshes[i] == meshes[1] && newEl1)
-  // 	      elInfo = dualElInfo.colElInfo;
-  //
-  //
-  // 	    if (elInfo != NULL) {
-  // 	      if (useGetBound)
-  // 		basisFcts->getBound(elInfo, bound);
-  //
-  // 	      if (matrix)
-  // 		matrix->assemble(1.0, elInfo, bound);
-  //
-  //
-  // 	      if (i == j)
-  // 		rhs->getDOFVector(i)->assemble(1.0, elInfo, bound);
-  //
-  // 	    }
-  //
-  // 	    ElInfo *mainElInfo, *auxElInfo;
-  // 	    if (traverseInfo.getRowFeSpace(i)->getMesh() == meshes[0]) {
-  // 	      mainElInfo = dualElInfo.rowElInfo;
-  // 	      auxElInfo = dualElInfo.colElInfo;
-  // 	    } else {
-  // 	      mainElInfo = dualElInfo.colElInfo;
-  // 	      auxElInfo = dualElInfo.rowElInfo;
-  // 	    }
-  //
-  // 	    if (useGetBound && mainElInfo != elInfo)
-  // 	      basisFcts->getBound(mainElInfo, bound);
-  //
-  //  	    if (traverseInfo.difAuxSpace(i) && i == j)
-  //  	      rhs->getDOFVector(i)->assemble2(1.0, mainElInfo, auxElInfo,
-  //  					      dualElInfo.smallElInfo,
-  // 					      dualElInfo.largeElInfo, bound);
-  //
-  //  	    if (traverseInfo.difAuxSpace(i, j) && matrix)
-  //  	      matrix->assemble2(1.0, mainElInfo, auxElInfo,
-  //  				dualElInfo.smallElInfo, dualElInfo.largeElInfo, bound);
-  //
-  // 	    if (matrix && matrix->getBoundaryManager())
-  // 	      matrix->getBoundaryManager()->fillBoundaryConditions(mainElInfo, matrix);
-  //
-  // 	  } else {
-  //
-  // 	    TEST_EXIT_DBG(traverseInfo.getStatus(i, j) !=
-  // 			  SingleComponentInfo::DIF_SPACES_WITH_DIF_AUX)
-  // 	      ("Not yet supported!\n");
-  //
-  // 	    ElInfo *rowElInfo, *colElInfo;
-  // 	    if (componentMeshes[i] == meshes[0]) {
-  // 	      rowElInfo = dualElInfo.rowElInfo;
-  // 	      colElInfo = dualElInfo.colElInfo;
-  // 	    } else {
-  // 	      rowElInfo = dualElInfo.colElInfo;
-  // 	      colElInfo = dualElInfo.rowElInfo;
-  // 	    }
-  //
-  // 	    if (useGetBound)
-  // 	      basisFcts->getBound(rowElInfo, bound);
-  //
-  // 	    if (matrix) {
-  //  	      matrix->assemble(1.0, rowElInfo, colElInfo,
-  //  			       dualElInfo.smallElInfo, dualElInfo.largeElInfo, bound);
-  //
-  // 	      if (matrix->getBoundaryManager())
-  // 		matrix->getBoundaryManager()->fillBoundaryConditions(rowElInfo, matrix);
-  // 	    }
-  //
-  //  	    if (i == j) {
-  // 	      ERROR_EXIT("In which case can this routine be reached??\n");
-  //  	      rhs->getDOFVector(i)->assemble(1.0, rowElInfo, bound);
-  // 	    }
-  // 	  }
-  // 	}
-  //       }
-  //
-  //       cont = dualTraverse.traverseNext(dualElInfo);
-  //     }
-  //
-  //     for (int i = 0; i < nComponents; i++) {
-  //       for (int j = 0; j < nComponents; j++) {
-  // 	DOFMatrix *matrix = (asmMatrix ? (*systemMatrix)[i][j] : NULL);
-  //
-  // 	if (!matrix)
-  // 	  continue;
-  //
-  // 	matrix->clearDirichletRows();
-  // 	matrix->finishInsertion();
-  //
-  //  	if (matrix->getBoundaryManager())
-  //  	  matrix->getBoundaryManager()->exitMatrix(matrix);
-  //
-  // 	nnz += matrix->getBaseMatrix().nnz();
-  //       }
-  //
-  //       // And now assemble boundary conditions on the vectors
-  //       assembleBoundaryConditions(rhs->getDOFVector(i),
-  // 				 solution->getDOFVector(i),
-  // 				 componentMeshes[i],
-  // 				 assembleFlag);
-  //     }
-  //
-  //     solverMatrix.setMatrix(*systemMatrix);
-  //
-  // #ifdef HAVE_PARALLEL_DOMAIN_AMDIS
-  //     MPI::COMM_WORLD.Barrier();
-  // #endif
-  //     INFO(info, 8)("fillin of assembled matrix: %d\n", nnz);
-  //
-  //     INFO(info, 8)("buildAfterCoarsen needed %.5f seconds\n",
-  // 		  t.elapsed());
-  //     buildTime = t.elapsed();
-  //   }
-
-
-  void ProblemStatSeq::writeFiles(AdaptInfo* adaptInfo, bool force)
+  void ProblemStatSeq::writeFiles(AdaptInfo& adaptInfo, bool force)
   {
     FUNCNAME("ProblemStat::writeFiles()");
 
     Timer t;
 
-    for (int i = 0; i < static_cast<int>(fileWriters.size()); i++)
-      fileWriters[i]->writeFiles(adaptInfo, force);
+    for (auto fileWriter : fileWriters)
+      fileWriter->writeFiles(adaptInfo, force);
 
     INFO(info, 8)("writeFiles needed %.5f seconds\n", t.elapsed());
-  }
-
-
-  void ProblemStatSeq::writeFiles(AdaptInfo& adaptInfo, bool force)
-  {
-    writeFiles(&adaptInfo, force);
   }
 
 
@@ -1269,7 +969,7 @@ namespace AMDiS
   }
 
 
-  void ProblemStatSeq::addMatrixOperator(Operator* op, int i, int j,
+  void ProblemStatSeq::addMatrixOperator(Operator& op, int i, int j,
                                          double* factor, double* estFactor)
   {
     FUNCNAME("ProblemStat::addMatrixOperator()");
@@ -1294,32 +994,16 @@ namespace AMDiS
         estimator[i]->setNewMatrix(j, (*systemMatrix)[i][j]);
     }
 
-    (*systemMatrix)[i][j]->addOperator(op, factor, estFactor);
+    (*systemMatrix)[i][j]->addOperator(&op, factor, estFactor);
 
-    traverseInfo.getMatrix(i, j).setAuxFeSpaces(op->getAuxFeSpaces());
-
-    //   for (std::set<const FiniteElemSpace*>::iterator it = op->getAuxFeSpaces().begin();
-    //  it != op->getAuxFeSpaces().end(); ++it) {
-    //     if ((*it)->getMesh() != componentSpaces[i]->getMesh() ||
-    //   (*it)->getMesh() != componentSpaces[j]->getMesh()) {
-    // op->setNeedDualTraverse(true);
-    // break;
-    //     }
-    //   }
+    traverseInfo.getMatrix(i, j).setAuxFeSpaces(op.getAuxFeSpaces());
 
     OperatorPos opPos = {i, j, factor, estFactor};
-    operators[op].push_back(opPos);
+    operators[&op].push_back(opPos);
   }
 
 
-  void ProblemStatSeq::addMatrixOperator(Operator& op, int i, int j,
-                                         double* factor, double* estFactor)
-  {
-    addMatrixOperator(&op, i, j, factor, estFactor);
-  }
-
-
-  void ProblemStatSeq::addVectorOperator(Operator* op, int i,
+  void ProblemStatSeq::addVectorOperator(Operator& op, int i,
                                          double* factor, double* estFactor)
   {
     FUNCNAME("ProblemStat::addVectorOperator()");
@@ -1331,27 +1015,26 @@ namespace AMDiS
     TEST_EXIT(!boundaryConditionSet)
     ("Do not add operators after boundary conditions were set!\n");
 
-    rhs->getDOFVector(i)->addOperator(op, factor, estFactor);
+    rhs->getDOFVector(i)->addOperator(&op, factor, estFactor);
 
-    traverseInfo.getVector(i).setAuxFeSpaces(op->getAuxFeSpaces());
-
-    //   for (std::set<const FiniteElemSpace*>::iterator it = op->getAuxFeSpaces().begin();
-    //  it != op->getAuxFeSpaces().end(); ++it) {
-    //     if ((*it)->getMesh() != componentSpaces[i]->getMesh()) {
-    // op->setNeedDualTraverse(true);
-    // break;
-    //     }
-    //   }
+    traverseInfo.getVector(i).setAuxFeSpaces(op.getAuxFeSpaces());
 
     OperatorPos opPos = {i, -1, factor, estFactor};
-    operators[op].push_back(opPos);
+    operators[&op].push_back(opPos);
   }
 
 
-  void ProblemStatSeq::addVectorOperator(Operator& op, int i,
-                                         double* factor, double* estFactor)
+  void ProblemStatSeq::addBoundaryMatrixOperator(BoundaryType type,
+      Operator& op, int row, int col)
   {
-    addVectorOperator(&op, i, factor, estFactor);
+    addRobinBC(type, row, col, (Operator*)NULL, &op);
+  }
+
+
+  void ProblemStatSeq::addBoundaryVectorOperator(BoundaryType type,
+      Operator& op, int row)
+  {
+    addRobinBC(type, row, row, &op, (Operator*)NULL);
   }
 
 
@@ -1385,20 +1068,6 @@ namespace AMDiS
   }
 
 
-  void ProblemStatSeq::addBoundaryMatrixOperator(BoundaryType type,
-      Operator* op, int row, int col)
-  {
-    addRobinBC(type, row, col, (Operator*)NULL, op);
-  }
-
-
-  void ProblemStatSeq::addBoundaryVectorOperator(BoundaryType type,
-      Operator* op, int row)
-  {
-    addRobinBC(type, row, row, op, (Operator*)NULL);
-  }
-
-
   void ProblemStatSeq::assembleOnOneMesh(const FiniteElemSpace* feSpace,
                                          Flag assembleFlag,
                                          DOFMatrix* matrix,
@@ -1409,8 +1078,7 @@ namespace AMDiS
 
     TraverseStack stack;
 
-    BoundaryType* bound =
-      useGetBound ? new BoundaryType[basisFcts->getNumber()] : NULL;
+    BoundaryType* bound = new BoundaryType[basisFcts->getNumber()];
 
     if (matrix)
       matrix->startInsertion(matrix->getNnz());
@@ -1422,8 +1090,7 @@ namespace AMDiS
     ElInfo* elInfo = stack.traverseFirst(mesh, -1, assembleFlag);
     while (elInfo)
     {
-      if (useGetBound)
-        basisFcts->getBound(elInfo, bound);
+      basisFcts->getBound(elInfo, bound);
 
       if (matrix)
       {
@@ -1449,15 +1116,14 @@ namespace AMDiS
     if (vector)
       vector->finishAssembling();
 
-    if (useGetBound)
-      delete [] bound;
+    delete [] bound;
   }
 
 
   void ProblemStatSeq::assembleBoundaryConditions(DOFVector<double>* rhs,
-      DOFVector<double>* solution,
-      Mesh* mesh,
-      Flag assembleFlag)
+						  DOFVector<double>* solution,
+						  Mesh* mesh,
+						  Flag assembleFlag)
   {
     // === Initialization of vectors ===
 
@@ -1490,7 +1156,7 @@ namespace AMDiS
 
 
   void ProblemStatSeq::writeResidualMesh(int comp,
-                                         AdaptInfo* adaptInfo,
+                                         AdaptInfo& adaptInfo,
                                          string name)
   {
     map<int, double> vec;

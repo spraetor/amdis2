@@ -195,9 +195,9 @@ namespace AMDiS
 
     /// basic assignment for compound operators given by the Assigner
     template <class Functor>
-    inline void for_each(Functor f)
+    inline void for_each(Functor&& f)
     {
-      Super::for_each_aux(f);
+      Super::for_each_aux(std::forward<Functor>(f));
     }
   };
 

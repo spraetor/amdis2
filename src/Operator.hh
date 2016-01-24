@@ -80,39 +80,4 @@ namespace AMDiS
     a.insertFeSpaces(auxFeSpaces);
   }
 
-#if 0
-  template <class T>
-  Operator& Operator::operator+=(ZOTWrapper<T> wrapper)
-  {
-    ZeroOrderTerm* ot = wrapper.getOperatorTerm();
-    zeroOrder.push_back(ot);
-    ot->operat = this;
-    wrapper.getTerm().insertFeSpaces(auxFeSpaces);
-    return *this;
-  }
-
-  template <class T>
-  Operator& Operator::operator+=(FOTWrapper<T> wrapper)
-  {
-    FirstOrderTerm* ot = wrapper.getOperatorTerm();
-    if (wrapper.getType() == GRD_PSI)
-      firstOrderGrdPsi.push_back(ot);
-    else
-      firstOrderGrdPhi.push_back(ot);
-
-    ot->operat = this;
-    wrapper.getTerm().insertFeSpaces(auxFeSpaces);
-    return *this;
-  }
-
-  template <class T>
-  Operator& Operator::operator+=(SOTWrapper<T> wrapper)
-  {
-    SecondOrderTerm* ot = wrapper.getOperatorTerm();
-    secondOrder.push_back(ot);
-    ot->operat = this;
-    wrapper.getTerm().insertFeSpaces(auxFeSpaces);
-    return *this;
-  }
-#endif
 } // end namespace AMDiS

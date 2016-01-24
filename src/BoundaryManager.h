@@ -8,6 +8,7 @@
 #include "AMDiS_fwd.h"
 #include "AMDiS_base.h"
 #include "Boundary.h"
+#include <traits/not_null.hpp>
 
 namespace AMDiS
 {
@@ -29,7 +30,7 @@ namespace AMDiS
   public:
     /// Constructor. Reads the nr. of basis functions and allocates an
     /// array \ref localBound of this size.
-    BoundaryManager(const FiniteElemSpace* feSpace);
+    BoundaryManager(not_null<const FiniteElemSpace*> feSpace);
 
     /// Copy constructor.
     BoundaryManager(BoundaryManager const& bm);

@@ -6,29 +6,29 @@
 namespace AMDiS
 {
   Timer::Timer()
-    : first_seq(std::chrono::system_clock::now())
+    : t0(Clock::now())
 #ifdef HAVE_PARALLEL_DOMAIN_AMDIS
-    ,first_mpi(MPI::Wtime())
+    , t0_mpi(MPI::Wtime())
 #endif
   { }
 
   void Timer::reset()
   {
 #ifdef HAVE_PARALLEL_DOMAIN_AMDIS
-    first_mpi = MPI::Wtime();
+    t0_mpi = MPI::Wtime();
 #else
-    first_seq = std::chrono::system_clock::now();
+    t0 = Clock::now();
 #endif
   }
 
   double Timer::elapsed() const
   {
 #ifdef HAVE_PARALLEL_DOMAIN_AMDIS
-    return MPI::Wtime() - first_mpi;
+    return MPI::Wtime() - t0_mpi;
 #else
-    using namespace std::chrono;
-    auto elapsed_seconds = duration_cast<microseconds>(system_clock::now()-first_seq);
-    return elapsed_seconds.count() / 1.e6;
+    auto t1 = Clock::now();
+    fsec fs = t1 - t0;
+    return fs.count();
 #endif
   }
 

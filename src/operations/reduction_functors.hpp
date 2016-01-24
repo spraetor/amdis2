@@ -39,27 +39,27 @@ namespace AMDiS
       using result_type = A;
 
       template <class Value>
-      constexpr static void init(Value& value)
+      static void init(Value& value)
       {
         using ::math::zero;
         value= zero(value);
       }
 
       template <class Value, class Element>
-      constexpr static void update(Value& value, const Element& x)
+      static void update(Value& value, const Element& x)
       {
         using std::abs;
         value+= abs(x);
       }
 
       template <class Value>
-      constexpr static void finish(Value& value, const Value& value2)
+      static void finish(Value& value, const Value& value2)
       {
         value+= value2;
       }
 
       template <class Value>
-      constexpr static Value post_reduction(const Value& value)
+      static constexpr Value post_reduction(Value const& value)
       {
         return value;
       }
@@ -79,28 +79,28 @@ namespace AMDiS
       typedef A result_type;
 
       template <class Value>
-      constexpr static void init(Value& value)
+      static void init(Value& value)
       {
         using ::math::zero;
         value= zero(value);
       }
 
       template <class Value, class Element>
-      constexpr static void update(Value& value, const Element& x)
+      static void update(Value& value, Element const& x)
       {
         using mtl::squared_abs;
         value+= squared_abs(x);
       }
 
       template <class Value>
-      constexpr static void finish(Value& value, const Value& value2)
+      static void finish(Value& value, Value const& value2)
       {
         value+= value2;
       }
 
       // After reduction compute square root
       template <class Value>
-      static inline Value post_reduction(const Value& value)
+      static Value post_reduction(Value const& value)
       {
         using std::sqrt;
         return sqrt(value);
@@ -116,7 +116,7 @@ namespace AMDiS
       : two_norm_functor<A>
     {
       template <typename Value>
-      static inline Value post_reduction(const Value& value)
+      static Value post_reduction(Value const& value)
       {
         return value;
       }
@@ -129,26 +129,26 @@ namespace AMDiS
       using result_type = decltype( std::declval<ConjOp>()(std::declval<A>()) * std::declval<B>() );
 
       template <class Value>
-      constexpr static void init(Value& value)
+      static void init(Value& value)
       {
         using ::math::zero;
         value= zero(value);
       }
 
       template <class Value, class Element1, class Element2>
-      constexpr static void update(Value& value, const Element1& x, const Element2& y)
+      static void update(Value& value, Element1 const& x, Element2 const& y)
       {
         value+= ConjOp()(x) * y;
       }
 
       template <class Value>
-      constexpr static void finish(Value& value, const Value& value2, const Value& value3)
+      static void finish(Value& value, Value const& value2, Value const& value3)
       {
         value+= ConjOp()(value2) * value3;
       }
 
       template <class Value>
-      constexpr static Value post_reduction(const Value& value)
+      static constexpr Value post_reduction(Value const& value)
       {
         return value;
       }
@@ -185,26 +185,26 @@ namespace AMDiS
       using result_type = ResultType;
 
       template <class Value>
-      constexpr static void init(Value& value)
+      static void init(Value& value)
       {
         InitAssign()(value);
       }
 
       template <class Value, class Element>
-      constexpr static void update(Value& value, const Element& x)
+      static void update(Value& value, Element const& x)
       {
         UpdateAssign()(value, x);
       }
 
       template <class Value>
-      constexpr static void finish(Value& value, const Value& value2)
+      static void finish(Value& value, Value const& value2)
       {
         FinishAssign()(value, value2);
       }
 
       // After reduction compute square root
       template <class Value>
-      constexpr static Value post_reduction(const Value& value)
+      static constexpr Value post_reduction(Value const& value)
       {
         return PostOp()(value);
       }

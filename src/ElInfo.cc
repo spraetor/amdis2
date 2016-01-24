@@ -45,8 +45,7 @@ namespace AMDiS
 
 
 
-  inline ElInfo&
-  ElInfo::operator=(const ElInfo& rhs)
+  ElInfo& ElInfo::operator=(ElInfo const& rhs)
   {
     mesh = rhs.mesh;
     element = rhs.element;
@@ -72,8 +71,7 @@ namespace AMDiS
   }
 
 
-  inline void
-  ElInfo::getGrdLambda(mtl::dense2D<double>& grd_lam)
+  void ElInfo::getGrdLambda(mtl::dense2D<double>& grd_lam)
   {
     grd_lam.change_dim(grdLambda.getSize(), Global::getGeo(WORLD));
     for (size_t i = 0; i < static_cast<size_t>(grdLambda.getSize()); i++)

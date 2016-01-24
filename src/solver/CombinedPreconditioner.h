@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "solver/BlockPreconditioner.h"
+#include <solver/BlockPreconditioner.h>
 
 namespace AMDiS
 {
@@ -10,63 +10,54 @@ namespace AMDiS
   template <class MatrixType>
   struct CombinedPreconditioner : public BlockPreconditioner<MatrixType>
   {
-    typedef BlockPreconditioner<MatrixType>                         super;
-    typedef ITL_PreconditionerBase<MatrixType, MTLTypes::MTLVector> precon_base;
-    typedef CombinedPreconditioner<MatrixType>                      self;
+    using Self        = CombinedPreconditioner; 
+    using Super       = BlockPreconditioner<MatrixType>;
+    using precon_base = ITL_PreconditionerBase<MatrixType, MTLTypes::MTLVector>;
 
-    class Creator : public CreatorInterfaceName<precon_base>
+    struct Creator : public CreatorInterfaceName<precon_base>
     {
-    public:
-      // TODO: replace with initializer lists
-      Creator(int l0)
-      {
-        l.push_back(l0);
-      };
+      /// Constructor for a list of integer arguments, representing the sizes
+      /// of the sub-blocks
+      template <class... Ints,
+	class = Requires_t< and_< std::is_convertible<Ints, int>... > >>
+      Creator(Ints... ls) : l{int(ls)...} {}
 
-      Creator(int l0, int l1)
-      {
-        l.push_back(l0);
-        l.push_back(l1);
-      };
-
-      Creator(int l0, int l1, int l2)
-      {
-        l.push_back(l0);
-        l.push_back(l1);
-        l.push_back(l2);
-      };
-
-      Creator(const std::vector<int>& l) : l(l) {}
+      /// Constructor for a vector of integers, representing the sizes
+      /// of the sub-blocks
+      Creator(std::vector<int> const& l) : l(l) {}
 
       virtual precon_base* create() override
       {
-        return new self(l);
+        return new Self(l);
       }
 
     private:
       std::vector<int> l;
     };
+    
 
     /// Constructor
-    CombinedPreconditioner(const std::vector<int>& parts_)
-      : super(), parts(parts_)
+    CombinedPreconditioner(std::vector<int> const& parts_)
+      : Super(), 
+	parts(parts_)
     {
       precon.resize(parts.size(), &identity);
       subA.resize(parts.size());
     }
 
+    /// Implementation of \ref ITL_PreconditionerBase::init
     /// Extract iranges from SolverMatrix to be used to extract sub-vectors and sub-matrices.
-    virtual void init(const SolverMatrix<Matrix<DOFMatrix*>>& A_,
-                      const MatrixType& fullMatrix_) override
+    virtual void init(SolverMatrix<Matrix<DOFMatrix*>> const& A_,
+                      MatrixType const& fullMatrix_) override
     {
-      super::A = &A_;
-      super::fullMatrix = &fullMatrix_;
+      Super::A = &A_;
+      Super::fullMatrix = &fullMatrix_;
 
       BlockMapper mapper(A_);
       rows.resize(mapper.getNumComponents());
       int start = 0;
       int sum = 0;
-      for (int p = 0; p < parts.size(); p++)
+      for (size_t p = 0; p < parts.size(); p++)
       {
         sum += parts[p];
         TEST_EXIT(sum <= mapper.getNumComponents())("range out of bound!");
@@ -77,9 +68,9 @@ namespace AMDiS
         start = finish;
       }
 
-      const Matrix<DOFMatrix*>& mat = *A_.getOriginalMat();
+      Matrix<DOFMatrix*> const& mat = *A_.getOriginalMat();
       sum = 0;
-      for (int p = 0; p < parts.size(); p++)
+      for (size_t p = 0; p < parts.size(); p++)
       {
         Matrix<DOFMatrix*>* subMat = new Matrix<DOFMatrix*>(parts[p],parts[p]);
         for (int i = 0; i < parts[p]; i++)
@@ -91,9 +82,10 @@ namespace AMDiS
     }
 
 
+    /// Implementation of \ref PreconditionerInterface::init
     virtual void exit() override
     {
-      for (int p = 0; p < parts.size(); p++)
+      for (size_t p = 0; p < parts.size(); p++)
       {
         precon[p]->exit();
         delete subA[p].getOriginalMat();
@@ -101,12 +93,13 @@ namespace AMDiS
     }
 
 
+    /// Implementation of \ref ITL_PreconditionerBase::solve
     /// Apply the preconditioners block-wise
     /**
      * solve Px = b, with
      * P = diag(P1, P2, ...)
      **/
-    void solve(const MTLTypes::MTLVector& b, MTLTypes::MTLVector& x) const override
+    virtual void solve(MTLTypes::MTLVector const& b, MTLTypes::MTLVector& x) const override
     {
       FUNCNAME("CombinedPreconditioner::solve()");
 
@@ -129,13 +122,12 @@ namespace AMDiS
   protected:
     std::vector<mtl::irange> rows;
 
-    // length of blocks assigned to a seperate preconditioners
+    /// lengths of blocks assigned to seperate preconditioners
     std::vector<int> parts;
 
     std::vector<precon_base*> precon;
     std::vector<SolverMatrix<Matrix<DOFMatrix*>>> subA;
 
-    DOFMatrix::base_matrix_type dummy;
     ITL_Preconditioner<itl::pc::identity<MatrixType>, MatrixType, MTLTypes::MTLVector> identity;
   };
 

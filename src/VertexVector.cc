@@ -6,7 +6,7 @@
 
 namespace AMDiS
 {
-  VertexVector::VertexVector(const DOFAdmin* a, std::string n)
+  VertexVector::VertexVector(DOFAdmin const* a, std::string n)
     : DOFVectorDOF(),
       admin(a)
   {

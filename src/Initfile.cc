@@ -64,9 +64,9 @@ namespace AMDiS
   }
 
   // explicit template instatiation
-  template void Initfile::get(const std::string, int&, int);
-  template void Initfile::get(const std::string, double&, int);
-  template void Initfile::get(const std::string, std::string&, int);
+  template void Initfile::get(std::string, int&, int);
+  template void Initfile::get(std::string, double&, int);
+  template void Initfile::get(std::string, std::string&, int);
 
 
 } // end namespace AMDiS

@@ -13,7 +13,7 @@ namespace AMDiS
       BoundaryManager::globalBoundaryMap;
 
 
-  BoundaryManager::BoundaryManager(const FiniteElemSpace* feSpace)
+  BoundaryManager::BoundaryManager(not_null<const FiniteElemSpace*> feSpace)
   {
     allocatedMemoryLocalBounds = feSpace->getBasisFcts()->getNumber();
     localBound = new BoundaryType[allocatedMemoryLocalBounds];

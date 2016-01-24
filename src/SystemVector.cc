@@ -6,7 +6,7 @@
 namespace AMDiS
 {
   SystemVector::SystemVector(std::string name_,
-                             std::vector<const FiniteElemSpace*> feSpace_,
+                             std::vector<FiniteElemSpace const*> feSpace_,
                              int size,
                              bool createVec_)
     : name(name_),
@@ -156,22 +156,6 @@ namespace AMDiS
   }
 
 
-  SystemVector operator*(SystemVector x, double d)
-  {
-    for (int i = 0; i < x.getSize(); i++)
-      (*(x.getDOFVector(i))) *= d;
-    return x;
-  }
-
-
-  SystemVector operator*(double d, SystemVector x)
-  {
-    for (int i = 0; i < x.getSize(); i++)
-      (*(x.getDOFVector(i))) *= d;
-    return x;
-  }
-
-
   double operator*(SystemVector const& x, SystemVector const& y)
   {
     TEST_EXIT_DBG(x.getSize() == y.getSize())("invalid size\n");
@@ -196,15 +180,6 @@ namespace AMDiS
     TEST_EXIT_DBG(x.getSize() == y.getSize())("invalid size\n");
     for (int i = 0; i < x.getSize(); i++)
       (*(x.getDOFVector(i))) -= (*(y.getDOFVector(i)));
-    return x;
-  }
-
-
-  SystemVector operator+(SystemVector x, SystemVector const& y)
-  {
-    TEST_EXIT_DBG(x.getSize() == y.getSize())("invalid size\n");
-    for (int i = 0; i < x.getSize(); i++)
-      (*(x.getDOFVector(i))) += (*(y.getDOFVector(i)));
     return x;
   }
 

@@ -17,6 +17,7 @@
 #include "ZeroOrderAssembler.h"
 #include "FirstOrderAssembler.h"
 #include "SecondOrderAssembler.h"
+#include <traits/not_null.hpp>
 
 namespace AMDiS
 {
@@ -32,9 +33,9 @@ namespace AMDiS
   {
   public:
     /// Constructor
-    Assembler(Operator* op,
-              const FiniteElemSpace* rowFeSpace,
-              const FiniteElemSpace* colFeSpace = NULL);
+    Assembler(not_null<Operator*> op,
+              not_null<const FiniteElemSpace*> rowFeSpace,
+		       const FiniteElemSpace*  colFeSpace = NULL);
 
     /// Destructor
     virtual ~Assembler() {};

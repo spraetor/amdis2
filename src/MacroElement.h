@@ -13,7 +13,6 @@
 
 namespace AMDiS
 {
-
   /** \ingroup Triangulation
    * \brief
    * MacroElements form the macro triangulation of a Mesh. In a MacroElement
@@ -25,12 +24,15 @@ namespace AMDiS
   public:
     /// Creates a new MacroElement. The mesh is needed only to get the dimension
     MacroElement(int dim);
+    
+    /// Copy constructor
+    MacroElement(MacroElement const& that);
 
     /// Destructor.
     virtual ~MacroElement();
 
-    ///
-    MacroElement& operator=(const MacroElement& el);
+    /// Copy assignment operator
+    MacroElement& operator=(MacroElement const& that);
 
     /** \name getting methods
      * \{
@@ -173,12 +175,6 @@ namespace AMDiS
 
     /** \} */
 
-    ///
-    void writeNeighboursTo(std::vector<int>* indices)
-    {
-      deserializedNeighbourIndices = indices;
-    }
-
   protected:
     /// Element of this MacroElement.
     Element* element;
@@ -206,9 +202,6 @@ namespace AMDiS
 
     /// Element type of the MacroElement
     int elType;
-
-    ///
-    std::vector<int>* deserializedNeighbourIndices;
 
 
     friend class MacroInfo;

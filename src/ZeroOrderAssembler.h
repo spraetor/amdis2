@@ -112,10 +112,10 @@ namespace AMDiS
 
   protected:
     /// Integral of the product of psi and phi.
-    const Q00PsiPhi* q00;
+    Q00PsiPhi const* q00;
 
     /// Integral of psi.
-    const Q0Psi* q0;
+    Q0Psi const* q0;
   };
 
 } // end namespace AMDiS

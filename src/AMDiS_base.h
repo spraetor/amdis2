@@ -81,7 +81,7 @@ namespace AMDiS
 
 
   /// check for file existence
-  inline bool file_exists(const std::string filename)
+  inline bool file_exists(std::string const& filename)
   {
 #ifdef _MSC_VER
     return _access(filename.c_str(), 0) == 0;
@@ -92,7 +92,7 @@ namespace AMDiS
 
 
   /// trim std::string
-  inline std::string trim(const std::string& oldStr)
+  inline std::string trim(std::string const& oldStr)
   {
     std::string swap(oldStr);
     boost::algorithm::trim(swap);

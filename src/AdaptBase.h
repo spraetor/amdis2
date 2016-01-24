@@ -5,6 +5,7 @@
 #include <string>
 
 #include "AMDiS_fwd.h"
+#include <traits/not_null.hpp>
 
 namespace AMDiS
 {
@@ -14,8 +15,8 @@ namespace AMDiS
   public:
     /// Constructor
     AdaptBase(std::string sname,
-              ProblemIterationInterface* problemIteration_,
-              AdaptInfo* adapt,
+              not_null<ProblemIterationInterface*> problemIteration_,
+              AdaptInfo& adapt,
               ProblemTimeInterface* problemTime_ = NULL,
               AdaptInfo* initialAdaptInfo_ = NULL)
       : name(sname),
@@ -53,7 +54,7 @@ namespace AMDiS
     }
 
     /// Returns \ref adaptInfo
-    AdaptInfo* getAdaptInfo() const
+    AdaptInfo& getAdaptInfo() const
     {
       return adaptInfo;
     }
@@ -71,9 +72,9 @@ namespace AMDiS
     }
 
     /// Returns \ref initialAdaptInfo_
-    AdaptInfo* getInitialAdaptInfo() const
+    AdaptInfo& getInitialAdaptInfo() const
     {
-      return initialAdaptInfo;
+      return *initialAdaptInfo;
     }
 
   protected:
@@ -84,7 +85,7 @@ namespace AMDiS
     ProblemIterationInterface* problemIteration;
 
     /// Main adapt info
-    AdaptInfo* adaptInfo;
+    AdaptInfo& adaptInfo;
 
     /// problem time interface
     ProblemTimeInterface* problemTime;

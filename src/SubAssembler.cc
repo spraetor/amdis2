@@ -103,8 +103,8 @@ namespace AMDiS
   }
 
 
-  void SubAssembler::initImpl(const ElInfo* elInfo,
-                              const ElInfo*,
+  void SubAssembler::initImpl(ElInfo const* elInfo,
+                              ElInfo const*,
                               Quadrature* quad)
   {
     // set corrdsAtQPs invalid
@@ -124,7 +124,7 @@ namespace AMDiS
   }
 
 
-  void SubAssembler::getCoordsAtQPs(const ElInfo* elInfo,
+  void SubAssembler::getCoordsAtQPs(ElInfo const* elInfo,
                                     Quadrature* quad,
                                     DenseVector<WorldVector<double>>& coordsAtQPs)
   {

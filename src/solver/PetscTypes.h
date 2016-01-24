@@ -1,26 +1,4 @@
-/******************************************************************************
- *
- * AMDiS - Adaptive multidimensional simulations
- *
- * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
- * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
- *
- * Authors:
- * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
- *
- * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
- * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
- *
- *
- * This file is part of AMDiS
- *
- * See also license.opensource.txt in the distribution.
- *
- ******************************************************************************/
-
-
-#ifndef AMDIS_PETSCTYPES_H
-#define AMDIS_PETSCTYPES_H
+#pragma once
 
 #include <vector>
 #include <map>
@@ -56,7 +34,7 @@ namespace AMDiS
     bool assembled;
   };
 
-  struct PetscMatrixNested : PetscMatrix
+  struct PetscMatrixNested : public PetscMatrix
   {
     PetscMatrixNested() : PetscMatrix()
     {
@@ -86,7 +64,7 @@ namespace AMDiS
     bool assembled;
   };
 
-  struct PetscVectorNested : PetscVector
+  struct PetscVectorNested : public PetscVector
   {
     PetscVectorNested() : PetscVector()
     {
@@ -97,61 +75,65 @@ namespace AMDiS
   /// structure for parameter mapping
   struct PetscParameters
   {
-    std::map<std::string,bool> matSolverPackage;
-    std::map<std::string,std::string> solverMap;
-    std::map<std::string,std::string> preconMap;
-    std::map<std::string,bool> emptyParam;
+    std::map<std::string, bool> matSolverPackage;
+    std::map<std::string, std::string> solverMap;
+    std::map<std::string, std::string> preconMap;
+    std::map<std::string, bool> emptyParam;
 
     PetscParameters();
   };
 
 
   // matrix-streams for Petsc Types
-  // ___________________________________________________________________________
+  // ---------------------------------------------------------------------------
 
   /// fill Petsc Mat datastructure directly
-  inline void operator<<(Mat& mat, const DOFMatrix& rhs);
+  inline void operator<<(Mat& mat, DOFMatrix const& rhs);
 
   /// fill PetscMatrix
-  template<typename Mapper>
-  inline void operator<<(PetscMatrix& mat, MatMap<const SolverMatrix<Matrix<DOFMatrix*>>, Mapper>& rhs);
+  template <class Mapper>
+  inline void operator<<(PetscMatrix& mat, 
+			 MatMap<const SolverMatrix<Matrix<DOFMatrix*>>, Mapper>& rhs);
 
   /// fill nested PetscMatrix
-  template<typename Mapper>
-  inline void operator<<(PetscMatrixNested& mat, MatMap<const SolverMatrix<Matrix<DOFMatrix*>>, Mapper>& mapper);
+  template <class Mapper>
+  inline void operator<<(PetscMatrixNested& mat, 
+			 MatMap<const SolverMatrix<Matrix<DOFMatrix*>>, Mapper>& mapper);
 
 
   /// fill Petsc Vec datastructure directly from DOFVector
-  inline void operator<<(Vec& petscVec, const DOFVector<double>& vec);
+  inline void operator<<(Vec& petscVec, DOFVector<double> const& vec);
 
   /// fill Petsc Vec datastructure directly from SystemVector
-  inline void operator<<(Vec& petscVec, const SystemVector& vec);
+  inline void operator<<(Vec& petscVec, SystemVector const& vec);
 
-  inline void operator<<(PetscVector& petscVec, const SystemVector& rhs);
+  inline void operator<<(PetscVector& petscVec, SystemVector const& rhs);
 
-  template<typename Mapper>
-  inline void operator<<(PetscVector& petscVec, VecMap<const SystemVector, Mapper>& rhs);
+  template <class Mapper>
+  inline void operator<<(PetscVector& petscVec, 
+			 VecMap<const SystemVector, Mapper>& rhs);
 
-  template<typename Mapper>
-  inline void operator<<(PetscVectorNested& petscVec, VecMap<const SystemVector, Mapper>& rhs);
+  template <class Mapper>
+  inline void operator<<(PetscVectorNested& petscVec, 
+			 VecMap<const SystemVector, Mapper>& rhs);
 
 
   /// fill AMDiS DOFVector from Petsc Vec datastructur
-  inline void operator>>(const Vec& petscVec, DOFVector<double>& vec);
+  inline void operator>>(Vec const& petscVec, DOFVector<double>& vec);
 
   /// fill AMDiS SystemVector from Petsc Vec datastructur
-  inline void operator>>(const Vec& petscVec, SystemVector& vec);
+  inline void operator>>(Vec const& petscVec, SystemVector& vec);
 
   /// fill AMDiS SystemVector from PetscVector
-  template<typename Mapper>
-  void operator>>(const PetscVector& dest, VecMap<SystemVector, Mapper>& rhs);
+  template <class Mapper>
+  void operator>>(PetscVector const& dest, 
+		  VecMap<SystemVector, Mapper>& rhs);
 
   /// fill AMDiS SystemVector from nested PetscVector
-  template<typename Mapper>
-  void operator>>(const PetscVectorNested& dest, VecMap<SystemVector, Mapper>& rhs);
+  template <class Mapper>
+  void operator>>(PetscVectorNested const& dest, 
+		  VecMap<SystemVector, Mapper>& rhs);
 
 } // end namespace AMDiS
 
 #include "solver/PetscTypes.hh"
-
-#endif // AMDIS_PETSCTYPES_H

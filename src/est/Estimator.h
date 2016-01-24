@@ -50,9 +50,7 @@ namespace AMDiS
   class Estimator
   {
   public:
-    Estimator()
-      : traverseInfo(0)
-    {}
+    Estimator() {}
 
     /// Constructor.
     Estimator(std::string name_, int r);
@@ -193,19 +191,19 @@ namespace AMDiS
     std::string name;
 
     /// Used norm
-    Norm norm;
+    Norm norm = NO_NORM;
 
     /// Sum of all error estimates
-    double est_sum;
+    double est_sum = 0.0;
 
     /// Maximal error estimate
-    double est_max;
+    double est_max = 0.0;
 
     /// Sum of all time error estimates
-    double est_t_sum;
+    double est_t_sum = 0.0;
 
     /// Max of all time error estimates
-    double est_t_max;
+    double est_t_max = 0.0;
 
     /** \brief
      * Vector of DOFMatrix pointers. There can be more than one
@@ -240,22 +238,22 @@ namespace AMDiS
      * The mesh on which the error must be estimated. If there is more than one mesh
      * used, here the main, i.e., the row mesh, is stored.
      */
-    Mesh* mesh;
+    Mesh* mesh = NULL;
 
     /** \brief
      * If there is only one mesh used at all, this variable is not used. In the case
      * that the error must be estimated on a system row with more than one mesh, here
      * either the column mesh or the auxiliary mesh is stored.
      */
-    Mesh* auxMesh;
+    Mesh* auxMesh = NULL;
 
-    double timestep;
+    double timestep = 0.0;
 
     /** \brief
      * Stores information about which mesh(es) must be traversed to estimate
      * the error on the component matrices.
      */
-    ComponentTraverseInfo traverseInfo;
+    ComponentTraverseInfo traverseInfo = 0;
   };
 
 
