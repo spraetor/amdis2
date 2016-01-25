@@ -14,9 +14,7 @@ namespace AMDiS
   {
   public:
     /// Calls base class constructor.
-    RefinementManager3d()
-      : RefinementManager()
-    {}
+    RefinementManager3d() = default;
 
   protected:
     /// Used by \ref setNewCoords
@@ -56,12 +54,11 @@ namespace AMDiS
   };
 
 
-  class FixRefinementPatch
+  struct FixRefinementPatch
   {
-  public:
-    typedef std::pair<Element*, int> EdgeInEl;
-    typedef std::pair<EdgeInEl, EdgeInEl> EdgesMap;
-    typedef std::vector<EdgesMap> ConnectedEdges;
+    using EdgeInEl       = std::pair<Element*, int>;
+    using EdgesMap       = std::pair<EdgeInEl, EdgeInEl>;
+    using ConnectedEdges = std::vector<EdgesMap>;
 
     static std::map<Mesh*, ConnectedEdges> connectedEdges;
 

@@ -538,6 +538,8 @@ namespace AMDiS
 
     // === read solver-name ===
     string solverType = Parameters::get<string>(initFileStr, "0");
+    if (solverType == "0" || solverType == "")
+      solverType = Parameters::get<string>(initFileStr + "->name", "0");
 
     if (backend != "0" && backend != "no" && backend != "")
       solverType = backend + "_" + solverType;
@@ -567,7 +569,7 @@ namespace AMDiS
 
       // === create estimator ===
       string estimatorType = Parameters::get<string>(estName, "0");
-      if (estimatorType == "0")
+      if (estimatorType == "0" || estimatorType == "")
         Parameters::get(estName + "->name", estimatorType);
 
       EstimatorCreator* estimatorCreator =

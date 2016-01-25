@@ -33,8 +33,8 @@ namespace AMDiS
 
 
   void FirstOrderTerm::l1(DimVec<WorldVector<double>> const& Lambda,
-      DenseVector<double>& Lb,
-      double factor) const
+			  DenseVector<double>& Lb,
+			  double factor) const
   {
     const int dim = size(Lambda);
 
@@ -51,9 +51,9 @@ namespace AMDiS
 
 
   void FirstOrderTerm::lb(DimVec<WorldVector<double>> const& Lambda,
-    WorldVector<double> const& b,
-    DenseVector<double>& Lb,
-    double factor) const
+			  WorldVector<double> const& b,
+			  DenseVector<double>& Lb,
+			  double factor) const
   {
     const int dim = size(Lambda);
 
@@ -63,8 +63,8 @@ namespace AMDiS
 
 
   void FirstOrderTerm::lb_one(DimVec<WorldVector<double>> const& Lambda,
-    DenseVector<double>& Lb,
-    double factor) const
+			      DenseVector<double>& Lb,
+			      double factor) const
   {
     const int dim = size(Lambda);
 

@@ -86,10 +86,6 @@ namespace AMDiS
   
   void Marker::initMarking(AdaptInfo& adaptInfo, Mesh* mesh)
   {
-    FUNCNAME_DBG("Marker::initMarking()");
-
-    TEST_EXIT_DBG(adaptInfo)("No AdaptInfo object!\n");
-
     elMarkRefine = 0;
     elMarkCoarsen = 0;
     estSum = pow(adaptInfo.getEstSum(row == -1 ? 0 : row), p);

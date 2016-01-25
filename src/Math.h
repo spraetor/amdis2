@@ -56,6 +56,11 @@ namespace AMDiS
     a = 0;
   }
 
+  inline void nullify(std::string& s)
+  {
+    s = "";
+  }
+
   template <class T> inline void nullify(std::vector<T>& a)
   {
     typename std::vector<T>::iterator it;

@@ -28,55 +28,63 @@ namespace AMDiS
     /// Destructor.
     virtual ~ProblemInstatBase() {}
 
-    virtual void setTime(AdaptInfo& adaptInfo)
+    /// Implementation of \ref ProblemTimeInterface::setTime().
+    virtual void setTime(AdaptInfo& adaptInfo) override
     {
       cTime = adaptInfo.getTime();
       tau = adaptInfo.getTimestep();
       invTau = 1.0 / tau;
     }
 
-    virtual void solve(AdaptInfo& adaptInfo) {}
+    void solve(AdaptInfo& adaptInfo) {}
 
-    virtual void solve(AdaptInfo& adaptInfo, bool, bool)
+    /// Implementation of \ref ProblemStatBase::solve().
+    virtual void solve(AdaptInfo& adaptInfo, bool, bool) override
     {
       solve(adaptInfo);
     }
 
-    virtual void estimate(AdaptInfo& adaptInfo) {}
+    /// Implementation of \ref ProblemStatBase::estimate().
+    virtual void estimate(AdaptInfo& adaptInfo) override {}
 
-    virtual void buildBeforeRefine(AdaptInfo& adaptInfo, Flag) {}
+    /// Implementation of \ref ProblemStatBase::buildBeforeRefine().
+    virtual void buildBeforeRefine(AdaptInfo& adaptInfo, Flag) override {}
 
-    virtual void buildBeforeCoarsen(AdaptInfo& adaptInfo, Flag) {}
+    /// Implementation of \ref ProblemStatBase::buildBeforeCoarsen().
+    virtual void buildBeforeCoarsen(AdaptInfo& adaptInfo, Flag) override {}
 
-    virtual void buildAfterCoarsen(AdaptInfo& adaptInfo, Flag, bool, bool) {}
+    /// Implementation of \ref ProblemStatBase::buildAfterCoarsen().
+    virtual void buildAfterCoarsen(AdaptInfo& adaptInfo, Flag, bool, bool) override {}
 
-    virtual Flag markElements(AdaptInfo& adaptInfo)
+    /// Implementation of \ref ProblemStatBase::markElements().
+    virtual Flag markElements(AdaptInfo& adaptInfo) override
     {
-      return 0;
+      return {0};
     }
 
-    virtual Flag refineMesh(AdaptInfo& adaptInfo)
+    /// Implementation of \ref ProblemStatBase::refineMesh().
+    virtual Flag refineMesh(AdaptInfo& adaptInfo) override
     {
-      return 0;
+      return {0};
     }
 
-    virtual Flag coarsenMesh(AdaptInfo& adaptInfo)
+    /// Implementation of \ref ProblemStatBase::coarsenMesh().
+    virtual Flag coarsenMesh(AdaptInfo& adaptInfo) override
     {
-      return 0;
+      return {0};
     }
 
-    /// Implementation of ProblemTimeInterface::closeTimestep().
-    virtual void closeTimestep(AdaptInfo& adaptInfo)
-    {}
+    /// Implementation of \ref ProblemTimeInterface::closeTimestep().
+    virtual void closeTimestep(AdaptInfo& adaptInfo) override {}
 
-    /// Returns \ref name.
+    /// Implementation of \ref ProblemStatBase::getName().
     std::string getName() const
     {
       return name;
     }
 
-    /// Used by \ref problemInitial
-    virtual void solveInitialProblem(AdaptInfo& adaptInfo);
+    /// Implementation of \ref ProblemTimeInterface::solveInitialProblem().
+    virtual void solveInitialProblem(AdaptInfo& adaptInfo) override;
 
     double* getTime()
     {
@@ -100,13 +108,13 @@ namespace AMDiS
     ProblemStatBase* initialProblem;
 
     /// Time
-    double cTime;
+    double cTime = 0.0;
 
     /// Timestep
-    double tau;
+    double tau = 1.0;
 
     /// 1 / timestep
-    double invTau;
+    double invTau = 1.0;
   };
 
 
@@ -124,16 +132,14 @@ namespace AMDiS
     ProblemInstat(std::string name, 
 		  ProblemStatSeq& prob)
       : ProblemInstatBase(name, NULL),
-	problemStat(prob),
-	oldSolution(NULL)
+	problemStat(prob)
     {}
     
     ProblemInstat(std::string name, 
 		  ProblemStatSeq& prob,
                   ProblemStatBase& initialProb)
       : ProblemInstatBase(name, &initialProb),
-	problemStat(prob),
-	oldSolution(NULL)
+	problemStat(prob)
     {}
 
     /// Destructor.
@@ -147,11 +153,11 @@ namespace AMDiS
     /// Used in \ref initialize().
     virtual void createUhOld();
 
-    /// Implementation of ProblemTimeInterface::initTimestep().
-    virtual void initTimestep(AdaptInfo& adaptInfo);
+    /// Implementation of \ref ProblemTimeInterface::initTimestep().
+    virtual void initTimestep(AdaptInfo& adaptInfo) override;
 
-    /// Implementation of ProblemTimeInterface::closeTimestep().
-    virtual void closeTimestep(AdaptInfo& adaptInfo);
+    /// Implementation of \ref ProblemTimeInterface::closeTimestep().
+    virtual void closeTimestep(AdaptInfo& adaptInfo) override;
 
     /// Returns \ref problemStat.
     ProblemStatSeq& getStatProblem()
@@ -170,7 +176,7 @@ namespace AMDiS
       return oldSolution->getDOFVector(i);
     }
 
-    /// Used by \ref problemInitial
+    /// Implementation of \ref ProblemTimeInterface::transferInitialSolution().
     virtual void transferInitialSolution(AdaptInfo& adaptInfo);
 
   protected:
@@ -178,12 +184,12 @@ namespace AMDiS
     ProblemStatSeq& problemStat;
 
     /// Solution of the last timestep.
-    SystemVector* oldSolution;
+    SystemVector* oldSolution = NULL;
 
     /// In parallel computations, we want to print the overall computational time
     /// that is used for one timestep.
 #ifdef HAVE_PARALLEL_DOMAIN_AMDIS
-    double lastTimepoint;
+    double lastTimepoint = 0.0;
 #endif
   };
 

@@ -10,8 +10,8 @@ namespace AMDiS
 
   void RobinBC::fillBoundaryCondition(DOFVectorBase<double>* vector,
                                       ElInfo* elInfo,
-                                      const DegreeOfFreedom* dofIndices,
-                                      const BoundaryType* localBound,
+                                      DegreeOfFreedom const* dofIndices,
+                                      BoundaryType const* localBound,
                                       int nBasFcts)
   {
     FUNCNAME_DBG("RobinBC::fillBoundaryCondition()");
@@ -30,8 +30,8 @@ namespace AMDiS
 
   void RobinBC::fillBoundaryCondition(DOFMatrix* matrix,
                                       ElInfo* elInfo,
-                                      const DegreeOfFreedom* dofIndices,
-                                      const BoundaryType* localBound,
+                                      DegreeOfFreedom const* dofIndices,
+                                      BoundaryType const* localBound,
                                       int nBasFcts)
   {
     if (robinOperators)
@@ -47,7 +47,7 @@ namespace AMDiS
 
   double RobinBC::boundResidual(ElInfo* elInfo,
                                 DOFMatrix* matrix,
-                                const DOFVectorBase<double>* dv)
+                                DOFVectorBase<double> const* dv)
   {
     FUNCNAME("RobinBC::fillBoundaryCondition()");
     TEST_EXIT(matrix->getRowFeSpace() == rowFeSpace)("invalid row fe space\n");
@@ -89,16 +89,13 @@ namespace AMDiS
     {
       elInfo->getNormal(face, normal);
 
-      Quadrature* quadrature = neumannQuad ?
-                               (*neumannOperators)[face]->getAssembler()->
-                               getZeroOrderAssembler()->getQuadrature() :
-                               (*robinOperators)[face]->getAssembler()->
-                               getZeroOrderAssembler()->getQuadrature();
+      Quadrature* quadrature = neumannQuad 
+	? (*neumannOperators)[face]->getAssembler()->getZeroOrderAssembler()->getQuadrature() 
+	: (*robinOperators)[face]->getAssembler()->getZeroOrderAssembler()->getQuadrature();
 
       if (elInfo->getBoundary(face) == boundaryType)
       {
-        (*neumannOperators)[face]->getAssembler()->
-        getZeroOrderAssembler()->initElement(elInfo);
+        (*neumannOperators)[face]->getAssembler()->getZeroOrderAssembler()->initElement(elInfo);
 
         int nPoints = quadrature->getNumPoints();
         DenseVector<double> uhAtQp(nPoints);

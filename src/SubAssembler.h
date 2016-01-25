@@ -39,6 +39,9 @@ namespace AMDiS
                  int order,
                  bool optimized,
                  FirstOrderType type = GRD_PHI);
+    
+    /// Destructor.
+    ~SubAssembler() {}
 
     /// Calculates the element matrix for elInfo and adds it to mat. Memory for
     /// mat must be provided by the caller.

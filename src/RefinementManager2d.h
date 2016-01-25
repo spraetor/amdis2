@@ -12,9 +12,7 @@ namespace AMDiS
   {
   public:
     /// Calls base class constructor.
-    RefinementManager2d()
-      : RefinementManager()
-    {}
+    RefinementManager2d() = default;
 
   protected:
     /// Used by \ref setNewCoords

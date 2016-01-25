@@ -63,6 +63,13 @@ namespace AMDiS
       addZOTImpl(toTerm(std::forward<C>(c)));
       return *this;
     }
+    
+    template <class C>
+    Operator& addZOT(C&& c)
+    {
+      return addZeroOrderTerm(std::forward<C>(c));
+    }
+    
 
     /// Adds a FirstOrderTerm to the Operator: < 1 * b * u, v >
     template <class B>
@@ -72,6 +79,12 @@ namespace AMDiS
       using Tag = typename traits::category<ValueType>::tag;
       addFOTImpl(Tag(), toTerm(std::forward<B>(b)), type, i);
       return *this;
+    }
+    
+    template <class B>
+    Operator& addFOT(B&& b, FirstOrderType type = GRD_PHI, int i = -1)
+    {
+      return addFirstOrderTerm(std::forward<B>(b), type, i);
     }
 
     /// Adds a SecondOrderTerm to the Operator
@@ -85,6 +98,13 @@ namespace AMDiS
             bool_<true>, bool_<symmetric>>;
       addSOTImpl(Tag(), toTerm(std::forward<A>(a)), i, j, Sym::value);
       return *this;
+    }
+    
+    template <class A, bool symmetric = false>
+    Operator& addSOT(A&& a, int i = -1, int j = -1,
+		     bool_<symmetric> s = bool_<symmetric>())
+    {
+      return addSecondOrderTerm(std::forward<A>(a), i, j, s);
     }
 
     /// Calculates the element matrix for this ElInfo and adds it multiplied by

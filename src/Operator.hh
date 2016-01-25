@@ -6,7 +6,7 @@ namespace AMDiS
   void Operator::addZOTImpl(C&& c)
   {
     using C_ = Decay_t<C>;
-    GenericZeroOrderTerm<C_>* term = new GenericZeroOrderTerm<C_>(std::forward<C>(c));
+    OperatorTerm* term = new GenericZeroOrderTerm<C_>(std::forward<C>(c));
     zeroOrder.push_back(term);
     term->setOperator(this);
     c.insertFeSpaces(auxFeSpaces);
@@ -17,7 +17,7 @@ namespace AMDiS
   void Operator::addFOTImpl(tag::scalar, B&& b, FirstOrderType type, int i)
   {
     using B_ = Decay_t<B>;
-    GenericOperatorTerm<B_, 1>* term;
+    OperatorTerm* term;
     if (i >= 0)
       term = new GenericFirstOrderTerm_i<-1,B_>(std::forward<B>(b), i);
     else
@@ -37,7 +37,7 @@ namespace AMDiS
   void Operator::addFOTImpl(tag::vector, B&& b, FirstOrderType type, int i)
   {
     using B_ = Decay_t<B>;
-    GenericOperatorTerm<B_, 1>* term = new GenericFirstOrderTerm_b<B_>(std::forward<B>(b));
+    OperatorTerm* term = new GenericFirstOrderTerm_b<B_>(std::forward<B>(b));
 
     if (type == GRD_PSI)
       firstOrderGrdPsi.push_back(term);
@@ -53,7 +53,7 @@ namespace AMDiS
   void Operator::addSOTImpl(tag::scalar, A&& a, int i, int j, bool sym)
   {
     using A_ = Decay_t<A>;
-    GenericOperatorTerm<A_, 2>* term;
+    OperatorTerm* term;
     if (i >= 0 && j >= 0)
       term = new GenericSecondOrderTerm_ij<-1,-1,A_>(std::forward<A>(a), i, j);
     else
@@ -69,7 +69,7 @@ namespace AMDiS
   void Operator::addSOTImpl(tag::matrix, A&& a, int i, int j, bool sym)
   {
     using A_ = Decay_t<A>;
-    GenericOperatorTerm<A_, 2>* term;
+    OperatorTerm* term;
     if (sym)
       term = new GenericSecondOrderTerm_A<A_, true>(std::forward<A>(a));
     else

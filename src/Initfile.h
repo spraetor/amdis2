@@ -11,16 +11,19 @@
 #include <boost/tokenizer.hpp>
 #include <boost/property_tree/ptree.hpp>
 
-#include <boost/type_traits.hpp>
+// #include <boost/type_traits.hpp>
 
 // a parser for arithmetic expressions
-#include "muParser.h"
+#include <muParser.h>
+
 #include <traits/basic.hpp>
 #include <traits/scalar_types.hpp>
 #include <traits/concepts_base.hpp>
 #include <traits/meta_basic.hpp>
 
+#include "AMDiS_base.h"
 #include "Math.h"
+#include "Log.h"
 
 namespace AMDiS
 {
@@ -48,7 +51,20 @@ namespace AMDiS
         parser.DefineConst(_T("M_E"), m_e);
 
         parser.SetExpr(valStr);
-        value = numeric_cast<T>(parser.Eval());
+	try {
+	  value = numeric_cast<T>(parser.Eval());
+	} catch(...) {
+	  ERROR("Could not parse '%s' to '%s'\n", valStr.c_str(), typeid(T).name());
+	}
+      }
+    };
+
+    template <class T>
+    struct Convert<T, Requires_t<std::is_enum<T>> >
+    {
+      static void eval(std::string valStr, T& value)
+      {
+	EnumParser<T>()(valStr, value);
       }
     };
 

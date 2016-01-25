@@ -49,11 +49,8 @@ namespace AMDiS
 
   ProblemInstat::~ProblemInstat()
   {
-    if (oldSolution)
-    {
-      delete oldSolution;
-      oldSolution = NULL;
-    }
+    delete oldSolution;
+    oldSolution = NULL;
   }
 
 

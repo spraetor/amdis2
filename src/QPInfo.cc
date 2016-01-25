@@ -7,16 +7,7 @@ namespace AMDiS
   std::map<const Quadrature*, QPInfo*> QPInfo::qpInfos_;
 
   QPInfo::QPInfo(const Quadrature* quad)
-    : quadrature_(quad),
-      currentElInfo_(NULL),
-      coordsAtQPs_(NULL),
-      coordsNumPointsValid_(0),
-      elementNormalAtQPs_(NULL),
-      elementNormalConst_(NULL),
-      elementNormalNumPointsValid_(0),
-      grdLambdaAtQPs_(NULL),
-      grdLambdaConst_(NULL),
-      grdLambdaNumPointsValid_(0)
+    : quadrature_(quad)
   {
     numPoints_ = quadrature_->getNumPoints();
   }
@@ -49,9 +40,7 @@ namespace AMDiS
     if (grdLambdaConst_)
       delete [] grdLambdaConst_;
 
-    std::map<const DOFVector<double>*, VecQPInfo*>::iterator it, itEnd = vecQPInfos_.end();
-
-    for (it = vecQPInfos_.begin(); it != itEnd; ++it)
+    for (auto it = vecQPInfos_.begin(); it != vecQPInfos_.end(); ++it)
     {
       delete it->second;
     }
@@ -353,14 +342,9 @@ namespace AMDiS
 
   void QPInfo::clearAllQPInfos()
   {
-    std::map<const Quadrature*, QPInfo*>::iterator
-    it, itEnd = qpInfos_.end();
-
-    for (it = qpInfos_.begin(); it != itEnd; ++it)
-    {
-      delete it->second;
-      qpInfos_.erase(it);
-    }
+    for (auto qpInfo : qpInfos_)
+      delete qpInfo.second;
+    qpInfos_.clear();
   }
 
 } // end namespace AMDiS

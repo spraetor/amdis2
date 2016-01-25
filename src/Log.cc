@@ -8,6 +8,11 @@
 
 #include "Log.h"
 #include "AMDiS_base.h"
+#ifdef _MSC_VER
+#include <io.h>			// _access
+#else
+#include <unistd.h>
+#endif
 
 #ifdef HAVE_PARALLEL_PETSC
 #include "petsc.h"		// PetscError

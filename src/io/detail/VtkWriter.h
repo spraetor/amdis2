@@ -31,8 +31,9 @@
 #include <boost/archive/iterators/base64_from_binary.hpp>
 #include <boost/archive/iterators/transform_width.hpp>
 
-#include "AdaptInfo.h"
-#include "io/DataCollector.h"
+#include <AdaptInfo.h>
+#include <io/DataCollector.h>
+#include <utility/string.hpp>
 
 #define AMDIS_ZLIB_BLOCK_SIZE 32768
 
@@ -61,7 +62,7 @@ namespace AMDiS
     inline void convert(const std::string valStr, ::AMDiS::io::VtkWriter::Vtuformat& value)
     {
       using namespace ::AMDiS::io::VtkWriter;
-      std::string swapStr = boost::to_upper_copy(valStr);
+      std::string swapStr = to_upper(valStr);
 
       value = static_cast<Vtuformat>(ASCII);
       if (swapStr == "ASCII")

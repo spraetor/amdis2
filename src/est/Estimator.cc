@@ -32,9 +32,7 @@ namespace AMDiS
     : name(name_),
       row(r)
   {
-    int norm_(norm);
-    Parameters::get(name + "->error norm", norm_);
-    norm = (Norm)norm_;
+    Parameters::get(name + "->error norm", norm);
   }
 
 

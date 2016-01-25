@@ -30,9 +30,6 @@ namespace AMDiS
         FirstOrderType type,
         bool optimized);
 
-    /// Destructor.
-    virtual ~FirstOrderAssembler() {}
-
   protected:
     /// Constructor.
     FirstOrderAssembler(Operator* op,

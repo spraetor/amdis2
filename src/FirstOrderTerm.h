@@ -23,9 +23,6 @@ namespace AMDiS
       : OperatorTerm(deg)
     {}
 
-    /// Destructor.
-    virtual ~FirstOrderTerm() {}
-
     /// Evaluation of \f$ \Lambda b \f$.
     void getLb(ElInfo const* elInfo,
                std::vector<DenseVector<double>>& result) const
@@ -70,11 +67,16 @@ namespace AMDiS
 
   /// FirstOrder OperatorTerm for expressions: < 1 * expr() * grad(u), v >
   template <class Term>
-  struct GenericFirstOrderTerm_1 : public GenericOperatorTerm<Term, 1>
+  class GenericFirstOrderTerm_1 : public GenericOperatorTerm<Term, 1>
   {
-    template <class Term_>
+    using Super = GenericOperatorTerm<Term, 1>;
+
+  public:
+    /// Constructor.
+    template <class Term_, 
+	      class = Requires_t< concepts::Compatible<Term, Term_> >>
     GenericFirstOrderTerm_1(Term_&& term_)
-      : GenericOperatorTerm<Term, 1>(std::forward<Term_>(term_))
+      : Super(std::forward<Term_>(term_))
     { }
 
   private:
@@ -86,18 +88,24 @@ namespace AMDiS
 
   /// FirstOrder OperatorTerm for expressions: < e_i * expr() * grad(u), v >
   template <int I, class Term>
-  struct GenericFirstOrderTerm_i : public GenericOperatorTerm<Term, 1>
+  class GenericFirstOrderTerm_i : public GenericOperatorTerm<Term, 1>
   {
-    template <class Term_>
+    using Super = GenericOperatorTerm<Term, 1>;
+
+  public:
+    /// Constructor.
+    template <class Term_, 
+	      class = Requires_t< concepts::Compatible<Term, Term_> >>
     GenericFirstOrderTerm_i(Term_&& term_)
-      : GenericOperatorTerm<Term, 1>(std::forward<Term_>(term_))
+      : Super(std::forward<Term_>(term_))
     {
       this->FirstOrderTerm::bOne = I;
     }
 
-    template <class Term_>
+    template <class Term_, class = 
+      Requires_t< concepts::Compatible<Term, Term_> >>
     GenericFirstOrderTerm_i(Term_&& term_, int I0)
-      : GenericOperatorTerm<Term, 1>(std::forward<Term_>(term_))
+      : Super(std::forward<Term_>(term_))
     {
       this->FirstOrderTerm::bOne = I0;
       TEST_EXIT_DBG( I < 0 && I0 >= 0 )
@@ -113,11 +121,16 @@ namespace AMDiS
 
   /// FirstOrder OperatorTerm for expressions: < Term() * grad(u), v >
   template <class Term>
-  struct GenericFirstOrderTerm_b : public GenericOperatorTerm<Term, 1>
+  class GenericFirstOrderTerm_b : public GenericOperatorTerm<Term, 1>
   {
-    template <class Term_>
+    using Super = GenericOperatorTerm<Term, 1>;
+
+  public:
+    /// Constructor.
+    template <class Term_, 
+	      class = Requires_t< concepts::Compatible<Term, Term_> >>
     GenericFirstOrderTerm_b(Term_&& term_)
-      : GenericOperatorTerm<Term, 1>(std::forward<Term_>(term_))
+      : Super(std::forward<Term_>(term_))
     { }
 
   private:

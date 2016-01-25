@@ -20,7 +20,7 @@ namespace AMDiS
   }
 
 
-  void ScalableQuadrature::scaleQuadrature(const SubElInfo& subElInfo)
+  void ScalableQuadrature::scaleQuadrature(SubElInfo const& subElInfo)
   {
     //******************************************************************************
     // Manipulates the quadrature points for the assemblage of a subelement.

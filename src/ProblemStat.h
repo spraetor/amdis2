@@ -45,7 +45,7 @@ namespace AMDiS
      *   PROB->name[i]:                \ref componentNames[i] i=0...nComponents
      *   debug->write asm info:        \ref writeAsmInfo
      **/
-    ProblemStatSeq(std::string name);
+    explicit ProblemStatSeq(std::string name);
 
     /// Destructor
     virtual ~ProblemStatSeq();
@@ -505,10 +505,10 @@ namespace AMDiS
     std::string name;
 
     /// Number of problem components
-    int nComponents;
+    int nComponents = -1;
 
     /// Number of additional components
-    int nAddComponents;
+    int nAddComponents = 0;
 
     /// Stores the names for all components. Is used for naming the solution
     /// vectors, \ref solution.
@@ -517,7 +517,7 @@ namespace AMDiS
     /// Number of problem meshes. If all components are defined on the same mesh,
     /// this number is 1. Otherwise, this variable is the number of different meshes
     /// within the problem.
-    int nMeshes;
+    int nMeshes = 0;
 
     /// FE spaces of this problem.
     std::vector<FiniteElemSpace const*> feSpaces;
@@ -534,7 +534,7 @@ namespace AMDiS
     /// Stores information about which meshes must be traversed to assemble the
     /// specific components. I.e., it was implemented to make use of different
     /// meshes for different components.
-    ComponentTraverseInfo traverseInfo;
+    ComponentTraverseInfo traverseInfo = 0;
 
     /// Responsible for element marking.
     std::vector<Marker*> marker;
@@ -543,16 +543,16 @@ namespace AMDiS
     std::vector<Estimator*> estimator;
 
     /// Linear solver of this problem. Used in \ref solve().
-    LinearSolverInterface* solver;
+    LinearSolverInterface* solver = NULL;
 
     /// System vector  storing the calculated solution of the problem.
-    SystemVector* solution;
+    SystemVector* solution = NULL;
 
     /// System vector for the right hand side
-    SystemVector* rhs;
+    SystemVector* rhs = NULL;
 
     /// System matrix
-    Matrix<DOFMatrix*>* systemMatrix;
+    Matrix<DOFMatrix*>* systemMatrix = NULL;
 
     /// Composed system matrix
     SolverMatrix<Matrix<DOFMatrix*>> solverMatrix;
@@ -576,37 +576,34 @@ namespace AMDiS
     /// All actions of mesh refinement are performed by refinementManager.
     /// If new refinement algorithms should be realized, one has to override
     /// RefinementManager and give one instance of it to AdaptStationary.
-    RefinementManager* refinementManager;
+    RefinementManager* refinementManager = NULL;
 
     /// All actions of mesh coarsening are performed by coarseningManager.
     /// If new coarsening algorithms should be realized, one has to override
     /// CoarseningManager and give one instance of it to AdaptStationary.
-    CoarseningManager* coarseningManager;
+    CoarseningManager* coarseningManager = NULL;
 
     /// Info level.
-    int info;
+    int info = 10;
 
     /// If at least on boundary condition is set, this variable is true. It is
     /// used to ensure that no operators are added after boundary condition were
     /// set. If this would happen, boundary conditions could set wrong on off
     /// diagonal matrices.
-    bool boundaryConditionSet;
+    bool boundaryConditionSet = false;
 
     /// If true, AMDiS prints information about the assembling procedure to
     /// the screen.
-    bool writeAsmInfo;
+    bool writeAsmInfo = false;
 
     std::map<Operator*, std::vector<OperatorPos>> operators;
 
     /// time needed to solve the linear system
-    double solutionTime;
+    double solutionTime = 0.0;
 
     /// time needed to assemble the linear system
-    double buildTime;
-
-    //     template <class> friend class detail::CouplingProblemStat;
+    double buildTime = 0.0;
   };
-
 
   namespace detail
   {
@@ -617,7 +614,7 @@ namespace AMDiS
       using ProblemStatType::getName;
 
       /// Constructor
-      ProblemStat(std::string nameStr)
+      explicit ProblemStat(std::string nameStr)
         : ProblemStatType(nameStr),
           StandardProblemIteration(dynamic_cast<ProblemStatBase&>(*this))
       {}

@@ -201,15 +201,16 @@ namespace AMDiS
                                               ps->getDegree() +
                                               ph->getDegree() - 2);
 
-    compareQPsiPhi<Q11PsiPhi> comp(ps,ph,quadrat);
+    auto comp = [ps, ph, quadrat](Q11PsiPhi* q)
+    {
+      return (q->psi == ps) && (q->phi == ph) && (q->quadrature == quadrat);
+    };
 
     //***************************************************************************
     //  look for an existing entry in the list                                  *
     //***************************************************************************
 
-    list = find_if(preList.begin(),
-                   preList.end(),
-                   comp);
+    list = find_if(preList.begin(), preList.end(), comp);
 
     if (list==preList.end())
     {
@@ -376,7 +377,10 @@ namespace AMDiS
                                       ps->getDegree() +
                                       ph->getDegree() - 1);
 
-    compareQPsiPhi<Q10PsiPhi> comp(ps,ph,quadrat);
+    auto comp = [ps, ph, quadrat](Q10PsiPhi* q)
+    {
+      return (q->psi == ps) && (q->phi == ph) && (q->quadrature == quadrat);
+    };
 
     /****************************************************************************/
     /*  look for an existing entry in the list                                  */
@@ -550,7 +554,10 @@ namespace AMDiS
                               ps->getDegree() +
                               ph->getDegree() - 1);
 
-    compareQPsiPhi<Q01PsiPhi> comp(ps,ph,quadrat);
+    auto comp = [ps, ph, quadrat](Q01PsiPhi* q)
+    {
+      return (q->psi == ps) && (q->phi == ph) && (q->quadrature == quadrat);
+    };
 
     /****************************************************************************/
     /*  look for an existing entry in the list                                  */
@@ -645,9 +652,9 @@ namespace AMDiS
   }
 
 
-  Q00PsiPhi* Q00PsiPhi::provideQ00PsiPhi(const BasisFunction* ps,
-                                         const BasisFunction* ph,
-                                         const Quadrature*    quadrat)
+  Q00PsiPhi const* Q00PsiPhi::provideQ00PsiPhi(const BasisFunction* ps,
+					       const BasisFunction* ph,
+					       const Quadrature*    quadrat)
   {
     std::list<Q00PsiPhi*>::iterator list;
 
@@ -660,7 +667,10 @@ namespace AMDiS
       quadrat = Quadrature::provideQuadrature(ps->getDim(),
                                               ps->getDegree()+ph->getDegree());
 
-    compareQPsiPhi<Q00PsiPhi> comp(ps,ph,quadrat);
+    auto comp = [ps, ph, quadrat](Q00PsiPhi* q)
+    {
+      return (q->psi == ps) && (q->phi == ph) && (q->quadrature == quadrat);
+    };
 
     /****************************************************************************/
     /*  look for an existing entry in the list                                  */
@@ -731,7 +741,10 @@ namespace AMDiS
     if (!quadrat)  quadrat = Quadrature::provideQuadrature(ps->getDim(),
                                2*ps->getDegree());
 
-    compareQPsi<Q0Psi> comp(ps, quadrat);
+    auto comp = [ps, quadrat](Q0Psi* q)
+    {
+      return (q->psi == ps) && (q->quadrature == quadrat);
+    };
 
     /****************************************************************************/
     /*  look for an existing entry in the list                                  */
@@ -867,17 +880,18 @@ namespace AMDiS
       quadrat = Quadrature::provideQuadrature(ps->getDim(),
                                               2 * ps->getDegree() - 1);
 
-    compareQPsi<Q1Psi> comp(ps, quadrat);
+    auto comp = [ps, quadrat](Q1Psi* q)
+    {
+      return (q->psi == ps) && (q->quadrature == quadrat);
+    };
 
     //***************************************************************************
     //  look for an existing entry in the list                                  *
     //***************************************************************************
 
-    list = find_if(preList.begin(),
-                   preList.end(),
-                   comp);
+    list = find_if(preList.begin(), preList.end(), comp);
 
-    if (list==preList.end())
+    if (list == preList.end())
     {
       Q1Psi* newQ1Psi = new Q1Psi(ps, quadrat);
       preList.push_back(newQ1Psi);

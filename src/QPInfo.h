@@ -68,16 +68,8 @@ namespace AMDiS
 
   protected:
     /// Structure which stores infos about one DOFVector.
-    class VecQPInfo
+    struct VecQPInfo
     {
-    public:
-      /// Constructor.
-      VecQPInfo()
-        : valNumPointsValid_(0),
-          grdNumPointsValid_(0),
-          D2NumPointsValid_(0)
-      {}
-
       /// Values at quadrature points.
       DenseVector<double> valAtQPs;
 
@@ -88,13 +80,13 @@ namespace AMDiS
       DenseVector<WorldMatrix<double>> D2AtQPs_;
 
       /// valid flag for values
-      int valNumPointsValid_;
+      int valNumPointsValid_ = 0;
 
       /// valid flag for gradients
-      int grdNumPointsValid_;
+      int grdNumPointsValid_ = 0;
 
       /// valid flag for D2
-      bool D2NumPointsValid_;
+      bool D2NumPointsValid_ = 0;
     };
 
     /// Quadrature of this QPInfo
@@ -104,34 +96,34 @@ namespace AMDiS
     int numPoints_;
 
     /// ElInfo of the current element
-    const ElInfo* currentElInfo_;
+    ElInfo const* currentElInfo_ = NULL;
 
     /// Coords at quadrature points
-    WorldVector<double>* coordsAtQPs_;
+    WorldVector<double>* coordsAtQPs_ = NULL;
 
     /// Valid flag for coords
-    int coordsNumPointsValid_;
+    int coordsNumPointsValid_ = 0;
 
     /// Map of all vector infos
     std::map<const DOFVector<double>*, VecQPInfo*> vecQPInfos_;
 
     /// element normal at quadrature points (array of pointers)
-    WorldVector<double>** elementNormalAtQPs_;
+    WorldVector<double>** elementNormalAtQPs_ = NULL;
 
     /// for constant values at all QPs (all entries point to same memory)
-    WorldVector<double>** elementNormalConst_;
+    WorldVector<double>** elementNormalConst_ = NULL;
 
     /// valid flag for element normals
-    int elementNormalNumPointsValid_;
+    int elementNormalNumPointsValid_ = 0;
 
     /// gradient of barycentric coordinates at QPs (array of pointers)
-    DimVec<WorldVector<double>>** grdLambdaAtQPs_;
+    DimVec<WorldVector<double>>** grdLambdaAtQPs_ = NULL;
 
     /// for constant values at all QPs (all entries point to same memory)
-    DimVec<WorldVector<double>>** grdLambdaConst_;
+    DimVec<WorldVector<double>>** grdLambdaConst_ = NULL;
 
     /// number of valid points of grdLambdaAtQPs_
-    int grdLambdaNumPointsValid_;
+    int grdLambdaNumPointsValid_ = 0;
 
     /// Static map of all QPInfos. Used by \ref provideQPInfo().
     static std::map<const Quadrature*, QPInfo*> qpInfos_;

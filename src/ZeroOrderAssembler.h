@@ -26,9 +26,9 @@ namespace AMDiS
      * object will be returned.
      */
     static ZeroOrderAssembler* getSubAssembler(Operator* op,
-        Assembler* assembler,
-        Quadrature* quadrat,
-        bool optimized);
+					       Assembler* assembler,
+					       Quadrature* quadrat,
+					       bool optimized);
 
   protected:
     /// Constructor.

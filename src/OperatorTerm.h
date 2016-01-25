@@ -161,8 +161,8 @@ namespace AMDiS
 
     /// constructor
     /// adds all feSpaces provided by the expression term to auxFeSpaces liste
-    template <class Term_, class = 
-      Requires_t< concepts::Compatible<Term, Term_> >>
+    template <class Term_, 
+	      class = Requires_t< concepts::Compatible<Term, Term_> >>
     GenericOperatorTerm(Term_&& term_)
       : Super(term_.getDegree()),
         term{term_}
@@ -212,8 +212,8 @@ namespace AMDiS
     using Super = GenericOperatorTerm<Term, -2>;
     
   public:
-    template <class Term_, class = 
-      Requires_t< concepts::Compatible<Term, Term_> >>
+    template <class Term_, 
+	      class = Requires_t< concepts::Compatible<Term, Term_> >>
     GenericOperatorTerm(Term_&& term_)
       : Super(std::forward<Term_>(term_)) {}
 
