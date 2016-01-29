@@ -1,0 +1,4 @@
+associations: 1
+
+mode  bc  el1 - local vertices <->  el2 - local vertices 
+1     -1   0         0               1         1

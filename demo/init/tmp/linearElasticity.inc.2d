@@ -1,0 +1,40 @@
+% ============ BASIC PARAMETER - NS =================================
+elasticity->mu: 1.0
+elasticity->lambda: 1.0
+elasticity->rho: 1.0
+%elasticity->force: [0.0, -9.81]		% gravitational force [m/s^2]
+
+% =========== OUTPUT ==============================================
+elasticity->displacement->output->filename: ${output_folder}/displacement${output_postfix}_
+
+% ============= PROBLEM-SPACES ==================================
+elasticity->space->components: 2*${dimension of world}
+
+elasticity->space->polynomial degree[0]: ${polynomial-degree}
+elasticity->space->polynomial degree[1]: ${polynomial-degree}
+elasticity->space->polynomial degree[2]: ${polynomial-degree}
+elasticity->space->polynomial degree[3]: ${polynomial-degree}
+elasticity->space->polynomial degree[4]: ${polynomial-degree}
+elasticity->space->polynomial degree[5]: ${polynomial-degree}
+
+elasticity->space->dim: ${dimension of world}
+elasticity->space->mesh: ${mesh_name}
+
+% ================== SOLVER ======================================
+elasticity->space->solver: umfpack
+elasticity->space->solver->symmetric strategy: 0
+elasticity->space->solver->ell:               3
+elasticity->space->solver->max iteration:     500
+elasticity->space->solver->tolerance:         10% 1.e-8
+elasticity->space->solver->info:              1
+elasticity->space->solver->left precon:       ilu
+
+% =================== OUTPUT =========================================
+elasticity->displacement->output->ParaView animation: 1
+elasticity->displacement->output->ParaView vector format: 1
+elasticity->displacement->output->write vector as 3d vector: 1
+elasticity->displacement->output->write every i-th timestep: 1
+elasticity->displacement->output->append index: 1
+elasticity->displacement->output->index length: 9
+elasticity->displacement->output->index decimals: 7
+

@@ -1,0 +1,89 @@
+dimension of world:                          2
+
+vecheatMesh->macro file name:                ./macro/macro.stand.2d
+vecheatMesh->global refinements:             5
+
+vecheat->space->polynomial degree[0]:        1
+vecheat->space->polynomial degree[1]:        1
+vecheat->space->dim:                         2
+vecheat->space->mesh:                        vecheatMesh
+
+vecheat->space->components:                  2
+
+vecheat->space->solver:                      bicgstab 
+vecheat->space->solver->max iteration:       1000
+vecheat->space->solver->tolerance:           1.e-10
+vecheat->space->solver->info:                2
+vecheat->space->solver->left precon:         diag
+vecheat->space->solver->right precon:        no
+
+vecheat->space->estimator[0]:                residual
+vecheat->space->estimator[0]->C0:            1.0
+vecheat->space->estimator[0]->C1:            1.0
+vecheat->space->estimator[0]->C3:            1.0
+
+vecheat->space->estimator[1]:                residual
+vecheat->space->estimator[1]->C0:            1.0
+vecheat->space->estimator[1]->C1:            1.0
+vecheat->space->estimator[1]->C3:            1.0
+
+vecheat->theta:                              1.0
+
+vecheat->adapt->refine bisections: 2
+vecheat->adapt->coarsen bisections: 2
+
+vecheat->adapt[0]->tolerance:                0.001
+vecheat->adapt[0]->tolerance:                0.001
+vecheat->adapt[0]->time tolerance:           0.1
+vecheat->adapt[1]->time tolerance:           0.1
+
+vecheat->adapt->timestep:                    0.01
+vecheat->adapt->start time:                  0.0
+vecheat->adapt->end time:                    1.0
+
+
+vecheat->adapt->strategy:                    1   % 0=explicit, 1=implicit
+vecheat->adapt->max iteration:               1
+
+vecheat->initial->marker[0]->strategy:       2    % 0=none, 1=GR, 2=MS, 3=ES, 4=GERS
+vecheat->initial->marker[1]->strategy:       2    % 0=none, 1=GR, 2=MS, 3=ES, 4=GERS
+
+vecheat->initial->adapt->max iteration:      10
+vecheat->initial->adapt->info:               8
+
+vecheat->space->marker[0]->strategy:         3    % 0=none, 1=GR, 2=MS, 3=ES, 4=GERS
+vecheat->space->marker[0]->ESTheta:          0.9
+vecheat->space->marker[0]->ESThetaC:         0.05
+vecheat->space->marker[0]->info:             8
+
+vecheat->space->marker[1]->strategy:         3    % 0=none, 1=GR, 2=MS, 3=ES, 4=GERS
+vecheat->space->marker[1]->ESTheta:          0.9
+vecheat->space->marker[1]->ESThetaC:         0.05
+vecheat->space->marker[1]->info:             8
+
+vecheat->space->output[0]->filename:            output/vecheat0.2d
+vecheat->space->output[0]->ParaView format:     1
+vecheat->space->output[0]->ParaView animation:  1
+vecheat->space->output[0]->append index:        1
+vecheat->space->output[0]->index length:        6
+vecheat->space->output[0]->index decimals:      3
+vecheat->space->output[0]->ARH format: 1
+vecheat->space->output[0]->AMDiS format: 1
+
+vecheat->space->output[1]->filename:            output/vecheat1.2d
+vecheat->space->output[1]->ParaView format:     1
+vecheat->space->output[1]->ParaView animation:  1
+vecheat->space->output[1]->append index:        1
+vecheat->space->output[1]->index length:        6
+vecheat->space->output[1]->index decimals:      3
+vecheat->space->output[1]->ARH format: 1
+vecheat->space->output[1]->AMDiS format: 1
+
+
+WAIT:                                        0
+
+
+
+
+
+

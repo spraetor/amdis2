@@ -1,0 +1,33 @@
+dimension of world:             3
+
+elliptMesh->macro file name:    ./macro/macro.stand.3d
+elliptMesh->global refinements: 1
+
+ellipt->mesh:                   elliptMesh
+ellipt->dim:                    3
+ellipt->polynomial degree[0]:   1
+ellipt->components:             1
+
+ellipt->solver:                 cg
+ellipt->solver->max iteration:  1000
+ellipt->solver->tolerance:      1.e-8
+ellipt->solver->info:           2
+ellipt->solver->left precon:    diag
+ellipt->solver->right precon:   no
+
+ellipt->estimator[0]:              residual
+ellipt->estimator[0]->error norm:  H1_NORM   % 1: H1_NORM, 2: L2_NORM
+ellipt->estimator[0]->C1:          0.01 % constant of jump residual
+
+ellipt->marker[0]->strategy:       2 % 0: no adaption 1: GR 2: MS 3: ES 4:GERS
+ellipt->marker[0]->MSGamma:        0.5
+
+ellipt->adapt[0]->tolerance:          1e-4
+ellipt->adapt[0]->refine bisections:  2
+
+ellipt->adapt->max iteration:         10
+
+ellipt->output->filename:        output/ellipt.3d
+ellipt->output->ParaView format: 1
+ellipt->output->ARH format: 1
+ellipt->output->AMDiS format: 1

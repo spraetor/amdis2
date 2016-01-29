@@ -1,0 +1,65 @@
+
+ns->space->mesh: ${mesh_name}
+
+% ============ USER_PARAMETERS - NS =================================
+ns->viscosity: 1
+ns->beta: 1
+ns->sigma: 0.072
+ns->beta: 1
+ns->exponent: 2
+ns->theta: 0.5
+%ns->force: [0.0, -9.81] % gravitational force
+
+ns->viscosity1: 1
+ns->viscosity2: ${ns->viscosity1}/1000
+
+ns->force dirichlet bc: 0
+ns->poisson problem pertubation: 0 % 1..applySingularPertubation, 2..applySingularDBC, 0..nothing
+ns->simple algorithm: 1
+ns->calculate pressure: 0
+ns->initial velocity: 3
+ns->initial velocity value: 0.1
+ns->laplace operator: 1  % 0... div(nu*grad(u)), 1... div(0.5*nu*(grad(u)+grad(u)^T)) [sehr langsam]
+ns->non-linear term: 2 % 0... u^old*grad(u_i^old), 1... u'*grad(u_i^old), 2... u^old*grad(u'_i)
+
+% =========== OUTPUT ==============================================
+
+ns->velocity->output->filename: ${output_folder}/velocity${output_postfix}_
+ns->space->output[2]->filename: ${output_folder}/pressure${output_postfix}_
+
+% ============= PROBLEM-SPACES ==================================
+ns->space->components: 3
+
+ns->space->polynomial degree[0]: ${polynomial-degree}+1
+ns->space->polynomial degree[1]: ${polynomial-degree}+1
+ns->space->polynomial degree[2]: ${polynomial-degree}
+
+ns->space->dim: 2
+
+% ================== SOLVER ======================================
+ns->space->solver: umfpack
+ns->space->solver->symmetric strategy: 0
+ns->space->solver->ell:               3
+ns->space->solver->max iteration:     500
+ns->space->solver->restart:           10  %  only used for GMRES
+ns->space->solver->tolerance:         10 %1.e-8
+ns->space->solver->info:              1
+ns->space->solver->left precon:       ilu
+
+% =================== OUTPUT =========================================
+ns->velocity->output->ParaView animation: 1
+ns->velocity->output->ParaView vector format: 1
+ns->velocity->output->write vector as 3d vector: 1
+ns->velocity->output->write every i-th timestep: 1
+%ns->velocity->output->compression:  gzip
+ns->velocity->output->append index: 1
+ns->velocity->output->index length: 9
+ns->velocity->output->index decimals: 7
+
+ns->space->output[2]->ParaView animation: 0
+ns->space->output[2]->ParaView format: 0
+ns->space->output[2]->write every i-th timestep: 1
+%ns->space->output[2]->compression:  gzip
+ns->space->output[2]->append index: 1
+ns->space->output[2]->index length: 9
+ns->space->output[2]->index decimals: 7

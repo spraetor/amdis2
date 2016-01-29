@@ -1,0 +1,111 @@
+${ns}->predictor->mesh: ${mesh_name}
+${ns}->pressure->mesh:  ${mesh_name}
+${ns}->corrector->mesh: ${mesh_name}
+
+% ============ USER_PARAMETERS - NS =================================
+${ns}->viscosity: 1
+${ns}->beta: 1
+${ns}->sigma: 0.072
+${ns}->exponent: 2
+%${ns}->force: [0.0, -9.81] % gravitational force
+
+${ns}->viscosity1: 1
+${ns}->viscosity2: ${${ns}->viscosity1}/1000
+
+${ns}->force dirichlet bc: 0
+${ns}->poisson problem pertubation: 0 % 1..applySingularPertubation, 2..applySingularDBC, 0..nothing
+${ns}->simple algorithm: 1
+${ns}->calculate pressure: 0
+${ns}->initial velocity: 3
+${ns}->initial velocity value: 0.1
+${ns}->laplace operator: 1  % 0... div(nu*grad(u)), 1... div(0.5*nu*(grad(u)+grad(u)^T)) [sehr langsam]
+${ns}->non-linear term: 2 % 0... u^old*grad(u_i^old), 1... u'*grad(u_i^old), 2... u^old*grad(u'_i)
+
+% =========== OUTPUT ==============================================
+
+${ns}->predictor->output->filename: ${output_folder}/velocity/predictor${output_postfix}_
+${ns}->pressure->output->filename: ${output_folder}/velocity/pressure${output_postfix}_
+${ns}->corrector->output->filename: ${output_folder}/velocity/velocity${output_postfix}_
+
+% ============= PROBLEM-SPACES ==================================
+${ns}->predictor->components: 2
+${ns}->pressure->components: 1
+${ns}->corrector->components: 2
+
+${ns}->predictor->polynomial degree[0]: ${polynomial-degree}
+${ns}->predictor->polynomial degree[1]: ${polynomial-degree}
+${ns}->pressure->polynomial degree[0]: ${polynomial-degree}
+${ns}->corrector->polynomial degree[0]: ${polynomial-degree}
+${ns}->corrector->polynomial degree[1]: ${polynomial-degree}
+
+${ns}->predictor->dim: 2
+${ns}->pressure->dim: 2
+${ns}->corrector->dim: 2
+
+${ns}->pressure->name: pressure
+${ns}->corrector->name: velocity
+
+% ================== SOLVER ======================================
+${ns}->predictor->solver: umfpack
+${ns}->predictor->solver->symmetric strategy: 0
+${ns}->predictor->solver->ell:               3
+${ns}->predictor->solver->max iteration:     500
+${ns}->predictor->solver->restart:           10  %  only used for GMRES
+${ns}->predictor->solver->tolerance:         1.e-8
+${ns}->predictor->solver->info:              1
+${ns}->predictor->solver->left precon:       ilu
+
+${ns}->predictor->petsc->ksp_type: preonly
+${ns}->predictor->petsc->pc_type: lu
+${ns}->predictor->petsc->pc_factor_mat_solver_package: mumps
+
+${ns}->pressure->solver: umfpack
+${ns}->pressure->solver->symmetric strategy: 0
+${ns}->pressure->solver->ell:               3
+${ns}->pressure->solver->max iteration:     500
+${ns}->pressure->solver->tolerance:         1.e-8
+${ns}->pressure->solver->info:              1
+${ns}->pressure->solver->left precon:       ilu
+
+${ns}->pressure->petsc->ksp_type: preonly
+${ns}->pressure->petsc->pc_type: lu
+${ns}->pressure->petsc->pc_factor_mat_solver_package: mumps
+
+${ns}->corrector->solver: umfpack
+${ns}->corrector->solver->symmetric strategy: 0
+${ns}->corrector->solver->ell:               3
+${ns}->corrector->solver->max iteration:     500
+${ns}->corrector->solver->tolerance:         1.e-8
+${ns}->corrector->solver->info:              1
+${ns}->corrector->solver->left precon:       ilu
+
+${ns}->corrector->petsc->ksp_type: preonly
+${ns}->corrector->petsc->pc_type: lu
+${ns}->corrector->petsc->pc_factor_mat_solver_package: mumps
+
+% =================== OUTPUT =========================================
+${ns}->predictor->output->ParaView animation: 0
+${ns}->predictor->output->ParaView format: 0
+${ns}->predictor->output->write every i-th timestep: 1
+%${ns}->predictor->output->compression:  gzip
+${ns}->predictor->output->append index: 1
+${ns}->predictor->output->index length: 7
+${ns}->predictor->output->index decimals: 5
+
+${ns}->pressure->output->ParaView animation: 0
+${ns}->pressure->output->ParaView format: 0
+${ns}->pressure->output->write every i-th timestep: 1
+%${ns}->pressure->output->compression:  gzip
+${ns}->pressure->output->append index: 1
+${ns}->pressure->output->index length: 7
+${ns}->pressure->output->index decimals: 5
+
+${ns}->corrector->output->ParaView animation: 1
+${ns}->corrector->output->ParaView vector format: 1
+${ns}->corrector->output->write vector as 3d vector: 1
+${ns}->corrector->output->write every i-th timestep: 1
+%${ns}->corrector->output->compression:  gzip
+${ns}->corrector->output->append index: 1
+${ns}->corrector->output->index length: 7
+${ns}->corrector->output->index decimals: 5
+

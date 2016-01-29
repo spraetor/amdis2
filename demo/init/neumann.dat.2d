@@ -1,0 +1,32 @@
+dimension of world:             2
+
+neumannMesh->macro file name:    ./macro/neumann.macro.2d
+neumannMesh->global refinements: 0
+
+neumann->mesh:                   neumannMesh
+neumann->dim:                    2
+neumann->polynomial degree[0]:   1
+neumann->components:             1
+
+neumann->solver:                 cg
+neumann->solver->max iteration:  1000
+neumann->solver->tolerance:      1.e-8
+neumann->solver->left precon:    diag
+
+neumann->estimator[0]:              residual
+neumann->estimator[0]->error norm:  2   % 1: H1_NORM, 2: L2_NORM
+neumann->estimator[0]->C0:          1.0 % constant of element residual
+neumann->estimator[0]->C1:          1.0 % constant of jump residual
+
+neumann->marker[0]->strategy:       2 % 0: no adaption 1: GR 2: MS 3: ES 4:GERS
+neumann->marker[0]->MSGamma:        0.5
+
+neumann->adapt[0]->tolerance:          1e-2
+neumann->adapt[0]->refine bisections:  2
+
+neumann->adapt->max iteration:         100
+
+neumann->output->filename:        output/neumann.2d
+neumann->output->ParaView format: 1
+neumann->output->ARH format:  1
+neumann->output->AMDiS format: 1

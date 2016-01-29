@@ -1,0 +1,29 @@
+{
+  "dimension of world":             2,
+
+  "elliptMesh": {
+    "macro file name":    "./macro/macro.stand.2d",
+    "global refinements": 0
+  },
+
+  "ellipt": {
+    "mesh":                   "elliptMesh",
+    "dim":                    2,
+    "components":             1,
+    "polynomial degree[0]":   1,
+ 
+    "solver":                 "cg",
+    "solver" : {
+      "max iteration":  1000,
+      "tolerance":      1e-8,
+      "info":           10,
+      "left precon":    "diag"
+    },
+
+    "output": {
+      "filename":       "output/ellipt.2d",
+      "ParaView format": 1,
+      "ParaView mode": 1
+    }
+  }
+}
