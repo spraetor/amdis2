@@ -196,15 +196,15 @@ namespace AMDiS
      * added
      */
     // TODO: add template function and move virtual function to private section
-    virtual void l2ScpFctBas(Quadrature*,
-                             std::function<double(WorldVector<double>)> /*f*/,
-                             DOFVector<double>* /*fh*/)
+    virtual void l2ScpFctBas(Quadrature* /* quad */,
+                             std::function<double(WorldVector<double>)> /* f */,
+                             DOFVector<double>* /* fh */)
     {}
 
     /// WorldVector<double> valued l2ScpFctBas function
-    virtual void l2ScpFctBas(Quadrature*,
-                             std::function<WorldVector<double>(WorldVector<double>)> /*f*/,
-                             DOFVector<WorldVector<double>>* /*fh*/)
+    virtual void l2ScpFctBas(Quadrature* /* quad */,
+                             std::function<WorldVector<double>(WorldVector<double>)> /* f */,
+                             DOFVector<WorldVector<double>>* /* fh */)
     {}
 
 
@@ -233,15 +233,15 @@ namespace AMDiS
     {}
 
     /// Returns local dof indices of the element for the given fe space.
-    virtual void getLocalIndices(const Element* el,
-                                 const DOFAdmin* admin,
-                                 std::vector<DegreeOfFreedom>& indices) const
+    virtual void getLocalIndices(const Element* /* el */,
+                                 const DOFAdmin* /* admin */,
+                                 std::vector<DegreeOfFreedom>& /* indices */) const
     {}
 
     ///
-    virtual void getLocalDofPtrVec(const Element* el,
-                                   const DOFAdmin* admin,
-                                   std::vector<const DegreeOfFreedom*>& vec) const
+    virtual void getLocalDofPtrVec(const Element* /* el */,
+                                   const DOFAdmin* /* admin */,
+                                   std::vector<const DegreeOfFreedom*>& /* vec */) const
     {}
 
 

@@ -55,12 +55,12 @@ namespace AMDiS
         : ParallelSolver(name, true) {}
 
     protected:
-      /// Implementation of \ref LinearSolverInterface::solveLinearSystem()
-      virtual int solveLinearSystem(const SolverMatrix<Matrix<DOFMatrix*>>& A,
-                                    SystemVector& x,
-                                    SystemVector& b,
-                                    bool createMatrixData,
-                                    bool storeMatrixData);
+      /// Implementation of \ref LinearSolverInterface::solveSystemImpl()
+      virtual int solveSystemImpl(SolverMatrix<Matrix<DOFMatrix*>> const& A,
+				  SystemVector& x,
+				  SystemVector& b,
+				  bool createMatrixData,
+				  bool storeMatrixData) override;
 
       void addDofMatrix(const DOFMatrix* mat,
                         std::vector<int>& i_sparse,

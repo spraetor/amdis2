@@ -25,9 +25,9 @@ namespace AMDiS
   map<Mesh*, FixRefinementPatch::ConnectedEdges> FixRefinementPatch::connectedEdges;
 
   void RefinementManager3d::bisectTetrahedron(RCNeighbourList& refineList,
-      int index,
-      DegreeOfFreedom* dof[3],
-      DegreeOfFreedom* edge[2])
+					      int index,
+					      DegreeOfFreedom* dof[3],
+					      DegreeOfFreedom* edge[2])
   {
     Tetrahedron* el =
       dynamic_cast<Tetrahedron*>(const_cast<Element*>(refineList.getElement(index)));
@@ -153,7 +153,7 @@ namespace AMDiS
 
 
   void RefinementManager3d::fillPatchConnectivity(RCNeighbourList& refineList,
-      int index)
+						  int index)
   {
     FUNCNAME_DBG("RefinementManager3d::fillPatchConnectivity");
 
@@ -421,10 +421,10 @@ namespace AMDiS
 
 
   bool RefinementManager3d::getRefinePatch(ElInfo** elInfo,
-      DegreeOfFreedom* edge[2],
-      int direction,
-      RCNeighbourList& refineList,
-      int* n_neigh)
+					   DegreeOfFreedom* edge[2],
+					   int direction,
+					   RCNeighbourList& refineList,
+					   int* n_neigh)
   {
     FUNCNAME_DBG("RefinementManager3d::getRefinePatch()");
 

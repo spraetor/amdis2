@@ -29,14 +29,14 @@ namespace AMDiS
   template <class MatrixType, class VectorType>
   struct KrylovPreconditioner : public ITL_PreconditionerBase<MatrixType, VectorType>
   {
-    typedef ITL_PreconditionerBase<MatrixType, VectorType>  precon_base;
-    typedef KrylovPreconditioner<MatrixType, VectorType>    self;
+    using Self        = KrylovPreconditioner;
+    using precon_base = ITL_PreconditionerBase<MatrixType, VectorType>;
 
     struct Creator : public CreatorInterfaceName<precon_base>
     {
       virtual precon_base* create() override
       {
-        return new self(this->name);
+        return new Self(this->name);
       }
     };
 
@@ -77,14 +77,15 @@ namespace AMDiS
       runner = dynamic_cast<RunnerBase<MatrixType, VectorType>*>(solver->getRunner());
     }
 
+    /// Destructor.
     ~KrylovPreconditioner()
     {
       delete solver;
     }
 
     /// Implementation of \ref ITL_PreconditionerBase::init()
-    virtual void init(const SolverMatrix<Matrix<DOFMatrix*>>& A,
-                      const MatrixType& fullMatrix_) override
+    virtual void init(SolverMatrix<Matrix<DOFMatrix*>> const& A,
+                      MatrixType const& fullMatrix_) override
     {
       fullMatrix = &fullMatrix_;
       runner->init(A, fullMatrix_);
@@ -97,14 +98,14 @@ namespace AMDiS
     }
 
     /// Implementation of \ref ITL_PreconditionerBase::solve()
-    virtual void solve(const VectorType& b, VectorType& x) const override
+    virtual void solve(VectorType const& b, VectorType& x) const override
     {
       initVector(x);
       runner->solve(*fullMatrix, x, b);
     }
 
     /// Implementation of \ref ITL_PreconditionerBase::adjoint_solve()
-    virtual void adjoint_solve(const VectorType& b, VectorType& x) const override
+    virtual void adjoint_solve(VectorType const& b, VectorType& x) const override
     {
       initVector(x);
       runner->adjoint_solve(*fullMatrix, x, b);
@@ -113,7 +114,7 @@ namespace AMDiS
   protected: // methods
 
     template <class VectorT>
-    typename boost::enable_if<mtl::traits::is_distributed<VectorT>, void>::type
+      Requires_t<mtl::traits::is_distributed<VectorT>>
     initVector(VectorT& x) const
     {
 #ifdef HAVE_PARALLEL_MTL4
@@ -123,7 +124,7 @@ namespace AMDiS
     }
 
     template <class VectorT>
-    typename boost::disable_if<mtl::traits::is_distributed<VectorT>, void>::type
+      Requires_t<not_<mtl::traits::is_distributed<VectorT>>>
     initVector(VectorT& x) const
     {
       x.change_dim(num_cols(*fullMatrix));
@@ -131,7 +132,7 @@ namespace AMDiS
     }
 
   protected: // member variables
-    const MatrixType* fullMatrix;
+    MatrixType const* fullMatrix;
 
     LinearSolverInterface* solver;
     RunnerBase<MatrixType, VectorType>* runner;
@@ -139,9 +140,11 @@ namespace AMDiS
 
 
 #ifdef HAVE_PARALLEL_MTL4
-  typedef KrylovPreconditioner<MTLTypes::PMTLMatrix, MTLTypes::PMTLVector> KrylovPreconditionerParallel;
+  using KrylovPreconditionerParallel = KrylovPreconditioner<MTLTypes::PMTLMatrix, 
+							    MTLTypes::PMTLVector>;
 #endif
-  typedef KrylovPreconditioner<MTLTypes::MTLMatrix, MTLTypes::MTLVector> KrylovPreconditionerSeq;
+  using KrylovPreconditionerSeq = KrylovPreconditioner<MTLTypes::MTLMatrix, 
+						       MTLTypes::MTLVector>;
 
 
 } // end namespace AMDiS

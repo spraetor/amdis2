@@ -15,7 +15,7 @@ namespace AMDiS
   AdaptStationary::AdaptStationary(std::string name,
                                    ProblemIterationInterface& prob,
                                    AdaptInfo& adaptInfo)
-    : AdaptBase(name, &prob, &adaptInfo)
+    : AdaptBase(name, &prob, adaptInfo)
   {
     Parameters::get(name + "->info", info);
   }
@@ -28,18 +28,18 @@ namespace AMDiS
 #endif
 
     // initial iteration
-    if (adaptInfo->getSpaceIteration() == -1)
+    if (adaptInfo.getSpaceIteration() == -1)
     {
       problemIteration->beginIteration(adaptInfo);
       problemIteration->oneIteration(adaptInfo, NO_ADAPTION);
       problemIteration->endIteration(adaptInfo);
-      adaptInfo->incSpaceIteration();
+      adaptInfo.incSpaceIteration();
     }
 
     // adaption loop
-    while (!adaptInfo->spaceToleranceReached() &&
-           (adaptInfo->getSpaceIteration() < adaptInfo->getMaxSpaceIteration() ||
-            adaptInfo->getMaxSpaceIteration() < 0) )
+    while (!adaptInfo.spaceToleranceReached() &&
+           (adaptInfo.getSpaceIteration() < adaptInfo.getMaxSpaceIteration() ||
+            adaptInfo.getMaxSpaceIteration() < 0) )
     {
 
       problemIteration->beginIteration(adaptInfo);
@@ -53,7 +53,7 @@ namespace AMDiS
       if (isAdapted == 0)
         break;
 
-      adaptInfo->incSpaceIteration();
+      adaptInfo.incSpaceIteration();
     }
 
     return 0;

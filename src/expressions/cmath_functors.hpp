@@ -8,10 +8,38 @@
 #include <Math.h>
 #include <operations/functors.hpp>
 
+/// Macro that generates a unary functor.
+/**
+ *  \p NAME    Name of the class.
+ *  \p DEGREE  Expression in 'd0' that gives the polynomial degree, with
+ *             'd0' the degree of the argument passed to the functor.
+ *  \p FCT     Name of a unary c++-function that represents the functor.
+ */
+#define AMDIS_MAKE_UNARY_FUNCTOR( NAME, DEGREE, FCT )     \
+    template <class T>                                    \
+    struct NAME : FunctorBase                             \
+    {                                                     \
+      using result_type = T;                              \
+      constexpr int getDegree(int d0) const               \
+      {                                                   \
+        return DEGREE ;                                   \
+      }                                                   \
+      static constexpr result_type eval(T const& v)       \
+      {                                                   \
+        return FCT(v) ;                                   \
+      }                                                   \
+      constexpr result_type operator()(T const& v) const  \
+      {                                                   \
+        return eval(v);                                   \
+      }                                                   \
+    };
+
+
 namespace AMDiS
 {
   namespace functors
   {
+    /// Functor that represents the signum function
     template <class T>
     struct Signum : FunctorBase
     {
@@ -21,237 +49,37 @@ namespace AMDiS
         return 3*d0;
       }
 
-      constexpr static result_type eval(const T& v)
+      static constexpr result_type eval(T const& v)
       {
-        return (v > T(0) ? T(1) : T(-1));
+        return (v > T{0} ? T{1} : T{-1});
       }
-      constexpr result_type operator()(const T& v) const
-      {
-        return eval(v);
-      }
-    };
-
-
-    /// Expressions for ceiling a value
-    template <class T>
-    struct Ceil : FunctorBase
-    {
-      using result_type = T;
-      constexpr int getDegree(int d0) const
-      {
-        return d0;
-      }
-
-      constexpr static result_type eval(const T& v)
-      {
-        return std::ceil(v);
-      }
-      constexpr result_type operator()(const T& v) const
+      constexpr result_type operator()(T const& v) const
       {
         return eval(v);
       }
     };
+    
+    // generated unary functors using a macro...
+    
+    AMDIS_MAKE_UNARY_FUNCTOR( Ceil,    d0, std::ceil  )
+    AMDIS_MAKE_UNARY_FUNCTOR( Floor,   d0, std::floor )
+    AMDIS_MAKE_UNARY_FUNCTOR( Exp,   2*d0, std::exp   )
+    AMDIS_MAKE_UNARY_FUNCTOR( Log,   2*d0, std::log   )
+    AMDIS_MAKE_UNARY_FUNCTOR( Sin,   2*d0, std::sin   )
+    AMDIS_MAKE_UNARY_FUNCTOR( Cos,   2*d0, std::cos   )
+    AMDIS_MAKE_UNARY_FUNCTOR( Tan,   2*d0, std::tan   )
+    AMDIS_MAKE_UNARY_FUNCTOR( Asin,  2*d0, std::asin  )
+    AMDIS_MAKE_UNARY_FUNCTOR( Acos,  2*d0, std::acos  )
+    AMDIS_MAKE_UNARY_FUNCTOR( Atan,  2*d0, std::atan  )
+    AMDIS_MAKE_UNARY_FUNCTOR( Sinh,  2*d0, std::sinh  )
+    AMDIS_MAKE_UNARY_FUNCTOR( Cosh,  2*d0, std::cosh  )
+    AMDIS_MAKE_UNARY_FUNCTOR( Tanh,  2*d0, std::tanh  )
+    AMDIS_MAKE_UNARY_FUNCTOR( Asinh, 2*d0, std::asinh )
+    AMDIS_MAKE_UNARY_FUNCTOR( Acosh, 2*d0, std::acosh )
+    AMDIS_MAKE_UNARY_FUNCTOR( Atanh, 2*d0, std::atanh )
 
 
-    /// Expressions to round to a lower integer
-    template <class T>
-    struct Floor : FunctorBase
-    {
-      using result_type = T;
-      constexpr int getDegree(int d0) const
-      {
-        return d0;
-      }
-
-      constexpr static result_type eval(const T& v)
-      {
-        return std::floor(v);
-      }
-      constexpr result_type operator()(const T& v) const
-      {
-        return eval(v);
-      }
-    };
-
-
-    // -------------------------------------------------------------------------
-
-
-    /// Expressions for the exponential function
-    template <class T>
-    struct Exp : FunctorBase
-    {
-      using result_type = T;
-      constexpr int getDegree(int d0) const
-      {
-        return 2*d0;
-      }
-
-      constexpr static result_type eval(const T& v)
-      {
-        return std::exp(v);
-      }
-      constexpr result_type operator()(const T& v) const
-      {
-        return eval(v);
-      }
-    };
-
-
-    /// Expression for the logarithm
-    template <class T>
-    struct Log : FunctorBase
-    {
-      using result_type = T;
-      constexpr int getDegree(int d0) const
-      {
-        return 2*d0;
-      }
-
-      constexpr static result_type eval(const T& v)
-      {
-        return std::log(v);
-      }
-      constexpr result_type operator()(const T& v) const
-      {
-        return eval(v);
-      }
-    };
-
-
-    // -------------------------------------------------------------------------
-
-
-    /// sin(v)
-    template <class T>
-    struct Sin : FunctorBase
-    {
-      using result_type = T;
-      constexpr int getDegree(int d0) const
-      {
-        return 2*d0;
-      }
-
-      constexpr static result_type eval(const T& v)
-      {
-        return std::sin(v);
-      }
-      constexpr result_type operator()(const T& v) const
-      {
-        return eval(v);
-      }
-    };
-
-
-    /// cos(v)
-    template <class T>
-    struct Cos : FunctorBase
-    {
-      using result_type = T;
-      constexpr int getDegree(int d0) const
-      {
-        return 2*d0;
-      }
-
-      constexpr static result_type eval(const T& v)
-      {
-        return std::cos(v);
-      }
-      constexpr result_type operator()(const T& v) const
-      {
-        return eval(v);
-      }
-    };
-
-
-    /// tan(v)
-    template <class T>
-    struct Tan : FunctorBase
-    {
-      using result_type = T;
-      constexpr int getDegree(int d0) const
-      {
-        return 2*d0;
-      }
-
-      constexpr static result_type eval(const T& v)
-      {
-        return std::tan(v);
-      }
-      constexpr result_type operator()(const T& v) const
-      {
-        return eval(v);
-      }
-    };
-
-
-    // -------------------------------------------------------------------------
-
-
-    /// asin(v)
-    template <class T>
-    struct Asin : FunctorBase
-    {
-      using result_type = T;
-      constexpr int getDegree(int d0) const
-      {
-        return 2*d0;
-      }
-
-      constexpr static result_type eval(const T& v)
-      {
-        return std::asin(v);
-      }
-      constexpr result_type operator()(const T& v) const
-      {
-        return eval(v);
-      }
-    };
-
-
-    /// acos(v)
-    template <class T>
-    struct Acos : FunctorBase
-    {
-      using result_type = T;
-      constexpr int getDegree(int d0) const
-      {
-        return 2*d0;
-      }
-
-      constexpr static result_type eval(const T& v)
-      {
-        return std::acos(v);
-      }
-      constexpr result_type operator()(const T& v) const
-      {
-        return eval(v);
-      }
-    };
-
-
-    /// atan(v)
-    template <class T>
-    struct Atan : FunctorBase
-    {
-      using result_type = T;
-      constexpr int getDegree(int d0) const
-      {
-        return 2*d0;
-      }
-
-      constexpr static result_type eval(const T& v)
-      {
-        return std::atan(v);
-      }
-      constexpr result_type operator()(const T& v) const
-      {
-        return eval(v);
-      }
-    };
-
-
-    /// atan(v)
+    /// Binary functor representing the cmath function std::atan2(v)
     template <class T1, class T2>
     struct Atan2 : FunctorBase
     {
@@ -261,145 +89,13 @@ namespace AMDiS
         return 2*(d0+d1);
       }
 
-      constexpr static result_type eval(const T1& v1, const T2& v2)
+      static constexpr result_type eval(T1 const& v1, T2 const& v2)
       {
         return std::atan2(v1, v2);
       }
-      constexpr result_type operator()(const T1& v1, const T2& v2) const
+      constexpr result_type operator()(T1 const& v1, T2 const& v2) const
       {
         return eval(v1, v2);
-      }
-    };
-
-
-    // -------------------------------------------------------------------------
-
-
-    /// sinh(v)
-    template <class T>
-    struct Sinh : FunctorBase
-    {
-      using result_type = T;
-      constexpr int getDegree(int d0) const
-      {
-        return 2*d0;
-      }
-
-      constexpr static result_type eval(const T& v)
-      {
-        return std::sinh(v);
-      }
-      constexpr result_type operator()(const T& v) const
-      {
-        return eval(v);
-      }
-    };
-
-
-    /// cosh(v)
-    template <class T>
-    struct Cosh : FunctorBase
-    {
-      using result_type = T;
-      constexpr int getDegree(int d0) const
-      {
-        return 2*d0;
-      }
-
-      constexpr static result_type eval(const T& v)
-      {
-        return std::cosh(v);
-      }
-      constexpr result_type operator()(const T& v) const
-      {
-        return eval(v);
-      }
-    };
-
-
-    /// tanh(v)
-    template <class T>
-    struct Tanh : FunctorBase
-    {
-      using result_type = T;
-      constexpr int getDegree(int d0) const
-      {
-        return 2*d0;
-      }
-
-      constexpr static result_type eval(const T& v)
-      {
-        return std::tanh(v);
-      }
-      constexpr result_type operator()(const T& v) const
-      {
-        return eval(v);
-      }
-    };
-
-
-    // -------------------------------------------------------------------------
-
-
-    /// sinh(v)
-    template <class T>
-    struct Asinh : FunctorBase
-    {
-      using result_type = T;
-      constexpr int getDegree(int d0) const
-      {
-        return 2*d0;
-      }
-
-      constexpr static result_type eval(const T& v)
-      {
-        return std::asinh(v);
-      }
-      constexpr result_type operator()(const T& v) const
-      {
-        return eval(v);
-      }
-    };
-
-
-    /// cosh(v)
-    template <class T>
-    struct Acosh : FunctorBase
-    {
-      using result_type = T;
-      constexpr int getDegree(int d0) const
-      {
-        return 2*d0;
-      }
-
-      constexpr static result_type eval(const T& v)
-      {
-        return std::acosh(v);
-      }
-      constexpr result_type operator()(const T& v) const
-      {
-        return eval(v);
-      }
-    };
-
-
-    /// tanh(v)
-    template <class T>
-    struct Atanh : FunctorBase
-    {
-      using result_type = T;
-      constexpr int getDegree(int d0) const
-      {
-        return 2*d0;
-      }
-
-      constexpr static result_type eval(const T& v)
-      {
-        return std::atanh(v);
-      }
-      constexpr result_type operator()(const T& v) const
-      {
-        return eval(v);
       }
     };
 

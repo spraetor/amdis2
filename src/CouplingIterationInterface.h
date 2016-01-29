@@ -27,17 +27,17 @@ namespace AMDiS
     virtual void addIterationInterface(ProblemIterationInterface* probIter, int number = -1);
 
     /// Called before each adaption loop iteration.
-    virtual void beginIteration(AdaptInfo* adaptInfo) override;
+    virtual void beginIteration(AdaptInfo& adaptInfo) override;
 
     /** \brief
      * Determines the execution order of the single adaption steps. If adapt is
      * true, mesh adaption will be performed. This allows to avoid mesh adaption,
      * e.g. in timestep adaption loops of timestep adaptive strategies.
      */
-    virtual Flag oneIteration(AdaptInfo* adaptInfo, Flag toDo = FULL_ITERATION) override;
+    virtual Flag oneIteration(AdaptInfo& adaptInfo, Flag toDo = FULL_ITERATION) override;
 
     /// Called after each adaption loop iteration.
-    virtual void endIteration(AdaptInfo* adaptInfo) override;
+    virtual void endIteration(AdaptInfo& adaptInfo) override;
 
     virtual int getNumProblems() const override;
 
@@ -51,11 +51,11 @@ namespace AMDiS
      * Returns the problem with the given number. If only one problem
      * is managed by this master problem, the number hasn't to be given.
      */
-    virtual ProblemStatBase* getProblem(int number = 0) override;
+    virtual ProblemStatBase& getProblem(int number = 0) override;
 
-    virtual ProblemIterationInterface* getIterationInterface(int number = 0)
+    virtual ProblemIterationInterface& getIterationInterface(int number = 0)
     {
-      return problems[number];
+      return *problems[number];
     }
 
     /// Returns the name of the problem with the given number.

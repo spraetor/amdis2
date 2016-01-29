@@ -23,9 +23,9 @@ namespace AMDiS
       using type = RTConstant<T>;
 
       template <class T_>
-      constexpr static type get(T_&& t)
+      static constexpr type get(T_&& t)
       {
-        return {t};
+        return {std::forward<T_>(t)};
       }
     };
 
@@ -36,7 +36,7 @@ namespace AMDiS
       using type = T;
 
       template <class T_>
-      constexpr static T_&& get(T_&& t)
+      static constexpr T_&& get(T_&& t)
       {
         return std::forward<T_>(t);
       }

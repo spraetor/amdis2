@@ -19,9 +19,9 @@ namespace AMDiS
     using size_type  = small_t;
     using value_type = Value;
 
-    constexpr static int _SIZE = 1;
-    constexpr static int _ROWS = 1;
-    constexpr static int _COLS = 1;
+    static constexpr int _SIZE = 1;
+    static constexpr int _ROWS = 1;
+    static constexpr int _COLS = 1;
 
   public:
     /// construcor takes the factor \p factor_

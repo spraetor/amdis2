@@ -40,7 +40,7 @@ namespace AMDiS
     }
 
     /// Manipulates the quadrature points for the assemblage of a subelement.
-    void scaleQuadrature(const SubElInfo& subElInfo);
+    void scaleQuadrature(SubElInfo const& subElInfo);
 
     /** \brief
      * Scales the quadrature points using a matrix, that defines the transformation

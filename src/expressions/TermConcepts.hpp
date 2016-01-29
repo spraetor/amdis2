@@ -29,31 +29,23 @@ namespace AMDiS
 
     // expressions concepts
     template <class... Ts>
-    struct Term
-    {
-      constexpr static bool value = and_<Term<Ts>...>::value;
-    };
+    struct Term : and_<Term<Ts>...> {};
 
     template <class T>
     struct Term<T>
     {
     private:
-      using Type = typename std::decay<T>::type;
+      using Type = Decay_t<T>;
 
-      constexpr static bool value0 = HAS_MEMBER(insertFeSpaces)<Type, void(int&)>::value;
-      constexpr static bool value1 = HAS_MEMBER(initElement)<Type, void(ElInfo const*, SubAssembler*, Quadrature*, BasisFunction const*)>::value;
-      constexpr static bool value2 = traits::HasValueType<Type>::value;
+      static constexpr bool value0 = HAS_MEMBER(insertFeSpaces)<Type, void(int&)>::value;
+      static constexpr bool value1 = HAS_MEMBER(initElement)<Type, void(ElInfo const*, SubAssembler*, Quadrature*, BasisFunction const*)>::value;
+      static constexpr bool value2 = traits::HasValueType<Type>::value;
 
-      template <bool, class T1>
-      struct check
-      {
-        constexpr static bool value = check_functor<T1, Value_t<T1>(WorldVector<double>)>::value; // term(WorldVector)
-        //                                    check_vector<T1, Value_t<T1>(int)>::value
-      };
-      template <class T1> struct check<false, T1> : false_ {};
+      template <bool, class T1> struct check : traits::IsFunctor<T1, Value_t<T1>(WorldVector<double>)> {}; 
+      template <      class T1> struct check<false, T1> : false_ {};
 
     public:
-      constexpr static bool value = value0 && value1 && check<value2, Type>::value;
+      static constexpr bool value = value0 && value1 && check<value2, Type>::value;
     };
 
 
@@ -62,23 +54,23 @@ namespace AMDiS
     struct TermFunctor
     {
       template <int I, class... Ints>
-      constexpr static bool has_member(int_<I>, Ints...)
+      static constexpr bool has_member(int_<I>, Ints...)
       {
-        return has_member(int_<I-1>(), 0, Ints(0)...);
+        return has_member(int_<I-1>(), int{0}, Ints(0)...);
       }
 
       template <class... Ints>
-      constexpr static bool has_member(int_<0>, Ints...)
+      static constexpr bool has_member(int_<0>, Ints...)
       {
         return HAS_MEMBER(getDegree)<F, int(Ints...)>::value;
       }
 
-      constexpr static bool value = has_member(int_<N>());
+      static constexpr bool value = has_member(int_<N>());
     };
 
 
     template <class F>
-    using CoordsFunctor = and_<check_functor<F, double(WorldVector<double>)>, not_<Term<F>>>;
+    using CoordsFunctor = and_<traits::IsFunctor<F, double(WorldVector<double>)>, not_<Term<F>>>;
 
   } // end namespace concepts
 

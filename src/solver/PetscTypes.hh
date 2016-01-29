@@ -9,10 +9,11 @@ namespace AMDiS
     if (mat == PETSC_NULL)
     {
       std::vector<PetscInt> nnz(rhs.getSize());
-      for (size_t k = 0; k < static_cast<size_t>(rhs.getSize()); k++)
+      for (size_t k = 0; k < size_t{rhs.getSize()}; k++)
         nnz[k] = rhs.getBaseMatrix().nnz_local(k);
 
-      MatCreateSeqAIJ(PETSC_COMM_SELF, num_rows(rhs.getBaseMatrix()), num_cols(rhs.getBaseMatrix()), 0, &(nnz[0]), &mat);
+      MatCreateSeqAIJ(PETSC_COMM_SELF, num_rows(rhs.getBaseMatrix()), 
+		      num_cols(rhs.getBaseMatrix()), 0, &(nnz[0]), &mat);
       initMatrix = true;
     }
 
@@ -20,7 +21,7 @@ namespace AMDiS
     for (size_t i = 0; i < rhs.getBaseMatrix().ref_minor().size(); i++)
       indices.push_back(rhs.getBaseMatrix().ref_minor()[i]);
 
-    for (PetscInt i = 0; i < static_cast<PetscInt>(num_rows(rhs.getBaseMatrix())); i++)
+    for (PetscInt i = 0; i < PetscInt{num_rows(rhs.getBaseMatrix())}; i++)
     {
       if  (rhs.getBaseMatrix().nnz_local(i) > 0)
         MatSetValues(mat, 1, &i, rhs.getBaseMatrix().nnz_local(i),
@@ -36,8 +37,9 @@ namespace AMDiS
   }
 
 
-  template<typename Mapper>
-  inline void operator<<(PetscMatrix& mat, MatMap<const SolverMatrix<Matrix<DOFMatrix*>>, Mapper>& rhs)
+  template <class Mapper>
+  inline void operator<<(PetscMatrix& mat, 
+			 MatMap<const SolverMatrix<Matrix<DOFMatrix*>>, Mapper>& rhs)
   {
     if (mat.assembled)
       mat.destroy();
@@ -45,12 +47,13 @@ namespace AMDiS
     const Matrix<DOFMatrix*>& A = *(rhs.mat.getOriginalMat());
 
     bool initMatrix = false;
-    unsigned nRows(0);
+    PetscInt nRows = 0;
+    
     //     unsigned nEntries(0);
     std::vector<int> nRowsBlock(A.getNumRows());
-    for(int i(0); i < A.getNumRows(); ++i)
+    for(int i = 0; i < A.getNumRows(); ++i)
     {
-      int j(0);
+      int j = 0;
       for( ; j<A.getNumCols() && A[i][j] == NULL; ++j) ;
       if( j == A.getNumCols() )
       {
@@ -64,33 +67,35 @@ namespace AMDiS
     std::vector<PetscInt> nnz(nRows);
 
     //initialize the nnz (could be avoided, but gets complicated)
-    for (int i(0); i < nRows; ++i)
+    for (int i = 0; i < nRows; ++i)
       nnz[i] = 0;
 
     //build a list of pairs (col, value) for each row
     std::vector<std::list<std::pair<int, double>>> rowData(nRows);
 
-    PetscInt maxNnz(0);
+    PetscInt maxNnz = 0;
     Mapper& mapper = rhs.mapper;
-    for (int i(0); i < A.getNumRows(); ++i)
+    for (int i = 0; i < A.getNumRows(); ++i)
     {
       mapper.setRow(i);
       //compute the number of nonzeros per global row
-      for (int j(0); j < A.getNumCols(); ++j)
+      for (int j = 0; j < A.getNumCols(); ++j)
       {
         if (A[i][j] != NULL)
         {
           mapper.setCol(j);
           const DOFMatrix::base_matrix_type& mtlMat(A[i][j]->getBaseMatrix());
-          for (unsigned k(0);  k < nRowsBlock[i]; ++k)
+          for (unsigned k = 0;  k < nRowsBlock[i]; ++k)
           {
             unsigned curRow(mapper.row(k));
             nnz[curRow] += mtlMat.nnz_local(k);
             maxNnz = std::max(maxNnz, nnz[curRow]);
             unsigned curPos(mtlMat.ref_major()[k]);
-            for(unsigned l(0); l < mtlMat.nnz_local(k); ++l, ++curPos)
+            for(unsigned l = 0; l < mtlMat.nnz_local(k); ++l, ++curPos)
             {
-              rowData[curRow].push_back(std::make_pair(mapper.col(mtlMat.ref_minor()[curPos]), mtlMat.data[curPos]));
+              rowData[curRow].push_back(
+		std::make_pair(mapper.col(mtlMat.ref_minor()[curPos]), 
+			       mtlMat.data[curPos]));
             }
           }
         }
@@ -107,7 +112,7 @@ namespace AMDiS
     std::vector<PetscScalar> values(maxNnz);
     std::list<std::pair<int, double>>::iterator it;
     unsigned j;
-    for (PetscInt i(0); i < nRows; ++i)
+    for (PetscInt i = 0; i < nRows; ++i)
     {
       j=0;
       it = rowData[i].begin();
@@ -128,13 +133,14 @@ namespace AMDiS
   }
 
 
-  template<typename Mapper>
-  inline void operator<<(PetscMatrixNested& mat, MatMap<const SolverMatrix<Matrix<DOFMatrix*>>, Mapper>& mapper)
+  template <class Mapper>
+  inline void operator<<(PetscMatrixNested& mat, 
+			 MatMap<const SolverMatrix<Matrix<DOFMatrix*>>, Mapper>& mapper)
   {
     if (mat.assembled)
       mat.destroy();
 
-    const Matrix<DOFMatrix*>& A = *(mapper.mat.getOriginalMat());
+    Matrix<DOFMatrix*> const& A = *(mapper.mat.getOriginalMat());
 
     std::vector<PetscInt> nnz;
     mat.nestMat.resize(A.getNumRows() * A.getNumCols());
@@ -159,12 +165,13 @@ namespace AMDiS
     }
 
     // create nested matrix from a vector of block matrices
-    MatCreateNest(PETSC_COMM_SELF, A.getNumRows(), PETSC_NULL, A.getNumCols(), PETSC_NULL, &(mat.nestMat[0]), &mat.matrix);
+    MatCreateNest(PETSC_COMM_SELF, A.getNumRows(), PETSC_NULL, 
+		  A.getNumCols(), PETSC_NULL, &(mat.nestMat[0]), &mat.matrix);
     mat.assembled = true;
   }
 
 
-  inline void operator<<(Vec& petscVec, const DOFVector<double>& vec)
+  inline void operator<<(Vec& petscVec, DOFVector<double> const& vec)
   {
     // Traverse all used DOFs in the dof vector.
     DOFConstIterator<double> dofIt(&vec, USED_DOFS);
@@ -177,7 +184,7 @@ namespace AMDiS
   }
 
 
-  inline void operator>>(const Vec& petscVec, DOFVector<double>& vec)
+  inline void operator>>(Vec const& petscVec, DOFVector<double>& vec)
   {
     // Traverse all used DOFs in the dof vector.
     DOFVector<double>::Iterator dofIt(&vec, USED_DOFS);
@@ -191,7 +198,7 @@ namespace AMDiS
   }
 
 
-  inline void operator<<(Vec& petscVec, const SystemVector& vec)
+  inline void operator<<(Vec& petscVec, SystemVector const& vec)
   {
 #ifdef VecType // PETSc uses MACROS instead of typedefs in Versions 3.3x
     const VecType vecType;
@@ -225,7 +232,7 @@ namespace AMDiS
   }
 
 
-  inline void operator>>(const Vec& petscVec, SystemVector& vec)
+  inline void operator>>(Vec const& petscVec, SystemVector& vec)
   {
 #ifdef VecType // PETSc uses MACROS instead of typedefs in Versions 3.3x
     const VecType vecType;
@@ -268,22 +275,25 @@ namespace AMDiS
   }
 
 
-  template<typename Mapper>
-  void operator>>(const PetscVector& dest, VecMap<SystemVector, Mapper>& rhs)
+  template <class Mapper>
+  void operator>>(PetscVector const& dest, 
+		  VecMap<SystemVector, Mapper>& rhs)
   {
     dest.vector >> rhs.vec;
   }
 
 
-  template<typename Mapper>
-  void operator>>(const PetscVectorNested& dest, VecMap<SystemVector, Mapper>& rhs)
+  template <class Mapper>
+  void operator>>(PetscVectorNested const& dest, 
+		  VecMap<SystemVector, Mapper>& rhs)
   {
     dest.vector >> rhs.vec;
   }
 
 
-  template<typename Mapper>
-  inline void operator<<(PetscVector& petscVec, VecMap<const SystemVector, Mapper>& rhs)
+  template <class Mapper>
+  inline void operator<<(PetscVector& petscVec, 
+			 VecMap<const SystemVector, Mapper>& rhs)
   {
     size_t nComponents = rhs.vec.getSize();
     if (petscVec.assembled)
@@ -300,8 +310,9 @@ namespace AMDiS
   }
 
 
-  template<typename Mapper>
-  inline void operator<<(PetscVectorNested& petscVec, VecMap<const SystemVector, Mapper>& rhs)
+  template <class Mapper>
+  inline void operator<<(PetscVectorNested& petscVec, 
+			 VecMap<const SystemVector, Mapper>& rhs)
   {
     size_t nComponents = rhs.mapper.getNumComponents();
     if (petscVec.assembled)

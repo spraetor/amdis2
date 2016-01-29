@@ -74,7 +74,7 @@ namespace AMDiS
   }
 
 
-  void ProblemNonLin::solve(AdaptInfo* adaptInfo, bool b0, bool b1)
+  void ProblemNonLin::solve(AdaptInfo& adaptInfo, bool b0, bool b1)
   {
     TEST_EXIT(nonLinSolver)("no non-linear solver!\n");
 

@@ -26,9 +26,9 @@ namespace AMDiS
      * object will be returned.
      */
     static ZeroOrderAssembler* getSubAssembler(Operator* op,
-        Assembler* assembler,
-        Quadrature* quadrat,
-        bool optimized);
+					       Assembler* assembler,
+					       Quadrature* quadrat,
+					       bool optimized);
 
   protected:
     /// Constructor.
@@ -112,10 +112,10 @@ namespace AMDiS
 
   protected:
     /// Integral of the product of psi and phi.
-    const Q00PsiPhi* q00;
+    Q00PsiPhi const* q00;
 
     /// Integral of psi.
-    const Q0Psi* q0;
+    Q0Psi const* q0;
   };
 
 } // end namespace AMDiS

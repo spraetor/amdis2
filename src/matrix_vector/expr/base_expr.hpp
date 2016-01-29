@@ -31,7 +31,7 @@ namespace AMDiS
   {
     /// \cond HIDDEN_SYMBOLS
     // define categories for the expressions
-    template <class M> struct category<BaseExpr<M>> : category<M> {};
+    template <class M> struct category<BaseExpr<M>>   : category<M> {};
     template <class M> struct category<VectorExpr<M>> : category<M> {};
     template <class M> struct category<MatrixExpr<M>> : category<M> {};
     /// \endcond

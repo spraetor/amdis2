@@ -27,7 +27,7 @@ namespace AMDiS
   inline Value_t<M> integrate(BaseTerm<M> const& term, BoundaryWrapper b);
   
 
-  // ________ ACCUMULATION OF AND EXPRESSION OVER DOFS ______________________________________
+  // ________ ACCUMULATION OF AND EXPRESSION OVER DOFS _________________________
   
 
   namespace detail
@@ -99,7 +99,7 @@ namespace AMDiS
   }
   
   
-  // _________ ASSIGNMENT OF AN EXRESION TO A DOFVECTOR __________________________________
+  // _________ ASSIGNMENT OF AN EXRESION TO A DOFVECTOR ________________________
 
   
   namespace detail
@@ -139,7 +139,7 @@ namespace AMDiS
   }
 
   
-  // _________ CONVERT EXPRESSION TO STRING __________________________________
+  // _________ CONVERT EXPRESSION TO STRING ____________________________________
 
 
   /// Print an term to an output stream
@@ -152,7 +152,7 @@ namespace AMDiS
   }
 
 
-  // _________ IMPLEMENTATION OF DOFVECTOR::INTERPOL METHODS __________________________________
+  // _________ IMPLEMENTATION OF DOFVECTOR::INTERPOL METHODS ___________________
 
 
   template <class T>

@@ -44,7 +44,7 @@ namespace AMDiS
   public:
     using Super::set;
 
-    // ----- constructors / assignment -------------------------------------------
+    // ----- constructors / assignment -----------------------------------------
   public:
     /// \brief Default constructor.
     /// allocates memory for a vector of size \p s
@@ -82,7 +82,7 @@ namespace AMDiS
       : Super(l.size())
     {
       TEST_EXIT_DBG( _size == l.size() )
-      ("Initializer-list must have exactly the number of entries, as the size of the vector!");
+	("size(Initializer-list) should be size(vector)!");
       std::copy(l.begin(), l.end(), _elements);
     }
 
@@ -114,7 +114,7 @@ namespace AMDiS
       swap(first._elements, second._elements);
     }
 
-    // ----- element access functions  -------------------------------------------
+    // ----- element access functions  -----------------------------------------
   public:
     // import operator() from Super-class
     using Super::operator() ;
@@ -134,14 +134,16 @@ namespace AMDiS
     /// Access to the i-th vector element with index checking.
     value_type& at(size_type i)
     {
-      TEST_EXIT_DBG(i < _size)("Index " << i << " out of range [0, " << _size << ")!\n");
+      TEST_EXIT_DBG(i < _size)
+	("Index " << i << " out of range [0, " << _size << ")!\n");
       return _elements[i];
     }
 
     /// Access to the i-th vector element with index checking. (const variant)
     value_type const& at(size_type i) const
     {
-      TEST_EXIT_DBG(i < _size)("Index " << i << " out of range [0, " << _size << ")!\n");
+      TEST_EXIT_DBG(i < _size)
+	("Index " << i << " out of range [0, " << _size << ")!\n");
       return _elements[i];
     }
 

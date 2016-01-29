@@ -18,7 +18,7 @@ namespace AMDiS
 
   struct BoundaryTypeContainer
   {
-    BoundaryTypeContainer(BoundaryType b) : b(b) {}
+    explicit BoundaryTypeContainer(BoundaryType b) : b(b) {}
     BoundaryType b;
   };
 

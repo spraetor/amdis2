@@ -4,8 +4,8 @@ namespace AMDiS
 {
   template <class Term>
   void GenericSecondOrderTerm_1<Term>::getLALtImpl(
-    const ElInfo* elInfo,
-    std::vector<mtl::dense2D<double>>& LALt) const
+      ElInfo const* elInfo,
+      std::vector<mtl::dense2D<double>>& LALt) const
   {
     const DimVec<WorldVector<double>>& grdLambda = elInfo->getGrdLambda();
     const int nPoints = static_cast<int>(LALt.size());
@@ -17,12 +17,12 @@ namespace AMDiS
 
   template <class Term>
   void GenericSecondOrderTerm_1<Term>::evalImpl(
-    int nPoints,
-    const DenseVector<double>& uhAtQP,
-    const DenseVector<WorldVector<double>>& grdUhAtQP,
-    const DenseVector<WorldMatrix<double>>& D2UhAtQP,
-    DenseVector<double>& result,
-    double f) const
+      int nPoints,
+      DenseVector<double> const& uhAtQP,
+      DenseVector<WorldVector<double>> const& grdUhAtQP,
+      DenseVector<WorldMatrix<double>> const& D2UhAtQP,
+      DenseVector<double>& result,
+      double f) const
   {
     int dow = Global::getGeo(WORLD);
 
@@ -42,8 +42,8 @@ namespace AMDiS
 
   template <class Term>
   void GenericSecondOrderTerm_1<Term>::weakEvalImpl(
-    const std::vector<WorldVector<double>>& grdUhAtQP,
-    std::vector<WorldVector<double>>& result) const
+      std::vector<WorldVector<double>> const& grdUhAtQP,
+      std::vector<WorldVector<double>>& result) const
   {
     int nPoints = grdUhAtQP.size();
     for (int iq = 0; iq < nPoints; iq++)
@@ -53,8 +53,8 @@ namespace AMDiS
 
   template <class Term, bool symmetric>
   void GenericSecondOrderTerm_A<Term, symmetric>::getLALtImpl(
-    const ElInfo* elInfo,
-    std::vector<mtl::dense2D<double>>& LALt) const
+      ElInfo const* elInfo,
+      std::vector<mtl::dense2D<double>>& LALt) const
   {
     const DimVec<WorldVector<double>>& grdLambda = elInfo->getGrdLambda();
     const int nPoints = static_cast<int>(LALt.size());
@@ -66,12 +66,12 @@ namespace AMDiS
 
   template <class Term, bool symmetric>
   void GenericSecondOrderTerm_A<Term, symmetric>::evalImpl(
-    int nPoints,
-    const DenseVector<double>& uhAtQP,
-    const DenseVector<WorldVector<double>>& grdUhAtQP,
-    const DenseVector<WorldMatrix<double>>& D2UhAtQP,
-    DenseVector<double>& result,
-    double factor) const
+      int nPoints,
+      DenseVector<double> const& uhAtQP,
+      DenseVector<WorldVector<double>> const& grdUhAtQP,
+      DenseVector<WorldMatrix<double>> const& D2UhAtQP,
+      DenseVector<double>& result,
+      double factor) const
   {
     int dow = Global::getGeo(WORLD);
 
@@ -96,8 +96,8 @@ namespace AMDiS
 
   template <class Term, bool symmetric>
   void GenericSecondOrderTerm_A<Term, symmetric>::weakEvalImpl(
-    const std::vector<WorldVector<double>>& grdUhAtQP,
-    std::vector<WorldVector<double>>& result) const
+      std::vector<WorldVector<double>> const& grdUhAtQP,
+      std::vector<WorldVector<double>>& result) const
   {
     int nPoints = grdUhAtQP.size();
     WorldMatrix<double> A;
@@ -108,8 +108,8 @@ namespace AMDiS
 
   template <int I, int J, class Term>
   void GenericSecondOrderTerm_ij<I, J, Term>::getLALtImpl(
-    const ElInfo* elInfo,
-    std::vector<mtl::dense2D<double>>& LALt) const
+      ElInfo const* elInfo,
+      std::vector<mtl::dense2D<double>>& LALt) const
   {
     const DimVec<WorldVector<double>>& grdLambda = elInfo->getGrdLambda();
     const int nPoints = static_cast<int>(LALt.size());
@@ -121,12 +121,12 @@ namespace AMDiS
 
   template <int I, int J, class Term>
   void GenericSecondOrderTerm_ij<I, J, Term>::evalImpl(
-    int nPoints,
-    const DenseVector<double>& uhAtQP,
-    const DenseVector<WorldVector<double>>& grdUhAtQP,
-    const DenseVector<WorldMatrix<double>>& D2UhAtQP,
-    DenseVector<double>& result,
-    double fac) const
+      int nPoints,
+      DenseVector<double> const& uhAtQP,
+      DenseVector<WorldVector<double>> const& grdUhAtQP,
+      DenseVector<WorldMatrix<double>> const& D2UhAtQP,
+      DenseVector<double>& result,
+      double fac) const
   {
     if (num_rows(D2UhAtQP) > 0)
     {
@@ -138,8 +138,8 @@ namespace AMDiS
 
   template <int I, int J, class Term>
   void GenericSecondOrderTerm_ij<I, J, Term>::weakEvalImpl(
-    const std::vector<WorldVector<double>>& grdUhAtQP,
-    std::vector<WorldVector<double>>& result) const
+      std::vector<WorldVector<double>> const& grdUhAtQP,
+      std::vector<WorldVector<double>>& result) const
   {
     int nPoints = grdUhAtQP.size();
     for (int iq = 0; iq < nPoints; iq++)

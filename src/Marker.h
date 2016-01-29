@@ -27,20 +27,14 @@ namespace AMDiS
     Marker() {}
 
     /// Constructor.
-    Marker(std::string name_, int row_)
-      : name(name_),
-        row(row_),
-        maximumMarking(false),
-        p(2),
-        info(10),
-        maxRefineLevel(-1),
-        minRefineLevel(-1)
-    {
-      Parameters::get(name + "->p", p);
-      Parameters::get(name + "->info", info);
-      Parameters::get(name + "->max refinement level", maxRefineLevel);
-      Parameters::get(name + "->min refinement level", minRefineLevel);
-    }
+    /**
+     * Parameters read by Marker, with name 'MARKER'
+     *   MARKER->p:                    Power in estimator norm, \ref p
+     *   MARKER->info:                 Info level, \ref info
+     *   MARKER->max refinement level: \ref maxRefineLevel
+     *   MARKER->min refinement level: \ref minRefineLevel
+     **/
+    Marker(std::string name, int row);
 
     /// destructor
     virtual ~Marker() {}
@@ -48,48 +42,19 @@ namespace AMDiS
     /// Marks element with newMark. If \ref maximumMarking is set, the element
     /// is marked only if the new mark is bigger than the old one. The return
     /// value specifies whether the element has been marked, or not.
-    void setMark(Element* el, char newMark)
-    {
-      // TODO: move implementation ouside of class
-      char oldMark = el->getMark();
-
-      if (!maximumMarking || (newMark > oldMark))
-      {
-        el->setMark(newMark);
-
-        if (oldMark > 0)
-        {
-          elMarkRefine--;
-        }
-        else
-        {
-          if (oldMark < 0)
-            elMarkCoarsen--;
-        }
-
-        if (newMark > 0)
-        {
-          elMarkRefine++;
-        }
-        else
-        {
-          if (newMark < 0)
-            elMarkCoarsen++;
-        }
-      }
-    }
+    void setMark(Element* el, char newMark);
 
     /// Can be used by sub classes. Called before traversal.
-    virtual void initMarking(AdaptInfo* adaptInfo, Mesh* mesh);
+    virtual void initMarking(AdaptInfo& adaptInfo, Mesh* mesh);
 
     /// Can be used by sub classes. Called after traversal.
-    virtual void finishMarking(AdaptInfo* adaptInfo);
+    virtual void finishMarking(AdaptInfo& adaptInfo);
 
     /// Marks one element.
-    virtual void markElement(AdaptInfo* adaptInfo, ElInfo* elInfo);
+    virtual void markElement(AdaptInfo& adaptInfo, ElInfo* elInfo);
 
     /// Marking of the mesh.
-    virtual Flag markMesh(AdaptInfo* adaptInfo, Mesh* mesh);
+    virtual Flag markMesh(AdaptInfo& adaptInfo, Mesh* mesh);
 
     /// Sets \ref maximumMarking.
     void setMaximumMarking(bool maxMark)
@@ -97,12 +62,12 @@ namespace AMDiS
       maximumMarking = maxMark;
     }
 
-    int getElMarkRefine()
+    int getElMarkRefine() const
     {
       return elMarkRefine;
     }
 
-    int getElMarkCoarsen()
+    int getElMarkCoarsen() const
     {
       return elMarkCoarsen;
     }
@@ -172,17 +137,13 @@ namespace AMDiS
   {
   public:
     /// Constructor.
-    GRMarker(std::string name_, int row_)
-      : Marker(name_, row_)
-    {}
+    /**
+     * No extra parameters read by GRMarker.
+     **/
+    GRMarker(std::string name, int row);
 
     /// Implementation of Marker::markElement().
-    virtual void markElement(AdaptInfo* adaptInfo, ElInfo* elInfo)
-    {
-      Element* el = elInfo->getElement();
-      if (adaptInfo->isRefinementAllowed(row == -1 ? 0 : row))
-        setMark(el, adaptInfo->getRefineBisections(row == -1 ? 0 : row));
-    }
+    virtual void markElement(AdaptInfo& adaptInfo, ElInfo* elInfo) override;
   };
 
 
@@ -196,17 +157,15 @@ namespace AMDiS
   {
   public:
     /// Constructor.
-    MSMarker(std::string name_, int row_)
-      : Marker(name_, row_),
-        MSGamma(0.5),
-        MSGammaC(0.1)
-    {
-      Parameters::get(name + "->MSGamma", MSGamma);
-      Parameters::get(name + "->MSGammaC", MSGammaC);
-    }
+    /**
+     * Parameters read by MSMarker, with name 'MARKER'
+     *   MARKER->MSGamma:   \ref MSGamma
+     *   MARKER->MSGammaC:  \ref MSGammaC
+     **/
+    MSMarker(std::string name, int row);
 
-    /// Implementation of MarkScal::initMarking().
-    void initMarking(AdaptInfo* adaptInfo, Mesh* mesh);
+    /// Implementation of Marker::initMarking().
+    virtual void initMarking(AdaptInfo& adaptInfo, Mesh* mesh) override;
 
   protected:
     /// Marking parameter.
@@ -227,17 +186,15 @@ namespace AMDiS
   {
   public:
     /// Constructor.
-    ESMarker(std::string name_, int row_)
-      : Marker(name_, row_),
-        ESTheta(0.9),
-        ESThetaC(0.2)
-    {
-      Parameters::get(name + "->ESTheta", ESTheta);
-      Parameters::get(name + "->ESThetaC", ESThetaC);
-    }
+    /**
+     * Parameters read by ESMarker, with name 'MARKER'
+     *   MARKER->ESTheta:   \ref ESTheta
+     *   MARKER->ESThetaC:  \ref ESThetaC
+     **/
+    ESMarker(std::string name, int row);
 
-    /// Implementation of MarkScal::initMarking().
-    virtual void initMarking(AdaptInfo* adaptInfo, Mesh* mesh);
+    /// Implementation of Marker::initMarking().
+    virtual void initMarking(AdaptInfo& adaptInfo, Mesh* mesh) override;
 
   protected:
     /// Marking parameter.
@@ -258,27 +215,23 @@ namespace AMDiS
   {
   public:
     /// Constructor.
-    GERSMarker(std::string name_, int row_)
-      : Marker(name_, row_),
-        oldErrSum(0.0),
-        GERSThetaStar(0.6),
-        GERSNu(0.1),
-        GERSThetaC(0.1)
-    {
-      Parameters::get(name + "->GERSThetaStar", GERSThetaStar);
-      Parameters::get(name + "->GERSNu", GERSNu);
-      Parameters::get(name + "->GERSThetaC", GERSThetaC);
-    }
+    /**
+     * Parameters read by GERSMarker, with name 'MARKER'
+     *   MARKER->GERSThetaStar:   \ref GERSThetaStar
+     *   MARKER->GERSNu:          \ref GERSNu
+     *   MARKER->GERSThetaC:      \ref GERSThetaC
+     **/
+    GERSMarker(std::string name, int row);
 
     /// Implementation of Marker::markMesh().
-    virtual Flag markMesh(AdaptInfo* adaptInfo, Mesh* mesh);
+    virtual Flag markMesh(AdaptInfo& adaptInfo, Mesh* mesh);
 
   protected:
     /// Refinement marking function.
-    void markElementForRefinement(AdaptInfo* adaptInfo, ElInfo* elInfo);
+    void markElementForRefinement(AdaptInfo& adaptInfo, ElInfo* elInfo);
 
     /// Coarsening marking function.
-    void markElementForCoarsening(AdaptInfo* adaptInfo, ElInfo* elInfo);
+    void markElementForCoarsening(AdaptInfo& adaptInfo, ElInfo* elInfo);
 
   protected:
     /// Marking parameter.

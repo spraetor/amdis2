@@ -164,7 +164,7 @@ namespace AMDiS
 
 
     void PetscSolverNSCH::solvePetscMatrix(SystemVector& vec,
-                                           AdaptInfo* adaptInfo)
+                                           AdaptInfo& adaptInfo)
     {
       FUNCNAME("PetscSolverNSCH::solvePetscMatrix()");
 

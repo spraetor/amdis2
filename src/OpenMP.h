@@ -19,7 +19,7 @@ namespace AMDiS
       : data(omp_get_max_threads())
     {}
 
-    ThreadPrivate(T val)
+    explicit ThreadPrivate(T val)
       : data(omp_get_max_threads(), val)
     {}
 
@@ -59,16 +59,16 @@ namespace AMDiS
   public:
     ThreadPrivate() {}
 
-    ThreadPrivate(T val)
+    explicit ThreadPrivate(T val)
       : data(val)
     {}
 
-    inline T& get()
+    T& get()
     {
       return data;
     }
 
-    inline void set(T& val)
+    void set(T& val)
     {
       data = val;
     }

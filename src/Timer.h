@@ -6,10 +6,15 @@
 
 namespace AMDiS
 {
+  // TODO: is it necessary to use MPI::Wtime(), or is chrono just fine.
 
   /// Helper class to distinguish between different time measurement methods
   class Timer
   {
+    using Clock     = std::chrono::high_resolution_clock;
+    using TimePoint = std::chrono::time_point<Clock>;
+    using fsec      = std::chrono::duration<double>;
+    
   public:
     /// initializes the timer with current time
     Timer();
@@ -22,11 +27,11 @@ namespace AMDiS
 
   private:
     /// begin value for sequentiell measurement
-    std::chrono::time_point<std::chrono::system_clock> first_seq;
+    TimePoint t0;
 
 #ifdef HAVE_PARALLEL_DOMAIN_AMDIS
     /// begin value for parallel measurement
-    double first_mpi;
+    double t0_mpi;
 #endif
   };
 

@@ -133,16 +133,16 @@ namespace AMDiS
     BlockMapper& operator=(BlockMapper const& other);
 
     /// Constructor that takes a system-matrix
-    BlockMapper(const Matrix<DOFMatrix*>& orMat);
+    explicit BlockMapper(Matrix<DOFMatrix*> const& orMat);
 
     /// Constructor that takes a solvermatrix,
     /// calls constructor for system-matrix
-    BlockMapper(const SolverMatrix<Matrix<DOFMatrix*>>& sm)
+    explicit BlockMapper(SolverMatrix<Matrix<DOFMatrix*>> const& sm)
       : BlockMapper(*sm.getOriginalMat())
     {}
 
     /// Constructor for single matrix.
-    BlockMapper(const DOFMatrix* mat);
+    explicit BlockMapper(DOFMatrix const* mat);
 
     /// calculate row offset for row component \param r
     void setRow(unsigned int r)
@@ -221,10 +221,10 @@ namespace AMDiS
     using size_type = unsigned long;
 
     /// Constructor for block-matrices
-    RectangularMapper(const Matrix<DOFMatrix*>& sm);
+    explicit RectangularMapper(Matrix<DOFMatrix*> const& sm);
 
     /// Constructor for block-matrices, calls constructor for system-matrix
-    RectangularMapper(const SolverMatrix<Matrix<DOFMatrix*>>& sm)
+    explicit RectangularMapper(SolverMatrix<Matrix<DOFMatrix*>> const& sm)
       : RectangularMapper(*sm.getOriginalMat())
     {}
 

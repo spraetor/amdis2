@@ -1,28 +1,6 @@
-/******************************************************************************
- *
- * AMDiS - Adaptive multidimensional simulations
- *
- * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
- * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
- *
- * Authors:
- * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
- *
- * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
- * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
- *
- *
- * This file is part of AMDiS
- *
- * See also license.opensource.txt in the distribution.
- *
- ******************************************************************************/
-
-
 /** \file PetscSolver.h */
 
-#ifndef AMDIS_PETSC_SOLVER_SEQ_H
-#define AMDIS_PETSC_SOLVER_SEQ_H
+#pragma once
 
 #ifdef HAVE_SEQ_PETSC
 
@@ -49,7 +27,7 @@ namespace AMDiS
    *
    * \brief Common base class for wrappers to use Petsc preconditioners in AMDiS.
    */
-  template<class MatrixType, class VectorType>
+  template <class MatrixType, class VectorType>
   struct PetscPreconditionerInterface : public PreconditionerInterface
   {
     PetscPreconditionerInterface(std::string prefix, std::string name)
@@ -57,7 +35,8 @@ namespace AMDiS
 
     virtual ~PetscPreconditionerInterface() {}
 
-    virtual void init(PC pc, const SolverMatrix<Matrix<DOFMatrix*>>& A, const MatrixType& fullMatrix)
+    virtual void init(PC pc, SolverMatrix<Matrix<DOFMatrix*>> const& A, 
+		      MatrixType const& fullMatrix)
     {
       PetscOptionsInsertString(("-" + prefix + "pc_type " + name).c_str());
       PCSetFromOptions(pc);
@@ -72,14 +51,14 @@ namespace AMDiS
 
 
   /// PETSc preconditioners using MATSEQAIJ and VECSEQ data structures
-  typedef PetscPreconditionerInterface<PetscMatrix, PetscVector> PetscPreconditioner;
+  using PetscPreconditioner = PetscPreconditionerInterface<PetscMatrix, PetscVector>;
 
   /// PETSc preconditioner using MATNEST and VECNEST data structures
-  typedef PetscPreconditionerInterface<PetscMatrixNested, PetscVectorNested> PetscPreconditionerNested;
+  using PetscPreconditionerNested = PetscPreconditionerInterface<PetscMatrixNested, PetscVectorNested>;
 
 
   /// Runner that can be passed to LinearSolver to redirect the solution to PETSc
-  template<typename MatrixType, typename VectorType>
+  template <class MatrixType, clas VectorType>
   class PetscRunner : public RunnerInterface
   {
   public:
@@ -97,10 +76,10 @@ namespace AMDiS
     }
 
     /// Initialize the solver \ref ksp and preconditioner \ref pc
-    void init(const SolverMatrix<Matrix<DOFMatrix*>>& A, const MatrixType& fullMatrix);
+    void init(SolverMatrix<Matrix<DOFMatrix*>> const& A, MatrixType const& fullMatrix);
 
     /// Solve the linear equation \f$ A\cdot x = b \f$ by applying the PETSc solver \ref ksp
-    int solve(const MatrixType& A, VectorType& x, const VectorType& b);
+    int solve(MatrixType const& A, VectorType& x, VectorType const& b);
 
     /// Destroy solver \ref ksp and preconditioner \ref pc
     virtual void exit()
@@ -178,13 +157,16 @@ namespace AMDiS
    * This is a suite of data structures and routines for the
    * scalable (parallel) solution of scientific applications.
    */
-  typedef LinearSolver<PetscMatrix, PetscVector, PetscRunner<PetscMatrix, PetscVector>> PetscSolver;
-  typedef LinearSolver<PetscMatrixNested, PetscVectorNested, PetscRunner<PetscMatrixNested, PetscVectorNested>> PetscSolverNested;
+  using PetscSolver = LinearSolver<PetscMatrix, PetscVector, PetscRunner<PetscMatrix, PetscVector>>;
+  using PetscSolverNested = LinearSolver<PetscMatrixNested, PetscVectorNested, PetscRunner<PetscMatrixNested, PetscVectorNested>>;
 
+#ifndef AMDIS_NO_EXTERN_PETSC_SOLVER
+  extern template class PetscRunner<PetscMatrix, PetscVector>;
+  extern template class PetscRunner<PetscMatrixNested, PetscVectorNested>;
+#endif
+  
 } // end namespace AMDiS
 
 #endif // HAVE_SEQ_PETSC
 
 #include "solver/PetscSolver.hh"
-
-#endif // AMDIS_PETSC_SOLVER_SEQ_H

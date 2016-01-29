@@ -190,13 +190,13 @@ namespace AMDiS
      */
 
     /// Sets \ref child[0]
-    virtual void setFirstChild(Element* aChild)
+    void setFirstChild(Element* aChild)
     {
       child[0] = aChild;
     }
 
     /// Sets \ref child[1]
-    virtual void setSecondChild(Element* aChild)
+    void setSecondChild(Element* aChild)
     {
       child[1] = aChild;
     }

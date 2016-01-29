@@ -126,7 +126,7 @@ namespace AMDiS
 
       PetscSolverNSCH(std::string name);
 
-      void solvePetscMatrix(SystemVector& vec, AdaptInfo* adaptInfo);
+      void solvePetscMatrix(SystemVector& vec, AdaptInfo& adaptInfo);
 
       void setChData(double* epsPtr, double* deltaPtr)
       {

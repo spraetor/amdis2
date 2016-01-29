@@ -29,9 +29,9 @@ namespace AMDiS
      * be returned.
      */
     static SecondOrderAssembler* getSubAssembler(Operator* op,
-        Assembler* assembler,
-        Quadrature* quadrat,
-        bool optimized);
+						 Assembler* assembler,
+						 Quadrature* quadrat,
+						 bool optimized);
 
   protected:
     /// Constructor.
@@ -63,10 +63,12 @@ namespace AMDiS
 
   private:
     /// Implements SubAssembler::calculateElementMatrix().
-    virtual void calculateElementMatrixImpl(const ElInfo* elInfo, ElementMatrix& mat) override;
+    virtual void calculateElementMatrixImpl(ElInfo const*, 
+					    ElementMatrix&) override;
 
     /// Implements SubAssembler::calculateElementVector().
-    virtual void calculateElementVectorImpl(const ElInfo*, DenseVector<double>&) override
+    virtual void calculateElementVectorImpl(ElInfo const*, 
+					    DenseVector<double>&) override
     {
       ERROR_EXIT("should not be called\n");
     }
@@ -87,10 +89,12 @@ namespace AMDiS
 
   private:
     /// Implements SubAssembler::calculateElementMatrix().
-    virtual void calculateElementMatrixImpl(const ElInfo* elInfo, ElementMatrix& mat) override;
+    virtual void calculateElementMatrixImpl(ElInfo const*, 
+					    ElementMatrix&) override;
 
     /// Implements SubAssembler::calculateElementVector().
-    virtual void calculateElementVectorImpl(const ElInfo*, DenseVector<double>&) override
+    virtual void calculateElementVectorImpl(ElInfo const*, 
+					    DenseVector<double>&) override
     {
       ERROR_EXIT("should not be called\n");
     }
@@ -116,10 +120,12 @@ namespace AMDiS
 
   private:
     /// Implements SubAssembler::calculateElementMatrix().
-    virtual void calculateElementMatrixImpl(const ElInfo* elInfo, ElementMatrix& mat) override;
+    virtual void calculateElementMatrixImpl(ElInfo const*, 
+					    ElementMatrix&) override;
 
     /// Implements SubAssembler::calculateElementVector().
-    virtual void calculateElementVectorImpl(const ElInfo*, DenseVector<double>&) override
+    virtual void calculateElementVectorImpl(ElInfo const*, 
+					    DenseVector<double>&) override
     {
       ERROR_EXIT("should not be called\n");
     }

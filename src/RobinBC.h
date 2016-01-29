@@ -25,12 +25,11 @@ namespace AMDiS
     /// Constructor. \f$ j \f$ and \f$ alpha \f$ are given as AbstractFunction objects.
     template <class JExpr, class AlphaExpr>
     RobinBC(BoundaryType type,
-            JExpr&& j_expr, AlphaExpr&& a_expr,
-            const FiniteElemSpace* rowFeSpace,
-            const FiniteElemSpace* colFeSpace = NULL)
-      : BoundaryCondition(type, rowFeSpace, colFeSpace),
-        neumannOperators(NULL),
-        robinOperators(NULL)
+            JExpr&& j_expr, 
+	    AlphaExpr&& a_expr,
+            FiniteElemSpace const* rowFeSpace,
+            FiniteElemSpace const* colFeSpace = NULL)
+      : BoundaryCondition(type, rowFeSpace, colFeSpace)
     {
       if (traits::IsCompatible<AlphaExpr, tag::dummy>::value)
         init(toTerm(std::forward<JExpr>(j_expr)));
@@ -44,21 +43,21 @@ namespace AMDiS
     /// Implements BoundaryCondition::fillBoundaryCondition();
     virtual void fillBoundaryCondition(DOFMatrix* matrix,
                                        ElInfo* elInfo,
-                                       const DegreeOfFreedom* dofIndices,
-                                       const BoundaryType* localBound,
+                                       DegreeOfFreedom const* dofIndices,
+                                       BoundaryType const* localBound,
                                        int nBasFcts) override;
 
     /// Implements BoundaryCondition::fillBoundaryCondition();
     virtual void fillBoundaryCondition(DOFVectorBase<double>* vector,
                                        ElInfo* elInfo,
-                                       const DegreeOfFreedom* dofIndices,
-                                       const BoundaryType* localBound,
+                                       DegreeOfFreedom const* dofIndices,
+                                       BoundaryType const* localBound,
                                        int nBasFcts) override;
 
     /// Implements BoundaryCondition::boundResidual();
     virtual double boundResidual(ElInfo* elInfo,
                                  DOFMatrix* matrix,
-                                 const DOFVectorBase<double>* dv) override;
+                                 DOFVectorBase<double> const* dv) override;
 
   protected:
     template <class JExpr, class AlphaExpr>
@@ -69,10 +68,10 @@ namespace AMDiS
 
   protected:
     /// Surface operators for each element side for the Neumann part.
-    DimVec<SurfaceOperator*>* neumannOperators;
+    DimVec<SurfaceOperator*>* neumannOperators = NULL;
 
     /// Surface operators for each element side for the Robin part.
-    DimVec<SurfaceOperator*>* robinOperators;
+    DimVec<SurfaceOperator*>* robinOperators = NULL;
 
     VectorOfFixVecs<DimVec<double>>** coords;
   };

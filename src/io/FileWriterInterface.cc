@@ -30,24 +30,24 @@
 namespace AMDiS
 {
 
-  bool FileWriterInterface::doWriteTimestep(AdaptInfo* adaptInfo, bool force)
+  bool FileWriterInterface::doWriteTimestep(AdaptInfo& adaptInfo, bool force)
   {
     if (!force)
     {
       if (timeModulo > 0.0)
       {
-        if (lastWriteTime > adaptInfo->getStartTime()
-            && adaptInfo->getTime() < lastWriteTime + timeModulo)
+        if (lastWriteTime > adaptInfo.getStartTime()
+            && adaptInfo.getTime() < lastWriteTime + timeModulo)
           return false;
       }
       else
       {
-        if (adaptInfo->getTimestepNumber() % tsModulo != 0)
+        if (adaptInfo.getTimestepNumber() % tsModulo != 0)
           return false;
       }
     }
 
-    lastWriteTime = adaptInfo->getTime();
+    lastWriteTime = adaptInfo.getTime();
     return true;
   }
 
@@ -67,9 +67,9 @@ namespace AMDiS
   }
 
 #ifdef HAVE_PARALLEL_DOMAIN_AMDIS
-  void FileWriterInterface::getFilename(AdaptInfo* adaptInfo, std::string& fn, std::string& paraFilename, std::string& postfix)
+  void FileWriterInterface::getFilename(AdaptInfo& adaptInfo, std::string& fn, std::string& paraFilename, std::string& postfix)
 #else
-  void FileWriterInterface::getFilename(AdaptInfo* adaptInfo, std::string& fn)
+  void FileWriterInterface::getFilename(AdaptInfo& adaptInfo, std::string& fn)
 #endif
   {
     fn = filename;
@@ -106,7 +106,7 @@ namespace AMDiS
       char timeStr[20];
 
       sprintf(formatStr, "%%0%d.%df", indexLength, indexDecimals);
-      sprintf(timeStr, formatStr, adaptInfo ? adaptInfo->getTime() : 0.0);
+      sprintf(timeStr, formatStr, adaptInfo.getTime());
 
       fn += timeStr;
 #if HAVE_PARALLEL_DOMAIN_AMDIS

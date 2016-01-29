@@ -20,16 +20,16 @@ namespace AMDiS
 
 
   /// Called before each adaption loop iteration.
-  void CouplingIterationInterface::beginIteration(AdaptInfo* adaptInfo)
+  void CouplingIterationInterface::beginIteration(AdaptInfo& adaptInfo)
   {
     FUNCNAME("CouplingIterationInterface::beginIteration()");
     MSG("\n");
-    int nTimesteps = (adaptInfo->getNumberOfTimesteps()
-                      ? adaptInfo->getNumberOfTimesteps()
-                      : static_cast<int>((adaptInfo->getEndTime()-adaptInfo->getStartTime())/adaptInfo->getTimestep())
+    int nTimesteps = (adaptInfo.getNumberOfTimesteps()
+                      ? adaptInfo.getNumberOfTimesteps()
+                      : static_cast<int>((adaptInfo.getEndTime()-adaptInfo.getStartTime())/adaptInfo.getTimestep())
                      );
     MSG("begin of iteration number: %d/%d\n",
-        adaptInfo->getTimestepNumber() + 1,
+        adaptInfo.getTimestepNumber() + 1,
         nTimesteps);
     MSG("==================================================\n");
   }
@@ -40,7 +40,7 @@ namespace AMDiS
     * true, mesh adaption will be performed. This allows to avoid mesh adaption,
     * e.g. in timestep adaption loops of timestep adaptive strategies.
     */
-  Flag CouplingIterationInterface::oneIteration(AdaptInfo* adaptInfo, Flag toDo)
+  Flag CouplingIterationInterface::oneIteration(AdaptInfo& adaptInfo, Flag toDo)
   {
     Flag flag = 0;
 
@@ -59,12 +59,12 @@ namespace AMDiS
 
 
   /// Called after each adaption loop iteration.
-  void CouplingIterationInterface::endIteration(AdaptInfo* adaptInfo)
+  void CouplingIterationInterface::endIteration(AdaptInfo& adaptInfo)
   {
     FUNCNAME("CouplingIterationInterface::endIteration()");
     MSG("\n");
     MSG("end of iteration number: %d\n",
-        adaptInfo->getTimestepNumber() + 1);
+        adaptInfo.getTimestepNumber() + 1);
     MSG("==================================================\n");
   }
 
@@ -83,7 +83,7 @@ namespace AMDiS
     * Returns the problem with the given number. If only one problem
     * is managed by this master problem, the number hasn't to be given.
     */
-  ProblemStatBase* CouplingIterationInterface::getProblem(int number)
+  ProblemStatBase& CouplingIterationInterface::getProblem(int number)
   {
     FUNCNAME("CouplingIterationInterface::getProblem");
 
@@ -97,11 +97,11 @@ namespace AMDiS
       if (sum + problems[i]->getNumProblems() <= number)
         sum += problems[i]->getNumProblems();
       else
-        probIter = problems[i]->getProblem(number - sum);
+        probIter = &problems[i]->getProblem(number - sum);
     }
 
-    TEST_EXIT_DBG(probIter)("Problem not found. Should not happen, since number is in range.");
-    return probIter;
+    TEST_EXIT(probIter)("Problem not found. Should not happen, since number is in range.");
+    return *probIter;
   }
 
 

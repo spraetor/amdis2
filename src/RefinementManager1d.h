@@ -13,9 +13,7 @@ namespace AMDiS
   {
   public:
     /// Calls base class constructor.
-    RefinementManager1d()
-      : RefinementManager()
-    {}
+    RefinementManager1d() = default;
 
     /// Implements RefinementManager::refineMesh.
     Flag refineMesh(Mesh* aMesh);

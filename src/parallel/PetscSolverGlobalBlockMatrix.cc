@@ -193,7 +193,7 @@ namespace AMDiS
 
 
     void PetscSolverGlobalBlockMatrix::solvePetscMatrix(SystemVector& vec,
-        AdaptInfo* adaptInfo)
+        AdaptInfo& adaptInfo)
     {
       FUNCNAME("PetscSolverGlobalBlockMatrix::solvePetscMatrix()");
 

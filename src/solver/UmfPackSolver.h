@@ -1,28 +1,6 @@
-/******************************************************************************
- *
- * AMDiS - Adaptive multidimensional simulations
- *
- * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
- * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
- *
- * Authors:
- * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
- *
- * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
- * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
- *
- *
- * This file is part of AMDiS
- *
- * See also license.opensource.txt in the distribution.
- *
- ******************************************************************************/
-
-
 /** \file UmfPackSolver.h */
 
-#ifndef AMDIS_UMFPACKSOLVER_H
-#define AMDIS_UMFPACKSOLVER_H
+#pragma once
 
 #if defined HAVE_UMFPACK && defined MTL_HAS_UMFPACK
 
@@ -34,12 +12,19 @@
 namespace AMDiS
 {
 
-  template<typename MatrixType, typename VectorType>
+  template <class MatrixType, class VectorType>
   struct Umfpack_Runner : public RunnerBase<MatrixType, VectorType>
   {
-    typedef RunnerBase<MatrixType, VectorType>      super;
-    typedef Umfpack_Runner<MatrixType, VectorType>  self;
+    using Super = RunnerBase<MatrixType, VectorType>;
+    using Self  = Umfpack_Runner<MatrixType, VectorType>;
 
+    /// Constructor.
+    /**
+     * Reads parameters for solver with name 'NAME':
+     *   NAME->store symbolic       \ref store_symbolic
+     *   NAME->symmetric strategy   \ref symmetric_strategy
+     *   NAME->alloc init           \ref alloc_init
+     **/
     Umfpack_Runner(LinearSolverInterface* oem_)
       : oem(*oem_),
         solver(NULL),
@@ -52,10 +37,21 @@ namespace AMDiS
       Parameters::get(oem.getName() + "->alloc init", alloc_init);
     }
 
-    /// Implementation of \ref RunnerBase::init()
-    virtual void init(const SolverMatrix<Matrix<DOFMatrix*>>& A,
-                      const MatrixType& fullMatrix) override
+    /// Destructor.
+    ~Umfpack_Runner()
     {
+      if (solver != NULL)
+      {
+        delete solver;
+        solver = NULL;
+      }
+    }
+
+    /// Implementation of \ref RunnerBase::init()
+    virtual void init(SolverMatrix<Matrix<DOFMatrix*>> const& A,
+                      MatrixType const& fullMatrix) override
+    {
+      namespace umfpack = mtl::matrix::umfpack;
       if (solver != NULL)
       {
         delete solver;
@@ -64,26 +60,29 @@ namespace AMDiS
 
       try
       {
-        solver = new mtl::matrix::umfpack::solver<MatrixType>(fullMatrix, symmetric_strategy, alloc_init);
+        solver = new umfpack::solver<MatrixType>(fullMatrix, symmetric_strategy, 
+						 alloc_init);
       }
-      catch (mtl::matrix::umfpack::error& e)
+      catch (umfpack::error& e)
       {
         ERROR_EXIT("UMFPACK_ERROR(factorize, %d) = %s\n", e.code, e.what());
       }
     }
 
     /// Implementation of \ref RunnerBase::solve()
-    virtual int solve(const MatrixType& A, VectorType& x, const VectorType& b) override
+    virtual int solve(MatrixType const& A, VectorType& x, 
+		      VectorType const& b) override
     {
       FUNCNAME("Umfpack_Runner::solve()");
       TEST_EXIT(solver != NULL)("The umfpack solver was not initialized\n");
+      namespace umfpack = mtl::matrix::umfpack;
 
       int code = 0;
       try
       {
         code = (*solver)(x, b);
       }
-      catch (mtl::matrix::umfpack::error& e)
+      catch (umfpack::error& e)
       {
         ERROR_EXIT("UMFPACK_ERROR(solve, %d) = %s\n", e.code, e.what());
       }
@@ -99,15 +98,6 @@ namespace AMDiS
 
     /// Implementation of \ref RunnerInterface::adjoint_solve()
     virtual void exit() override {}
-
-    ~Umfpack_Runner()
-    {
-      if (solver != NULL)
-      {
-        delete solver;
-        solver = NULL;
-      }
-    }
 
   public:
     LinearSolverInterface& oem;
@@ -132,10 +122,10 @@ namespace AMDiS
    *
    * This is a direct solver for large sparse matrices.
    */
-  typedef LinearSolver<MTLTypes::MTLMatrix, MTLTypes::MTLVector, Umfpack_Runner<MTLTypes::MTLMatrix, MTLTypes::MTLVector>> UmfPackSolver;
+  using UmfPackSolver = LinearSolver< MTLTypes::MTLMatrix, MTLTypes::MTLVector, 
+				      Umfpack_Runner< MTLTypes::MTLMatrix, 
+						      MTLTypes::MTLVector > >;
 
 }
 
 #endif // HAVE_UMFPACK
-
-#endif // AMDIS_UMFPACKSOLVER_H

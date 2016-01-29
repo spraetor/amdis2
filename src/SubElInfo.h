@@ -23,7 +23,7 @@ namespace AMDiS
   {
   public:
     /// Constructor
-    SubElInfo(VectorOfFixVecs<DimVec<double>>* lambda, const ElInfo* elInfo);
+    SubElInfo(VectorOfFixVecs<DimVec<double>>* lambda, ElInfo const* elInfo);
 
     /// Destructor
     ~SubElInfo()
@@ -42,7 +42,7 @@ namespace AMDiS
     }
 
     /// Get coordinates of a-th vertex of subelement (barycentric coordinates).
-    const DimVec<double>& getLambda(int a) const
+    DimVec<double> const& getLambda(int a) const
     {
       return (*lambda)[a];
     }
@@ -62,7 +62,7 @@ namespace AMDiS
   protected:
 
     /// Contains elInfo of the element that contains subelement.
-    const ElInfo* elInfo;
+    ElInfo const* elInfo;
 
     /// Barycentrc coordinates of the vertices of subelement.
     VectorOfFixVecs<DimVec<double>>* lambda;

@@ -5,6 +5,7 @@
 #include <AMDiS_fwd.h>
 #include <Traits.h>
 #include <traits/basic.hpp>
+#include <traits/traits.hpp>
 #include <utility/foreach.hpp>
 #include "TermConcepts.hpp"
 
@@ -35,9 +36,7 @@ namespace AMDiS
     template <class List>
     struct InsertFeSpaces
     {
-      InsertFeSpaces(List& feSpaces_)
-        : feSpaces(feSpaces_)
-      {}
+      List& feSpaces;
 
       template <class Term>
       void operator()(Term& term)
@@ -46,7 +45,6 @@ namespace AMDiS
       }
 
     private:
-      List& feSpaces;
     };
 
     /// Functor that is called on each term to initialize it on an element
@@ -56,17 +54,7 @@ namespace AMDiS
       SubAssembler* subAssembler;
       Quadrature* quad;
       BasisFunction const* basisFct;
-
-      InitElement(ElInfo const* elInfo_,
-                  SubAssembler* subAssembler_,
-                  Quadrature* quad_,
-                  BasisFunction const* basisFct_)
-        : elInfo(elInfo_),
-          subAssembler(subAssembler_),
-          quad(quad_),
-          basisFct(basisFct_)
-      {}
-
+      
       template <class Term>
       void operator()(Term& term)
       {
@@ -89,7 +77,9 @@ namespace AMDiS
 
   public:
     template <class... Terms_,
-      class = Requires_t<concepts::Term<Terms_...>>>
+      class = Requires_t< and_< concepts::Term<Terms_...>,
+				concepts::Compatible<Types<Terms...>, 
+						     Types<Terms_...>> > >>
     constexpr LazyOperatorTerms(Terms_&&... terms_)
       : terms(std::forward<Terms_>(terms_)...)
     {}
@@ -97,7 +87,14 @@ namespace AMDiS
     template <class List>
     void insertFeSpaces(List& feSpaces)
     {
-      for_each(terms, detail::InsertFeSpaces<List>(feSpaces));
+#ifdef CXX14
+      for_each([&feSpaces](auto& term) 
+      {
+        term.insertFeSpaces(feSpaces);
+      });
+#else
+      for_each(detail::InsertFeSpaces<List>{feSpaces}, terms);
+#endif
     }
 
     void initElement(ElInfo const* elInfo,
@@ -105,7 +102,14 @@ namespace AMDiS
                      Quadrature* quad,
                      BasisFunction const* basisFct = NULL)
     {
-      for_each(terms, detail::InitElement(elInfo, subAssembler, quad, basisFct));
+#ifdef CXX14
+      for_each([=](auto& term) 
+      {
+        term.insertFeSpaces(elInfo, subAssembler, quad, basisFct);
+      });
+#else
+      for_each(detail::InitElement{elInfo, subAssembler, quad, basisFct}, terms);
+#endif
     }
 
     template <int N>

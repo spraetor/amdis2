@@ -21,12 +21,12 @@ namespace AMDiS
     using size_type  = Size_t<E>;
     using expr_type  = E;
 
-    constexpr static int _SIZE = 1;
-    constexpr static int _ROWS = 1;
-    constexpr static int _COLS = 1;
+    static constexpr int _SIZE = 1;
+    static constexpr int _ROWS = 1;
+    static constexpr int _COLS = 1;
 
   private:
-    constexpr static int ARG_SIZE = E::_SIZE;
+    static constexpr int ARG_SIZE = E::_SIZE;
 
   public:
     /// constructor takes on expression \p A.

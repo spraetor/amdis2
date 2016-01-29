@@ -14,6 +14,7 @@ namespace AMDiS
   constexpr int Triangle::sideOfChild[2][3];
   constexpr int Triangle::vertexOfParent[2][3];
 
+  
   bool Triangle::hasSide(Element* sideElem) const
   {
     FUNCNAME("Triangle::hasSide");

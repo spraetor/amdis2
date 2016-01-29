@@ -51,7 +51,7 @@ namespace reinit
     {}
 
     /// Print velDOF to file.
-    void printVelDOF(AdaptInfo* adaptInfo, int i = 0)
+    void printVelDOF(AdaptInfo& adaptInfo, int i = 0)
     {
       FUNCNAME("VelocityExt::printVelDOF()");
 
@@ -67,7 +67,7 @@ namespace reinit
     }
 
     /// Print origVelDOF to file.
-    void printOrigVelDOF(AdaptInfo* adaptInfo, int i = 0)
+    void printOrigVelDOF(AdaptInfo& adaptInfo, int i = 0)
     {
       FUNCNAME("VelocityExt::printOrigVelDOF()");
 

@@ -17,29 +17,29 @@ namespace AMDiS
   class Triangle : public Element
   {
   public:
-    /// calls base class contructor.
-    Triangle(Mesh* aMesh)
-      : Element(aMesh)
+    /// Constructor. Ccalls base class contructor.
+    Triangle(Mesh* mesh_)
+      : Element(mesh_)
     {}
 
-    /// implements Element::clone
+    /// Implementation of \ref Element::clone
     virtual Element* clone() const override
     {
       return new Triangle(mesh);
     }
 
-    /// implements Element::getVertexOfEdge
+    /// Implementation of \ref Element::getVertexOfEdge
     virtual int getVertexOfEdge(int i, int j) const override
     {
       return vertexOfEdge[i][j];
     }
 
-    /// implements Element::getVertexOfPosition
+    /// Implementation of \ref Element::getVertexOfPosition
     virtual int getVertexOfPosition(GeoIndex position,
                                     int positionIndex,
                                     int vertexIndex) const override;
 
-    /// implements Element::getGeo
+    /// Implementation of \ref Element::getGeo
     virtual int getGeo(GeoIndex i) const override
     {
       switch (i)
@@ -71,25 +71,25 @@ namespace AMDiS
       }
     }
 
-    /// implements Element::hasSide
+    /// Implementation of \ref Element::hasSide
     virtual bool hasSide(Element* sideElem) const override;
 
-    /// implements Element::sortFaceIndices
+    /// Implementation of \ref Element::sortFaceIndices
     virtual void sortFaceIndices(int face, FixVec<int, WORLD>& vec) const override;
 
-    /// implements Element::isLine. Returns false because this element is a Triangle
+    /// Implementation of \ref Element::isLine. Returns false because this element is a Triangle
     virtual bool isLine() const override
     {
       return false;
     }
 
-    /// implements Element::isTriangle. Returns true because this element is a Triangle
+    /// Implementation of \ref Element::isTriangle. Returns true because this element is a Triangle
     virtual bool isTriangle() const override
     {
       return true;
     }
 
-    /// implements Element::isTetrahedron. Returns false because this element is a Triangle
+    /// Implementation of \ref Element::isTetrahedron. Returns false because this element is a Triangle
     virtual bool isTetrahedron() const override
     {
       return false;
@@ -101,7 +101,7 @@ namespace AMDiS
       return 0;
     }
 
-    /// implements Element::getSideOfChild()
+    /// Implementation of \ref Element::getSideOfChild()
     virtual int getSideOfChild(int child, int side, int) const override
     {
       FUNCNAME_DBG("Triangle::getSideOfChild()");
@@ -111,6 +111,7 @@ namespace AMDiS
       return sideOfChild[child][side];
     }
 
+    /// Implementation of \ref Element::getSubObjOfChild()
     virtual int getSubObjOfChild(int childnr, GeoIndex subObj,
                                  int ithObj, int elType) const override
     {
@@ -120,7 +121,7 @@ namespace AMDiS
       return getSideOfChild(childnr, ithObj, elType);
     }
 
-    /// implements Element::getVertexOfParent()
+    /// Implementation of \ref Element::getVertexOfParent()
     virtual int getVertexOfParent(int child, int side, int = 0) const override
     {
       FUNCNAME_DBG("Triangle::getVertexOfParent()");
@@ -130,6 +131,7 @@ namespace AMDiS
       return vertexOfParent[child][side];
     }
 
+    /// Implementation of \ref Element::getPositionOfVertex()
     virtual int getPositionOfVertex(int side, int vertex) const override
     {
       FUNCNAME_DBG("Triangle::getPositionOfVertex()");
@@ -140,6 +142,7 @@ namespace AMDiS
       return positionOfVertex[side][vertex];
     }
 
+    /// Implementation of \ref Element::getEdgeOfFace()
     virtual int getEdgeOfFace(int face, int edge) const override
     {
       FUNCNAME_DBG("Triangle::getEdgeOfFace()");
@@ -149,6 +152,7 @@ namespace AMDiS
       return edge;
     }
 
+    /// Implementation of \ref Element::getEdge()
     virtual DofEdge getEdge(int localEdgeIndex) const override
     {
       FUNCNAME_DBG("Triangle::getEdge()");
@@ -160,31 +164,30 @@ namespace AMDiS
       //       return {std::min(dof0, dof1), std::max(dof0, dof1)};
     }
 
+    /// Implementation of \ref Element::getFace()
     virtual DofFace getFace(int localFaceIndex) const override
     {
       ERROR_EXIT("This does not work in 2D!\n");
       return {};
     }
 
+    /// Implementation of \ref Element::getNodeDofs()
     virtual void getNodeDofs(const FiniteElemSpace* feSpace,
                              BoundaryObject bound,
                              DofContainer& dofs,
                              bool baseDofPtr = false) const override;
 
+    /// Implementation of \ref Element::getHigherOrderDofs()
     virtual void getHigherOrderDofs(const FiniteElemSpace* feSpace,
                                     BoundaryObject bound,
                                     DofContainer& dofs,
                                     bool baseDofPtr = false,
                                     std::vector<GeoIndex>* dofGeoIndex = NULL) const override;
 
+    /// Implementation of \ref Element::getSubBoundary()
     virtual void getSubBoundary(BoundaryObject bound,
                                 std::vector<BoundaryObject>& subBound) const override;
 
-
-    std::string getTypeName() const
-    {
-      return "Triangle";
-    }
 
     void prepareNextBound(BoundaryObject& bound, int ithChild) const;
 

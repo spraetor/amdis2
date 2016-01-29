@@ -5,29 +5,45 @@
 // from http://stackoverflow.com/questions/17424477/implementation-c14-make-integer-sequence/17426611#17426611
 namespace AMDiS
 {
+  template <int...> struct Seq {};
+
   namespace detail
   {
-    template <unsigned...> struct Seq { using type = Seq; };
+    template <int s, class S>
+    struct Concat;
 
-    template <class S1, class S2> struct Concat;
+    template <int s, int ... i>
+    struct Concat<s, Seq<i... >>
+    {
+      using type = Seq<i..., (s + i)... >;
+    };
 
-    template <unsigned... I1, unsigned... I2>
-    struct Concat<Seq<I1...>, Seq<I2...>>
-      : Seq<I1..., (sizeof...(I1)+I2)...> {};
+    template <bool, class S>
+    struct IncSeq_if 
+    { 
+      using type = S; 
+    };
 
-    template <class S1, class S2>
-    using Concat_t = typename Concat<S1, S2>::type;
+    template <int... Is>
+    struct IncSeq_if<true, Seq<Is...>>
+    {
+      using type = Seq<Is..., sizeof...(Is)>;
+    };
     
   } // end namespace detail
+  
+  template <int N>
+  struct MakeSeq 
+  {
+    using type = typename detail::IncSeq_if< (N % 2 != 0), 
+      typename detail::Concat<N/2, typename MakeSeq<N/2>::type>::type >::type;
+  };
 
-  template <unsigned N> struct IntSeq;
-  template <unsigned N> using IntSeq_t = typename IntSeq<N>::type;
+  // break condition
+  template <> struct MakeSeq<0> { using type = Seq<>; };
 
-  template <unsigned N>
-  struct IntSeq 
-    : Concat_t<IntSeq_t<N/2>, IntSeq_t<N - N/2>> {};
-
-  template <> struct IntSeq<0> : Seq<> {};
-  template <> struct IntSeq<1> : Seq<0> {};
+  // alias template
+  template <int N>
+  using MakeSeq_t = typename MakeSeq<N>::type;
   
 } // end namespace AMDiS

@@ -5,7 +5,7 @@
 namespace AMDiS
 {
   SubElInfo::SubElInfo(VectorOfFixVecs<DimVec<double>>* lambda_,
-                       const ElInfo* elInfo_)
+                       ElInfo const* elInfo_)
     : elInfo(elInfo_)
   {
     FUNCNAME("SubElInfo::SubElInfo");

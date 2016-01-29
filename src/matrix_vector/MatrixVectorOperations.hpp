@@ -92,7 +92,7 @@ namespace AMDiS
   using CrossExpr = VectorBinaryExpr<E1, E2,
 			functors::MyCross<Value_t<E1>, Value_t<E2>>>;
 
-  /// expression for V x W (cross product / outer product / tensor product)
+  /// expression for V x W (cross product)
   template <class E1, class E2>
   CrossExpr<E1, E2>
   cross(VectorExpr<E1> const& expr1, VectorExpr<E2> const& expr2)

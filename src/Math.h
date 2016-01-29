@@ -56,6 +56,11 @@ namespace AMDiS
     a = 0;
   }
 
+  inline void nullify(std::string& s)
+  {
+    s = "";
+  }
+
   template <class T> inline void nullify(std::vector<T>& a)
   {
     typename std::vector<T>::iterator it;
@@ -71,7 +76,7 @@ namespace AMDiS
   }
 
   /// Calculates factorial of i
-  inline int fac(int i)
+  inline long fac(long i)
   {
     if (i <= 1)
       return 1;

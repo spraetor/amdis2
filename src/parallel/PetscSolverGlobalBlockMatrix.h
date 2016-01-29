@@ -64,7 +64,7 @@ namespace AMDiS
 
       void fillPetscRhs(SystemVector* vec);
 
-      void solvePetscMatrix(SystemVector& vec, AdaptInfo* adaptInfo);
+      void solvePetscMatrix(SystemVector& vec, AdaptInfo& adaptInfo);
 
       void destroyMatrixData();
 

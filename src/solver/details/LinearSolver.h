@@ -75,7 +75,7 @@ namespace AMDiS
     template<typename MatrixOut, typename MatrixIn, typename M>
     void fillMatrix(MatrixOut& m, const MatrixIn& source, MapperBase<M>& mapper)
     {
-      MatMap<const MatrixIn, M> matMap(source, mapper.self());
+      MatMap<const MatrixIn, M> matMap{source, mapper.self()};
       m << matMap;
     }
 
@@ -114,7 +114,7 @@ namespace AMDiS
     template<typename VectorOut, typename VectorIn, typename M>
     void fillVector(VectorOut& v, const VectorIn& source, MapperBase<M>& mapper)
     {
-      VecMap<const VectorIn, M> srcVecMap(source, mapper.self());
+      VecMap<const VectorIn, M> srcVecMap{source, mapper.self()};
       v << srcVecMap;
     }
 

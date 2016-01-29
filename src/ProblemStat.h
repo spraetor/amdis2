@@ -35,99 +35,145 @@ namespace AMDiS
    **/
   class ProblemStatSeq : public ProblemStatBase
   {
-  protected:
-    // Defines a mapping type from dof indices to world coordinates.
-    using DofToCoord = std::map<DegreeOfFreedom, WorldVector<double>>;
-
-    // Defines a mapping type from dof indices to world coordinates.
-    using CoordToDof = std::map<WorldVector<double>, DegreeOfFreedom>;
-
   public:
     /// Constructor
-    ProblemStatSeq(std::string nameStr,
-                   ProblemIterationInterface* problemIteration = NULL);
+    /**
+     * Parameters read by ProblemStatSeq, with name 'PROB'
+     *   PROB->components:             \ref nComponents
+     *   PROB->additional components:  \ref nAddComponents
+     *   PROB->names:                  \ref componentNames
+     *   PROB->name[i]:                \ref componentNames[i] i=0...nComponents
+     *   debug->write asm info:        \ref writeAsmInfo
+     **/
+    explicit ProblemStatSeq(std::string name);
 
     /// Destructor
     virtual ~ProblemStatSeq();
 
     /// Initialisation of the problem.
+    /**
+     * Parameters read in initialize() for problem with name 'PROB'
+     *   MESH[0]->global refinements:  nr of initial global refinements
+     *   MESH[0]->value file name:     read value file and use it for the mesh values
+     **/
     virtual void initialize(Flag initFlag,
                             ProblemStatSeq* adoptProblem = NULL,
                             Flag adoptFlag = INIT_NOTHING);
 
     /// Used in \ref initialize().
+    /**
+     * Parameters read in createMesh() for problem with name 'PROB'
+     *   PROB->mesh:              Name of the mesh of this problem, creates one
+     *                            or more meshes (w.r.t. different refinement sets)
+     *                            and store it in \ref meshes and \ref componentsMeshes.
+     *   PROB->dim:               Problem dimension, i.e. dim of the elements
+     *   PROB->refinement set[i]: Index for an individual refinement of mesh
+     *                            of component i, for i=0...(nComponents+nAddComponents)
+     **/
     virtual void createMesh();
 
     /// Used in \ref initialize().
     virtual void createRefCoarseManager();
 
     /// Used in \ref initialize().
+    /**
+     * Parameters read in createFeSpace() for problem with name 'PROB', 
+     * for i=0...(nComponents+nAddComponents).
+     *   PROB->feSpace[i]:               Name of the i-th feSpace
+     *   PROB->finite element space[i]:  Name of the i-th feSpace
+     *   PROB->polynomial degree[i]:     Same as feSpace[i] = "Lagrange" + DEGREE
+     * 
+     * FeSpaces are stored in \ref feSpaces and \ref componentSpaces.
+     **/
     virtual void createFeSpace(DOFAdmin* admin);
 
     /// Used in \ref initialize().
     virtual void createMatricesAndVectors();
 
     /// Used in \ref initialize().
+    /**
+     * Parameters read in createMatricesAndVectors() for problem with name 'PROB'
+     *   PROB->solver:              Name of the iterative solver
+     *   PROB->solver->backend:     Name of the backend the iterative solver belongs to
+     **/
     virtual void createSolver();
 
     /// Used in \ref initialize().
+    /**
+     * Parameters read in createEstimator() for problem with name 'PROB'
+     *   PROB->estimator[i]->name:  Name of the i-th estimator
+     * 
+     * Estimators are stored in \ref estimator.
+     **/
     virtual void createEstimator();
 
     /// Used in \ref initialize().
+    /**
+     * Creates a marker corresponding to parameter
+     *   PROB->marker[i]
+     * 
+     * Markers are stored in \ref marker.
+     **/
     virtual void createMarker();
 
     /// Used in \ref initialize().
+    /**
+     * Creates filewriters corresponding to parameter
+     *   PROB->output:              Filewriter for all components
+     *   PROB->output->filename:    Filename for the filewriter
+     *   PROB->output[i]:           Filewriter for component i
+     *   PROB->output[i]->filename: Filename for the filewriter i
+     *   PROB->output->num vectors: Combines some components to a vector filewriter
+     *   PROB->output->vectors[j]:  Vector-Filewriter with index j=0...num vectors
+     *   PROB->output->vectors[j]->components:   The Components corresponding to Vector-Filewriter j
+     *   PROB->output->vectors[j]->filename:     The filename of Vector-Filewriter j
+     *   PROB->output->vectors[j]->name:         The corresponding component-name
+     * 
+     * Filewriters are stored in \ref fileWriters.
+     **/
     virtual void createFileWriter();
-
-    /// Used in \ref initialize(). This function is deprecated and should not
-    /// be used anymore. There is no guarantee that it will work in the future.
-    virtual void doOtherStuff();
 
     /// Implementation of ProblemStatBase::solve(). Deligates the solving
     /// of problems system to \ref solver.
-    virtual void solve(AdaptInfo* adaptInfo,
+    virtual void solve(AdaptInfo& adaptInfo,
                        bool createMatrixData = true,
                        bool storeMatrixData = false) override;
 
     /// Implementation of ProblemStatBase::estimate(). Deligates the estimation
     /// to \ref estimator.
-    virtual void estimate(AdaptInfo* adaptInfo) override;
+    virtual void estimate(AdaptInfo& adaptInfo) override;
 
     /// Implementation of ProblemStatBase::markElements().
     /// Deligated to \ref adapt.
-    virtual Flag markElements(AdaptInfo* adaptInfo) override;
+    virtual Flag markElements(AdaptInfo& adaptInfo) override;
 
     /// Implementation of ProblemStatBase::refineMesh(). Deligated to the
     /// RefinementManager of \ref adapt.
-    virtual Flag refineMesh(AdaptInfo* adaptInfo) override;
+    virtual Flag refineMesh(AdaptInfo& adaptInfo) override;
 
     /// Implementation of ProblemStatBase::coarsenMesh(). Deligated to the
     /// CoarseningManager of \ref adapt.
-    virtual Flag coarsenMesh(AdaptInfo* adaptInfo) override;
+    virtual Flag coarsenMesh(AdaptInfo& adaptInfo) override;
 
     /// Implementation of ProblemStatBase::buildBeforeRefine().
     /// Does nothing here.
-    virtual void buildBeforeRefine(AdaptInfo* adaptInfo, Flag) override {}
+    virtual void buildBeforeRefine(AdaptInfo& adaptInfo, Flag) override {}
 
     /// Implementation of ProblemStatBase::buildBeforeCoarsen().
     /// Does nothing here.
-    virtual void buildBeforeCoarsen(AdaptInfo* adaptInfo, Flag) override {}
+    virtual void buildBeforeCoarsen(AdaptInfo& adaptInfo, Flag) override {}
 
     /// Implementation of ProblemStatBase::buildAfterCoarsen().
     /// Assembles \ref A and \ref rhs. With the last two parameters, assembling
     /// can be restricted to matrices or vectors only.
-    virtual void buildAfterCoarsen(AdaptInfo* adaptInfo, Flag flag,
+    virtual void buildAfterCoarsen(AdaptInfo& adaptInfo, Flag flag,
                                    bool assembleMatrix = true,
                                    bool assembleVector = true) override;
 
-    void assemble(AdaptInfo* adaptInfo)
+    void assemble(AdaptInfo& adaptInfo)
     {
       buildAfterCoarsen(adaptInfo, Flag(0));
     }
-    // bool dualMeshTraverseRequired();
-
-    // void dualAssemble(AdaptInfo *adaptInfo, Flag flag,
-    //       bool asmMatrix = true, bool asmVector = true);
 
     /// Returns nr of components \ref nComponents
     virtual int getNumComponents() const
@@ -140,10 +186,7 @@ namespace AMDiS
     {
       return nAddComponents;
     }
-
-    /// Writes output files. TODO: Make obsolete.
-    void writeFiles(AdaptInfo* adaptInfo, bool force);
-
+    
     /// Writes output files.
     void writeFiles(AdaptInfo& adaptInfo, bool force);
 
@@ -151,20 +194,20 @@ namespace AMDiS
     void interpolInitialSolution(std::vector<std::function<double(WorldVector<double>)>>& fct);
 
     /// Adds an operator to \ref A.
-    void addMatrixOperator(Operator* op, int i, int j,
-                           double* factor = NULL, double* estFactor = NULL);
-
-    /// Adds an operator to \ref A.
     void addMatrixOperator(Operator& op, int i, int j,
-                           double* factor = NULL, double* estFactor = NULL);
-
-    /// Adds an operator to \ref rhs.
-    void addVectorOperator(Operator* op, int i,
                            double* factor = NULL, double* estFactor = NULL);
 
     /// Adds an operator to \ref rhs.
     void addVectorOperator(Operator& op, int i,
                            double* factor = NULL, double* estFactor = NULL);
+
+    /// add boundary operator to matrix side
+    virtual void addBoundaryMatrixOperator(BoundaryType type,
+                                           Operator& op, int row, int col);
+
+    /// add boundary operator to rhs (vector) side
+    virtual void addBoundaryVectorOperator(BoundaryType type,
+                                           Operator& op, int row);
 
     /// Adds a Dirichlet boundary condition, where the rhs is given by an
     /// abstract function.
@@ -189,29 +232,9 @@ namespace AMDiS
     /// Adds a periodic boundary condition.
     virtual void addPeriodicBC(BoundaryType type, int row, int col);
 
-    /// add boundary operator to matrix side
-    virtual void addBoundaryMatrixOperator(BoundaryType type,
-                                           Operator* op, int row, int col);
-
-    virtual void addBoundaryMatrixOperator(BoundaryType type,
-                                           Operator& op, int row, int col)
-    {
-      addBoundaryMatrixOperator(type, &op, row, col);
-    }
-
-    /// add boundary operator to rhs (vector) side
-    virtual void addBoundaryVectorOperator(BoundaryType type,
-                                           Operator* op, int row);
-
-    virtual void addBoundaryVectorOperator(BoundaryType type,
-                                           Operator& op, int row)
-    {
-      addBoundaryVectorOperator(type, &op, row);
-    }
-
     /// This function assembles a DOFMatrix and a DOFVector for the case,
     /// the meshes from row and col FE-space are equal.
-    void assembleOnOneMesh(const FiniteElemSpace* feSpace,
+    void assembleOnOneMesh(FiniteElemSpace const* feSpace,
                            Flag assembleFlag,
                            DOFMatrix* matrix, DOFVector<double>* vector);
 
@@ -277,7 +300,7 @@ namespace AMDiS
     }
 
     /// Returns \ref feSpace_.
-    const FiniteElemSpace* getFeSpace(int comp = 0) const
+    FiniteElemSpace const* getFeSpace(int comp = 0) const
     {
       FUNCNAME("ProblemStatSeq::getFeSpace()");
       TEST_EXIT(comp < static_cast<int>(componentSpaces.size()) && comp >= 0)
@@ -286,13 +309,13 @@ namespace AMDiS
     }
 
     /// Returns \ref feSpaces.
-    std::vector<const FiniteElemSpace*>& getFeSpaces()
+    std::vector<FiniteElemSpace const*>& getFeSpaces()
     {
       return feSpaces;
     }
 
     /// Returns \ref componentSpaces;
-    std::vector<const FiniteElemSpace*>& getComponentSpaces()
+    std::vector<FiniteElemSpace const*>& getComponentSpaces()
     {
       return componentSpaces;
     }
@@ -340,7 +363,7 @@ namespace AMDiS
     }
 
     /// Returns the name of the problem
-    std::string getName() const override
+    virtual std::string getName() const override
     {
       return name;
     }
@@ -351,12 +374,6 @@ namespace AMDiS
       TEST_EXIT(comp < static_cast<int>(componentNames.size()) && comp >= 0)
       ("invalid component number\n");
       return componentNames[comp];
-    }
-
-    /// Returns \ref useGetBound.
-    bool getBoundUsed() const
-    {
-      return useGetBound;
     }
 
     /// Returns \ref info.
@@ -378,7 +395,7 @@ namespace AMDiS
     }
 
     /// Sets the FE space for the given component.
-    void setFeSpace(const FiniteElemSpace* feSpace, int comp = 0)
+    void setFeSpace(FiniteElemSpace const* feSpace, int comp = 0)
     {
       feSpaces[comp] = feSpace;
     }
@@ -388,7 +405,7 @@ namespace AMDiS
       feSpaces = feSpaces_;
     }
 
-    void setComponentSpace(int comp, const FiniteElemSpace* feSpace)
+    void setComponentSpace(int comp, FiniteElemSpace const* feSpace)
     {
       if (static_cast<int>(componentSpaces.size()) < nComponents)
         componentSpaces.resize(nComponents);
@@ -462,7 +479,7 @@ namespace AMDiS
 
     /// Outputs the mesh of the given component, but the values are taken from
     /// the residual error estimator.
-    void writeResidualMesh(int comp, AdaptInfo* adaptInfo, std::string name);
+    void writeResidualMesh(int comp, AdaptInfo& adaptInfo, std::string name);
 
     /// Returns \ref fileWriters.
     std::vector<FileWriterInterface*>& getFileWriterList()
@@ -488,10 +505,10 @@ namespace AMDiS
     std::string name;
 
     /// Number of problem components
-    int nComponents;
+    int nComponents = -1;
 
     /// Number of additional components
-    int nAddComponents;
+    int nAddComponents = 0;
 
     /// Stores the names for all components. Is used for naming the solution
     /// vectors, \ref solution.
@@ -500,16 +517,16 @@ namespace AMDiS
     /// Number of problem meshes. If all components are defined on the same mesh,
     /// this number is 1. Otherwise, this variable is the number of different meshes
     /// within the problem.
-    int nMeshes;
+    int nMeshes = 0;
 
     /// FE spaces of this problem.
-    std::vector<const FiniteElemSpace*> feSpaces;
+    std::vector<FiniteElemSpace const*> feSpaces;
 
     /// Meshes of this problem.
     std::vector<Mesh*> meshes;
 
     /// Pointer to the fe spaces for the different problem components
-    std::vector<const FiniteElemSpace*> componentSpaces;
+    std::vector<FiniteElemSpace const*> componentSpaces;
 
     /// Pointer to the meshes for the different problem components
     std::vector<Mesh*> componentMeshes;
@@ -517,7 +534,7 @@ namespace AMDiS
     /// Stores information about which meshes must be traversed to assemble the
     /// specific components. I.e., it was implemented to make use of different
     /// meshes for different components.
-    ComponentTraverseInfo traverseInfo;
+    ComponentTraverseInfo traverseInfo = 0;
 
     /// Responsible for element marking.
     std::vector<Marker*> marker;
@@ -526,16 +543,16 @@ namespace AMDiS
     std::vector<Estimator*> estimator;
 
     /// Linear solver of this problem. Used in \ref solve().
-    LinearSolverInterface* solver;
+    LinearSolverInterface* solver = NULL;
 
     /// System vector  storing the calculated solution of the problem.
-    SystemVector* solution;
+    SystemVector* solution = NULL;
 
     /// System vector for the right hand side
-    SystemVector* rhs;
+    SystemVector* rhs = NULL;
 
     /// System matrix
-    Matrix<DOFMatrix*>* systemMatrix;
+    Matrix<DOFMatrix*>* systemMatrix = NULL;
 
     /// Composed system matrix
     SolverMatrix<Matrix<DOFMatrix*>> solverMatrix;
@@ -553,46 +570,40 @@ namespace AMDiS
     /// to be assembled only once.
     std::vector<std::vector<bool>> assembledMatrix;
 
-    /// Determines whether domain boundaries should be considered at assembling.
-    bool useGetBound;
-
     /// Writes the meshes and solution after the adaption loop.
     std::vector<FileWriterInterface*> fileWriters;
 
     /// All actions of mesh refinement are performed by refinementManager.
     /// If new refinement algorithms should be realized, one has to override
     /// RefinementManager and give one instance of it to AdaptStationary.
-    RefinementManager* refinementManager;
+    RefinementManager* refinementManager = NULL;
 
     /// All actions of mesh coarsening are performed by coarseningManager.
     /// If new coarsening algorithms should be realized, one has to override
     /// CoarseningManager and give one instance of it to AdaptStationary.
-    CoarseningManager* coarseningManager;
+    CoarseningManager* coarseningManager = NULL;
 
     /// Info level.
-    int info;
+    int info = 10;
 
     /// If at least on boundary condition is set, this variable is true. It is
     /// used to ensure that no operators are added after boundary condition were
     /// set. If this would happen, boundary conditions could set wrong on off
     /// diagonal matrices.
-    bool boundaryConditionSet;
+    bool boundaryConditionSet = false;
 
     /// If true, AMDiS prints information about the assembling procedure to
     /// the screen.
-    bool writeAsmInfo;
+    bool writeAsmInfo = false;
 
     std::map<Operator*, std::vector<OperatorPos>> operators;
 
     /// time needed to solve the linear system
-    double solutionTime;
+    double solutionTime = 0.0;
 
     /// time needed to assemble the linear system
-    double buildTime;
-
-    //     template <class> friend class detail::CouplingProblemStat;
+    double buildTime = 0.0;
   };
-
 
   namespace detail
   {
@@ -603,23 +614,22 @@ namespace AMDiS
       using ProblemStatType::getName;
 
       /// Constructor
-      ProblemStat(std::string nameStr,
-                  ProblemIterationInterface* problemIteration = NULL)
-        : ProblemStatType(nameStr, problemIteration),
-          StandardProblemIteration(this)
+      explicit ProblemStat(std::string nameStr)
+        : ProblemStatType(nameStr),
+          StandardProblemIteration(dynamic_cast<ProblemStatBase&>(*this))
       {}
 
       /// Determines the execution order of the single adaption steps. If adapt is
       /// true, mesh adaption will be performed. This allows to avoid mesh adaption,
       /// e.g. in timestep adaption loops of timestep adaptive strategies.
-      // implements StandardProblemIteration::oneIteration(AdaptInfo*, Flag)
-      virtual Flag oneIteration(AdaptInfo* adaptInfo, Flag toDo = FULL_ITERATION) override
+      // implements StandardProblemIteration::oneIteration(AdaptInfo&, Flag)
+      virtual Flag oneIteration(AdaptInfo& adaptInfo, Flag toDo = FULL_ITERATION) override
       {
         for (int i = 0; i < ProblemStatType::getNumComponents(); i++)
-          if (adaptInfo->spaceToleranceReached(i))
-            adaptInfo->allowRefinement(false, i);
+          if (adaptInfo.spaceToleranceReached(i))
+            adaptInfo.allowRefinement(false, i);
           else
-            adaptInfo->allowRefinement(true, i);
+            adaptInfo.allowRefinement(true, i);
 
         return StandardProblemIteration::oneIteration(adaptInfo, toDo);
       }

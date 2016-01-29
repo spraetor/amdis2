@@ -6,7 +6,7 @@ namespace AMDiS
 {
   template <class T>
   void SubAssembler::getVectorAtQPs(DOFVectorBase<T> const* vec,
-                                    const ElInfo* elInfo,
+                                    ElInfo const* elInfo,
                                     Quadrature* quad,
                                     DenseVector<T>& vecAtQPs)
   {
@@ -78,7 +78,7 @@ namespace AMDiS
 
   template <class T>
   void SubAssembler::getGradientsAtQPs(DOFVectorBase<T> const* vec,
-                                       const ElInfo* elInfo,
+                                       ElInfo const* elInfo,
                                        Quadrature* quad,
                                        DenseVector<Gradient_t<T>>& grdAtQPs)
   {
@@ -144,7 +144,7 @@ namespace AMDiS
 
   template <class T>
   void SubAssembler::getDerivativeAtQPs(DOFVectorBase<T> const* vec,
-                                        const ElInfo* elInfo,
+                                        ElInfo const* elInfo,
                                         Quadrature* quad,
                                         int comp,
                                         DenseVector<T>& grdAtQPs)

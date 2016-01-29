@@ -30,15 +30,9 @@ namespace AMDiS
 
   Estimator::Estimator(std::string name_, int r)
     : name(name_),
-      norm(NO_NORM),
-      row(r),
-      mesh(NULL),
-      auxMesh(NULL),
-      traverseInfo(0)
+      row(r)
   {
-    int norm_(norm);
-    Parameters::get(name + "->error norm", norm_);
-    norm = (Norm)norm_;
+    Parameters::get(name + "->error norm", norm);
   }
 
 

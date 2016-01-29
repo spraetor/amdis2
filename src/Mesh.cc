@@ -132,7 +132,7 @@ namespace AMDiS
   }
 
 
-  Mesh& Mesh::operator=(const Mesh& m)
+  Mesh& Mesh::operator=(Mesh const& m)
   {
     FUNCNAME("Mesh::operator=()");
 

@@ -77,14 +77,14 @@ namespace AMDiS
       super::init(fe0, fe1, createGlobalMapping);
     }
 
-    /// see seq::LinearSolver::solveLinearSystem(...)
-    int PetscSolver::solveLinearSystem(const SolverMatrix<Matrix<DOFMatrix*>>& A,
-                                       SystemVector& x,
-                                       SystemVector& b,
-                                       bool createMatrixData,
-                                       bool storeMatrixData)
+    /// see seq::LinearSolver::solveSystemImpl(...)
+    int PetscSolver::solveSystemImpl(SolverMatrix<Matrix<DOFMatrix*>> const& A,
+				     SystemVector& x,
+				     SystemVector& b,
+				     bool createMatrixData,
+				     bool storeMatrixData)
     {
-      FUNCNAME("PetscSolver::solveLinearSystem()");
+      FUNCNAME("PetscSolver::solveSystemImpl()");
 
       TEST_EXIT(meshDistributor)("No meshDistributor provided. Should not happen!\n");
 

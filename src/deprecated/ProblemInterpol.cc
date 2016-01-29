@@ -46,7 +46,7 @@ namespace AMDiS
   }
 
 
-  void ProblemInterpol::solve(AdaptInfo* adaptInfo, bool, bool)
+  void ProblemInterpol::solve(AdaptInfo& adaptInfo, bool, bool)
   {
     int size = static_cast<int>(meshes.size());
     for (int i = 0; i < size; i++)
@@ -56,7 +56,7 @@ namespace AMDiS
   }
 
 
-  void ProblemInterpol::estimate(AdaptInfo* adaptInfo)
+  void ProblemInterpol::estimate(AdaptInfo& adaptInfo)
   {
     FUNCNAME("ProblemIterpolVec::estimate()");
 
@@ -80,8 +80,8 @@ namespace AMDiS
         errSum = Error<double>::H1Err((*(*grdInterpolFct)[i]),
                                       *(solution->getDOFVector(i)),
                                       relErr, &errMax, true, i);
-        adaptInfo->setEstSum(errSum, i);
-        adaptInfo->setEstMax(errMax, i);
+        adaptInfo.setEstSum(errSum, i);
+        adaptInfo.setEstMax(errMax, i);
       }
       break;
     case 2:
@@ -90,8 +90,8 @@ namespace AMDiS
         errSum = Error<double>::L2Err((*(*interpolFct)[i]),
                                       *(solution->getDOFVector(i)),
                                       relErr, &errMax, true, i);
-        adaptInfo->setEstSum(errSum, i);
-        adaptInfo->setEstMax(errMax, i);
+        adaptInfo.setEstSum(errSum, i);
+        adaptInfo.setEstMax(errMax, i);
       }
       break;
     default:

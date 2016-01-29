@@ -9,17 +9,17 @@ namespace AMDiS
 {
   /// Implenetation of FirstOrderTerm::evalImpl().
   void FirstOrderTerm::evalImpl(int nPoints,
-                                const DenseVector<double>& uhAtQP,
-                                const DenseVector<WorldVector<double>>& grdUhAtQP,
-                                const DenseVector<WorldMatrix<double>>& D2UhAtQP,
+                                DenseVector<double> const& uhAtQP,
+                                DenseVector<WorldVector<double>> const& grdUhAtQP,
+                                DenseVector<WorldMatrix<double>> const& D2UhAtQP,
                                 DenseVector<double>& result,
                                 double factor)  const
   {
-    int dow = Global::getGeo(WORLD);
+    const int dow = Global::getGeo(WORLD);
 
     if (num_rows(grdUhAtQP) > 0)
     {
-      for (int iq = 0; iq < nPoints; iq++)
+      for (int iq = 0; iq < nPoints; ++iq)
       {
         double resultQP = 0.0;
         for (int i = 0; i < dow; i++)
@@ -32,10 +32,9 @@ namespace AMDiS
   }
 
 
-  void FirstOrderTerm::l1(
-    const DimVec<WorldVector<double>>& Lambda,
-    DenseVector<double>& Lb,
-    double factor) const
+  void FirstOrderTerm::l1(DimVec<WorldVector<double>> const& Lambda,
+			  DenseVector<double>& Lb,
+			  double factor) const
   {
     const int dim = size(Lambda);
 
@@ -51,11 +50,10 @@ namespace AMDiS
   }
 
 
-  void FirstOrderTerm::lb(
-    const DimVec<WorldVector<double>>& Lambda,
-    const WorldVector<double>& b,
-    DenseVector<double>& Lb,
-    double factor) const
+  void FirstOrderTerm::lb(DimVec<WorldVector<double>> const& Lambda,
+			  WorldVector<double> const& b,
+			  DenseVector<double>& Lb,
+			  double factor) const
   {
     const int dim = size(Lambda);
 
@@ -64,10 +62,9 @@ namespace AMDiS
   }
 
 
-  void FirstOrderTerm::lb_one(
-    const DimVec<WorldVector<double>>& Lambda,
-    DenseVector<double>& Lb,
-    double factor) const
+  void FirstOrderTerm::lb_one(DimVec<WorldVector<double>> const& Lambda,
+			      DenseVector<double>& Lb,
+			      double factor) const
   {
     const int dim = size(Lambda);
 

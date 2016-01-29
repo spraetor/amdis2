@@ -20,12 +20,12 @@ namespace AMDiS
       : value{value_}
     {}
 
-    value_type operator[](int) const
+    value_type operator[](int /* i */) const
     {
       return value;
     }
 
-    value_type operator()(WorldVector<double>) const
+    value_type operator()(WorldVector<double> /* x */) const
     {
       return value;
     }
@@ -51,12 +51,12 @@ namespace AMDiS
 
     constexpr CTConstant() {}
 
-    value_type operator[](int) const
+    value_type operator[](int /* i */) const
     {
       return value;
     }
 
-    value_type operator()(WorldVector<double>) const
+    value_type operator()(WorldVector<double> /* x */) const
     {
       return value;
     }
@@ -83,12 +83,12 @@ namespace AMDiS
     constexpr Reference(value_type const& value_)
       : value{value_} {}
 
-    value_type operator[](int) const
+    value_type operator[](int /* i */) const
     {
       return value;
     }
 
-    value_type operator()(WorldVector<double>) const
+    value_type operator()(WorldVector<double> /* x */) const
     {
       return value;
     }

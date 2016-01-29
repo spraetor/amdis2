@@ -9,72 +9,6 @@
 
 namespace AMDiS
 {
-  /**
-   * \ingroup Integration
-   *
-   * \brief
-   * Used for the comparison of two QPsiPhi objects in find_if.
-   */
-  template <class T>
-  class compareQPsiPhi : public std::unary_function<bool, T*>
-  {
-  public:
-    /// Constructor.
-    compareQPsiPhi(const BasisFunction* psi_,
-                   const BasisFunction* phi_,
-                   const Quadrature* quad_)
-      : psi(psi_),
-        phi(phi_),
-        quadrature(quad_)
-    {}
-
-    /// Returns true, if *q is equivalent to *this.
-    bool operator()(T* q) const
-    {
-      return (q->psi == psi) && (q->phi == phi) && (q->quadrature == quadrature);
-    }
-
-  private:
-    /// Basis functions of QPsiPhi.
-    const BasisFunction* psi, *phi;
-
-    /// Quadrature of QPsiPhi.
-    const Quadrature* quadrature;
-  };
-
-
-  /**
-   * \ingroup Integration
-   *
-   * \brief
-   * Used for the comparison of two QPsi objects in find_if.
-   */
-  template <class T>
-  class compareQPsi : public std::unary_function<bool, T*>
-  {
-  public:
-    /// Constructor.
-    compareQPsi(const BasisFunction* psi_,
-                const Quadrature* quad_)
-      : psi(psi_),
-        quadrature(quad_)
-    {}
-
-    /// Returns true, if *q is equivalent to *this.
-    bool operator()(T* q) const
-    {
-      return (q->psi == psi) && (q->quadrature == quadrature);
-    }
-
-  private:
-    /// Basis functions of the QPsi object.
-    const BasisFunction* psi;
-
-    /// Quadrature of the QPsi object.
-    const Quadrature* quadrature;
-  };
-
-
   /** \ingroup Integration
    * \brief
    * Calculates element stiffness matrices by preevaluated integrals over the
@@ -85,24 +19,24 @@ namespace AMDiS
   {
   protected:
     /// Constructor
-    Q11PsiPhi(const BasisFunction* psi,
-              const BasisFunction* phi,
-              const Quadrature* q);
+    Q11PsiPhi(BasisFunction const* psi,
+              BasisFunction const* phi,
+              Quadrature const* q);
 
   public:
     /// Destructor
     ~Q11PsiPhi();
 
     /// Returns a Q11PsiPhi object.
-    static const Q11PsiPhi* provideQ11PsiPhi(const BasisFunction*,
-        const BasisFunction*,
-        const Quadrature*);
+    static Q11PsiPhi const* provideQ11PsiPhi(BasisFunction const*,
+					     BasisFunction const*,
+					     Quadrature const*);
 
     /// Compares two Q11PsiPhi objects.
-    bool operator==(const Q11PsiPhi&) const;
+    bool operator==(Q11PsiPhi const&) const;
 
     /// Compares two Q11PsiPhi objects.
-    bool operator!=(const Q11PsiPhi& q11pp) const
+    bool operator!=(Q11PsiPhi const& q11pp) const
     {
       return !(operator==(q11pp));
     }
@@ -186,13 +120,13 @@ namespace AMDiS
     static std::list<Q11PsiPhi*> preList;
 
     /// Pointer to the first set of basis functions.
-    const BasisFunction* psi;
+    BasisFunction const* psi;
 
     /// Pointer to the second set of basis functions.
-    const BasisFunction* phi;
+    BasisFunction const* phi;
 
     /// Pointer to the Quadrature which is used for the integration.
-    const Quadrature* quadrature;
+    Quadrature const* quadrature;
 
     /** \brief
      * Matrix of size psi->getNumber() * phi->getNumber() storing the count of
@@ -227,8 +161,6 @@ namespace AMDiS
 
     /// Pointer to an array in l.
     int* l_vec;
-
-    friend class compareQPsiPhi<Q11PsiPhi>;
   };
 
 
@@ -242,24 +174,24 @@ namespace AMDiS
   {
   protected:
     /// Constructor
-    Q10PsiPhi(const BasisFunction* psi,
-              const BasisFunction* phi,
-              const Quadrature* q);
+    Q10PsiPhi(BasisFunction const* psi,
+              BasisFunction const* phi,
+              Quadrature const* q);
 
   public:
     /// Destructor
     ~Q10PsiPhi();
 
     /// Returns a Q10PsiPhi object.
-    static const Q10PsiPhi* provideQ10PsiPhi(const BasisFunction*,
-        const BasisFunction*,
-        const Quadrature*);
+    static Q10PsiPhi const* provideQ10PsiPhi(BasisFunction const*,
+					     BasisFunction const*,
+					     Quadrature const*);
 
     /// Compares two Q10PsiPhi objects.
-    bool operator==(const Q10PsiPhi&) const;
+    bool operator==(Q10PsiPhi const&) const;
 
     /// Compares two Q10PsiPhi objects.
-    bool operator!=(const Q10PsiPhi& q10pp) const
+    bool operator!=(Q10PsiPhi const& q10pp) const
     {
       return !(operator==(q10pp));
     }
@@ -325,13 +257,13 @@ namespace AMDiS
     static std::list<Q10PsiPhi*> preList;
 
     /// Pointer to the first set of basis functions
-    const BasisFunction* psi;
+    BasisFunction const* psi;
 
     /// Pointer to the second set of basis functions
-    const BasisFunction* phi;
+    BasisFunction const* phi;
 
     /// Pointer to the Quadrature which is used for the integration
-    const Quadrature* quadrature;
+    Quadrature const* quadrature;
 
     /** \brief
      * Matrix of size psi->getNumber() * phi->getNumber() storing the count of
@@ -360,8 +292,6 @@ namespace AMDiS
 
     /// Pointer to an array in k.
     int* k_vec;
-
-    friend class compareQPsiPhi<Q10PsiPhi>;
   };
 
 
@@ -375,24 +305,24 @@ namespace AMDiS
   {
   protected:
     /// Constructor
-    Q01PsiPhi(const BasisFunction* psi,
-              const BasisFunction* phi,
-              const Quadrature* q);
+    Q01PsiPhi(BasisFunction const* psi,
+              BasisFunction const* phi,
+              Quadrature const* q);
 
   public:
     /// Destructor
     ~Q01PsiPhi();
 
     /// Returns a Q01PsiPhi object.
-    static const Q01PsiPhi* provideQ01PsiPhi(const BasisFunction*,
-        const BasisFunction*,
-        const Quadrature*);
+    static Q01PsiPhi const* provideQ01PsiPhi(BasisFunction const*,
+					     BasisFunction const*,
+					     Quadrature const*);
 
     /// Compares two Q01PsiPhi objects.
-    bool operator==(const Q01PsiPhi&) const;
+    bool operator==(Q01PsiPhi const&) const;
 
     /// Compares two Q01PsiPhi objects.
-    bool operator!=(const Q01PsiPhi& q01pp) const
+    bool operator!=(Q01PsiPhi const& q01pp) const
     {
       return !(operator==(q01pp));
     }
@@ -463,13 +393,13 @@ namespace AMDiS
     static std::list<Q01PsiPhi*> preList;
 
     /// Pointer to the first set of basis functions
-    const BasisFunction* psi;
+    BasisFunction const* psi;
 
     /// Pointer to the second set of basis functions
-    const BasisFunction* phi;
+    BasisFunction const* phi;
 
     /// Pointer to the Quadrature which is used for the integration
-    const Quadrature* quadrature;
+    Quadrature const* quadrature;
 
     /** \brief
      * Matrix of size psi->getNumber() * phi->getNumber() storing the count of
@@ -498,8 +428,6 @@ namespace AMDiS
 
     /// Pointer to an array in l.
     int* l_vec;
-
-    friend class compareQPsiPhi<Q01PsiPhi>;
   };
 
 
@@ -514,13 +442,13 @@ namespace AMDiS
     static std::list<Q00PsiPhi*> preList;
 
     /// Pointer to the first set of basis functions
-    const BasisFunction* psi;
+    BasisFunction const* psi;
 
     /// Pointer to the second set of basis functions
-    const BasisFunction* phi;
+    BasisFunction const* phi;
 
     /// Pointer to the Quadrature which is used for the integration
-    const Quadrature* quadrature;
+    Quadrature const* quadrature;
 
     /** \brief
      * Matrix storing the integrals
@@ -533,25 +461,25 @@ namespace AMDiS
 
   protected:
     /// Constructor
-    Q00PsiPhi(const BasisFunction*, const BasisFunction*, const Quadrature*);
+    Q00PsiPhi(BasisFunction const*, BasisFunction const*, Quadrature const*);
 
   public:
     /// Destructor
     ~Q00PsiPhi();
 
     /// Returns a Q00PsiPhi object.
-    static Q00PsiPhi* provideQ00PsiPhi(const BasisFunction*,
-                                       const BasisFunction*,
-                                       const Quadrature*);
+    static Q00PsiPhi const* provideQ00PsiPhi(BasisFunction const*,
+					     BasisFunction const*,
+					     Quadrature const*);
 
     /// Compares two Q00PsiPhi objects.
-    bool operator==(const Q00PsiPhi& q00pp) const
+    bool operator==(Q00PsiPhi const& q00pp) const
     {
       return (q00pp.psi == psi && q00pp.phi == phi && q00pp.quadrature == quadrature);
     }
 
     /// Compares two Q00PsiPhi objects.
-    bool operator!=(const Q00PsiPhi& q00pp) const
+    bool operator!=(Q00PsiPhi const& q00pp) const
     {
       return !(operator==(q00pp));
     }
@@ -561,8 +489,6 @@ namespace AMDiS
 
     /// Returns \ref values[i]
     const double* getValVec(unsigned int i) const;
-
-    friend class compareQPsiPhi<Q00PsiPhi>;
   };
 
 
@@ -591,33 +517,33 @@ namespace AMDiS
     static std::list<Q0Psi*> preList;
 
     /// Pointer to the first set of basis functions
-    const BasisFunction* psi;
+    BasisFunction const* psi;
 
     /// Pointer to the Quadrature which is used for the integration
-    const Quadrature* quadrature;
+    Quadrature const* quadrature;
 
     /// Vector storing the integrals
     double* values;
 
   protected:
     /// Constructor
-    Q0Psi(const BasisFunction*, const Quadrature*);
+    Q0Psi(BasisFunction const*, Quadrature const*);
 
   public:
     /// Destructor
     ~Q0Psi();
 
     /// Returns a Q0Psi object.
-    static Q0Psi* provideQ0Psi(const BasisFunction*, const Quadrature*);
+    static Q0Psi* provideQ0Psi(BasisFunction const*, Quadrature const*);
 
     /// Compares two Q0Psi objects.
-    bool operator==(const Q0Psi& q0p) const
+    bool operator==(Q0Psi const& q0p) const
     {
       return (q0p.psi == psi && q0p.quadrature == quadrature);
     }
 
     /// Compares two Q0Psi objects.
-    bool operator!=(const Q0Psi& q0p) const
+    bool operator!=(Q0Psi const& q0p) const
     {
       return !(operator==(q0p));
     }
@@ -633,8 +559,6 @@ namespace AMDiS
     {
       return values;
     }
-
-    friend class compareQPsi<Q0Psi>;
   };
 
 
@@ -646,7 +570,7 @@ namespace AMDiS
   {
   protected:
     /// Constructor
-    Q1Psi(const BasisFunction* psi, const Quadrature* q);
+    Q1Psi(BasisFunction const* psi, Quadrature const* q);
 
 
   public:
@@ -654,14 +578,14 @@ namespace AMDiS
     ~Q1Psi();
 
     /// Returns a Q1Psi object.
-    static const Q1Psi* provideQ1Psi(const BasisFunction*,
-                                     const Quadrature*);
+    static Q1Psi const* provideQ1Psi(BasisFunction const*,
+                                     Quadrature const*);
 
     /// Compares two Q1Psi objects.
-    bool operator==(const Q1Psi&) const;
+    bool operator==(Q1Psi const&) const;
 
     /// Compares two Q1Psi objects.
-    bool operator!=(const Q1Psi& q1p) const
+    bool operator!=(Q1Psi const& q1p) const
     {
       return !(operator==(q1p));
     }
@@ -683,7 +607,7 @@ namespace AMDiS
     }
 
     /// Returns \ref nrEntries
-    const int* getNumberEntries() const
+    int const* getNumberEntries() const
     {
       return const_cast<const int*>(nrEntries);
     }
@@ -698,7 +622,7 @@ namespace AMDiS
     }
 
     /// Returns \ref k[i]
-    const int* getKVec(unsigned int i) const
+    int const* getKVec(unsigned int i) const
     {
       if (k && k[i])
         return k[i];
@@ -707,7 +631,7 @@ namespace AMDiS
     }
 
     /// Returns \values[i]
-    const double* getValVec(unsigned int i) const
+    double const* getValVec(unsigned int i) const
     {
       if (values && values[i])
         return values[i];
@@ -720,10 +644,10 @@ namespace AMDiS
     static std::list<Q1Psi*> preList;
 
     /// Pointer to the first set of basis functions
-    const BasisFunction* psi;
+    BasisFunction const* psi;
 
     /// Pointer to the Quadrature which is used for the integration
-    const Quadrature* quadrature;
+    Quadrature const* quadrature;
 
     /** \brief
      * Array of size psi->getNumber() storing the count of
@@ -748,8 +672,6 @@ namespace AMDiS
 
     /// Pointer to an array in k.
     int* k_vec;
-
-    friend class compareQPsi<Q1Psi>;
   };
 
 } // end namespace AMDiS

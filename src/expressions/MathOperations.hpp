@@ -73,7 +73,7 @@ namespace AMDiS
 
   /// Returns an expression that evaluates a functor \param f at the evaluated terms \param ts.
   template <class F, class... Terms>
-  requires::Term<FunctorTerm<F, ToTerm_t<Terms>...>, Terms...>
+  requires::Term<FunctorTerm<Decay_t<F>, ToTerm_t<Decay_t<Terms>>...>, Decay_t<Terms>...>
   inline func(F&& f, Terms&& ... ts)
   {
     return {std::forward<F>(f), toTerm(std::forward<Terms>(ts))...};
@@ -91,6 +91,13 @@ namespace AMDiS
     return {vector};
   }
 
+  template <char n, class T>
+  ValueOf<DOFVector<T>, name::v<n>>
+  inline valueOf(DOFVector<T> const& vector)
+  {
+    return {vector};
+  }
+  
   /// Returns an expression that evaluates a DOFVector at quadrature points.
   template <class Name = name::u, class T>
   ValueOf<DOFVector<T>, Name>
@@ -124,8 +131,9 @@ namespace AMDiS
     FunctorTerm<functors::plus<Value_t<Term1>, Value_t<Term2>>, Term1, Term2>;
 
   /// expression for V + W
-  template <class T1, class T2>
-  requires::Term<PlusTerm<ToTerm_t<T1>, ToTerm_t<T2>>, T1, T2>
+  template <class T1, class T2, 
+	    class T1_ = Decay_t<T1>, class T2_ = Decay_t<T2>>
+  requires::Term<PlusTerm<ToTerm_t<T1_>, ToTerm_t<T2_>>, T1_, T2_>
   inline operator+(T1&& t1, T2&& t2)
   {
     return {toTerm(std::forward<T1>(t1)), toTerm(std::forward<T2>(t2))};
@@ -138,8 +146,9 @@ namespace AMDiS
     FunctorTerm<functors::minus<Value_t<Term1>, Value_t<Term2>>, Term1, Term2>;
 
   /// expression for V - W
-  template <class T1, class T2>
-  requires::Term<MinusTerm<ToTerm_t<T1>, ToTerm_t<T2>>, T1, T2>
+  template <class T1, class T2, 
+	    class T1_ = Decay_t<T1>, class T2_ = Decay_t<T2>>
+  requires::Term<MinusTerm<ToTerm_t<T1_>, ToTerm_t<T2_>>, T1_, T2_>
   inline operator-(T1&& t1, T2&& t2)
   {
     return {toTerm(std::forward<T1>(t1)), toTerm(std::forward<T2>(t2))};
@@ -228,8 +237,9 @@ namespace AMDiS
     FunctorTerm<functors::min<Common_t<Value_t<Term1>, Value_t<Term2>>>, Term1, Term2>;
 
   /// expression for min(V, W)
-  template <class T1, class T2>
-  requires::Term<MinTerm<ToTerm_t<T1>, ToTerm_t<T2>>, T1, T2>
+  template <class T1, class T2, 
+	    class T1_ = Decay_t<T1>, class T2_ = Decay_t<T2>>
+  requires::Term<MinTerm<ToTerm_t<T1_>, ToTerm_t<T2_>>, T1_, T2_>
   inline min(T1&& t1, T2&& t2)
   {
     return {toTerm(std::forward<T1>(t1)), toTerm(std::forward<T2>(t2))};
@@ -242,8 +252,9 @@ namespace AMDiS
     FunctorTerm<functors::max<Common_t<Value_t<Term1>, Value_t<Term2>>>, Term1, Term2>;
 
   /// expression for max(V, W)
-  template <class T1, class T2>
-  requires::Term<MaxTerm<ToTerm_t<T1>, ToTerm_t<T2>>, T1, T2>
+  template <class T1, class T2, 
+	    class T1_ = Decay_t<T1>, class T2_ = Decay_t<T2>>
+  requires::Term<MaxTerm<ToTerm_t<T1_>, ToTerm_t<T2_>>, T1_, T2_>
   inline max(T1&& t1, T2&& t2)
   {
     return {toTerm(std::forward<T1>(t1)), toTerm(std::forward<T2>(t2))};
@@ -365,8 +376,9 @@ namespace AMDiS
     FunctorTerm<functors::Atan2<Value_t<Term1>, Value_t<Term2>>, Term1, Term2>;
 
   /// expression for atan2(V, W)
-  template <class T1, class T2>
-  requires::Term<ATan2Term<ToTerm_t<T1>, ToTerm_t<T2>>, T1, T2>
+  template <class T1, class T2, 
+	    class T1_ = Decay_t<T1>, class T2_ = Decay_t<T2>>
+  requires::Term<ATan2Term<ToTerm_t<T1_>, ToTerm_t<T2_>>, T1_, T2_>
       inline atan2(T1&& t1, T2&& t2)
   {
     return {toTerm(std::forward<T1>(t1)), toTerm(std::forward<T2>(t2))};

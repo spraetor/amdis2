@@ -34,8 +34,8 @@ namespace AMDiS
   {
   public:
     /// Constructs an empty Operator of type operatorType for the given FiniteElemSpace.
-    Operator(const FiniteElemSpace* rowFeSpace,
-             const FiniteElemSpace* colFeSpace = NULL);
+    Operator(FiniteElemSpace const* rowFeSpace,
+             FiniteElemSpace const* colFeSpace = NULL);
 
     Operator(Operator const&) = default;
 
@@ -63,6 +63,13 @@ namespace AMDiS
       addZOTImpl(toTerm(std::forward<C>(c)));
       return *this;
     }
+    
+    template <class C>
+    Operator& addZOT(C&& c)
+    {
+      return addZeroOrderTerm(std::forward<C>(c));
+    }
+    
 
     /// Adds a FirstOrderTerm to the Operator: < 1 * b * u, v >
     template <class B>
@@ -72,6 +79,12 @@ namespace AMDiS
       using Tag = typename traits::category<ValueType>::tag;
       addFOTImpl(Tag(), toTerm(std::forward<B>(b)), type, i);
       return *this;
+    }
+    
+    template <class B>
+    Operator& addFOT(B&& b, FirstOrderType type = GRD_PHI, int i = -1)
+    {
+      return addFirstOrderTerm(std::forward<B>(b), type, i);
     }
 
     /// Adds a SecondOrderTerm to the Operator
@@ -86,27 +99,23 @@ namespace AMDiS
       addSOTImpl(Tag(), toTerm(std::forward<A>(a)), i, j, Sym::value);
       return *this;
     }
-
-#if 0
-    template <class T>
-    Operator& operator+=(ZOTWrapper<T> wrapper);
-
-    template <class T>
-    Operator& operator+=(FOTWrapper<T> wrapper);
-
-    template <class T>
-    Operator& operator+=(SOTWrapper<T> wrapper);
-#endif
+    
+    template <class A, bool symmetric = false>
+    Operator& addSOT(A&& a, int i = -1, int j = -1,
+		     bool_<symmetric> s = bool_<symmetric>())
+    {
+      return addSecondOrderTerm(std::forward<A>(a), i, j, s);
+    }
 
     /// Calculates the element matrix for this ElInfo and adds it multiplied by
     /// factor to userMat.
-    virtual void getElementMatrix(const ElInfo* elInfo,
+    virtual void getElementMatrix(ElInfo const* elInfo,
                                   ElementMatrix& userMat,
                                   double factor = 1.0);
 
     /// Calculates the element vector for this ElInfo and adds it multiplied by
     /// factor to userVec.
-    virtual void getElementVector(const ElInfo* elInfo,
+    virtual void getElementVector(ElInfo const* elInfo,
                                   DenseVector<double>& userVec,
                                   double factor = 1.0);
 
@@ -114,28 +123,28 @@ namespace AMDiS
     void finishAssembling();
 
     /// Returns \ref rowFeSpace.
-    const FiniteElemSpace* getRowFeSpace() const
+    FiniteElemSpace const* getRowFeSpace() const
     {
       return rowFeSpace;
     }
 
     /// Returns \ref colFeSpace.
-    const FiniteElemSpace* getColFeSpace() const
+    FiniteElemSpace const* getColFeSpace() const
     {
       return colFeSpace;
     }
 
     /// Returns \ref auxFeSpaces.
-    std::set<const FiniteElemSpace*>& getAuxFeSpaces()
+    std::set<FiniteElemSpace const*>& getAuxFeSpaces()
     {
       return auxFeSpaces;
     }
 
     /// Sets \ref uhOld.
-    void setUhOld(const DOFVectorBase<double>* uhOld);
+    void setUhOld(DOFVectorBase<double> const* uhOld);
 
     /// Returns \ref uhOld.
-    const DOFVectorBase<double>* getUhOld() const
+    DOFVectorBase<double> const* getUhOld() const
     {
       return uhOld;
     }
@@ -185,9 +194,9 @@ namespace AMDiS
 
     /// Evaluation of all terms in \ref zeroOrder.
     void evalZeroOrder(int nPoints,
-                       const DenseVector<double>& uhAtQP,
-                       const DenseVector<WorldVector<double>>& grdUhAtQP,
-                       const DenseVector<WorldMatrix<double>>& D2UhAtQP,
+                       DenseVector<double> const& uhAtQP,
+                       DenseVector<WorldVector<double>> const& grdUhAtQP,
+                       DenseVector<WorldMatrix<double>> const& D2UhAtQP,
                        DenseVector<double>& result,
                        double factor) const
     {
@@ -197,9 +206,9 @@ namespace AMDiS
 
     /// Evaluation of all terms in \ref firstOrderGrdPsi.
     void evalFirstOrderGrdPsi(int nPoints,
-                              const DenseVector<double>& uhAtQP,
-                              const DenseVector<WorldVector<double>>& grdUhAtQP,
-                              const DenseVector<WorldMatrix<double>>& D2UhAtQP,
+                              DenseVector<double> const& uhAtQP,
+                              DenseVector<WorldVector<double>> const& grdUhAtQP,
+                              DenseVector<WorldMatrix<double>> const& D2UhAtQP,
                               DenseVector<double>& result,
                               double factor) const
     {
@@ -209,9 +218,9 @@ namespace AMDiS
 
     /// Evaluation of all terms in \ref firstOrderGrdPhi.
     void evalFirstOrderGrdPhi(int nPoints,
-                              const DenseVector<double>& uhAtQP,
-                              const DenseVector<WorldVector<double>>& grdUhAtQP,
-                              const DenseVector<WorldMatrix<double>>& D2UhAtQP,
+                              DenseVector<double> const& uhAtQP,
+                              DenseVector<WorldVector<double>> const& grdUhAtQP,
+                              DenseVector<WorldMatrix<double>> const& D2UhAtQP,
                               DenseVector<double>& result,
                               double factor) const
     {
@@ -221,9 +230,9 @@ namespace AMDiS
 
     /// Evaluation of all terms in \ref secondOrder.
     void evalSecondOrder(int nPoints,
-                         const DenseVector<double>& uhAtQP,
-                         const DenseVector<WorldVector<double>>& grdUhAtQP,
-                         const DenseVector<WorldMatrix<double>>& D2UhAtQP,
+                         DenseVector<double> const& uhAtQP,
+                         DenseVector<WorldVector<double>> const& grdUhAtQP,
+                         DenseVector<WorldMatrix<double>> const& D2UhAtQP,
                          DenseVector<double>& result,
                          double factor) const
     {
@@ -232,11 +241,11 @@ namespace AMDiS
     }
 
     /// Weak evaluation of all terms in \ref secondOrder.
-    void weakEvalSecondOrder(const std::vector<WorldVector<double>>& grdUhAtQP,
+    void weakEvalSecondOrder(std::vector<WorldVector<double>> const& grdUhAtQP,
                              std::vector<WorldVector<double>>& result) const;
 
     /// Calls getLALt() for each term in \ref secondOrder and adds the results to LALt.
-    void getLALt(const ElInfo* elInfo, std::vector<mtl::dense2D<double>>& LALt) const
+    void getLALt(ElInfo const* elInfo, std::vector<mtl::dense2D<double>>& LALt) const
     {
       for (OperatorTerm const* term : secondOrder)
         static_cast<SecondOrderTerm const*>(term)->getLALt(elInfo, LALt);
@@ -244,7 +253,7 @@ namespace AMDiS
 
     /// Calls getLb() for each term in \ref firstOrderGrdPsi and adds the
     /// results to Lb.
-    void getLbGrdPsi(const ElInfo* elInfo,
+    void getLbGrdPsi(ElInfo const* elInfo,
                      std::vector<DenseVector<double>>& Lb) const
     {
       for (OperatorTerm const* term : firstOrderGrdPsi)
@@ -253,7 +262,7 @@ namespace AMDiS
 
     /// Calls getLb() for each term in \ref firstOrderGrdPhi and adds the
     /// results to Lb.
-    void getLbGrdPhi(const ElInfo* elInfo,
+    void getLbGrdPhi(ElInfo const* elInfo,
                      std::vector<DenseVector<double>>& Lb) const
     {
       for (OperatorTerm const* term : firstOrderGrdPhi)
@@ -261,7 +270,7 @@ namespace AMDiS
     }
 
     /// Calls getC() for each term in \ref zeroOrder and adds the results to c.
-    void getC(const ElInfo* elInfo, int nPoints, DenseVector<double>& c)
+    void getC(ElInfo const* elInfo, int nPoints, DenseVector<double>& c)
     {
       for (OperatorTerm const* term : zeroOrder)
         static_cast<ZeroOrderTerm const*>(term)->getC(elInfo, nPoints, c);
@@ -331,13 +340,13 @@ namespace AMDiS
 
   protected:
     /// FiniteElemSpace for matrix rows and element vector
-    const FiniteElemSpace* rowFeSpace;
+    FiniteElemSpace const* rowFeSpace;
 
     /// FiniteElemSpace for matrix columns. Can be equal to \rowFeSpace.
-    const FiniteElemSpace* colFeSpace;
+    FiniteElemSpace const* colFeSpace;
 
     /// List of aux fe spaces, e.g., if a term is multiplied with a DOF vector
-    std::set<const FiniteElemSpace*> auxFeSpaces;
+    std::set<FiniteElemSpace const*> auxFeSpaces;
 
     /// Number of rows in the element matrix
     int nRow;

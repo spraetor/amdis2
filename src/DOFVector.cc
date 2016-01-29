@@ -1,5 +1,3 @@
-// #include <boost/numeric/mtl/mtl.hpp>
-
 #include "DOFVector.h"
 #include "Traverse.h"
 #include "DualTraverse.h"

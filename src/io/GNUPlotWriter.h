@@ -49,7 +49,7 @@ namespace AMDiS
       virtual ~GNUPlotWriter() {}
 
       ///
-      virtual void writeFiles(AdaptInfo* adaptInfo, bool force,
+      virtual void writeFiles(AdaptInfo& adaptInfo, bool force,
                               int level = -1,
                               Flag traverseFlag = Mesh::CALL_LEAF_EL,
                               bool (*writeElem)(ElInfo*) = NULL);
@@ -58,7 +58,7 @@ namespace AMDiS
       /// Interface for general containers not implemented. Specializations below.
       template<typename Container>
       static void writeFile(Container& vec, std::string filename,
-                            AdaptInfo* adaptInfo = NULL)
+                            AdaptInfo& adaptInfo)
       {
         ERROR_EXIT("GNUPlotWriter not implemented for this container type!\n");
       }
@@ -67,13 +67,13 @@ namespace AMDiS
       /// writes a vector of \ref DOFVector to a file.
       static void writeFile(std::vector<DOFVector<double>*>& dofVectors,
                             std::string filename,
-                            AdaptInfo* adaptInfo = NULL);
+                            AdaptInfo& adaptInfo);
 
 
       /// writes a \ref DOFVector to a file. Using container pointer.
       static void writeFile(DOFVector<double>* dofVector,
                             std::string filename,
-                            AdaptInfo* adaptInfo = NULL)
+                            AdaptInfo& adaptInfo)
       {
         std::vector<DOFVector<double>*> dofVectors;
         dofVectors.push_back(dofVector);
@@ -84,7 +84,7 @@ namespace AMDiS
       /// writes a \ref DOFVector to a file. Using container reference.
       static void writeFile(DOFVector<double>& dofVector,
                             std::string filename,
-                            AdaptInfo* adaptInfo = NULL)
+                            AdaptInfo& adaptInfo)
       {
         writeFile(&dofVector, filename, adaptInfo);
       }
@@ -93,7 +93,7 @@ namespace AMDiS
       /// writes a \ref SystemVector to a file. Using container pointer.
       static void writeFile(SystemVector* vecs,
                             std::string filename,
-                            AdaptInfo* adaptInfo = NULL)
+                            AdaptInfo& adaptInfo)
       {
         std::vector<DOFVector<double>*> dofVectors;
         for (int i = 0; i < vecs->getSize(); i++)
@@ -105,7 +105,7 @@ namespace AMDiS
       /// writes a \ref SystemVector to a file. Using container reference.
       static void writeFile(SystemVector& vecs,
                             std::string filename,
-                            AdaptInfo* adaptInfo = NULL)
+                            AdaptInfo& adaptInfo)
       {
         writeFile(&vecs, filename, adaptInfo);
       }

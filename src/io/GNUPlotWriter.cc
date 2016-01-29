@@ -46,17 +46,13 @@ namespace AMDiS
     }
 
 
-    void GNUPlotWriter::writeFiles(AdaptInfo* adaptInfo, bool force,
+    void GNUPlotWriter::writeFiles(AdaptInfo& adaptInfo, bool force,
                                    int, Flag, bool (*)(ElInfo*))
     {
       DOFVector<WorldVector<double>> coords(feSpace_, "coords");
       Mesh* mesh = feSpace_->getMesh();
 
-      double time;
-      if (!adaptInfo)
-        time = 0.0;
-      else
-        time = adaptInfo->getTime();
+      double time = adaptInfo.getTime();
 
       mesh->getDofIndexCoords(coords);
 
@@ -86,7 +82,7 @@ namespace AMDiS
 
     void GNUPlotWriter::writeFile(std::vector<DOFVector<double>*>& dofVectors,
                                   std::string filename,
-                                  AdaptInfo* adaptInfo)
+                                  AdaptInfo& adaptInfo)
     {
       GNUPlotWriter gnuplotWriter(filename, dofVectors[0]->getFeSpace(), dofVectors);
       gnuplotWriter.writeFiles(adaptInfo, true);

@@ -14,14 +14,27 @@ namespace AMDiS
   struct PreconPair
   {
     /// Pointer to the left preconditioner
-    ITL_PreconditionerBase<MatrixType, VectorType>* l;
+    ITL_PreconditionerBase<MatrixType, VectorType>* l = NULL;
 
     /// Pointer to the right preconditioner
-    ITL_PreconditionerBase<MatrixType, VectorType>* r;
+    ITL_PreconditionerBase<MatrixType, VectorType>* r = NULL;
+    
+    ~PreconPair()
+    {
+      if (l)
+      {
+        l->exit();
+        delete l;
+        l = NULL;
+      }
 
-    PreconPair()
-      : l(NULL), r(NULL)
-    { }
+      if (r)
+      {
+        r->exit();
+        delete r;
+        r = NULL;
+      }
+    }
   };
 
 
@@ -34,8 +47,9 @@ namespace AMDiS
   template <class ITLSolver, class MatrixType, class VectorType>
   struct ITL_Runner : public RunnerBase<MatrixType, VectorType>
   {
-    typedef RunnerBase<MatrixType, VectorType> super;
+    using Super = RunnerBase<MatrixType, VectorType>;
 
+    /// Constructor.
     ITL_Runner(LinearSolverInterface* oemPtr)
       : oem(*oemPtr),
         solver(oem.getName())
@@ -43,27 +57,13 @@ namespace AMDiS
       setPrecon(preconPair);
     }
 
-    ~ITL_Runner()
-    {
-      if (preconPair.l != NULL)
-      {
-        preconPair.l->exit();
-        delete preconPair.l;
-        preconPair.l = NULL;
-      }
-
-      if (preconPair.r != NULL)
-      {
-        preconPair.r->exit();
-        delete preconPair.r;
-        preconPair.r = NULL;
-      }
-    }
+    /// Destructor.
+    ~ITL_Runner() {}
 
 
     /// Implementation of \ref RunnerBase::init()
-    virtual void init(const SolverMatrix<Matrix<DOFMatrix*>>& A,
-                      const MatrixType& fullMatrix) override
+    virtual void init(SolverMatrix<Matrix<DOFMatrix*>> const& A,
+                      MatrixType const& fullMatrix) override
     {
       preconPair.l->init(A, fullMatrix);
       preconPair.r->init(A, fullMatrix);
@@ -71,15 +71,15 @@ namespace AMDiS
 
 
     /// Implementation of \ref RunnerBase::solve()
-    virtual int solve(const MatrixType& A , VectorType& x,
-                      const VectorType& b) override
+    virtual int solve(MatrixType const& A , VectorType& x,
+                      VectorType const& b) override
     {
       FUNCNAME("ITL_Runner::solve()");
 
-      TEST_EXIT(preconPair.l != NULL)("there is no left preconditioner\n");
-      TEST_EXIT(preconPair.r != NULL)("there is no right preconditioner\n");
+      TEST_EXIT(preconPair.l)("there is no left preconditioner\n");
+      TEST_EXIT(preconPair.r)("there is no right preconditioner\n");
 
-      typedef typename mtl::Collection<MatrixType>::value_type value_type;
+      using value_type = typename mtl::Collection<MatrixType>::value_type;
 
       VectorType r(num_rows(b));
       r = b;
@@ -120,44 +120,12 @@ namespace AMDiS
 
 
     /// Implementation of \ref RunnerBase::adjoint_solve()
-    virtual int adjoint_solve(const MatrixType& A ,
+    virtual int adjoint_solve(MatrixType const& A ,
                               VectorType& x,
-                              const VectorType& b) override
+                              VectorType const& b) override
     {
       FUNCNAME("ITL_Runner::adjoint_solve()");
-
-      TEST_EXIT(preconPair.l != NULL)("there is no left preconditioner\n");
-      TEST_EXIT(preconPair.r != NULL)("there is no right preconditioner\n");
-
-#if 0
-      typedef typename mtl::Collection<MatrixType>::value_type value_type;
-      mtl::matrix::transposed_view<const MatrixType> B(A);
-      VectorType r(B * x - b);
-      int error = 0;
-      if (oem.getInfo() == 0)
-      {
-        itl::basic_iteration<value_type>
-        iter(r, oem.getMaxIterations(), oem.getRelative(), oem.getTolerance());
-
-        error = solver(B, x, b, *(preconPair.l), *(preconPair.r), iter);
-        oem.setErrorCode(error);
-        oem.setIterations(iter.iterations());
-        oem.setResidual(iter.resid());
-      }
-      else
-      {
-        itl::cyclic_iteration<value_type>
-        iter(r, oem.getMaxIterations(), oem.getRelative(), oem.getTolerance(),
-             oem.getPrint_cycle());
-
-        error = solver(B, x, b, *(preconPair.l), *(preconPair.r), iter);
-        oem.setErrorCode(error);
-        oem.setIterations(iter.iterations());
-        oem.setResidual(iter.resid());
-      }
-
-      return error;
-#endif
+      ERROR_EXIT("Adjoint solve of preconditioner not yet implemented!\n");
       return 1;
     }
 
@@ -182,11 +150,8 @@ namespace AMDiS
     {
       return preconPair.r;
     }
-
+    
   protected:
-    LinearSolverInterface& oem;
-    ITLSolver solver;
-
     /// create left/right preconditioners from parameters given in the init-file
     void setPrecon(PreconPair<MatrixType, VectorType>& pair)
     {
@@ -219,6 +184,10 @@ namespace AMDiS
       pair.l = leftCreator->create();
       pair.r = rightCreator->create();
     }
+
+  protected:
+    LinearSolverInterface& oem;
+    ITLSolver solver;
 
   private:
     PreconPair<MatrixType, VectorType> preconPair;

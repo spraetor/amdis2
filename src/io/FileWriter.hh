@@ -193,7 +193,7 @@ namespace AMDiS
 
 
     template<typename T>
-    void FileWriter<T>::writeFiles(AdaptInfo* adaptInfo,
+    void FileWriter<T>::writeFiles(AdaptInfo& adaptInfo,
                                    bool force,
                                    int level,
                                    Flag flag,

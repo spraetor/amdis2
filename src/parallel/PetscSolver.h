@@ -81,7 +81,7 @@ namespace AMDiS
       virtual void fillPetscRhs(SystemVector* vec) = 0;
 
       /// Use PETSc to solve the linear system of equations
-      virtual void solvePetscMatrix(SystemVector& vec, AdaptInfo* adaptInfo) = 0;
+      virtual void solvePetscMatrix(SystemVector& vec, AdaptInfo& adaptInfo) = 0;
 
       virtual void solve(Vec& rhs, Vec& sol);
 
@@ -149,12 +149,12 @@ namespace AMDiS
       }
 
     protected:
-      /// Implementation of \ref LinearSolverInterface::solveLinearSystem()
-      int solveLinearSystem(const SolverMatrix<Matrix<DOFMatrix*>>& A,
-                            SystemVector& x,
-                            SystemVector& b,
-                            bool createMatrixData,
-                            bool storeMatrixData);
+      /// Implementation of \ref LinearSolverInterface::solveSystemImpl()
+      virtual int solveSystemImpl(SolverMatrix<Matrix<DOFMatrix*>> const& A,
+				  SystemVector& x,
+				  SystemVector& b,
+				  bool createMatrixData,
+				  bool storeMatrixData) override;
 
       /** \brief
       * Copies between to PETSc vectors by using different index sets for the

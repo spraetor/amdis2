@@ -11,16 +11,19 @@
 #include <boost/tokenizer.hpp>
 #include <boost/property_tree/ptree.hpp>
 
-#include <boost/type_traits.hpp>
+// #include <boost/type_traits.hpp>
 
 // a parser for arithmetic expressions
-#include "muParser.h"
+#include <muParser.h>
+
 #include <traits/basic.hpp>
 #include <traits/scalar_types.hpp>
 #include <traits/concepts_base.hpp>
 #include <traits/meta_basic.hpp>
 
+#include "AMDiS_base.h"
 #include "Math.h"
+#include "Log.h"
 
 namespace AMDiS
 {
@@ -39,7 +42,7 @@ namespace AMDiS
     template <class T>
     struct Convert<T, Requires_t<concepts::Arithmetic<T>> >
     {
-      static void eval(const std::string valStr, T& value)
+      static void eval(std::string valStr, T& value)
       {
         using boost::numeric_cast;
 
@@ -48,7 +51,20 @@ namespace AMDiS
         parser.DefineConst(_T("M_E"), m_e);
 
         parser.SetExpr(valStr);
-        value = numeric_cast<T>(parser.Eval());
+	try {
+	  value = numeric_cast<T>(parser.Eval());
+	} catch(...) {
+	  ERROR("Could not parse '%s' to '%s'\n", valStr.c_str(), typeid(T).name());
+	}
+      }
+    };
+
+    template <class T>
+    struct Convert<T, Requires_t<std::is_enum<T>> >
+    {
+      static void eval(std::string valStr, T& value)
+      {
+	EnumParser<T>()(valStr, value);
       }
     };
 
@@ -56,12 +72,11 @@ namespace AMDiS
     template <class T>
     struct Convert<T, Requires_t<concepts::Vector<T>> >
     {
-      static void eval(const std::string valStr, T& value)
+      static void eval(std::string valStr, T& values)
       {
         using value_type = Value_t<T>;
         using Tokenizer = boost::tokenizer<boost::char_separator<char>>;
 
-        std::vector<value_type> values;
         boost::char_separator<char> sep(",; ");
         Tokenizer tokens(valStr, sep);
         int i = 0;
@@ -69,7 +84,7 @@ namespace AMDiS
         {
           value_type v;
           Convert<value_type>::eval(token, v);
-          value[i] = v;
+          values[i] = v;
         }
       }
     };
@@ -78,7 +93,7 @@ namespace AMDiS
     template <class T>
     struct Convert<std::vector<T>>
     {
-      static void eval(const std::string valStr, std::vector<T>& values)
+      static void eval(std::string valStr, std::vector<T>& values)
       {
         using value_type = T;
         using Tokenizer = boost::tokenizer<boost::char_separator<char>>;
@@ -98,45 +113,39 @@ namespace AMDiS
 
 
   /// output-stream for std::list
-  template<typename T>
-  std::ostream& operator<<(std::ostream& o, const std::list<T>& l)
+  template <class T>
+  std::ostream& operator<<(std::ostream& out, std::list<T> const& l)
   {
-    typename std::list<T>::const_iterator it = l.begin();
-    o << "[";
-    for (unsigned i = 0; it != l.end() && i < l.size(); i++)
-    {
-      o << *it << (i < l.size() - 1 ? ", " : "");
-      ++it;
-    }
-    o << "]";
-    return o;
+    auto it = l.begin();
+    out << "["; if (l.size() > 0) out << *it; 
+    for (; it != l.end(); ++it)
+      out << ", " << *it;
+    out << "]";
+    return out;
   }
 
 
   /// output-stream for std::vector
-  template<typename T>
-  std::ostream& operator<<(std::ostream& o, const std::vector<T>& l)
+  template <class T>
+  std::ostream& operator<<(std::ostream& out, std::vector<T> const& l)
   {
-    typename std::vector<T>::const_iterator it = l.begin();
-    o << "[";
-    for (unsigned i = 0; it != l.end() && i < l.size(); i++)
-    {
-      o << *it << (i < l.size() - 1 ? ", " : "");
-      ++it;
-    }
-    o << "]";
-    return o;
+    auto it = l.begin();
+    out << "["; if (l.size() > 0) out << *it; 
+    for (; it != l.end(); ++it)
+      out << ", " << *it;
+    out << "]";
+    return out;
   }
 
-  inline void replaceAll(std::string& str, const std::string& from, const std::string& to)
+  inline void replaceAll(std::string& str, std::string const& from, std::string const& to)
   {
-    if(from.empty())
+    if (from.empty())
       return;
     size_t start_pos = 0;
-    while((start_pos = str.find(from, start_pos)) != std::string::npos)
+    while ((start_pos = str.find(from, start_pos)) != std::string::npos)
     {
       str.replace(start_pos, from.length(), to);
-      start_pos += to.length(); // In case 'to' contains 'from', like replacing 'x' with 'yx'
+      start_pos += to.length();
     }
   }
 
@@ -147,6 +156,8 @@ namespace AMDiS
   */
   struct Initfile
   {
+    using Self = Initfile;
+    
     /** initialize init-file from file with filename in, read data and save it
     *  to singleton-map
     *  @param in: filename string
@@ -194,6 +205,24 @@ namespace AMDiS
       }
       singlett->msgInfo = debugInfo;
     }
+    
+    
+    template <class T, class S>
+    static T get(std::string tag, S const& default_value)
+    {
+      T value = default_value;
+      Self::get(tag, value);
+      return value;
+    }
+    
+    
+    template <class T>
+    static T get(std::string tag)
+    {
+      T value; nullify(value);
+      Self::get(tag, value);
+      return value;
+    }
 
 
     /// update map tag->value_old to tag->value in singleton
@@ -219,7 +248,7 @@ namespace AMDiS
 
     /// add map tag->value to data in singleton
     template <class T>
-    static void add(const std::string tag, T& value, int debugInfo = -1)
+    static void add(std::string tag, T& value, int debugInfo = -1)
     {
       set(tag, value, debugInfo);
     }
@@ -304,7 +333,10 @@ namespace AMDiS
     /// read parameters for msgInfo, msgWait, paramInfo
     void getInternalParameters();
 
-    int msgInfo, msgWait, paramInfo, breakOnMissingTag;
+    int msgInfo;
+    int msgWait;
+    int paramInfo;
+    int breakOnMissingTag;
 
     /// boost:property_tree to read/store parameter values
     boost::property_tree::ptree pt;
@@ -313,9 +345,9 @@ namespace AMDiS
   using Parameters = Initfile;
 
 #ifndef AMDIS_NO_EXTERN_INITFILE
-  extern template void Initfile::get(const std::string, int&, int);
-  extern template void Initfile::get(const std::string, double&, int);
-  extern template void Initfile::get(const std::string, std::string&, int);
+  extern template void Initfile::get(std::string, int&, int);
+  extern template void Initfile::get(std::string, double&, int);
+  extern template void Initfile::get(std::string, std::string&, int);
 #endif
 
 } // end namespace AMDiS

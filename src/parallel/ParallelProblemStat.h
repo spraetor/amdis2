@@ -47,7 +47,7 @@ namespace AMDiS
 
       virtual ~ParallelProblemStat() {}
 
-      void buildAfterCoarsen(AdaptInfo* adaptInfo, Flag flag,
+      void buildAfterCoarsen(AdaptInfo& adaptInfo, Flag flag,
                              bool assembleMatrix = true,
                              bool assembleVector = true);
 

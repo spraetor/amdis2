@@ -8,7 +8,7 @@ namespace AMDiS
     // -------------------------------------------------------------------------
     // unary assigners
 
-    /// assign_constant(v) --> v = value
+    /// assign::value(v) --> v = val
     template <class T, class S=T>
     struct value
     {
@@ -24,26 +24,28 @@ namespace AMDiS
       S val;
     };
 
-    /// assign_constant(v) --> v = value
+    /// assign::ct_value(v) --> v = Val
     template <class T, class S, S Val>
     struct ct_value : value<T, S>
     {
       ct_value() : value<T, S>(Val) {}
     };
 
+    /// assign::min_value(v) --> v = min<S>
     template <class T, class S=T>
     struct min_value : value<T, S>
     {
       min_value() : value<T, S>(std::numeric_limits<S>::min()) {}
     };
 
+    /// assign::max_value(v) --> v = max<S>
     template <class T, class S=T>
     struct max_value : value<T, S>
     {
       max_value() : value<T, S>(std::numeric_limits<S>::max()) {}
     };
 
-    /// add_constant(v) --> v += value
+    /// assign::plus_value(v) --> v += val
     template <class T, class S=T>
     struct plus_value
     {
@@ -59,7 +61,7 @@ namespace AMDiS
       S val;
     };
 
-    /// minus_constant(v) --> v -= value
+    /// assign::minus_value(v) --> v -= val
     template <class T, class S=T>
     struct minus_value
     {
@@ -75,7 +77,7 @@ namespace AMDiS
       S val;
     };
 
-    /// mult_constant(v) --> v *= value
+    /// assign::mult_value(v) --> v *= val
     template <class T, class S=T>
     struct mult_value
     {
@@ -91,7 +93,7 @@ namespace AMDiS
       S val;
     };
 
-    /// div_constant(v) --> v /= value
+    /// assign::div_value(v) --> v /= val
     template <class T, class S=T>
     struct div_value
     {

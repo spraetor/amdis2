@@ -26,9 +26,9 @@ namespace AMDiS
     using expr1_type = E1;
     using expr2_type = E2;
 
-    constexpr static int _SIZE = math::max(E1::_SIZE, E2::_SIZE);
-    constexpr static int _ROWS = math::max(E1::_ROWS, E2::_ROWS);
-    constexpr static int _COLS = math::max(E1::_COLS, E2::_COLS);
+    static constexpr int _SIZE = math::max(E1::_SIZE, E2::_SIZE);
+    static constexpr int _ROWS = math::max(E1::_ROWS, E2::_ROWS);
+    static constexpr int _COLS = math::max(E1::_COLS, E2::_COLS);
 
     /// constructor takes two expressions
     ElementwiseBinaryExpr(expr1_type const& A, expr2_type const& B)

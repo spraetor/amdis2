@@ -7,9 +7,24 @@
 #include <boost/property_tree/json_parser.hpp>
 
 #include <string>
+#ifdef _MSC_VER
+#include <io.h>			// _access
+#else
+#include <unistd.h>
+#endif
 
 namespace AMDiS
 {
+  /// check for file existence
+  inline bool file_exists(std::string const& filename)
+  {
+#ifdef _MSC_VER
+    return _access(filename.c_str(), 0) == 0;
+#else
+    return access(filename.c_str(), F_OK) == 0;
+#endif
+  }
+  
   Initfile* Initfile::singlett = NULL;
 
   /// initialize singleton object an global parameters
@@ -64,9 +79,9 @@ namespace AMDiS
   }
 
   // explicit template instatiation
-  template void Initfile::get(const std::string, int&, int);
-  template void Initfile::get(const std::string, double&, int);
-  template void Initfile::get(const std::string, std::string&, int);
+  template void Initfile::get(std::string, int&, int);
+  template void Initfile::get(std::string, double&, int);
+  template void Initfile::get(std::string, std::string&, int);
 
 
 } // end namespace AMDiS

@@ -16,11 +16,12 @@ namespace AMDiS
   namespace name
   {
     struct u {};
+    template <char> struct v {};
   }
 
   /// Expressions that extracts the values of a DOFVector at QPs
   template <class Vector, class Name, class = void>
-  struct ValueOf : public LazyOperatorTermBase {};
+  struct ValueOf;
 
   template <class T, class Name>
   struct ValueOf<DOFVector<T>, Name>
@@ -98,7 +99,7 @@ namespace AMDiS
 
   /// Expressions that extracts the values of a DOFVector at QPs
   template <class Vector, class Name, class = void>
-  struct GradientOf : public LazyOperatorTermBase {};
+  struct GradientOf;
 
   template <class T, class Name>
   struct GradientOf<DOFVector<T>, Name>

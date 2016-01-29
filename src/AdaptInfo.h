@@ -30,54 +30,54 @@ namespace AMDiS
     {
     public:
       /// Constructor.
-      ScalContent(std::string prefix);
+      explicit ScalContent(std::string prefix);
 
       /// Sum of all error estimates
-      double est_sum;
+      double est_sum = 0.0;
 
       /// Sum of all time error estimates
-      double est_t_sum;
+      double est_t_sum = 0.0;
 
       /// maximal local error estimate.
-      double est_max;
+      double est_max = 0.0;
 
       /// Maximum of all time error estimates
-      double est_t_max;
+      double est_t_max = 0.0;
 
       /// factors to combine max and integral time estimate
-      double fac_max, fac_sum;
+      double fac_max = 0.0, fac_sum = 1.0;
 
       /// Tolerance for the (absolute or relative) error
-      double spaceTolerance;
+      double spaceTolerance = 0.0;
 
       /// Time tolerance.
-      double timeTolerance;
+      double timeTolerance = 0.0;
 
       /// Relative time tolerance
-      double timeRelativeTolerance;
+      double timeRelativeTolerance = 0.0;
 
       /// Lower bound for the time error.
-      double timeErrLow;
+      double timeErrLow = 0.0;
 
       /// true if coarsening is allowed, false otherwise.
-      int coarsenAllowed;
+      int coarsenAllowed = 0;
 
       /// true if refinement is allowed, false otherwise.
-      int refinementAllowed;
+      int refinementAllowed = 1;
 
       /** \brief
        * parameter to tell the marking strategy how many bisections should be
        * performed when an element is marked for refinement; usually the value is
        * 1 or DIM
        */
-      int refineBisections;
+      int refineBisections = 1;
 
       /** \brief
        * parameter to tell the marking strategy how many bisections should
        * be undone when an element is marked for coarsening; usually the value is
        * 1 or DIM
        */
-      int coarseBisections;
+      int coarseBisections = 1;
     };
 
   public:
@@ -623,83 +623,83 @@ namespace AMDiS
     std::string name;
 
     /// Current space iteration
-    int spaceIteration;
+    int spaceIteration = -1;
 
     /** \brief
      * maximal allowed number of iterations of the adaptive procedure; if
      * maxIteration <= 0, no iteration bound is used
      */
-    int maxSpaceIteration;
+    int maxSpaceIteration = -1;
 
     /// Current timestep iteration
-    int timestepIteration;
+    int timestepIteration = 0;
 
     /// Maximal number of iterations for choosing a timestep
-    int maxTimestepIteration;
+    int maxTimestepIteration = 30;
 
     /// Current time iteration
-    int timeIteration;
+    int timeIteration = 0;
 
     /// Maximal number of time iterations
-    int maxTimeIteration;
+    int maxTimeIteration = 30;
 
     /// Actual time, end of time interval for current time step
-    double time;
+    double time = 0.0;
 
     /// Initial time
-    double startTime;
+    double startTime = 0.0;
 
     /// Final time
-    double endTime;
+    double endTime = 1.0;
 
     ///Time step size to be used
-    double timestep;
+    double timestep = 0.0;
 
     /// Last processed time step size of finished iteration
-    double lastProcessedTimestep;
+    double lastProcessedTimestep = 0.0;
 
     /// Minimal step size
-    double minTimestep;
+    double minTimestep = 0.0;
 
     /// Maximal step size
-    double maxTimestep;
+    double maxTimestep = 1.0;
 
     /// Number of current time step
-    int timestepNumber;
+    int timestepNumber = 0;
 
     /** \brief
      * Per default this value is 0 and not used. If it is set to a non-zero value,
      * the computation of the stationary problem is done nTimesteps times with a
      * fixed timestep.
      */
-    int nTimesteps;
+    int nTimesteps = 0;
 
     /// number of iterations needed of linear or nonlinear solver
-    int solverIterations;
+    int solverIterations = 0;
 
     /// maximal number of iterations needed of linear or nonlinear solver
-    int maxSolverIterations;
+    int maxSolverIterations = 0;
 
     ///
-    double solverTolerance;
+    double solverTolerance = 1.e-8;
 
     ///
-    double solverResidual;
+    double solverResidual = 0.0;
 
     /// tolerance for the overall time error
-    double globalTimeTolerance;
+    double globalTimeTolerance = 1.0;
 
     /// Scalar adapt infos.
     std::vector<ScalContent*> scalContents;
 
-    /// Is true, if the adaptive procedure was deserialized from a file.
-    bool deserialized;
+    /// Is true, if the adaptive procedure was deserialized from a file. TODO: remove deserialization
+    bool deserialized = false;
 
     /// Is true, if the time adaption is controlled by a Rosenbrock Method.
-    bool rosenbrockMode;
+    bool rosenbrockMode = false;
 
     /// overall time error estimate
-    double est_t;
+    double est_t = 0.0;
   };
 
 } // end namespace AMDiS

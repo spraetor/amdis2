@@ -35,7 +35,7 @@ namespace AMDiS
      * determinant by the surface determinant and deligates the call to
      * the base class function.
      */
-    virtual void getElementMatrix(const ElInfo* elInfo,
+    virtual void getElementMatrix(ElInfo const* elInfo,
                                   ElementMatrix& userMat,
                                   double factor = 1.0) override;
 
@@ -44,7 +44,7 @@ namespace AMDiS
      * determinant by the surface determinant and deligates the call to
      * the base class function.
      */
-    virtual void getElementVector(const ElInfo* elInfo,
+    virtual void getElementVector(ElInfo const* elInfo,
                                   DenseVector<double>& userVec,
                                   double factor = 1.0) override;
 

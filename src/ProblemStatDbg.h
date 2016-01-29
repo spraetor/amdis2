@@ -8,10 +8,16 @@ namespace AMDiS
 {
   class ProblemStatDbg : public ProblemStatSeq
   {
+  protected:
+    // Defines a mapping type from dof indices to world coordinates.
+    using DofToCoord = std::map<DegreeOfFreedom, WorldVector<double>>;
+
+    // Defines a mapping type from dof indices to world coordinates.
+    using CoordToDof = std::map<WorldVector<double>, DegreeOfFreedom>;
+    
   public:
-    ProblemStatDbg(std::string nameStr,
-                   ProblemIterationInterface* problemIteration = NULL)
-      : ProblemStatSeq(nameStr, problemIteration)
+    ProblemStatDbg(std::string nameStr)
+      : ProblemStatSeq(nameStr)
     {}
 
     /** \brief

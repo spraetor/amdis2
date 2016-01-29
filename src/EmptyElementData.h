@@ -55,12 +55,6 @@ namespace AMDiS
     }
 
 
-    std::string getTypeName() const
-    {
-      return "EmptyElementData";
-    }
-
-
     const int getTypeID() const
     {
       return EMPTY_ED;

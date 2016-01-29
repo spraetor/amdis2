@@ -13,7 +13,7 @@ namespace AMDiS
 
 
   PeriodicDOFMapping*
-  PeriodicDOFMapping::providePeriodicDOFMapping(const BasisFunction* fcts)
+  PeriodicDOFMapping::providePeriodicDOFMapping(BasisFunction const* fcts)
   {
     for (std::vector<PeriodicDOFMapping*>::iterator it = mappings.begin();
          it != mappings.end(); ++it)
@@ -26,7 +26,7 @@ namespace AMDiS
   }
 
 
-  PeriodicDOFMapping::PeriodicDOFMapping(const BasisFunction* fcts)
+  PeriodicDOFMapping::PeriodicDOFMapping(BasisFunction const* fcts)
     : basFcts(fcts)
   {
     FUNCNAME("PeriodicDOFMapping::PeriodicDOFMapping()");
@@ -50,7 +50,7 @@ namespace AMDiS
   }
 
 
-  const DegreeOfFreedom* PeriodicDOFMapping::getDOFPermutation(const DimVec<int>& vertexPermutation)
+  DegreeOfFreedom const* PeriodicDOFMapping::getDOFPermutation(DimVec<int> const& vertexPermutation)
   {
     FUNCNAME("PeriodicDOFMapping::getDOFPermutation()");
 
@@ -89,7 +89,7 @@ namespace AMDiS
   }
 
 
-  PeriodicBC::PeriodicBC(BoundaryType type, const FiniteElemSpace* rowSpace)
+  PeriodicBC::PeriodicBC(BoundaryType type, FiniteElemSpace const* rowSpace)
     : BoundaryCondition(type, rowSpace, NULL),
       masterMatrix(NULL)
   {
@@ -123,8 +123,8 @@ namespace AMDiS
 
   void PeriodicBC::fillBoundaryCondition(DOFMatrix* matrix,
                                          ElInfo* elInfo,
-                                         const DegreeOfFreedom* dofIndices,
-                                         const BoundaryType* localBound,
+                                         DegreeOfFreedom const* dofIndices,
+                                         BoundaryType const* localBound,
                                          int nBasFcts)
   {
     FUNCNAME_DBG("PeriodicBC::fillBoundaryCondition()");

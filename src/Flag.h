@@ -20,25 +20,22 @@ namespace AMDiS
     Flag(const unsigned long f) : flags(f) {}
 
     /// Copy constructor
-    Flag(const Flag& f) : flags(f.flags) {}
-
-    /// Destructor
-    ~Flag() {}
+    Flag(Flag const& f) : flags(f.flags) {}
 
     /// Compares two Flags
-    bool operator==(const Flag& f) const
+    bool operator==(Flag const& f) const
     {
       return (flags == f.flags);
     }
 
     /// Compares two Flags
-    bool operator!=(const Flag& f) const
+    bool operator!=(Flag const& f) const
     {
       return !(f == *this);
     }
 
     /// Assignment operator
-    Flag& operator=(const Flag& f)
+    Flag& operator=(Flag const& f)
     {
       if (this != &f)
         flags = f.flags;
@@ -58,7 +55,7 @@ namespace AMDiS
     }
 
     /// Set \ref flags
-    void setFlags(const Flag& f)
+    void setFlags(Flag const& f)
     {
       flags = f.flags;
     }
@@ -70,7 +67,7 @@ namespace AMDiS
     }
 
     /// Sets \ref flags to \ref flags | f.flags
-    void setFlag(const Flag& f)
+    void setFlag(Flag const& f)
     {
       flags |= f.flags;
     }
@@ -82,7 +79,7 @@ namespace AMDiS
     }
 
     /// Sets \ref flags to \ref flags & ~f.flags
-    void unsetFlag(const Flag& f)
+    void unsetFlag(Flag const& f)
     {
       flags &= ~f.flags;
     }
@@ -93,7 +90,7 @@ namespace AMDiS
     }
 
     /// Returns \ref flags | f.flags
-    Flag operator+(const Flag& f) const
+    Flag operator+(Flag const& f) const
     {
       Flag r(flags);
       r.setFlag(f);
@@ -101,7 +98,7 @@ namespace AMDiS
     }
 
     /// Returns \ref flags & ~f.flags
-    Flag operator-(const Flag& f) const
+    Flag operator-(Flag const& f) const
     {
       Flag r(flags);
       r.unsetFlag(f);
@@ -109,7 +106,7 @@ namespace AMDiS
     }
 
     /// Returns \ref flags | f.flags
-    Flag operator|(const Flag& f) const
+    Flag operator|(Flag const& f) const
     {
       Flag r(flags);
       r.setFlag(f);
@@ -117,7 +114,7 @@ namespace AMDiS
     }
 
     /// Returns \ref flags & f.flags
-    Flag operator&(const Flag& f) const
+    Flag operator&(Flag const& f) const
     {
       Flag r(flags);
       r.flags &= f.flags;
@@ -125,14 +122,14 @@ namespace AMDiS
     }
 
     /// Sets \ref flags to \ref flags &= f.flags
-    Flag operator&=(const Flag& f)
+    Flag operator&=(Flag const& f)
     {
       flags &= f.flags;
       return *this;
     }
 
     /// Returns \ref flags ^ f.flags
-    Flag operator^(const Flag& f) const
+    Flag operator^(Flag const& f) const
     {
       Flag r(flags);
       r.flags ^= f.flags;
@@ -140,7 +137,7 @@ namespace AMDiS
     }
 
     /// Sets \ref flags to \ref flags & f.flags
-    Flag& operator|=(const Flag& f)
+    Flag& operator|=(Flag const& f)
     {
       if (this != &f)
         flags |= f.flags;
@@ -156,13 +153,13 @@ namespace AMDiS
     }
 
     /// Checks whether all set bits of f.flags are set in \ref flags too.
-    bool isSet(const Flag& f) const
+    bool isSet(Flag const& f) const
     {
       return ((flags&f.flags) == f.flags);
     }
 
     /// Returns !\ref isSet(f)
-    bool isUnset(const Flag& f) const
+    bool isUnset(Flag const& f) const
     {
       return !isSet(f);
     }

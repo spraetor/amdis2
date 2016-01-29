@@ -1,29 +1,6 @@
-/******************************************************************************
- *
- * AMDiS - Adaptive multidimensional simulations
- *
- * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
- * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
- *
- * Authors:
- * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
- *
- * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
- * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
- *
- *
- * This file is part of AMDiS
- *
- * See also license.opensource.txt in the distribution.
- *
- ******************************************************************************/
-
-
-
 /** \file RosenbrockAdaptInstationary.h */
 
-#ifndef AMDIS_ROSENBROCKADAPTINSTATIONARY_H
-#define AMDIS_ROSENBROCKADAPTINSTATIONARY_H
+#pragma once
 
 #include "AMDiS_fwd.h"
 #include "time/RosenbrockStationary.h"
@@ -40,18 +17,6 @@ namespace AMDiS
     /** \brief
      * Creates a AdaptInstationary object for Rosenbrock method
      * with the given name for the time
-     * dependent problem problemInstat. TODO: Make obsolete!
-     */
-    RosenbrockAdaptInstationary(std::string name,
-                                RosenbrockStationary* problemStat,
-                                AdaptInfo* info,
-                                ProblemTimeInterface* problemInstat,
-                                AdaptInfo* initialInfo,
-                                std::time_t initialTimestamp = 0);
-
-    /** \brief
-     * Creates a AdaptInstationary object for Rosenbrock method
-     * with the given name for the time
      * dependent problem problemInstat.
      */
     RosenbrockAdaptInstationary(std::string name,
@@ -64,7 +29,7 @@ namespace AMDiS
     /// Runs the Rosenbrock loop until one timestep is accepted.
     void oneTimestep();
 
-    virtual double getTimeEst(AdaptInfo* adaptInfo);
+    virtual double getTimeEst(AdaptInfo& adaptInfo);
 
     /** \brief
      * This funciton is used only to avoid double code in both constructors. If the
@@ -129,6 +94,4 @@ namespace AMDiS
     std::vector<double> dbgTimesteps;
   };
 
-}
-
-#endif // AMDIS_ROSENBROCKADAPTINSTATIONARY_H
+} // end namespace AMDiS

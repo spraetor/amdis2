@@ -10,24 +10,21 @@ namespace AMDiS
                   const T* uhLoc, T* vec)
   {
     FUNCNAME("uhAtQp()");
-    static T* quadVec = NULL;
-    static int size = 0;
     T* val;
-    const double* phi;
-    int i, j, k;
 
     int nPoints = quadFast->getQuadrature()->getNumPoints();
     int nBasFcts = quadFast->getBasisFunctions()->getNumber();
     int dim = quadFast->getDim();
 
     int vecSize = uhLoc[0].size();
-
     if (vec)
     {
       val = vec;
     }
     else
     {
+      static T* quadVec = NULL;
+      static int size = 0;
       if (size < nPoints)
       {
         int newSize = std::max(Quadrature::maxNQuadPoints[dim], nPoints);
@@ -38,12 +35,12 @@ namespace AMDiS
       val = quadVec;
     }
 
-    for (i = 0; i < nPoints; i++)
+    for (int i = 0; i < nPoints; i++)
     {
-      phi = quadFast->getPhi(i);
-      for(k = 0; k < vecSize; k++)
+      double const* phi = quadFast->getPhi(i);
+      for(int k = 0; k < vecSize; k++)
       {
-        for (val[i][k] = j = 0; j < nBasFcts; j++)
+        for (int j = val[i][k] = 0; j < nBasFcts; j++)
         {
           val[i][k] += uhLoc[j][k] * phi[j];
         }

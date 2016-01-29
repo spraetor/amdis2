@@ -79,7 +79,7 @@ namespace AMDiS
      */
     inline int solve(SolverMatrix<Matrix<DOFMatrix*>>& mat,
                      SystemVector& solution, SystemVector& rhs,
-                     AdaptInfo* adaptInfo,
+                     AdaptInfo& adaptInfo,
                      ProblemStat* prob)
     {
       init();
@@ -112,7 +112,7 @@ namespace AMDiS
     virtual int nlsolve(SolverMatrix<Matrix<DOFMatrix*>>& matVec,
                         SystemVector& x,
                         SystemVector& rhs,
-                        AdaptInfo* adaptInfo,
+                        AdaptInfo& adaptInfo,
                         ProblemStat* prob) = 0;
 
     /// Frees needed memory. Must be overriden in sub classes.

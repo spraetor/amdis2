@@ -42,7 +42,7 @@ namespace AMDiS
   public:
     /// returns a pointer to \ref referenceElement [dim]. With this pointer you
     /// can get information about the element via Element's getGeo method.
-    static const Element* getReferenceElement(int dim)
+    static Element const* getReferenceElement(int dim)
     {
       FUNCNAME("Global::getReferenceElement()");
       TEST_EXIT(dim > 0 && dim < 4)("invalid dim: %d\n", dim);
@@ -50,8 +50,8 @@ namespace AMDiS
     }
 
     /// returns geometrical information. Currently this is only dimOfWorld.
-#if FIXED_SIZE && defined(DOW)
-    constexpr static int getGeo(GeoIndex p)
+#if AMDIS_FIXED_SIZE && defined(DOW)
+    static constexpr int getGeo(GeoIndex p)
     {
       return DOW;
       //       return p == WORLD ? DOW : throw std::runtime_error("Illegal request for geometry data!");
@@ -93,8 +93,8 @@ namespace AMDiS
 
   private:
     /// Dimension of the simulated world
-#if FIXED_SIZE && defined(DOW)
-    constexpr static int dimOfWorld = DOW;
+#if AMDIS_FIXED_SIZE && defined(DOW)
+    static constexpr int dimOfWorld = DOW;
 #else
     static int dimOfWorld;
 #endif
@@ -117,24 +117,28 @@ namespace AMDiS
   struct FixedSize
   {
     /// return argument \param s
-    static constexpr size_t eval(size_t s)
+    static size_t eval(size_t s)
     {
-      return aux(_geo<G>(), s);
+      return evalImpl(_geo<G>(), s);
     }
 
   private:
     /// calculate size for DimVector
     template <GeoIndex H>
-    static constexpr size_t aux(_geo<H>, size_t dim)
+    static size_t evalImpl(_geo<H>, size_t dim)
     {
       return Global::getGeo(H, dim);
     }
 
     /// calculate size for WorldVector
-    static constexpr size_t aux(_geo<WORLD>, size_t = 0)
+#if AMDIS_FIXED_SIZE && defined(DOW)
+    static constexpr size_t evalImpl(_geo<WORLD>, size_t /* dim */ = 0)
+#else
+    static size_t evalImpl(_geo<WORLD>, size_t /* dim */ = 0)
     {
       return Global::getGeo(WORLD);
     }
+#endif
   };
 
 } // end namespace AMDiS

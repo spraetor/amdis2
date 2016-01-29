@@ -30,9 +30,6 @@ namespace AMDiS
         FirstOrderType type,
         bool optimized);
 
-    /// Destructor.
-    virtual ~FirstOrderAssembler() {}
-
   protected:
     /// Constructor.
     FirstOrderAssembler(Operator* op,
@@ -74,13 +71,13 @@ namespace AMDiS
 
   private:
     /// Implements SubAssembler::calculateElementMatrix().
-    virtual void calculateElementMatrixImpl(const ElInfo* elInfo, ElementMatrix& mat) override;
+    virtual void calculateElementMatrixImpl(ElInfo const*, ElementMatrix&) override;
 
     /// Implements SubAssembler::calculateElementVector().
-    virtual void calculateElementVectorImpl(const ElInfo*, DenseVector<double>&) override;
+    virtual void calculateElementVectorImpl(ElInfo const*, DenseVector<double>&) override;
 
   protected:
-    const BasisFunction* psi, *phi;
+    BasisFunction const *psi, *phi;
   };
 
 
@@ -98,10 +95,10 @@ namespace AMDiS
 
   private:
     /// Implements SubAssembler::calculateElementMatrix().
-    virtual void calculateElementMatrixImpl(const ElInfo* elInfo, ElementMatrix& mat) override;
+    virtual void calculateElementMatrixImpl(ElInfo const*, ElementMatrix&) override;
 
     /// Implements SubAssembler::calculateElementVector().
-    virtual void calculateElementVectorImpl(const ElInfo*, DenseVector<double>&) override
+    virtual void calculateElementVectorImpl(ElInfo const*, DenseVector<double>&) override
     {
       ERROR_EXIT("should not be called\n");
     }
@@ -109,7 +106,7 @@ namespace AMDiS
   protected:
     std::vector<DenseVector<double>> grdPhi;
 
-    const BasisFunction* psi, *phi;
+    BasisFunction const *psi, *phi;
   };
 
 
@@ -127,10 +124,10 @@ namespace AMDiS
 
   private:
     /// Implements SubAssembler::calculateElementMatrix().
-    virtual void calculateElementMatrixImpl(const ElInfo* elInfo, ElementMatrix& mat) override;
+    virtual void calculateElementMatrixImpl(ElInfo const*, ElementMatrix&) override;
 
     /// Implements SubAssembler::calculateElementVector().
-    virtual void calculateElementVectorImpl(const ElInfo*, DenseVector<double>&) override;
+    virtual void calculateElementVectorImpl(ElInfo const*, DenseVector<double>&) override;
   };
 
 
@@ -148,10 +145,10 @@ namespace AMDiS
 
   private:
     /// Implements SubAssembler::calculateElementMatrix().
-    virtual void calculateElementMatrixImpl(const ElInfo* elInfo, ElementMatrix& mat) override;
+    virtual void calculateElementMatrixImpl(ElInfo const*, ElementMatrix&) override;
 
     /// Implements SubAssembler::calculateElementVector().
-    virtual void calculateElementVectorImpl(const ElInfo*, DenseVector<double>&) override
+    virtual void calculateElementVectorImpl(ElInfo const*, DenseVector<double>&) override
     {
       ERROR_EXIT("should not be called\n");
     }
@@ -172,17 +169,17 @@ namespace AMDiS
 
   private:
     /// Implements SubAssembler::calculateElementMatrix().
-    virtual void calculateElementMatrixImpl(const ElInfo* elInfo, ElementMatrix& mat) override;
+    virtual void calculateElementMatrixImpl(ElInfo const*, ElementMatrix&) override;
 
     /// Implements SubAssembler::calculateElementVector().
-    virtual void calculateElementVectorImpl(const ElInfo*, DenseVector<double>&) override;
+    virtual void calculateElementVectorImpl(ElInfo const*, DenseVector<double>&) override;
 
   protected:
     /// Integral of the product of the derivative of psi and phi.
-    const Q10PsiPhi* q10;
+    Q10PsiPhi const* q10;
 
     /// Integral of the derivative of psi.
-    const Q1Psi* q1;
+    Q1Psi const* q1;
   };
 
 
@@ -200,20 +197,20 @@ namespace AMDiS
 
   private:
     /// Implements SubAssembler::calculateElementMatrix().
-    virtual void calculateElementMatrixImpl(const ElInfo* elInfo, ElementMatrix& mat) override;
+    virtual void calculateElementMatrixImpl(ElInfo const*, ElementMatrix&) override;
 
     /// Implements SubAssembler::calculateElementVector().
-    virtual void calculateElementVectorImpl(const ElInfo*, DenseVector<double>&) override
+    virtual void calculateElementVectorImpl(ElInfo const*, DenseVector<double>&) override
     {
       ERROR_EXIT("should not be called\n");
     }
 
   protected:
     /// Integral of the product of psi and the derivative of phi.
-    const Q01PsiPhi* q01;
+    Q01PsiPhi const* q01;
 
     /// Integral of the derivative of phi.
-    const Q1Psi* q1;
+    Q1Psi const* q1;
   };
 
 } // end namespace AMDiS

@@ -35,11 +35,11 @@ namespace AMDiS
 
     using namespace std;
 
-    int BddcMlSolver::solveLinearSystem(const SolverMatrix<Matrix<DOFMatrix*>>& A,
+    int BddcMlSolver::solveSystemImpl(SolverMatrix<Matrix<DOFMatrix*>> const& A,
                                         SystemVector& vec,
                                         SystemVector& rhsVec,
-                                        bool createMatrixData,// ignored
-                                        bool storeMatrixData) // igonred
+                                        bool /* createMatrixData */,
+                                        bool /* storeMatrixData */)
     {
       FUNCNAME("BddcMlSolver::solvePetscMatrix()");
 

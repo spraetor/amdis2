@@ -54,7 +54,8 @@ namespace AMDiS
     boundaryConditionSet = true;
 
     RobinBC* robin =
-      new RobinBC(type, std::forward<TermRhs>(termRhs), std::forward<TermLhs>(termLhs), componentSpaces[row], componentSpaces[col]);
+      new RobinBC(type, std::forward<TermRhs>(termRhs), std::forward<TermLhs>(termLhs), 
+			componentSpaces[row], componentSpaces[col]);
 
     if (systemMatrix && (*systemMatrix)[row][col])
       (*systemMatrix)[row][col]->getBoundaryManager()->addBoundaryCondition(robin);

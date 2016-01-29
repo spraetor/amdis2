@@ -3,7 +3,7 @@ project(AMDIS)
 cmake_minimum_required(VERSION 2.6)
 cmake_policy(SET CMP0017 OLD)
 if(POLICY CMP0042)
-	cmake_policy(SET CMP0042 NEW)
+  cmake_policy(SET CMP0042 NEW)
 endif()
 	
 SET(LIB_DIR ${AMDIS_SOURCE_DIR}/lib)
@@ -17,23 +17,26 @@ set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DDEBUG=1 -O0") #-Wno-unused
 
 #define the build type, empty can be everything and nothing
 if(CMAKE_BUILD_TYPE STREQUAL "")
-	set(CMAKE_BUILD_TYPE "Release")
+  set(CMAKE_BUILD_TYPE "Release")
 endif()
 
 if(CMAKE_CXX_COMPILER MATCHES ".*icpc")
-	Message("Compiler: Intel")
-	list(APPEND CMAKE_CXX_FLAGS "-diag-disable 654 -diag-disable 858") 
+  Message("Compiler: Intel")
+  list(APPEND CMAKE_CXX_FLAGS "-diag-disable 654 -diag-disable 858") 
 endif()
 
 list(APPEND COMPILEFLAGS "-std=c++11" "-Wall" "-pedantic")
 
 SET(ENABLE_PARALLEL_DOMAIN "OFF" CACHE STRING "use parallel domain decomposition. please set to one of: PMTL, PETSC, OFF" )
 option(ENABLE_ZOLTAN false)
-option(ENABLE_SEQ_PETSC "Use sequential PETSc solvers" false)
-option(ENABLE_UMFPACK "Use of UMFPACK solver" false)
-option(ENABLE_HYPRE "Use HYPRE AMG solver" false)
+option(ENABLE_SEQ_PETSC   "Use sequential PETSc solvers" false)
+option(ENABLE_UMFPACK     "Use of UMFPACK solver" false)
+option(ENABLE_HYPRE       "Use HYPRE AMG solver" false)
 option(ENABLE_COMPRESSION "Use output compression" false)
 
+# ------------------------------------------------------------------------------
+
+# The library boost is required
 find_package(Boost)
 if(Boost_FOUND)
   list(APPEND AMDIS_INCLUDE_DIRS ${Boost_INCLUDE_DIR})
@@ -46,6 +49,16 @@ if(Boost_FOUND)
   list(APPEND AMDIS_LINK_DIRS ${Boost_LIBRARY_DIRS})
 endif(Boost_FOUND)
 
+# ------------------------------------------------------------------------------
+
+# enable ccache for repeated builds
+find_program(CCACHE_FOUND ccache)
+if(CCACHE_FOUND)
+    set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ccache)
+    set_property(GLOBAL PROPERTY RULE_LAUNCH_LINK ccache)
+endif(CCACHE_FOUND)
+
+# ------------------------------------------------------------------------------
 
 SET(AMDIS_SRC ${SOURCE_DIR}/AdaptBase.cc
 	      ${SOURCE_DIR}/AdaptInfo.cc
@@ -162,126 +175,127 @@ SET(AMDIS_SRC ${SOURCE_DIR}/AdaptBase.cc
 	      ${SOURCE_DIR}/io/VtkVectorWriter.cc
         ${SOURCE_DIR}/io/detail/VtkWriter.cc
 #	      ${SOURCE_DIR}/nonlin/ProblemNonLin.cc
+	      ${SOURCE_DIR}/solver/LinearSolverInterface.cc
 	      ${SOURCE_DIR}/solver/SolverMatrix.cc
 	      ${SOURCE_DIR}/solver/Mapper.cc
 #	      ${SOURCE_DIR}/time/RosenbrockAdaptInstationary.cc
 #	      ${SOURCE_DIR}/time/RosenbrockMethod.cc
 #	      ${SOURCE_DIR}/time/RosenbrockStationary.cc
 	      )
+	      
+# ------------------------------------------------------------------------------
 
 if(ENABLE_PARALLEL_DOMAIN)
 	
-	### Search for MPI compiler and get compile flags and include paths. ###
-
-	find_package(MPI REQUIRED)
-	if(MPI_FOUND)
-	  list(APPEND COMPILEFLAGS "${MPI_COMPILE_FLAGS}")
-	  include_directories(${MPI_INCLUDE_PATH})
-	endif(MPI_FOUND)
- 
-
-
-	### Search for ParMetis ###
-
-	find_file(PARMETIS_HEADER_FILE "parmetis.h" PATH ENV CPATH)
-	if(PARMETIS_HEADER_FILE)
-		get_filename_component(PARMETIS_INCLUDE_PATH "${PARMETIS_HEADER_FILE}" PATH CACHE)
-		include_directories(${PARMETIS_INCLUDE_PATH})
-	else()
-		message(FATAL_ERROR "Could not find ParMetis header file!")
-	endif(PARMETIS_HEADER_FILE)
-
-	find_file(PARMETIS_LIB_FILE "libparmetis.a" PATH ENV LIBRARY_PATH)
-	if(PARMETIS_LIB_FILE)
-		get_filename_component(PARMETIS_LINK_PATH "${PARMETIS_LIB_FILE}" PATH CACHE)
-		link_directories(${PARMETIS_LINK_PATH})
-	else()
-		message(FATAL_ERROR "Could not find ParMetis library file!")
-	endif(PARMETIS_LIB_FILE)
-
-
-	
-	### Search for Zoltan ###
-
-	if(ENABLE_ZOLTAN)
-	  find_file(ZOLTAN_HEADER_FILE "zoltan_cpp.h" PATH ENV CPATH)
-	  if(ZOLTAN_HEADER_FILE)
-		get_filename_component(ZOLTAN_HEADER_DIR "${ZOLTAN_HEADER_FILE}" PATH CACHE)
-		include_directories(${ZOLTAN_HEADER_DIR})
-	  else()
-		message(FATAL_ERROR "Could not find Zoltan include file!")
-	  endif(ZOLTAN_HEADER_FILE)
-
-	  list(APPEND COMPILEFLAGS "-DHAVE_ZOLTAN")
-	endif(ENABLE_ZOLTAN)
+  # Search for MPI compiler and get compile flags and include paths.
+  find_package(MPI REQUIRED)
+  if(MPI_FOUND)
+    list(APPEND COMPILEFLAGS "${MPI_COMPILE_FLAGS}")
+    include_directories(${MPI_INCLUDE_PATH})
+  endif(MPI_FOUND)
 
 
 
-	list(APPEND COMPILEFLAGS "-DHAVE_PARALLEL_DOMAIN_AMDIS=1")
-	SET(PARALLEL_DOMAIN_AMDIS_SRC
-		${SOURCE_DIR}/parallel/BddcMlSolver.cc
-               	${SOURCE_DIR}/parallel/DofComm.cc
-		${SOURCE_DIR}/parallel/CheckerPartitioner.cc
-		${SOURCE_DIR}/parallel/ElementObjectDatabase.cc
-		${SOURCE_DIR}/parallel/InteriorBoundary.cc
-		${SOURCE_DIR}/parallel/MeshDistributor.cc 
-		${SOURCE_DIR}/parallel/MeshLevelData.cc 
-		${SOURCE_DIR}/parallel/MeshManipulation.cc
-		${SOURCE_DIR}/parallel/MeshPartitioner.cc
-		${SOURCE_DIR}/parallel/MpiHelper.cc
-		${SOURCE_DIR}/parallel/ParallelDebug.cc
-		${SOURCE_DIR}/parallel/ParallelDofMapping.cc
-		${SOURCE_DIR}/parallel/ParallelProblemStat.cc
-		${SOURCE_DIR}/parallel/ParallelSolver.cc
-		${SOURCE_DIR}/parallel/PeriodicMap.cc
-		${SOURCE_DIR}/parallel/ParMetisPartitioner.cc
-		${SOURCE_DIR}/parallel/StdMpi.cc
-		${SOURCE_DIR}/parallel/ZoltanPartitioner.cc)
-		
-	if(ENABLE_PARALLEL_DOMAIN STREQUAL "PETSC")
-		set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};/usr/share/cmake-2.8/Modules/;${CMAKE_SOURCE_DIR}/")
-		set(PETSC_EXECUTABLE_RUNS ON)
-		find_package(PETSc REQUIRED)
-		include_directories(${PETSC_DIR}/include ${PETSC_DIR}/${PETSC_ARCH}/include)
-		list(APPEND COMPILEFLAGS "-DHAVE_PARALLEL_PETSC" "-DPETSC_VERSION=${PETSC_VERSION}")
-		list(APPEND AMDIS_INCLUDE_DIRS ${PETSC_DIR}/include ${PETSC_DIR}/${PETSC_ARCH}/include)
-		list(APPEND PARALLEL_DOMAIN_AMDIS_SRC 
-			${SOURCE_DIR}/parallel/MatrixNnzStructure.cc
-			${SOURCE_DIR}/parallel/ParallelCoarseSpaceSolver.cc
-			${SOURCE_DIR}/parallel/PetscHelper.cc
-			${SOURCE_DIR}/parallel/PetscSolver.cc
-			${SOURCE_DIR}/parallel/PetscSolverFeti.cc
-			${SOURCE_DIR}/parallel/PetscSolverFetiDebug.cc
-			${SOURCE_DIR}/parallel/PetscSolverFetiMonitor.cc
-			${SOURCE_DIR}/parallel/PetscSolverFetiOperators.cc
-			${SOURCE_DIR}/parallel/PetscSolverFetiTimings.cc
-			${SOURCE_DIR}/parallel/PetscSolverGlobalMatrix.cc
-			${SOURCE_DIR}/parallel/PetscSolverGlobalBlockMatrix.cc
-			${SOURCE_DIR}/parallel/PetscSolverNavierStokes.cc
-			${SOURCE_DIR}/parallel/PetscSolverNSCH.cc
-			${SOURCE_DIR}/parallel/PetscSolverCahnHilliard2.cc
-			${SOURCE_DIR}/parallel/PetscSolverCahnHilliard.cc                        
-			${SOURCE_DIR}/parallel/PetscSolverSchur.cc
-			${SOURCE_DIR}/solver/PetscTypes.cc)
-	elseif(ENABLE_PARALLEL_DOMAIN STREQUAL "PMTL")
-		set(MTL_INCLUDE_DIR "")
-		find_package(MTL REQUIRED)
-		list(APPEND COMPILEFLAGS "-DMTL_HAS_MPI" "-DHAVE_PARALLEL_MTL4")
+  # Search for ParMetis
+  find_file(PARMETIS_HEADER_FILE "parmetis.h" PATH ENV CPATH)
+  if(PARMETIS_HEADER_FILE)
+	  get_filename_component(PARMETIS_INCLUDE_PATH "${PARMETIS_HEADER_FILE}" PATH CACHE)
+	  include_directories(${PARMETIS_INCLUDE_PATH})
+  else()
+	  message(FATAL_ERROR "Could not find ParMetis header file!")
+  endif(PARMETIS_HEADER_FILE)
+
+  find_file(PARMETIS_LIB_FILE "libparmetis.a" PATH ENV LIBRARY_PATH)
+  if(PARMETIS_LIB_FILE)
+	  get_filename_component(PARMETIS_LINK_PATH "${PARMETIS_LIB_FILE}" PATH CACHE)
+	  link_directories(${PARMETIS_LINK_PATH})
+  else()
+	  message(FATAL_ERROR "Could not find ParMetis library file!")
+  endif(PARMETIS_LIB_FILE)
+
+
+  
+  # Search for Zoltan
+  if(ENABLE_ZOLTAN)
+    find_file(ZOLTAN_HEADER_FILE "zoltan_cpp.h" PATH ENV CPATH)
+    if(ZOLTAN_HEADER_FILE)
+	  get_filename_component(ZOLTAN_HEADER_DIR "${ZOLTAN_HEADER_FILE}" PATH CACHE)
+	  include_directories(${ZOLTAN_HEADER_DIR})
+    else()
+	  message(FATAL_ERROR "Could not find Zoltan include file!")
+    endif(ZOLTAN_HEADER_FILE)
+
+    list(APPEND COMPILEFLAGS "-DHAVE_ZOLTAN")
+  endif(ENABLE_ZOLTAN)
+
+
+
+  list(APPEND COMPILEFLAGS "-DHAVE_PARALLEL_DOMAIN_AMDIS=1")
+  SET(PARALLEL_DOMAIN_AMDIS_SRC
+	  ${SOURCE_DIR}/parallel/BddcMlSolver.cc
+	  ${SOURCE_DIR}/parallel/DofComm.cc
+	  ${SOURCE_DIR}/parallel/CheckerPartitioner.cc
+	  ${SOURCE_DIR}/parallel/ElementObjectDatabase.cc
+	  ${SOURCE_DIR}/parallel/InteriorBoundary.cc
+	  ${SOURCE_DIR}/parallel/MeshDistributor.cc 
+	  ${SOURCE_DIR}/parallel/MeshLevelData.cc 
+	  ${SOURCE_DIR}/parallel/MeshManipulation.cc
+	  ${SOURCE_DIR}/parallel/MeshPartitioner.cc
+	  ${SOURCE_DIR}/parallel/MpiHelper.cc
+	  ${SOURCE_DIR}/parallel/ParallelDebug.cc
+	  ${SOURCE_DIR}/parallel/ParallelDofMapping.cc
+	  ${SOURCE_DIR}/parallel/ParallelProblemStat.cc
+	  ${SOURCE_DIR}/parallel/ParallelSolver.cc
+	  ${SOURCE_DIR}/parallel/PeriodicMap.cc
+	  ${SOURCE_DIR}/parallel/ParMetisPartitioner.cc
+	  ${SOURCE_DIR}/parallel/StdMpi.cc
+	  ${SOURCE_DIR}/parallel/ZoltanPartitioner.cc)
+	  
+  if(ENABLE_PARALLEL_DOMAIN STREQUAL "PETSC")
+	  set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};/usr/share/cmake-2.8/Modules/;${CMAKE_SOURCE_DIR}/")
+	  set(PETSC_EXECUTABLE_RUNS ON)
+	  find_package(PETSc REQUIRED)
+	  include_directories(${PETSC_DIR}/include ${PETSC_DIR}/${PETSC_ARCH}/include)
+	  list(APPEND COMPILEFLAGS "-DHAVE_PARALLEL_PETSC" "-DPETSC_VERSION=${PETSC_VERSION}")
+	  list(APPEND AMDIS_INCLUDE_DIRS ${PETSC_DIR}/include ${PETSC_DIR}/${PETSC_ARCH}/include)
+	  list(APPEND PARALLEL_DOMAIN_AMDIS_SRC 
+		  ${SOURCE_DIR}/parallel/MatrixNnzStructure.cc
+		  ${SOURCE_DIR}/parallel/ParallelCoarseSpaceSolver.cc
+		  ${SOURCE_DIR}/parallel/PetscHelper.cc
+		  ${SOURCE_DIR}/parallel/PetscSolver.cc
+		  ${SOURCE_DIR}/parallel/PetscSolverFeti.cc
+		  ${SOURCE_DIR}/parallel/PetscSolverFetiDebug.cc
+		  ${SOURCE_DIR}/parallel/PetscSolverFetiMonitor.cc
+		  ${SOURCE_DIR}/parallel/PetscSolverFetiOperators.cc
+		  ${SOURCE_DIR}/parallel/PetscSolverFetiTimings.cc
+		  ${SOURCE_DIR}/parallel/PetscSolverGlobalMatrix.cc
+		  ${SOURCE_DIR}/parallel/PetscSolverGlobalBlockMatrix.cc
+		  ${SOURCE_DIR}/parallel/PetscSolverNavierStokes.cc
+		  ${SOURCE_DIR}/parallel/PetscSolverNSCH.cc
+		  ${SOURCE_DIR}/parallel/PetscSolverCahnHilliard2.cc
+		  ${SOURCE_DIR}/parallel/PetscSolverCahnHilliard.cc                        
+		  ${SOURCE_DIR}/parallel/PetscSolverSchur.cc
+		  ${SOURCE_DIR}/solver/PetscTypes.cc)
+  elseif(ENABLE_PARALLEL_DOMAIN STREQUAL "PMTL")
+	  set(MTL_INCLUDE_DIR "")
+	  find_package(MTL REQUIRED)
+	  list(APPEND COMPILEFLAGS "-DMTL_HAS_MPI" "-DHAVE_PARALLEL_MTL4")
 # 		list(APPEND PARALLEL_DOMAIN_AMDIS_SRC 
 # 			${SOURCE_DIR}/parallel/PMTL_ProblemStat.cc
 # 			)
-		list(APPEND AMDIS_LIBS ${MTL_LIBRARIES})
-	else()
-		message(SEND_ERROR "Set the domain-decomposition version correctly.")
-	endif()
+	  list(APPEND AMDIS_LIBS ${MTL_LIBRARIES})
+  else()
+	  message(SEND_ERROR "Set the domain-decomposition version correctly.")
+  endif()
 
-	INSTALL(FILES ResolveCompilerPaths.cmake FindPackageMultipass.cmake FindPETSc.cmake
-		DESTINATION share/amdis/)
-	if(USE_PETSC_DEV)
-	  list(APPEND COMPILEFLAGS "-DHAVE_PETSC_DEV")
-	endif( USE_PETSC_DEV)
+  INSTALL(FILES ResolveCompilerPaths.cmake FindPackageMultipass.cmake FindPETSc.cmake
+	  DESTINATION share/amdis/)
+  if(USE_PETSC_DEV)
+    list(APPEND COMPILEFLAGS "-DHAVE_PETSC_DEV")
+  endif(USE_PETSC_DEV)
 endif(ENABLE_PARALLEL_DOMAIN)
 
+# ------------------------------------------------------------------------------
 
 if(ENABLE_SEQ_PETSC)
   find_package(MPI REQUIRED)
@@ -302,20 +316,23 @@ if(ENABLE_SEQ_PETSC)
 	${SOURCE_DIR}/solver/PetscTypes.cc)
 endif(ENABLE_SEQ_PETSC)
 
+# ------------------------------------------------------------------------------
+
 if(ENABLE_UMFPACK)
-	find_file(UMFPACK_H umfpack.h
-			    HINTS ENV CPATH /usr/include /usr/include/suitesparse /usr/include/ufsparse
-			    DOC "headerfile umfpack.h for UMFPACK")
-	if(UMFPACK_H)
-		get_filename_component(UMFPACK_PATH ${UMFPACK_H} PATH)
-		include_directories(${UMFPACK_PATH} ${UFCONFIG_PATH} ${AMD_PATH})
-		list(APPEND COMPILEFLAGS "-DHAVE_UMFPACK=1" "-DMTL_HAS_UMFPACK")
-	else()
-		message(FATAL_ERROR "Could not find the UMFPACK header umfpack.h.")
-	endif()
-	SET(RPM_DEPEND_STR "blas")
+  find_file(UMFPACK_H umfpack.h
+	    HINTS ENV CPATH /usr/include /usr/include/suitesparse /usr/include/ufsparse
+	    DOC "headerfile umfpack.h for UMFPACK")
+  if(UMFPACK_H)
+    get_filename_component(UMFPACK_PATH ${UMFPACK_H} PATH)
+    include_directories(${UMFPACK_PATH} ${UFCONFIG_PATH} ${AMD_PATH})
+    list(APPEND COMPILEFLAGS "-DHAVE_UMFPACK=1" "-DMTL_HAS_UMFPACK")
+  else()
+    message(FATAL_ERROR "Could not find the UMFPACK header umfpack.h.")
+  endif()
+  SET(RPM_DEPEND_STR "blas")
 endif(ENABLE_UMFPACK)
 
+# ------------------------------------------------------------------------------
 
 if(ENABLE_HYPRE)
   include(HYPREConfig.cmake)
@@ -333,20 +350,23 @@ if(ENABLE_HYPRE)
     list(APPEND MYLIBS ${HYPRE_LIBRARIES} )
   endif()
 endif(ENABLE_HYPRE)
-  
+ 
+# ------------------------------------------------------------------------------ 
   
 if(ENABLE_PNG)
-	find_file(PNG_H png.h
-			    HINTS ENV CPATH /usr/include
-			    DOC "headerfile png.h for PNG-READER")
-	if(PNG_H)
-		get_filename_component(PNG_PATH ${PNG_H} PATH)
-		include_directories(${PNG_PATH})
-		list(APPEND COMPILEFLAGS "-DHAVE_PNG=1")
-	else()
-		message(FATAL_ERROR "Could not find the PNG header png.h.")
-	endif()
+  find_file(PNG_H png.h
+	    HINTS ENV CPATH /usr/include
+	    DOC "headerfile png.h for PNG-READER")
+  if(PNG_H)
+    get_filename_component(PNG_PATH ${PNG_H} PATH)
+    include_directories(${PNG_PATH})
+    list(APPEND COMPILEFLAGS "-DHAVE_PNG=1")
+  else()
+    message(FATAL_ERROR "Could not find the PNG header png.h.")
+  endif()
 endif(ENABLE_PNG)
+
+# ------------------------------------------------------------------------------
 
 #if(ENABLE_COMPRESSION)
 #  list(APPEND COMPILEFLAGS "-DHAVE_COMPRESSION=1")
@@ -357,13 +377,13 @@ endif(ENABLE_PNG)
 #       list(APPEND COMPILEFLAGS "-DSUPPRESS_OUTPUT")
 #endif(NOT ENABLE_OUTPUT)
 
-
+# ------------------------------------------------------------------------------
 
 if(ENABLE_OPENMP)
   if(CMAKE_CXX_COMPILER MATCHES ".*icpc")
-	list(APPEND COMPILEFLAGS "-openmp")
+    list(APPEND COMPILEFLAGS "-openmp")
   else()
-        list(APPEND COMPILEFLAGS "-fopenmp")
+    list(APPEND COMPILEFLAGS "-fopenmp")
   endif()
 endif(ENABLE_OPENMP)
 
@@ -420,9 +440,9 @@ INSTALL(FILES ${HEADERS}
 list(APPEND deb_add_dirs "include/amdis")
 
 set(include_sub_dirs "config" "parallel" "nonlin" "est" "expressions" 
-					 "matrix_vector" "matrix_vector/expr" "operations" 
-					 "traits" "utility" "time" "solver" "solver/details"
-					 "solver/itl" "io" "io/detail")
+		     "matrix_vector" "matrix_vector/expr" "operations" 
+		     "traits" "utility" "time" "solver" "solver/details"
+		     "solver/itl" "io" "io/detail")
 				 
 FOREACH(sub_dir ${include_sub_dirs})
 	FILE(GLOB HEADERS "${SOURCE_DIR}/${sub_dir}/*.h*")

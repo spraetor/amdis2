@@ -6,110 +6,49 @@
 #include "FunctorTerms.hpp"
 #include "TermConcepts.hpp"
 
+
+/// Macro that generates a unary (vector) functor.
+/**
+ *  \p NAME    Name of the class.
+ *  \p DEGREE  Expression in 'd0' that gives the polynomial degree, with
+ *             'd0' the degree of the argument passed to the functor.
+ *  \p FCT     Name of a unary c++-function that represents the functor.
+ */
+#define AMDIS_MAKE_VECTOR_FUNCTOR( NAME, DEGREE, FCT )    \
+    struct NAME                                           \
+    {                                                     \
+      using result_type = T;                              \
+      constexpr int getDegree(int d0) const               \
+      {                                                   \
+        return DEGREE ;                                   \
+      }                                                   \
+      template <class T>                                  \
+      auto operator()(T&& t) const RETURNS                \
+      (                                                   \
+        FCT(std::forward<T>(t))                           \
+      )                                                   \
+    };
+
+
 namespace AMDiS
 {
   namespace functors
   {
-    struct TwoNorm
-    {
-      constexpr int getDegree(int d) const
-      {
-        return 2*d+1;
-      }
-      template <class T>
-      auto operator()(T&& t) const RETURNS( two_norm(std::forward<T>(t)) )
-    };
+    
+    AMDIS_MAKE_VECTOR_FUNCTOR( TwoNorm,  2*d0+1, two_norm       )
+    AMDIS_MAKE_VECTOR_FUNCTOR( OneNorm,      d0, one_norm       )
+    AMDIS_MAKE_VECTOR_FUNCTOR( UnaryDot,   2*d0, unary_dot      )
+    AMDIS_MAKE_VECTOR_FUNCTOR( Sum,          d0, sum            )
+    AMDIS_MAKE_VECTOR_FUNCTOR( Mean,         d0, mean           )
+    AMDIS_MAKE_VECTOR_FUNCTOR( Prod,   d0*d0*d0, prod           )
+    AMDIS_MAKE_VECTOR_FUNCTOR( Max,          d0, AMDiS::max     )
+    AMDIS_MAKE_VECTOR_FUNCTOR( AbsMax,       d0, AMDiS::abs_max )
+    AMDIS_MAKE_VECTOR_FUNCTOR( Min,          d0, AMDiS::min     )
+    AMDIS_MAKE_VECTOR_FUNCTOR( AbsMin,       d0, AMDiS::abs_min )
 
-    struct OneNorm
-    {
-      constexpr int getDegree(int d) const
-      {
-        return d;
-      }
-      template <class T>
-      auto operator()(T&& t) const RETURNS( one_norm(std::forward<T>(t)) )
-    };
 
-    struct UnaryDot
-    {
-      constexpr int getDegree(int d) const
-      {
-        return 2*d;
-      }
-      template <class T>
-      auto operator()(T&& t) const RETURNS( unary_dot(std::forward<T>(t)) )
-    };
-
-    struct Max
-    {
-      constexpr int getDegree(int d) const
-      {
-        return d;
-      }
-      template <class T>
-      auto operator()(T&& t) const RETURNS( AMDiS::max(std::forward<T>(t)) )
-    };
-
-    struct AbsMax
-    {
-      constexpr int getDegree(int d) const
-      {
-        return d;
-      }
-      template <class T>
-      auto operator()(T&& t) const RETURNS( AMDiS::abs_max(std::forward<T>(t)) )
-    };
-
-    struct Min
-    {
-      constexpr int getDegree(int d) const
-      {
-        return d;
-      }
-      template <class T>
-      auto operator()(T&& t) const RETURNS( AMDiS::min(std::forward<T>(t)) )
-    };
-
-    struct AbsMin
-    {
-      constexpr int getDegree(int d) const
-      {
-        return d;
-      }
-      template <class T>
-      auto operator()(T&& t) const RETURNS( AMDiS::abs_min(std::forward<T>(t)) )
-    };
-
-    struct Sum
-    {
-      constexpr int getDegree(int d) const
-      {
-        return d;
-      }
-      template <class T>
-      auto operator()(T&& t) const RETURNS( sum(std::forward<T>(t)) )
-    };
-
-    struct Mean
-    {
-      constexpr int getDegree(int d) const
-      {
-        return d;
-      }
-      template <class T>
-      auto operator()(T&& t) const RETURNS( mean(std::forward<T>(t)) )
-    };
-
-    struct Prod
-    {
-      constexpr int getDegree(int d) const
-      {
-        return d*d*d;    // maximal degree for dow=3
-      }
-      template <class T>
-      auto operator()(T&& t) const RETURNS( prod(std::forward<T>(t)) )
-    };
-
+    /// Convert a vector to a diagonal matrix and extract the diagonal of 
+    /// a matrix and store it in a vector.
     struct Diagonal
     {
       constexpr int getDegree(int d0) const
@@ -118,21 +57,23 @@ namespace AMDiS
       }
 
     private:
+      // Extract the diagonal of a matrix
       template <class M, class V = detail::MatrixToVector<M>>
       static typename V::type eval(M const& m, tag::matrix)
       {
         using value_type = Value_t<M>;
-        typename V::type vector(num_rows(m), value_type(0));
+        typename V::type vector(num_rows(m), value_type{0});
         for (size_t i = 0; i < num_rows(m); ++i)
           vector(i) = m(i,i);
         return vector;
       }
 
+      // Generate a diagonal matrix
       template <class V, class M = detail::VectorToMatrix<V>>
       static typename M::type eval(V const& v, tag::vector)
       {
         using value_type = Value_t<V>;
-        typename M::type matrix(size(v), size(v), value_type(0));
+        typename M::type matrix(size(v), size(v), value_type{0});
         for (size_t i = 0; i < size(v); ++i)
           matrix(i,i) = v(i);
         return matrix;
@@ -142,7 +83,8 @@ namespace AMDiS
       template <class T>
       auto operator()(T&& t) const RETURNS
       (
-        Diagonal::eval(std::forward<T>(t), typename traits::category<Decay_t<T>>::tag())
+        Diagonal::eval(std::forward<T>(t), 
+		       typename traits::category<Decay_t<T>>::tag())
       )
     };
 

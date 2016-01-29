@@ -44,7 +44,7 @@ namespace AMDiS
         return d0;
       }
 
-      constexpr static T eval(const T& v)
+      static constexpr T eval(const T& v)
       {
         return v;
       }
@@ -78,11 +78,11 @@ namespace AMDiS
       using result_type = T;
       static constexpr T val = val_;
 
-      template <class V> constexpr static T eval(V&&)
+      template <class V> static constexpr T eval(V&&)
       {
         return val;
       }
-      template <class V> constexpr static T apply(V&&)
+      template <class V> static constexpr T apply(V&&)
       {
         return val;
       }
@@ -96,22 +96,22 @@ namespace AMDiS
     template <class T>
     struct abs : FunctorBase
     {
-      constexpr static int getDegree(int d0)
+      static constexpr int getDegree(int d0)
       {
         return d0;
       }
-      constexpr static auto eval(const T& v) RETURNS( math::abs(v) )
+      static constexpr auto eval(const T& v) RETURNS( math::abs(v) )
       constexpr auto operator()(const T& v) const RETURNS( eval(v) )
     };
 
     template <class T>
     struct abs<std::complex<T>> : FunctorBase
     {
-      constexpr static int getDegree(int d0)
+      static constexpr int getDegree(int d0)
       {
         return d0;
       }
-      constexpr static auto eval(const T& v) RETURNS( std::norm(v) )
+      static constexpr auto eval(const T& v) RETURNS( std::norm(v) )
       constexpr auto operator()(const T& v) const RETURNS( eval(v) )
     };
 
@@ -119,11 +119,11 @@ namespace AMDiS
     template <class T>
     struct negate : FunctorBase
     {
-      constexpr static int getDegree(int d0)
+      static constexpr int getDegree(int d0)
       {
         return d0;
       }
-      constexpr static auto eval(const T& v) RETURNS( -v )
+      static constexpr auto eval(const T& v) RETURNS( -v )
       constexpr auto operator()(const T& v) const RETURNS( eval(v) )
     };
 
@@ -131,11 +131,11 @@ namespace AMDiS
     template <class T1, class T2 = T1>
     struct plus : FunctorBase
     {
-      constexpr static int getDegree(int d0, int d1)
+      static constexpr int getDegree(int d0, int d1)
       {
         return math::max(d0, d1);
       }
-      constexpr static auto eval(const T1& v0, const T2& v1) RETURNS( v0 + v1 )
+      static constexpr auto eval(const T1& v0, const T2& v1) RETURNS( v0 + v1 )
       constexpr auto operator()(const T1& v1, const T2& v2) const RETURNS( eval(v1, v2) )
     };
 
@@ -143,11 +143,11 @@ namespace AMDiS
     template <class T1, class T2 = T1>
     struct minus : FunctorBase
     {
-      constexpr static int getDegree(int d0, int d1)
+      static constexpr int getDegree(int d0, int d1)
       {
         return math::max(d0, d1);
       }
-      constexpr static auto eval(const T1& v0, const T2& v1) RETURNS( v0 - v1 )
+      static constexpr auto eval(const T1& v0, const T2& v1) RETURNS( v0 - v1 )
       constexpr auto operator()(const T1& v1, const T2& v2) const RETURNS( eval(v1, v2) )
     };
 
@@ -155,11 +155,11 @@ namespace AMDiS
     template <class T1, class T2 = T1>
     struct multiplies : FunctorBase
     {
-      constexpr static int getDegree(int d0, int d1)
+      static constexpr int getDegree(int d0, int d1)
       {
         return d0 + d1;
       }
-      constexpr static auto eval(const T1& v0, const T2& v1) RETURNS( v0* v1 )
+      static constexpr auto eval(const T1& v0, const T2& v1) RETURNS( v0* v1 )
       constexpr auto operator()(const T1& v1, const T2& v2) const RETURNS( eval(v1, v2) )
     };
 
@@ -167,11 +167,11 @@ namespace AMDiS
     template <class T1, class T2 = T1>
     struct divides : FunctorBase
     {
-      constexpr static int getDegree(int d0, int d1)
+      static constexpr int getDegree(int d0, int d1)
       {
         return d0 + d1;
       }
-      constexpr static auto eval(const T1& v0, const T2& v1) RETURNS( v0 / v1 )
+      static constexpr auto eval(const T1& v0, const T2& v1) RETURNS( v0 / v1 )
       constexpr auto operator()(const T1& v1, const T2& v2) const RETURNS( eval(v1, v2) )
     };
 
@@ -179,11 +179,11 @@ namespace AMDiS
     template <class T>
     struct max : FunctorBase
     {
-      constexpr static int getDegree(int d0, int d1)
+      static constexpr int getDegree(int d0, int d1)
       {
         return math::max(d0, d1);
       }
-      constexpr static auto eval(const T& v0, const T& v1) RETURNS( math::max(v0, v1) )
+      static constexpr auto eval(const T& v0, const T& v1) RETURNS( math::max(v0, v1) )
       constexpr auto operator()(const T& v1, const T& v2) const RETURNS( eval(v1, v2) )
     };
 
@@ -191,11 +191,11 @@ namespace AMDiS
     template <class T>
     struct min : FunctorBase
     {
-      constexpr static int getDegree(int d0, int d1)
+      static constexpr int getDegree(int d0, int d1)
       {
         return math::max(d0, d1);
       }
-      constexpr static auto eval(const T& v0, const T& v1) RETURNS( math::min(v0, v1) )
+      static constexpr auto eval(const T& v0, const T& v1) RETURNS( math::min(v0, v1) )
       constexpr auto operator()(const T& v1, const T& v2) const RETURNS( eval(v1, v2) )
     };
 
@@ -209,7 +209,7 @@ namespace AMDiS
         return d0;
       }
 
-      constexpr static result_type eval(const T& v0, const T& v1)
+      static constexpr result_type eval(const T& v0, const T& v1)
       {
         return math::max(math::abs(v0), math::abs(v1));
       }
@@ -229,7 +229,7 @@ namespace AMDiS
         return d0;
       }
 
-      constexpr static result_type eval(const T& v0, const T& v1)
+      static constexpr result_type eval(const T& v0, const T& v1)
       {
         return math::min(math::abs(v0), math::abs(v1));
       }
@@ -276,7 +276,7 @@ namespace AMDiS
     template <class Functor, int N>
     struct apply
     {
-      typedef typename Functor::result_type result_type;
+      using result_type = typename Functor::result_type;
 
       apply(const Functor& f_) : f(f_), inner(f_) {}
 
@@ -305,7 +305,7 @@ namespace AMDiS
     template <class Functor>
     struct apply<Functor, 0>
     {
-      typedef typename Functor::result_type result_type;
+      using result_type = typename Functor::result_type;
 
       apply(const Functor& f_) : f(f_) {}
       int getDegree(int d0) const
@@ -338,7 +338,7 @@ namespace AMDiS
     template <class F, class G>
     struct compose<F, 1, G>
     {
-      typedef typename F::result_type result_type;
+      using result_type = typename F::result_type;
       F f;
       G g;
 
@@ -352,7 +352,7 @@ namespace AMDiS
     template <class F, class G>
     struct compose<F, 2, G>
     {
-      typedef typename F::result_type result_type;
+      using result_type = typename F::result_type;
       F f;
       G g;
 
@@ -374,7 +374,7 @@ namespace AMDiS
         return p*d0;
       }
 
-      constexpr static result_type eval(const T& v)
+      static constexpr result_type eval(const T& v)
       {
         return boost::math::pow<p>(v);
       }
@@ -397,7 +397,7 @@ namespace AMDiS
         return p*d0;    // optimal polynomial approximation degree ?
       }
 
-      constexpr static result_type eval(const T& v)
+      static constexpr result_type eval(const T& v)
       {
         return root_dispatch<p,T>::eval(v);
       }
@@ -410,7 +410,7 @@ namespace AMDiS
     template <int p, class T, class>
     struct root_dispatch
     {
-      constexpr static T eval(const T& v)
+      static constexpr T eval(const T& v)
       {
         return std::pow(v, 1.0/p);
       }
@@ -420,7 +420,7 @@ namespace AMDiS
     struct root_dispatch<p, T, 
       Requires_t<meta::is_power_of<p, 3>> >
     {
-      constexpr static T eval(const T& v)
+      static constexpr T eval(const T& v)
       {
         return apply<root<3, T>, meta::log<p, 3>::value>::eval(v);
       }
@@ -430,7 +430,7 @@ namespace AMDiS
     struct root_dispatch<p, T, 
       Requires_t<meta::is_power_of<p, 2>> >
     {
-      constexpr static T eval(const T& v)
+      static constexpr T eval(const T& v)
       {
         return apply<root<2, T>, meta::log<p, 2>::value>::eval(v);
       }
@@ -439,7 +439,7 @@ namespace AMDiS
     template <class T>
     struct root_dispatch<3, T>
     {
-      constexpr static T eval(const T& v)
+      static constexpr T eval(const T& v)
       {
         return boost::math::cbrt(v);
       }
@@ -448,7 +448,7 @@ namespace AMDiS
     template <class T>
     struct root_dispatch<2, T>
     {
-      constexpr static T eval(const T& v)
+      static constexpr T eval(const T& v)
       {
         return std::sqrt(v);
       }
@@ -457,7 +457,7 @@ namespace AMDiS
     template <class T>
     struct root_dispatch<1, T>
     {
-      constexpr static T eval(const T& v)
+      static constexpr T eval(const T& v)
       {
         return v;
       }
@@ -466,7 +466,7 @@ namespace AMDiS
     template <class T>
     struct root_dispatch<0, T>
     {
-      constexpr static T eval(const T& v)
+      static constexpr T eval(const T& v)
       {
         return 1.0;
       }

@@ -10,8 +10,8 @@ namespace AMDiS
 
   void RobinBC::fillBoundaryCondition(DOFVectorBase<double>* vector,
                                       ElInfo* elInfo,
-                                      const DegreeOfFreedom* dofIndices,
-                                      const BoundaryType* localBound,
+                                      DegreeOfFreedom const* dofIndices,
+                                      BoundaryType const* localBound,
                                       int nBasFcts)
   {
     FUNCNAME_DBG("RobinBC::fillBoundaryCondition()");
@@ -30,8 +30,8 @@ namespace AMDiS
 
   void RobinBC::fillBoundaryCondition(DOFMatrix* matrix,
                                       ElInfo* elInfo,
-                                      const DegreeOfFreedom* dofIndices,
-                                      const BoundaryType* localBound,
+                                      DegreeOfFreedom const* dofIndices,
+                                      BoundaryType const* localBound,
                                       int nBasFcts)
   {
     if (robinOperators)
@@ -47,18 +47,15 @@ namespace AMDiS
 
   double RobinBC::boundResidual(ElInfo* elInfo,
                                 DOFMatrix* matrix,
-                                const DOFVectorBase<double>* dv)
+                                DOFVectorBase<double> const* dv)
   {
     FUNCNAME("RobinBC::fillBoundaryCondition()");
     TEST_EXIT(matrix->getRowFeSpace() == rowFeSpace)("invalid row fe space\n");
     TEST_EXIT(matrix->getColFeSpace() == colFeSpace)("invalid col fe space\n");
 
     int dim = elInfo->getMesh()->getDim();
-    DimVec<double>  lambda(dim);
-    double n_A_grdUh, val = 0.0;
+    double val = 0.0;
     WorldVector<double> normal;
-    const DimVec<WorldVector<double>>& Lambda = elInfo->getGrdLambda();
-    double det = elInfo->getDet();
     bool neumannQuad = false;
     const BasisFunction* basFcts = dv->getFeSpace()->getBasisFcts();
 
@@ -92,16 +89,13 @@ namespace AMDiS
     {
       elInfo->getNormal(face, normal);
 
-      Quadrature* quadrature = neumannQuad ?
-                               (*neumannOperators)[face]->getAssembler()->
-                               getZeroOrderAssembler()->getQuadrature() :
-                               (*robinOperators)[face]->getAssembler()->
-                               getZeroOrderAssembler()->getQuadrature();
+      Quadrature* quadrature = neumannQuad 
+	? (*neumannOperators)[face]->getAssembler()->getZeroOrderAssembler()->getQuadrature() 
+	: (*robinOperators)[face]->getAssembler()->getZeroOrderAssembler()->getQuadrature();
 
       if (elInfo->getBoundary(face) == boundaryType)
       {
-        (*neumannOperators)[face]->getAssembler()->
-        getZeroOrderAssembler()->initElement(elInfo);
+        (*neumannOperators)[face]->getAssembler()->getZeroOrderAssembler()->initElement(elInfo);
 
         int nPoints = quadrature->getNumPoints();
         DenseVector<double> uhAtQp(nPoints);
@@ -121,8 +115,7 @@ namespace AMDiS
         for (int iq = 0; iq < nPoints; iq++)
         {
           A_grdUh[iq].set(0.0);
-          lambda = quadrature->getLambda(iq);
-          basFcts->evalGrdUh(lambda, Lambda, uhEl, grdUh[iq]);
+          basFcts->evalGrdUh(quadrature->getLambda(iq), elInfo->getGrdLambda(), uhEl, grdUh[iq]);
         }
 
         for (op = matrix->getOperatorsBegin(); op != matrix->getOperatorsEnd(); ++op)
@@ -134,13 +127,13 @@ namespace AMDiS
         val = 0.0;
         for (int iq = 0; iq < nPoints; iq++)
         {
-          n_A_grdUh = (normal * A_grdUh[iq]) - f[iq];
+          double n_A_grdUh = (normal * A_grdUh[iq]) - f[iq];
           val += quadrature->getWeight(iq) * math::sqr(n_A_grdUh);
         }
       }
     }
 
-    return det * val;
+    return elInfo->getDet() * val;
   }
 
 } // end namespace AMDiS

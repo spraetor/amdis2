@@ -960,19 +960,17 @@ namespace AMDiS
       dofs.resize(nBasFcts);
 
     const DegreeOfFreedom** dof = el->getDof();
-    GeoIndex posIndex;
-    int nrDOFs, n0, node0, num = 0;
 
     for (int pos = 0, j = 0; pos <= dim; pos++)
     {
-      posIndex = INDEX_OF_DIM(pos, dim);
-      nrDOFs = admin->getNumberOfDofs(posIndex);
+      GeoIndex posIndex = INDEX_OF_DIM(pos, dim);
+      int nrDOFs = admin->getNumberOfDofs(posIndex);
 
-      if (nrDOFs)
+      if (nrDOFs > 0)
       {
-        n0 = admin->getNumberOfPreDofs(posIndex);
-        node0 = admin->getMesh()->getNode(posIndex);
-        num = Global::getGeo(posIndex, dim);
+        int n0 = admin->getNumberOfPreDofs(posIndex);
+        int node0 = admin->getMesh()->getNode(posIndex);
+        int num = Global::getGeo(posIndex, dim);
 
         for (int i = 0; i < num; node0++, i++)
         {
@@ -994,19 +992,17 @@ namespace AMDiS
       dofs.resize(nBasFcts);
 
     const DegreeOfFreedom** dof = el->getDof();
-    GeoIndex posIndex;
-    int nrDOFs, n0, node0, num = 0;
 
     for (int pos = 0, j = 0; pos <= dim; pos++)
     {
-      posIndex = INDEX_OF_DIM(pos, dim);
-      nrDOFs = admin->getNumberOfDofs(posIndex);
+      GeoIndex posIndex = INDEX_OF_DIM(pos, dim);
+      int nrDOFs = admin->getNumberOfDofs(posIndex);
 
       if (nrDOFs)
       {
-        n0 = admin->getNumberOfPreDofs(posIndex);
-        node0 = admin->getMesh()->getNode(posIndex);
-        num = Global::getGeo(posIndex, dim);
+        int n0 = admin->getNumberOfPreDofs(posIndex);
+        int node0 = admin->getMesh()->getNode(posIndex);
+        int num = Global::getGeo(posIndex, dim);
 
         for (int i = 0; i < num; node0++, i++)
         {

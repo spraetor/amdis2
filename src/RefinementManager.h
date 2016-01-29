@@ -19,11 +19,7 @@ namespace AMDiS
   {
   public:
     /// Constructs a RefinementManager which belongs to aMesh
-    RefinementManager()
-      : mesh(NULL),
-        newCoords(false),
-        stack(NULL)
-    {}
+    RefinementManager() = default;
 
     /// Destructor
     virtual ~RefinementManager() {}
@@ -32,10 +28,10 @@ namespace AMDiS
      * Generates new coordinates on curved boundaries. Can be overriden by
      * sub classes if used.
      */
-    virtual void setNewCoords(int macroEl = -1)
+    virtual void setNewCoords(int /* macroEl */ = -1)
     {
-      FUNCNAME("RefinementManager::setNewCoords");
-      ERROR_EXIT("called for base class!\n");
+      FUNCNAME("RefinementManager::setNewCoords()");
+      ERROR_EXIT("Called for base class!\n");
     }
 
     /** \brief
@@ -91,10 +87,10 @@ namespace AMDiS
 
   protected:
     /// The Mesh to be refined
-    Mesh* mesh;
+    Mesh* mesh = NULL;
 
     /// Number of new vertices on a boundary edge
-    bool newCoords;
+    bool newCoords = false;
 
     /// Still more refinement to do?
     static bool doMoreRecursiveRefine;
@@ -103,7 +99,7 @@ namespace AMDiS
     static int callRefineInterpol;
 
     /// Used for non recursive traversal
-    TraverseStack* stack;
+    TraverseStack* stack = NULL;
   };
 
 } // end namespace AMDiS

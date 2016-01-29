@@ -39,10 +39,13 @@ namespace AMDiS
                  int order,
                  bool optimized,
                  FirstOrderType type = GRD_PHI);
+    
+    /// Destructor.
+    ~SubAssembler() {}
 
     /// Calculates the element matrix for elInfo and adds it to mat. Memory for
     /// mat must be provided by the caller.
-    void calculateElementMatrix(const ElInfo* elInfo,
+    void calculateElementMatrix(ElInfo const* elInfo,
                                 ElementMatrix& mat)
     {
       calculateElementMatrixImpl(elInfo, mat);
@@ -50,7 +53,7 @@ namespace AMDiS
 
     /// Calculates the element vector for elInfo and adds it to vec. Memory for
     /// vec must be provided by the caller.
-    void calculateElementVector(const ElInfo* elInfo,
+    void calculateElementVector(ElInfo const* elInfo,
                                 DenseVector<double>& vec)
     {
       calculateElementVectorImpl(elInfo, vec);
@@ -58,7 +61,8 @@ namespace AMDiS
 
     /// Called once for each ElInfo when \ref calculateElementMatrix() or
     /// \ref calculateElementVector() is called for the first time for this
-    /// Element.
+    /// Element. 
+    // TODO: remove multi-mesh!
     void initElement(const ElInfo* smallElInfo,
                      const ElInfo* largeElInfo = NULL,
                      Quadrature* quad = NULL)
@@ -105,7 +109,7 @@ namespace AMDiS
     /// Creates a vector with the world coordinates of the quadrature points
     /// of \ref quadrature on the element of elInfo.
     /// Used by \ref OperatorTerm::initElement().
-    void getCoordsAtQPs(const ElInfo* elInfo,
+    void getCoordsAtQPs(ElInfo const* elInfo,
                         Quadrature* quad,
                         DenseVector<WorldVector<double>>& coordsAtQPs);
 
@@ -113,7 +117,7 @@ namespace AMDiS
     /// Used by \ref OperatorTerm::initElement().
     template <class T>
     void getVectorAtQPs(DOFVectorBase<T> const* dv,
-                        const ElInfo* elInfo,
+                        ElInfo const* elInfo,
                         Quadrature* quad,
                         DenseVector<T>& vecAtQPs);
 
@@ -121,7 +125,7 @@ namespace AMDiS
     /// Used by \ref OperatorTerm::initElement().
     template <class T>
     void getGradientsAtQPs(DOFVectorBase<T> const* dv,
-                           const ElInfo* elInfo,
+                           ElInfo const* elInfo,
                            Quadrature* quad,
                            DenseVector<Gradient_t<T>>& grdAtQPs);
 
@@ -131,30 +135,30 @@ namespace AMDiS
     /// but not for write.
     template <class T>
     void getDerivativeAtQPs(DOFVectorBase<T> const* dv,
-                            const ElInfo* elInfo,
+                            ElInfo const* elInfo,
                             Quadrature* quad,
                             int comp,
                             DenseVector<T>& grdAtQPs);
 
   private:
     // must be implemented by derived class
-    virtual void calculateElementMatrixImpl(const ElInfo* elInfo,
+    virtual void calculateElementMatrixImpl(ElInfo const* elInfo,
                                             ElementMatrix& mat) = 0;
 
     // must be implemented by derived class.
-    virtual void calculateElementVectorImpl(const ElInfo* elInfo,
+    virtual void calculateElementVectorImpl(ElInfo const* elInfo,
                                             DenseVector<double>& vec) = 0;
 
     // calls initElement for all OperatorTerms
-    virtual void initImpl(const ElInfo* smallElInfo,
-                          const ElInfo* largeElInfo,
+    virtual void initImpl(ElInfo const* smallElInfo,
+                          ElInfo const* largeElInfo,
                           Quadrature* quad);
 
 
   protected:
     /// Updates \ref psiFast and \ref phiFast.
     FastQuadrature* updateFastQuadrature(FastQuadrature* quadFast,
-                                         const BasisFunction* psi,
+                                         BasisFunction const* psi,
                                          Flag updateFlag);
 
   protected:
@@ -162,10 +166,10 @@ namespace AMDiS
     int dim;
 
     /// Row FiniteElemSpace.
-    const FiniteElemSpace* rowFeSpace;
+    FiniteElemSpace const* rowFeSpace;
 
     /// Column FiniteElemSpace.
-    const FiniteElemSpace* colFeSpace;
+    FiniteElemSpace const* colFeSpace;
 
     /// Number of rows of the element matrix and length of the element
     /// vector. Is equal to the number of row basis functions
@@ -191,8 +195,8 @@ namespace AMDiS
       Quadrature* quad;
     };
 
-    std::map<const DOFIndexedBase*, ValuesAtQPs*> cachedValuesAtQPs;
-    std::map<const DOFIndexedBase*, ValuesAtQPs*> cachedGradientsAtQPs;
+    std::map<DOFIndexedBase const*, ValuesAtQPs*> cachedValuesAtQPs;
+    std::map<DOFIndexedBase const*, ValuesAtQPs*> cachedGradientsAtQPs;
 
     /// Set and updated by \ref initElement() for each ElInfo.
     /// coordsAtQPs[i] points to the coordinates of the i-th quadrature point.

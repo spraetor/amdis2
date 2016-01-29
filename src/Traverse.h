@@ -141,19 +141,11 @@ namespace AMDiS
 
     /// Avoids copy of a traverse stack. If copy should be possible
     /// the operator must be implemented (deep copy not flat copy!)
-    void operator=(TraverseStack const& /*rhs*/)
-    {
-      FUNCNAME("TraverseStack::operator=()");
-      ERROR_EXIT("not implemented");
-    }
+    void operator=(TraverseStack const& /*rhs*/) = delete;
 
     /// Avoids copy of a traverse stack. If copy should be possible
     /// the operator must be implemented (deep copy not flat copy!)
-    TraverseStack(TraverseStack const&)
-    {
-      FUNCNAME("TraverseStack::TraverseStack()");
-      ERROR_EXIT("not implemented");
-    }
+    TraverseStack(TraverseStack const& /*rhs*/) = delete;
 
   private:
     /// Iterator to the current MacroElement

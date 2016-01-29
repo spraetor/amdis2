@@ -175,7 +175,7 @@ namespace AMDiS
           return new_vtu_path.string();
         }
 
-        int updateAnimationFile(AdaptInfo* adaptInfo,
+        int updateAnimationFile(AdaptInfo& adaptInfo,
                                 string valueFilename,
                                 vector<pair<double, string>>* paraViewAnimationFrames,
                                 string animationFilename)
@@ -183,7 +183,7 @@ namespace AMDiS
           FUNCNAME("updateAnimationFile()");
 
           paraViewAnimationFrames->push_back(
-            make_pair(adaptInfo->getTime(), extract_relative_path(valueFilename, animationFilename)));
+            make_pair(adaptInfo.getTime(), extract_relative_path(valueFilename, animationFilename)));
 
           boost::iostreams::filtering_ostream file;
           {

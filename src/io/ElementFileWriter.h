@@ -58,7 +58,7 @@ namespace AMDiS
                         std::map<int, std::vector<double>>& vecs);
 
       /// Implementation of FileWriterInterface::writeFiles().
-      void writeFiles(AdaptInfo* adaptInfo, bool force,
+      void writeFiles(AdaptInfo& adaptInfo, bool force,
                       int level = -1,
                       Flag traverseFlag = Mesh::CALL_LEAF_EL,
                       bool (*writeElem)(ElInfo*) = NULL);

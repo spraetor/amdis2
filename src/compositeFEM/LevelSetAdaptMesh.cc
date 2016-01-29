@@ -30,7 +30,7 @@ namespace compositeFEM
   using namespace AMDiS;
 
   void
-  LevelSetAdaptMesh::adaptMesh(AdaptInfo* adaptInfo)
+  LevelSetAdaptMesh::adaptMesh(AdaptInfo& adaptInfo)
   {
     TraverseStack* stack;
     ElInfo* elInfo;

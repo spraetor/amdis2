@@ -95,7 +95,7 @@ namespace AMDiS
 
 
     void PetscSolverNavierStokes::solvePetscMatrix(SystemVector& vec,
-        AdaptInfo* adaptInfo)
+        AdaptInfo& adaptInfo)
     {
       FUNCNAME("PetscSolverNavierStokes::solvePetscMatrix()");
 
