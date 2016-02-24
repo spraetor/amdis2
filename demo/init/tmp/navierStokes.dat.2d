@@ -1,0 +1,50 @@
+dimension of world: 2
+
+% ====================== VARIABLES ========================
+output_folder: output
+output_postfix: _ns
+mesh_name: mesh
+polynomial-degree: 1
+
+% ====================== MESH =============================
+mesh->H: 4.1
+
+% ====================== MESH =============================
+${mesh_name}->macro file name: macro/kanal_msh.2d
+${mesh_name}->global refinements: 0
+${mesh_name}->check: 0
+
+% ====================== INCLUDES =========================
+#include "init/navierStokes_TaylorHood.inc.2d"
+
+% ====================== USER_PARAMETER - NS ==============
+
+ns->viscosity: 1/100
+ns->theta: 0.5
+%ns->force: [0.0, 9.81]		% gravitational force [m/s^2]
+
+ns->force dirichlet bc: 0
+
+ns->Um: 1.5
+
+ns->initial velocity: 0
+ns->initial velocity value: 0.0
+ns->laplace operator: 0  	% 0... div(nu*grad(u)), 1... div(0.5*nu*(grad(u)+grad(u)^T)) [sehr langsam]
+ns->non-linear term: 2 		% 0... u^old*grad(u_i^old), 1... u'*grad(u_i^old), 2... u^old*grad(u'_i)
+
+% ====================== TIMESTEPS ========================
+adapt->max iteration: 1
+adapt->max timestep iteration: 1
+adapt->max time iteration: 1
+
+adapt->timestep: 5.e-4
+adapt->max timestep: 1e+10
+adapt->min timestep: 1e-6
+adapt->start time: 0.0
+adapt->end time: 10
+
+% ====================== ESTIMATORS =======================
+adapt->strategy: 0   % 0=explicit, 1=implicit
+
+WAIT: 1
+

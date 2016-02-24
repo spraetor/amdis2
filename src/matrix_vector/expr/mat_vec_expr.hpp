@@ -10,7 +10,7 @@
 #include "base_expr.hpp"
 #include <operations/meta.hpp>
 #include <matrix_vector/Vector.hpp>
-#include <Math.h>
+#include <Math.hpp>
 
 namespace AMDiS
 {
@@ -37,7 +37,7 @@ namespace AMDiS
 
   // if necessary assign vector_expr to buffer-vector, otherwise store an expr.
   template <class VecE, bool use_buffer>
-  using BufferType 
+  using BufferType
     = if_then_else< use_buffer,
 	if_then_else< (VecE::_SIZE> 0),
 	  VectorBase<MemoryBaseStatic<Value_t<VecE>, math::max(0,VecE::_SIZE), 1>,
@@ -119,7 +119,7 @@ namespace AMDiS
     matrix_type const&  matrix;
     vector_type vector;
   };
-  
+
   // TODO: generalize MatVec expression to allow a functor passed to the expr.
   //       Example: diagonal(matrix) -> vector_expr
 
@@ -140,7 +140,7 @@ namespace AMDiS
 
   /// number of columns of MatVecExpr
   template <class E1, class E2, bool b>
-  inline size_t num_cols(MatVecExpr<E1,E2,b> const& expr)
+  inline size_t num_cols(MatVecExpr<E1,E2,b> const& /*expr*/)
   {
     return 1;
   }
@@ -156,7 +156,7 @@ namespace AMDiS
       using size_type  = Size_t<MatVecExpr<E1,E2,b>>;
     };
     /// \endcond
-    
+
   } // end namespace traits
 
 } // end namespace AMDiS

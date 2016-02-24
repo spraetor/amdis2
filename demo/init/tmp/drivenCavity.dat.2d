@@ -1,0 +1,76 @@
+dimension of world: 2
+
+% ====================== VARIABLES ========================
+output_folder: output
+output_postfix: _drivenCavity
+mesh_name: mesh
+polynomial-degree: 1
+
+% ====================== MESH =============================
+mesh->refinement->epsilon: 0.01
+
+% local refinement at cahn-hilliard interface
+mesh->refinement->initial level: 10
+mesh->refinement->level in inner domain: 8
+mesh->refinement->level in outer domain: 8
+mesh->refinement->level on interface: 14
+mesh->min outer interface value: 0.05
+mesh->max outer interface value: 0.95
+
+% ====================== MESH =============================
+${mesh_name}->macro file name: macro/macro.drivenCavity.2d
+${mesh_name}->global refinements: 0
+${mesh_name}->check: 0
+
+% ====================== INCLUDES =========================
+#include "init/navierStokes_TaylorHood.inc.2d"
+#include "init/cahnHilliard.inc.2d"
+#include "init/reinit.inc.2d"
+
+% ====================== MAIN INITFILE ====================
+
+% helper problem to initialize all FeSpaces
+main->mesh: ${mesh_name}
+main->dim: 2
+
+main->sigma: 0.0		% surface tension
+
+% ====================== USER-PARAMETER - CH ==============
+
+ch->initial interface: 0
+  ch->line->pos: 0.5
+ch->initial epsilon: ${mesh->refinement->epsilon}
+ch->epsilon: ${mesh->refinement->epsilon}
+ch->gamma: 1 %0.001
+ch->use mobility: 0
+ch->double-well type: 1		% c in [-1,1]
+
+% ====================== USER_PARAMETER - NS ==============
+
+ns->viscosity: 0.002
+ns->theta: 1
+%ns->force: [0.0, 9.81]		% gravitational force [m/s^2]
+
+ns->force dirichlet bc: 0
+
+ns->initial velocity: 0
+ns->initial velocity value: 0.0
+ns->laplace operator: 0  	% 0... div(nu*grad(u)), 1... div(0.5*nu*(grad(u)+grad(u)^T)) [sehr langsam]
+ns->non-linear term: 2 		% 0... u^old*grad(u_i^old), 1... u'*grad(u_i^old), 2... u^old*grad(u'_i)
+
+% ====================== TIMESTEPS ========================
+adapt->max iteration: 1
+adapt->max timestep iteration: 1
+adapt->max time iteration: 1
+
+adapt->timestep: 2e-3
+adapt->max timestep: 1e+10
+adapt->min timestep: 1e-6
+adapt->start time: 0.0
+adapt->end time: 10
+
+% ====================== ESTIMATORS =======================
+adapt->strategy: 0   % 0=explicit, 1=implicit
+
+WAIT: 1
+

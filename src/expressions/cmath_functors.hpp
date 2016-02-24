@@ -5,7 +5,7 @@
 #include <cmath>
 #include <type_traits>
 
-#include <Math.h>
+#include <Math.hpp>
 #include <operations/functors.hpp>
 
 /// Macro that generates a unary functor.
@@ -58,9 +58,9 @@ namespace AMDiS
         return eval(v);
       }
     };
-    
+
     // generated unary functors using a macro...
-    
+
     AMDIS_MAKE_UNARY_FUNCTOR( Ceil,    d0, std::ceil  )
     AMDIS_MAKE_UNARY_FUNCTOR( Floor,   d0, std::floor )
     AMDIS_MAKE_UNARY_FUNCTOR( Exp,   2*d0, std::exp   )

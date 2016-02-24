@@ -1,0 +1,35 @@
+dimension of world:             2
+
+nonlinMesh->macro file name:    ./macro/macro.stand.2d
+nonlinMesh->global refinements: 10
+
+nonlin->mesh:                   nonlinMesh
+nonlin->dim:                    2
+nonlin->polynomial degree[0]:   1
+nonlin->components:             1
+
+nonlin->nonlin solver:          newton
+nonlin->solver:                 bicgstab
+nonlin->solver->max iteration:  1000
+nonlin->solver->tolerance:      1.e-10
+nonlin->solver->info:           2
+nonlin->solver->left precon:    ilu
+nonlin->solver->right precon:   no
+
+nonlin->estimator[0]:              residual
+nonlin->estimator[0]->error norm:  1   % 1: H1_NORM, 2: L2_NORM
+nonlin->estimator[0]->C0:          0.1 % constant of element residual
+nonlin->estimator[0]->C1:          0.1 % constant of jump residual
+
+nonlin->marker[0]->strategy:       0 % 0: no adaption 1: GR 2: MS 3: ES 4:GERS
+nonlin->marker[0]->MSGamma:        0.5
+
+nonlin->adapt[0]->tolerance:          1e-4
+nonlin->adapt[0]->refine bisections:  2
+
+nonlin->adapt->max iteration:         0
+
+nonlin->output->filename:       output/nonlin.2d
+nonlin->output->ParaView format: 1
+nonlin->output->AMDiS format: 1
+nonlin->output->ARH format: 1

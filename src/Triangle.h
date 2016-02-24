@@ -165,7 +165,7 @@ namespace AMDiS
     }
 
     /// Implementation of \ref Element::getFace()
-    virtual DofFace getFace(int localFaceIndex) const override
+    virtual DofFace getFace(int /*localFaceIndex*/) const override
     {
       ERROR_EXIT("This does not work in 2D!\n");
       return {};

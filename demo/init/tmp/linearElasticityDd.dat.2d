@@ -1,0 +1,70 @@
+dimension of world: 2
+
+% ====================== VARIABLES ========================
+output_folder: output
+output_postfix: _plate
+mesh_name: mesh
+polynomial-degree: 1
+
+% ====================== MESH =============================
+mesh->H: 4.1
+
+beam->num vertices: 4
+beam->vertex[0]: [0.2, 0.2]
+beam->vertex[1]: [0.8, 0.2]
+beam->vertex[2]: [0.8, 0.8]
+beam->vertex[3]: [0.2, 0.8]
+
+beam->center: [0.5, 0.5]
+
+boundary->num vertices: 8
+boundary->vertex[0]: [-0.5, 1.5]
+boundary->vertex[1]: [1.5, 1.5]
+boundary->vertex[2]: [0.7, 0.7]
+boundary->vertex[3]: [0.7, 0.3]
+boundary->vertex[4]: [1.5, -0.5]
+boundary->vertex[5]: [-0.5, -0.5]
+boundary->vertex[6]: [0.3, 0.3]
+boundary->vertex[7]: [0.3, 0.7]
+
+boundary->factor: 0.1
+
+mesh->refinement->initial level: 6
+mesh->refinement->level on interface: 14
+mesh->refinement->level in inner domain: 6
+mesh->refinement->level in outer domain: 0
+mesh->refinement->interface width: 0.03
+mesh->refinement->fade out width: 0.03
+
+% ====================== MESH =============================
+${mesh_name}->macro file name: macro/macro.stand.2d
+${mesh_name}->global refinements: 0
+${mesh_name}->check: 0
+
+% ====================== INCLUDES =========================
+#include "init/linearElasticity.inc.2d"
+
+% ====================== USER_PARAMETER - NS ==============
+elasticity->mu: 1.0
+elasticity->lambda: 1.0
+elasticity->rho: 1.0
+
+elasticity->epsilon: 0.05
+%elasticity->force: [0.0, -0.981]		% gravitational force [m/s^2]
+
+% ====================== TIMESTEPS ========================
+adapt->max iteration: 1
+adapt->max timestep iteration: 1
+adapt->max time iteration: 1
+
+adapt->timestep: 1.e-3
+adapt->max timestep: 1e+10
+adapt->min timestep: 1e-6
+adapt->start time: 0.0
+adapt->end time: 0.5
+
+% ====================== ESTIMATORS =======================
+adapt->strategy: 0   % 0=explicit, 1=implicit
+
+WAIT: 1
+

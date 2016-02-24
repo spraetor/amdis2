@@ -8,7 +8,7 @@
 #include "base_expr.hpp" // for shaped_expr
 
 #include <operations/functors.hpp>
-#include <Math.h>
+#include <Math.hpp>
 
 namespace AMDiS
 {
@@ -53,7 +53,7 @@ namespace AMDiS
     {
       return expr1;
     }
-    
+
     expr2_type const& get_second() const
     {
       return expr2;
@@ -96,7 +96,7 @@ namespace AMDiS
       using tag = typename category<value_type>::tag;
     };
     /// \endcond
-    
+
   } // end namespace traits
 
 } // end namespace AMDiS

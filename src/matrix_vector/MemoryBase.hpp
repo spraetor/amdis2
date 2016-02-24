@@ -232,14 +232,14 @@ namespace AMDiS
     }
 
     template <class Target, class Source, class Assigner> // not assume aligned
-    void assign_aux(Target& target, Source const& src, Assigner assigner, false_)
+    void assign_aux(Target& target, Source const& src, Assigner /*assigner*/, false_)
     {
       for (size_type i = 0; i < _size; ++i)
         Assigner::apply(target(i), src(i));
     }
 
     template <class Target, class Source, class Assigner> // assume aligned
-    void assign_aux(Target& target, Source const& src, Assigner assigner, true_)
+    void assign_aux(Target& /*target*/, Source const& src, Assigner /*assigner*/, true_)
     {
       value_type* var = (value_type*)AMDIS_ASSUME_ALIGNED(_elements);
       for (size_type i = 0; i < _size; ++i)
@@ -346,7 +346,7 @@ namespace AMDiS
 
   protected:
     template <class Target, class Source, class Assigner>
-    void assign_aux(Target& target, Source const& src, Assigner assigner)
+    void assign_aux(Target& target, Source const& src, Assigner /*assigner*/)
     {
       for (size_type i = 0; i < _size; ++i)
         Assigner::apply(target(i), src(i));

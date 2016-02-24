@@ -16,17 +16,17 @@ namespace AMDiS
   struct LazyOperatorTermBase
   {
     template <class List>
-    void insertFeSpaces(List& feSpaces) const {}
+    void insertFeSpaces(List& /*feSpaces*/) const {}
 
     constexpr int getDegree() const
     {
       return 0;
     }
 
-    void initElement(ElInfo const* elInfo,
-                     SubAssembler* subAssembler,
-                     Quadrature* quad,
-                     BasisFunction const* basisFct = NULL) {}
+    void initElement(ElInfo const* /*elInfo*/,
+                     SubAssembler* /*subAssembler*/,
+                     Quadrature* /*quad*/,
+                     BasisFunction const* /*basisFct*/ = NULL) {}
   };
 
 
@@ -54,7 +54,7 @@ namespace AMDiS
       SubAssembler* subAssembler;
       Quadrature* quad;
       BasisFunction const* basisFct;
-      
+
       template <class Term>
       void operator()(Term& term)
       {
@@ -67,18 +67,18 @@ namespace AMDiS
 
   /// Operator term with arbitrary number of sub-term (expressions)
   template <class... Terms>
-  struct LazyOperatorTerms 
+  struct LazyOperatorTerms
     : public LazyOperatorTermBase
   {
     using Self = LazyOperatorTerms;
-    
+
   private:
     std::tuple<Terms...> terms;
 
   public:
     template <class... Terms_,
       class = Requires_t< and_< concepts::Term<Terms_...>,
-				concepts::Compatible<Types<Terms...>, 
+				concepts::Compatible<Types<Terms...>,
 						     Types<Terms_...>> > >>
     constexpr LazyOperatorTerms(Terms_&&... terms_)
       : terms(std::forward<Terms_>(terms_)...)
@@ -88,10 +88,10 @@ namespace AMDiS
     void insertFeSpaces(List& feSpaces)
     {
 #ifdef CXX14
-      for_each([&feSpaces](auto& term) 
+      for_each([&feSpaces](auto& term)
       {
         term.insertFeSpaces(feSpaces);
-      });
+      }, terms);
 #else
       for_each(detail::InsertFeSpaces<List>{feSpaces}, terms);
 #endif
@@ -103,10 +103,10 @@ namespace AMDiS
                      BasisFunction const* basisFct = NULL)
     {
 #ifdef CXX14
-      for_each([=](auto& term) 
+      for_each([=](auto& term)
       {
         term.insertFeSpaces(elInfo, subAssembler, quad, basisFct);
-      });
+      }, terms);
 #else
       for_each(detail::InitElement{elInfo, subAssembler, quad, basisFct}, terms);
 #endif

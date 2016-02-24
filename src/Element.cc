@@ -346,7 +346,7 @@ namespace AMDiS
   }
 
 
-  void Element::changeDofs1(const DOFAdmin* admin, std::vector<DegreeOfFreedom>& newDofIndex,
+  void Element::changeDofs1(const DOFAdmin* /*admin*/, std::vector<DegreeOfFreedom>& newDofIndex,
                             int n0, int nd0, int nd, int pos)
   {
     DegreeOfFreedom* ldof = dof[n0 + pos] + nd0;

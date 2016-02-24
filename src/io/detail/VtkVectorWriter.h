@@ -127,13 +127,13 @@ namespace AMDiS
 
         // num_rows for scalar types
         template<typename T>
-        size_t num_rows(T& v)
+        size_t num_rows(T& /*v*/)
         {
           return 1;
         }
         // for WorldVectors print 3 components
         template<typename T>
-        size_t num_rows(WorldVector<T>& v)
+        size_t num_rows(WorldVector<T>& /*v*/)
         {
           return three; //(writeAs3dVector ? three : static_cast<size_t>(v.getSize()));
         }

@@ -124,8 +124,8 @@ namespace AMDiS
   void PeriodicBC::fillBoundaryCondition(DOFMatrix* matrix,
                                          ElInfo* elInfo,
                                          DegreeOfFreedom const* dofIndices,
-                                         BoundaryType const* localBound,
-                                         int nBasFcts)
+                                         BoundaryType const* /*localBound*/,
+                                         int /*nBasFcts*/)
   {
     FUNCNAME_DBG("PeriodicBC::fillBoundaryCondition()");
 

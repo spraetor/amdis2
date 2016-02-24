@@ -48,10 +48,10 @@ namespace AMDiS
     {
       /// Interface for general containers not implemented. Specializations below.
       template<typename Container>
-      void writeFile(Container& vec, std::string filename,
-                     Vtuformat format = ASCII,
-                     bool highPrecision = false,
-                     bool writeParallel = true)
+      void writeFile(Container& /*vec*/, std::string /*filename*/,
+                     Vtuformat /*format*/ = ASCII,
+                     bool /*highPrecision*/ = false,
+                     bool /*writeParallel*/ = true)
       {
         ERROR_EXIT("VtkWriter not implemented for this container type!\n");
       }

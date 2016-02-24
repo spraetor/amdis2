@@ -34,7 +34,7 @@ namespace AMDiS
 
 
   template <class B>
-  void Operator::addFOTImpl(tag::vector, B&& b, FirstOrderType type, int i)
+  void Operator::addFOTImpl(tag::vector, B&& b, FirstOrderType type, int /*i*/)
   {
     using B_ = Decay_t<B>;
     OperatorTerm* term = new GenericFirstOrderTerm_b<B_>(std::forward<B>(b));
@@ -50,7 +50,7 @@ namespace AMDiS
 
 
   template <class A>
-  void Operator::addSOTImpl(tag::scalar, A&& a, int i, int j, bool sym)
+  void Operator::addSOTImpl(tag::scalar, A&& a, int i, int j, bool /*sym*/)
   {
     using A_ = Decay_t<A>;
     OperatorTerm* term;
@@ -66,7 +66,7 @@ namespace AMDiS
 
 
   template <class A>
-  void Operator::addSOTImpl(tag::matrix, A&& a, int i, int j, bool sym)
+  void Operator::addSOTImpl(tag::matrix, A&& a, int /*i*/, int /*j*/, bool sym)
   {
     using A_ = Decay_t<A>;
     OperatorTerm* term;

@@ -7,7 +7,7 @@
 #include <cmath>
 
 #include "Log.h"
-#include "Math.h"
+#include "Math.hpp"
 
 namespace AMDiS
 {

@@ -1,0 +1,23 @@
+DIM: 1
+DIM_OF_WORLD: 1
+
+number of vertices: 3
+number of elements: 2
+
+vertex coordinates:
+-0.5
+ 0.0
+ 0.5
+   
+
+element vertices:
+0 1
+1 2
+
+element boundaries:
+-1  0 
+ 0 -1
+
+element neighbours:
+ 1  1
+ 0  0

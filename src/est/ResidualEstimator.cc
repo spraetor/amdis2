@@ -27,7 +27,7 @@
 #include "Traverse.h"
 #include "Initfile.h"
 #include "Parametric.h"
-#include "Math.h"
+#include "Math.hpp"
 
 #ifdef HAVE_PARALLEL_DOMAIN_AMDIS
 #include <mpi.h>
@@ -35,7 +35,7 @@
 #include "parallel/ParallelDebug.h"
 #endif
 
-using namespace std;
+// using namespace std;
 
 namespace AMDiS
 {
@@ -213,8 +213,8 @@ namespace AMDiS
     ElInfo* elInfo = mesh->createNewElInfo();
     elInfo->setFillFlag(Mesh::FILL_COORDS);
 
-    Parallel::StdMpi<vector<double>> stdMpiDet(Parallel::MeshDistributor::globalMeshDistributor->getMpiComm(0));
-    Parallel::StdMpi<vector<vector<WorldVector<double>>>> stdMpiGrdUh(Parallel::MeshDistributor::globalMeshDistributor->getMpiComm(0));
+    Parallel::StdMpi<std::vector<double>> stdMpiDet(Parallel::MeshDistributor::globalMeshDistributor->getMpiComm(0));
+    Parallel::StdMpi<std::vector<std::vector<WorldVector<double>>>> stdMpiGrdUh(Parallel::MeshDistributor::globalMeshDistributor->getMpiComm(0));
 
     Parallel::RankToBoundMap allBounds = intBoundary.getOther();
     allBounds.insert(intBoundary.getOwn().begin(), intBoundary.getOwn().end());
@@ -223,7 +223,7 @@ namespace AMDiS
          it != allBounds.end(); ++it)
     {
 
-      vector<BoundaryObject> subBound;
+      std::vector<BoundaryObject> subBound;
 
       for (unsigned int i = 0; i < it->second.size(); i++)
       {
@@ -289,7 +289,7 @@ namespace AMDiS
     for (Parallel::RankToBoundMap::iterator it = allBounds.begin();
          it != allBounds.end(); ++it)
     {
-      vector<BoundaryObject> subBound;
+      std::vector<BoundaryObject> subBound;
 
       for (unsigned int i = 0; i < it->second.size(); i++)
       {

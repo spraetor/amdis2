@@ -19,7 +19,7 @@
 
 namespace AMDiS
 {
-  using namespace std;
+//   using namespace std;
 
 #if defined(HAVE_PARALLEL_MTL4)
   mtl::par::environment* mtl_environment = NULL;
@@ -38,7 +38,7 @@ namespace AMDiS
 #if defined(HAVE_PARALLEL_DOMAIN_AMDIS)
     Parallel::mpi::startRand();
 #else
-    srand(time(0));
+    std::srand(std::time(0));
 #endif
 
 #ifdef HAVE_ZOLTAN
@@ -78,7 +78,7 @@ namespace AMDiS
     // print help message
     if (vm.count("help"))
     {
-      cout << desc << "\n";
+      std::cout << desc << "\n";
       exit(1);
     }
 
@@ -145,10 +145,10 @@ namespace AMDiS
 #endif
 
   }
-  
-  
-  
-  
+
+
+
+
   template <>
   EnumParser<MatrixTranspose>::EnumParser()
   {
@@ -156,15 +156,15 @@ namespace AMDiS
     enumMap["Transpose"] = Transpose;
     enumMap["ConjugateTranspose"] = ConjugateTranspose;
   }
-  
-  template <>  
+
+  template <>
   EnumParser<Norm>::EnumParser()
   {
     enumMap["NO_NORM"] = NO_NORM;
     enumMap["H1_NORM"] = H1_NORM;
     enumMap["L2_NORM"] = L2_NORM;
   }
-  
+
   template <>
   EnumParser<RefineCoarsenOperation>::EnumParser()
   {
@@ -173,7 +173,7 @@ namespace AMDiS
     enumMap["COARSE_INTERPOL"] = COARSE_INTERPOL;
     enumMap["REFINE_INTERPOL"] = REFINE_INTERPOL;
   }
-  
+
   template <>
   EnumParser<FirstOrderType>::EnumParser()
   {

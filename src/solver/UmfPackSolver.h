@@ -48,7 +48,7 @@ namespace AMDiS
     }
 
     /// Implementation of \ref RunnerBase::init()
-    virtual void init(SolverMatrix<Matrix<DOFMatrix*>> const& A,
+    virtual void init(SolverMatrix<Matrix<DOFMatrix*>> const& /*A*/,
                       MatrixType const& fullMatrix) override
     {
       namespace umfpack = mtl::matrix::umfpack;
@@ -60,7 +60,7 @@ namespace AMDiS
 
       try
       {
-        solver = new umfpack::solver<MatrixType>(fullMatrix, symmetric_strategy, 
+        solver = new umfpack::solver<MatrixType>(fullMatrix, symmetric_strategy,
 						 alloc_init);
       }
       catch (umfpack::error& e)
@@ -70,7 +70,7 @@ namespace AMDiS
     }
 
     /// Implementation of \ref RunnerBase::solve()
-    virtual int solve(MatrixType const& A, VectorType& x, 
+    virtual int solve(MatrixType const& A, VectorType& x,
 		      VectorType const& b) override
     {
       FUNCNAME("Umfpack_Runner::solve()");
@@ -122,8 +122,8 @@ namespace AMDiS
    *
    * This is a direct solver for large sparse matrices.
    */
-  using UmfPackSolver = LinearSolver< MTLTypes::MTLMatrix, MTLTypes::MTLVector, 
-				      Umfpack_Runner< MTLTypes::MTLMatrix, 
+  using UmfPackSolver = LinearSolver< MTLTypes::MTLMatrix, MTLTypes::MTLVector,
+				      Umfpack_Runner< MTLTypes::MTLMatrix,
 						      MTLTypes::MTLVector > >;
 
 }

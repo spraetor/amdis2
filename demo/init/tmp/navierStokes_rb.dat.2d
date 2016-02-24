@@ -1,0 +1,83 @@
+dimension of world: 2
+
+% ====================== VARIABLES ========================
+output_folder: output
+output_postfix: _refinement3
+mesh_name: mesh
+polynomial-degree: 1
+
+% ====================== MESH =============================
+mesh->H: 4.1
+
+obstacle->num vertices: 7
+obstacle->vertex[0]: [1.5, 2]
+obstacle->vertex[1]: [2, 2.5]
+% obstacle->vertex[2]: [4.5, 2]
+% obstacle->vertex[3]: [2, 1.5]
+obstacle->vertex[2]: [2.5, 2.05]
+obstacle->vertex[3]: [6.5, 2.05]
+obstacle->vertex[4]: [6.5, 1.95]
+obstacle->vertex[5]: [2.5, 1.95]
+obstacle->vertex[6]: [2, 1.5]
+
+mesh->refinement->initial level: 1
+mesh->refinement->level on interface: 6
+mesh->refinement->level in inner domain: 1
+mesh->refinement->level in outer domain: 1
+mesh->refinement->interface width: 0.5
+mesh->refinement->fade out width: 1.0
+
+% ====================== MESH =============================
+${mesh_name}->macro file name: macro/kanal_square_fin.2d
+${mesh_name}->global refinements: 0
+${mesh_name}->check: 0
+
+% ====================== INCLUDES =========================
+#include "init/navierStokes_TaylorHood.inc.2d"
+
+% ====================== USER_PARAMETER - NS ==============
+
+ns->viscosity: 1/500
+ns->theta: 0.5
+%ns->force: [0.0, 9.81]		% gravitational force [m/s^2]
+
+ns->force dirichlet bc: 0
+
+ns->Um: 1.5
+
+ns->initial velocity: 0
+ns->initial velocity value: 0.0
+ns->laplace operator: 0  	% 0... div(nu*grad(u)), 1... div(0.5*nu*(grad(u)+grad(u)^T)) [sehr langsam]
+ns->non-linear term: 2 		% 0... u^old*grad(u_i^old), 1... u'*grad(u_i^old), 2... u^old*grad(u'_i)
+
+% ====================== TIMESTEPS ========================
+
+adapt->rosenbrock method: rodasp
+adapt->fix first timesteps: 0
+adapt->rosenbrock->timestep study: 0
+adapt->rosenbrock->timestep study steps: 0
+adapt->rosenbrock->error weights: [1,1,1]
+
+adapt[0]->time tolerance: 1.e-3
+
+adapt->timestep:      5.e-4
+adapt->max timestep:  1e+1
+adapt->min timestep:  1e-4
+adapt->start time:    0.0
+adapt->end time:      25.0
+
+% ====================== ESTIMATORS =======================
+adapt->strategy: 0   % 0=explicit, 1=implicit
+
+%ns->space->estimator[0]:              residual
+%ns->space->estimator[0]->error norm:  1   % 1: H1_NORM, 2: L2_NORM
+%ns->space->estimator[0]->C0:          0.1 % constant of element residual
+%ns->space->estimator[0]->C1:          0.1 % constant of jump residual
+
+ns->space->marker[0]->strategy:       0   % 0: no adaption 1: GR 2: MS 3: ES 4:GERS
+
+adapt[0]->tolerance:          1e-3
+adapt->max iteration:      0
+
+WAIT: 1
+

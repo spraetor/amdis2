@@ -219,7 +219,7 @@ namespace AMDiS
 
     /// Calculates Integral of this DOFVector over parts of the domain
     /// boundary, indicated by boundaryType. Implemented for DOFVector<double>
-    double IntOnBoundary(BoundaryType boundary, Quadrature* q = NULL) const
+    double IntOnBoundary(BoundaryType /*boundary*/, Quadrature* /*q*/ = NULL) const
     {
       FUNCNAME("DOFVector::IntOnBoundary())");
       TEST_EXIT(false)("Please implement your integration\n");
@@ -229,7 +229,7 @@ namespace AMDiS
     /// Calculates Integral of this DOFVector times normal vector over parts
     /// of the domain boundary, indicated by boundaryType. Implemented for
     /// DOFVector<WorldVector<double> >
-    double IntOnBoundaryNormal(BoundaryType boundary, Quadrature* q = NULL) const
+    double IntOnBoundaryNormal(BoundaryType /*boundary*/, Quadrature* /*q*/ = NULL) const
     {
       FUNCNAME("DOFVector::IntOnBoundaryNormal())");
       TEST_EXIT(false)("Please implement your integration\n");
@@ -240,7 +240,7 @@ namespace AMDiS
     double L1Norm(Quadrature* q = NULL) const;
 
     /// Calculates L2 norm of this DOFVector
-    double L2Norm(Quadrature* q = NULL) const
+    double L2Norm(Quadrature* /*q*/ = NULL) const
     {
       return std::sqrt(L2NormSquare());
     }
@@ -249,7 +249,7 @@ namespace AMDiS
     double L2NormSquare(Quadrature* q = NULL) const;
 
     /// Calculates H1 norm of this DOFVector
-    double H1Norm(Quadrature* q = NULL) const
+    double H1Norm(Quadrature* /*q*/ = NULL) const
     {
       return std::sqrt(H1NormSquare());
     }
@@ -341,8 +341,8 @@ namespace AMDiS
     /// Eval DOFVector at given point p. If oldElInfo != NULL the search for
     /// the element, where p is inside, starts from oldElInfo. implemented for:
     /// double, WorldVector< double >
-    T evalAtPoint(WorldVector<double> const& p,
-                  ElInfo* oldElInfo = NULL) const
+    T evalAtPoint(WorldVector<double> const& /*p*/,
+                  ElInfo* /*oldElInfo*/ = NULL) const
     {
       FUNCNAME("DOFVector::evalAtPoint())");
       TEST_EXIT(false)("Please implement your evaluation\n");
@@ -469,27 +469,27 @@ namespace AMDiS
   std::vector<DOFVector<double>*>* transform(DOFVector<Gradient_t<T>>* vec,
       std::vector<DOFVector<double>*>* res);
 
-  
-      
+
+
   template <class Value>
   inline size_t size(DOFVector<Value> const& v)
   {
     return v.getUsedSize();
   }
-  
+
   template <class Value>
   inline size_t num_rows(DOFVector<Value> const& v)
   {
     return v.getUsedSize();
   }
-  
+
   template <class Value>
-  inline size_t num_cols(DOFVector<Value> const& v)
+  inline size_t num_cols(DOFVector<Value> const& /*v*/)
   {
     return 1;
   }
-  
-  
+
+
 } // end namespace AMDiS
 
 

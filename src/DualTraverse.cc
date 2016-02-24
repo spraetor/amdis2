@@ -199,7 +199,7 @@ namespace AMDiS
   void DualTraverse::fillSubElInfo(ElInfo* elInfo1,
                                    ElInfo* elInfo2,
                                    ElInfo* elInfoSmall,
-                                   ElInfo* elInfoLarge)
+                                   ElInfo* /*elInfoLarge*/)
   {
     if (!fillSubElemMat)
       return;

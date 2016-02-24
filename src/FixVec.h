@@ -7,7 +7,7 @@
 #include "AMDiS_fwd.h"
 #include "AMDiS_base.h"
 #include "Global.h"
-#include "Math.h"
+#include "Math.hpp"
 #include "MatrixVector.h"
 
 namespace AMDiS
@@ -289,8 +289,7 @@ namespace AMDiS
   using D2_t = typename D2Type<T>::type;
 
   template <class T,GeoIndex d>
-  inline void resize(FixVec<T,d>& vec, size_t newSize)
-  { }
+  inline void resize(FixVec<T,d>& /*vec*/, size_t /*newSize*/) {}
 
 } // end namespace AMDiS
 

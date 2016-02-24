@@ -66,7 +66,7 @@ namespace AMDiS
 
   void CoarseningManager2d::coarsenPatch(RCNeighbourList& coarsenList,
                                          int n_neigh,
-                                         int bound)
+                                         int /*bound*/)
   {
     Triangle* el =
       dynamic_cast<Triangle*>(const_cast<Element*>(coarsenList.getElement(0)));

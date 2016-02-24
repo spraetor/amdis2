@@ -22,9 +22,9 @@ namespace AMDiS
      * Returns the DOF index at position i. Must be overriden by a concrete
      * DOFContainer.
      */
-    virtual DegreeOfFreedom& operator[](DegreeOfFreedom i) = 0;
+    virtual DegreeOfFreedom& operator[](DegreeOfFreedom /*dof*/) = 0;
 
-    virtual void freeDofIndex(DegreeOfFreedom dof) {}
+    virtual void freeDofIndex(DegreeOfFreedom /*dof*/) {}
 
     /** \brief
      * Used by DOFAdmin to actualize the DOF indices in this container after

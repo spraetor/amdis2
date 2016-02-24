@@ -136,9 +136,9 @@ namespace AMDiS
   /// Should be the first call in every functions. It defines the current
   /// function name nn for message output via MSG, WARNING, ...
 #define FUNCNAME(nn) const char *funcName; funcName = nn;
-
-#if (DEBUG == 0)
-#define FUNCNAME_DBG(nn)
+  
+#ifdef NDEBUG
+  #define FUNCNAME_DBG(nn)
 #else
 #define FUNCNAME_DBG(nn) const char *funcName; funcName = nn;
 #endif
@@ -162,9 +162,9 @@ namespace AMDiS
 #define TEST_EXIT(test) if ((test));else ERROR_EXIT
 
   /// In debug mode, it corresponds to ERROR_EXIT, otherwise it is noop.
-#if (DEBUG == 0)
-#define TEST_EXIT_DBG(test) if (false) Msg::catch_error_exit
-#define DBG_VAR(var)
+#ifdef NDEBUG
+  #define TEST_EXIT_DBG(test) if (false) Msg::catch_error_exit
+  #define DBG_VAR(var)
 #else
 #define TEST_EXIT_DBG(test) if ((test));else ERROR_EXIT
 #define DBG_VAR(var) var
@@ -173,8 +173,8 @@ namespace AMDiS
   /// prints a message
 #define MSG Msg::print_funcname(funcName), Msg::print
 
-#if (DEBUG == 0)
-#define MSG_DBG
+#ifdef NDEBUG
+  #define MSG_DBG
 #else
 #define MSG_DBG Msg::print_funcname(funcName), Msg::print
 #endif

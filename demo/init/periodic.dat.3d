@@ -1,0 +1,41 @@
+dimension of world:             3
+
+periodicMesh->macro file name:     ./macro/periodic.macro.3d
+periodicMesh->periodic file:       ./init/periodic.per.3d
+periodicMesh->global refinements:  0
+
+periodic->mesh:                   periodicMesh
+periodic->dim:                    3
+periodic->polynomial degree[0]:   1
+periodic->components:             1
+
+periodic->solver:                 cg
+periodic->solver->max iteration:  1000
+periodic->solver->tolerance:      1.e-8
+periodic->solver->info:           2
+periodic->solver->left precon:    diag
+periodic->solver->right precon:   no
+
+periodic->estimator[0]:              residual
+periodic->estimator[0]->error norm:  1   % 1: H1_NORM, 2: L2_NORM
+periodic->estimator[0]->C0:          0.1 % constant of element residual
+periodic->estimator[0]->C1:          0.0 % constant of jump residual
+
+periodic->marker[0]->strategy:       4 % 0: no adaption 1: GR 2: MS 3: ES 4:GERS
+
+periodic->adapt[0]->tolerance:          1e-2
+periodic->adapt[0]->refine bisections:  2
+periodic->adapt[0]->coarsen allowed:    1
+
+periodic->adapt->max iteration:         15
+
+periodic->output->filename:         output/periodic.3d
+periodic->output->ParaView format:  1
+periodic->output->append index:     0
+periodic->output->index length:     6
+periodic->output->index decimals:   3
+periodic->output->AMDiS format: 1
+periodic->output->ARH format: 1
+periodic->output->Periodic format: 1
+
+WAIT:                           1

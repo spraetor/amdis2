@@ -62,7 +62,7 @@ namespace AMDiS
       template<typename T>
       void writeFile(std::vector<DataCollector<T>*>& dcList,
                      std::string filename,
-                     bool writeParallel = true,
+                     bool /*writeParallel*/ = true, // NOTE: param writeParallel used only in PARALLEL_DOMAIN
                      bool writeAs3dVector = false)
       {
         ::AMDiS::io::VtkVectorWriter::Aux<T> writer(&dcList, writeAs3dVector);

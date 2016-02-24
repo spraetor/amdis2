@@ -34,7 +34,7 @@ namespace itl
             typename LeftPreconditioner, typename RightPreconditioner,
             typename Iteration>
   int minres(const Matrix& A, Vector& x, const Vector& b,
-             const LeftPreconditioner& L, const RightPreconditioner& R,
+             const LeftPreconditioner& L, const RightPreconditioner& /*R*/,
              Iteration& iter)
   {
     using std::abs;

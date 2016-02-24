@@ -32,7 +32,7 @@ namespace AMDiS
     virtual ~ProblemIterationInterface() {}
 
     /// Called before each adaption loop iteration.
-    virtual void beginIteration(AdaptInfo& adaptInfo) {}
+    virtual void beginIteration(AdaptInfo& /*adaptInfo*/) {}
 
     /** \brief
      * Determines the execution order of the single adaption steps. If adapt is
@@ -42,7 +42,7 @@ namespace AMDiS
     virtual Flag oneIteration(AdaptInfo& adaptInfo, Flag toDo = FULL_ITERATION) = 0;
 
     /// Called after each adaption loop iteration.
-    virtual void endIteration(AdaptInfo& adaptInfo) {}
+    virtual void endIteration(AdaptInfo& /*adaptInfo*/) {}
 
 
     /// Returns number of managed problems

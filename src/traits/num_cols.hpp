@@ -9,11 +9,11 @@
 namespace AMDiS
 {
   template <class T, class = Requires_t<concepts::Arithmetic<T>>>
-  inline size_t num_cols(T const& v)
+  inline size_t num_cols(T const& /*v*/)
   {
     return 1;
   }
-  
+
   /// size implementation for AMDiS::VectorOfFixVecs
   template <class FixVecType>
   inline size_t num_cols(VectorOfFixVecs<FixVecType> const& v)

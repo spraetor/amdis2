@@ -62,25 +62,25 @@ namespace AMDiS
     /// Adds the local boundary condition for elInfo to object.
     /// The dofIndices and localBound as well as nBasFcts are determined by
     // the calling BoundaryManager.
-    virtual void fillBoundaryCondition(DOFMatrix* matrix,
-                                       ElInfo* elInfo,
-                                       const DegreeOfFreedom* dofIndices,
-                                       const BoundaryType* localBound,
-                                       int nBasFcts) { }
+    virtual void fillBoundaryCondition(DOFMatrix* /*matrix*/,
+                                       ElInfo* /*elInfo*/,
+                                       const DegreeOfFreedom* /*dofIndices*/,
+                                       const BoundaryType* /*localBound*/,
+                                       int /*nBasFcts*/) { }
 
     /// Adds the local boundary condition for elInfo to vector.
     /// The dofIndices and localBound as well as nBasFcts are determined by
     /// the calling BoundaryManager.
-    virtual void fillBoundaryCondition(DOFVectorBase<double>* vector,
-                                       ElInfo* elInfo,
-                                       const DegreeOfFreedom* dofIndices,
-                                       const BoundaryType* localBound,
-                                       int nBasFcts) { }
+    virtual void fillBoundaryCondition(DOFVectorBase<double>* /*vector*/,
+                                       ElInfo* /*elInfo*/,
+                                       const DegreeOfFreedom* /*dofIndices*/,
+                                       const BoundaryType* /*localBound*/,
+                                       int /*nBasFcts*/) { }
 
     /// Returns the boundary residual for the given element. Called by estimator.
-    virtual double boundResidual(ElInfo* elInfo,
-                                 DOFMatrix* matrix,
-                                 const DOFVectorBase<double>* dv)
+    virtual double boundResidual(ElInfo* /*elInfo*/,
+                                 DOFMatrix* /*matrix*/,
+                                 const DOFVectorBase<double>* /*dv*/)
     {
       return 0.0;
     }

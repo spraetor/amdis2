@@ -9,7 +9,7 @@
 #include <matrix_vector/ExprConcepts.hpp>
 
 #include <traits/basic.hpp>
-#include <Math.h>
+#include <Math.hpp>
 
 namespace AMDiS
 {
@@ -21,10 +21,10 @@ namespace AMDiS
     struct assign_type<E, Requires_t<concepts::Expr<E>>>
     {
       using type = if_then_else<
-	/*if */ traits::is_vector<E>::value, 
+	/*if */ traits::is_vector<E>::value,
 	/* then */ Vector<Value_t<E>>,
 	/* else */ if_then_else<
-	    /* if */ traits::is_matrix<E>::value, 
+	    /* if */ traits::is_matrix<E>::value,
 	    /* then */ Matrix<Value_t<E>>,
 	    /* else */ E>>;
     };

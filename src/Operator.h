@@ -63,13 +63,13 @@ namespace AMDiS
       addZOTImpl(toTerm(std::forward<C>(c)));
       return *this;
     }
-    
+
     template <class C>
     Operator& addZOT(C&& c)
     {
       return addZeroOrderTerm(std::forward<C>(c));
     }
-    
+
 
     /// Adds a FirstOrderTerm to the Operator: < 1 * b * u, v >
     template <class B>
@@ -80,7 +80,7 @@ namespace AMDiS
       addFOTImpl(Tag(), toTerm(std::forward<B>(b)), type, i);
       return *this;
     }
-    
+
     template <class B>
     Operator& addFOT(B&& b, FirstOrderType type = GRD_PHI, int i = -1)
     {
@@ -90,7 +90,7 @@ namespace AMDiS
     /// Adds a SecondOrderTerm to the Operator
     template <class A, bool symmetric = false>
     Operator& addSecondOrderTerm(A&& a, int i = -1, int j = -1,
-                                 bool_<symmetric> s = bool_<symmetric>())
+                                 bool_<symmetric> /*s*/ = bool_<symmetric>())
     {
       using ValueType = Value_t<traits::category<A>>;
       using Tag = typename traits::category<ValueType>::tag;
@@ -99,7 +99,7 @@ namespace AMDiS
       addSOTImpl(Tag(), toTerm(std::forward<A>(a)), i, j, Sym::value);
       return *this;
     }
-    
+
     template <class A, bool symmetric = false>
     Operator& addSOT(A&& a, int i = -1, int j = -1,
 		     bool_<symmetric> s = bool_<symmetric>())

@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include <Math.h>
+#include <Math.hpp>
 #include <MatrixVector.h>
 #include <matrix_vector/MatrixVectorOperations.hpp>
 

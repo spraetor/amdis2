@@ -80,12 +80,12 @@ namespace AMDiS
       return true;
     }
 
-    virtual bool skipEl1(ElInfo* elInfo)
+    virtual bool skipEl1(ElInfo* /*elInfo*/)
     {
       return false;
     }
 
-    virtual bool skipEl2(ElInfo* elInfo)
+    virtual bool skipEl2(ElInfo* /*elInfo*/)
     {
       return false;
     }

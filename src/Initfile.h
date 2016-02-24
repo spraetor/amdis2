@@ -13,22 +13,23 @@
 
 // #include <boost/type_traits.hpp>
 
-// a parser for arithmetic expressions
-#include <muParser.h>
-
 #include <traits/basic.hpp>
 #include <traits/scalar_types.hpp>
 #include <traits/concepts_base.hpp>
 #include <traits/meta_basic.hpp>
 
+#include <MatrixVector.h>
+
 #include "AMDiS_base.h"
-#include "Math.h"
+#include "Math.hpp"
 #include "Log.h"
 
 namespace AMDiS
 {
   namespace detail
   {
+    double mu_parser_eval(std::string const& valStr);
+
     /// convert string to intrinsic type
     template <class T, class Enable = void>
     struct Convert
@@ -46,13 +47,8 @@ namespace AMDiS
       {
         using boost::numeric_cast;
 
-        mu::Parser parser;
-        parser.DefineConst(_T("M_PI"), m_pi);
-        parser.DefineConst(_T("M_E"), m_e);
-
-        parser.SetExpr(valStr);
 	try {
-	  value = numeric_cast<T>(parser.Eval());
+            value = numeric_cast< T >(mu_parser_eval(valStr));
 	} catch(...) {
 	  ERROR("Could not parse '%s' to '%s'\n", valStr.c_str(), typeid(T).name());
 	}
@@ -72,6 +68,27 @@ namespace AMDiS
     template <class T>
     struct Convert<T, Requires_t<concepts::Vector<T>> >
     {
+      static void eval(std::string valStr, T& values)
+      {
+        using value_type = Value_t<T>;
+        using Tokenizer = boost::tokenizer<boost::char_separator<char>>;
+
+        boost::char_separator<char> sep(",; ");
+        Tokenizer tokens(valStr, sep);
+        int i = 0;
+        for (auto token : tokens)
+        {
+          value_type v;
+          Convert<value_type>::eval(token, v);
+          values[i] = v;
+        }
+      }
+    };
+
+    template <class M, class S>
+    struct Convert<VectorBase<M,S>>
+    {
+      using T = VectorBase<M,S>;
       static void eval(std::string valStr, T& values)
       {
         using value_type = Value_t<T>;
@@ -117,7 +134,7 @@ namespace AMDiS
   std::ostream& operator<<(std::ostream& out, std::list<T> const& l)
   {
     auto it = l.begin();
-    out << "["; if (l.size() > 0) out << *it; 
+    out << "["; if (l.size() > 0) out << *it;
     for (; it != l.end(); ++it)
       out << ", " << *it;
     out << "]";
@@ -130,7 +147,7 @@ namespace AMDiS
   std::ostream& operator<<(std::ostream& out, std::vector<T> const& l)
   {
     auto it = l.begin();
-    out << "["; if (l.size() > 0) out << *it; 
+    out << "["; if (l.size() > 0) out << *it;
     for (; it != l.end(); ++it)
       out << ", " << *it;
     out << "]";
@@ -157,7 +174,7 @@ namespace AMDiS
   struct Initfile
   {
     using Self = Initfile;
-    
+
     /** initialize init-file from file with filename in, read data and save it
     *  to singleton-map
     *  @param in: filename string
@@ -205,8 +222,8 @@ namespace AMDiS
       }
       singlett->msgInfo = debugInfo;
     }
-    
-    
+
+
     template <class T, class S>
     static T get(std::string tag, S const& default_value)
     {
@@ -214,8 +231,8 @@ namespace AMDiS
       Self::get(tag, value);
       return value;
     }
-    
-    
+
+
     template <class T>
     static T get(std::string tag)
     {
@@ -294,7 +311,7 @@ namespace AMDiS
 
 
     /// save singlett-data to file with filename fn
-    static void save(std::string fn)
+    static void save(std::string /*fn*/)
     {
       using namespace boost::property_tree;
       initIntern();

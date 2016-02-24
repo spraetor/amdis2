@@ -18,7 +18,7 @@ namespace AMDiS
 
     /// Pointer to the right preconditioner
     ITL_PreconditionerBase<MatrixType, VectorType>* r = NULL;
-    
+
     ~PreconPair()
     {
       if (l)
@@ -120,9 +120,9 @@ namespace AMDiS
 
 
     /// Implementation of \ref RunnerBase::adjoint_solve()
-    virtual int adjoint_solve(MatrixType const& A ,
-                              VectorType& x,
-                              VectorType const& b) override
+    virtual int adjoint_solve(MatrixType const& /*A*/ ,
+                              VectorType& /*x*/,
+                              VectorType const& /*b*/) override
     {
       FUNCNAME("ITL_Runner::adjoint_solve()");
       ERROR_EXIT("Adjoint solve of preconditioner not yet implemented!\n");
@@ -150,7 +150,7 @@ namespace AMDiS
     {
       return preconPair.r;
     }
-    
+
   protected:
     /// create left/right preconditioners from parameters given in the init-file
     void setPrecon(PreconPair<MatrixType, VectorType>& pair)

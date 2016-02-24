@@ -5,7 +5,7 @@
 #include "Mesh.h"
 #include <algorithm>
 
-using namespace std;
+// using namespace std;
 
 namespace AMDiS
 {
@@ -134,7 +134,7 @@ namespace AMDiS
 
 
   const FiniteElemSpace*
-  FiniteElemSpace::getHighest(vector<const FiniteElemSpace*>& feSpaces)
+  FiniteElemSpace::getHighest(std::vector<const FiniteElemSpace*>& feSpaces)
   {
     const FiniteElemSpace* feSpace = feSpaces[0];
     for (size_t i = 1; i < feSpaces.size(); i++)

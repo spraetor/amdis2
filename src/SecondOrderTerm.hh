@@ -18,8 +18,8 @@ namespace AMDiS
   template <class Term>
   void GenericSecondOrderTerm_1<Term>::evalImpl(
       int nPoints,
-      DenseVector<double> const& uhAtQP,
-      DenseVector<WorldVector<double>> const& grdUhAtQP,
+      DenseVector<double> const& /*uhAtQP*/,
+      DenseVector<WorldVector<double>> const& /*grdUhAtQP*/,
       DenseVector<WorldMatrix<double>> const& D2UhAtQP,
       DenseVector<double>& result,
       double f) const
@@ -67,8 +67,8 @@ namespace AMDiS
   template <class Term, bool symmetric>
   void GenericSecondOrderTerm_A<Term, symmetric>::evalImpl(
       int nPoints,
-      DenseVector<double> const& uhAtQP,
-      DenseVector<WorldVector<double>> const& grdUhAtQP,
+      DenseVector<double> const& /*uhAtQP*/,
+      DenseVector<WorldVector<double>> const& /*grdUhAtQP*/,
       DenseVector<WorldMatrix<double>> const& D2UhAtQP,
       DenseVector<double>& result,
       double factor) const
@@ -122,8 +122,8 @@ namespace AMDiS
   template <int I, int J, class Term>
   void GenericSecondOrderTerm_ij<I, J, Term>::evalImpl(
       int nPoints,
-      DenseVector<double> const& uhAtQP,
-      DenseVector<WorldVector<double>> const& grdUhAtQP,
+      DenseVector<double> const& /*uhAtQP*/,
+      DenseVector<WorldVector<double>> const& /*grdUhAtQP*/,
       DenseVector<WorldMatrix<double>> const& D2UhAtQP,
       DenseVector<double>& result,
       double fac) const

@@ -230,7 +230,7 @@ namespace AMDiS
       };
 
       template <class T>
-      Aux::BinaryStream& operator<< (Aux::BinaryStream& stream, const T& param)
+      Aux::BinaryStream& operator<< (Aux::BinaryStream& stream, const T& /*param*/)
       {
         return stream;
       }

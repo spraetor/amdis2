@@ -1,0 +1,26 @@
+dimension of world:             3
+
+ballMesh->macro file name:    ./macro/macro.ball.3d
+ballMesh->global refinements: 15
+
+ball->mesh:                   ballMesh
+ball->dim:                    3
+ball->components:             1
+ball->polynomial degree[0]:   1
+
+ball->components:             1
+
+ball->solver:                 cg
+ball->solver->max iteration:  1000
+ball->solver->tolerance:      1.e-8
+ball->solver->left precon:    diag
+
+ball->estimator[0]:           0
+ball->marker[0]->strategy:    0 % 0: no adaption 1: GR 2: MS 3: ES 4:GERS
+
+ball->output->filename:       output/ball.3d
+ball->output->ParaView format: 1
+ball->output->ARH format:  1
+ball->output->AMDiS format: 1
+
+

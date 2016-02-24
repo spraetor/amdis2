@@ -21,7 +21,7 @@
 #include "Operator.h"
 #include "Initfile.h"
 #include "Traverse.h"
-#include "DualTraverse.h"
+// #include "DualTraverse.h"
 #include "MatrixVectorOperations.h"
 
 #ifdef HAVE_PARALLEL_DOMAIN_AMDIS
@@ -86,7 +86,7 @@ namespace AMDiS
 
 
   template <class T>
-  void DOFVector<T>::init(const FiniteElemSpace* f, std::string n, bool addToSynch)
+  void DOFVector<T>::init(const FiniteElemSpace* f, std::string n, bool /*addToSynch*/) // NOTE: parameter addToSynch only for PARALLEL_DOMAIN
   {
     this->name = n;
     this->feSpace = f;
