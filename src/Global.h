@@ -13,12 +13,12 @@
 #include <vector>
 #include <set>
 #include <fstream>
-#include <math.h>
+#include <cmath>
 #include <iostream>
-#include <stdio.h>
+#include <cstdio>
 #include <functional>
-#include <float.h>
-#include <time.h>
+#include <cfloat>
+#include <ctime>
 
 #if HAVE_PARALLEL_DOMAIN_AMDIS
 #include <mpi.h>

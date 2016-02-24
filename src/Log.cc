@@ -1,12 +1,13 @@
-#include <stdarg.h>		// va_list, va_start, ...
-#include <stdio.h>		// vsprintf
+#include "Log.h"
+
+#include <cstdarg>		// va_list, va_start, ...
+#include <cstdio>		// vsprintf
 #include <iostream>
 #include <fstream>
 #include <sstream>		// std::stringstream
 #include <ostream>		// std::ofstream
 #include <set>
 
-#include "Log.h"
 #include "AMDiS_base.h"
 #ifdef _MSC_VER
 #include <io.h>			// _access
@@ -54,7 +55,7 @@ namespace AMDiS
       std::cin >> line;
     }
   }
-  
+
 
   void Msg::print_funcname(const char* funcName)
   {

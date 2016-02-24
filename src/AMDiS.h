@@ -2,7 +2,12 @@
 
 #pragma once
 
-#include "stdint.h"
+#ifndef _USE_MATH_DEFINES
+#define _USE_MATH_DEFINES
+#endif
+#include <cmath>
+#include <cstdint>
+
 #include "MTL4Types.h"
 #include "AdaptInfo.h"
 #include "AdaptInstationary.h"
@@ -102,9 +107,7 @@
 #include "io/ValueWriter.h"
 #include "io/VtkWriter.h"
 #include "io/VtkVectorWriter.h"
-#ifdef HAVE_EXTENSIONS
-#include "io/VtkReader.h"
-#endif
+//#include "io/VtkReader.h"
 #include "io/Reader.h"
 #include "io/Writer.h"
 

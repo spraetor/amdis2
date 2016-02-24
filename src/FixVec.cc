@@ -1,6 +1,6 @@
-#include <stdarg.h>
-
 #include "FixVec.h"
+
+#include <cstdarg>
 
 namespace AMDiS
 {

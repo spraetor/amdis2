@@ -54,6 +54,9 @@ install(FILES ${BASE_DIR}/cmake3/find_boost.cmake DESTINATION share/amdis/)
 
 # ------------------------------------------------------------------------------
 
+add_library(amdis0
+    ${SOURCE_DIR}/AdaptBase.cc)
+
 add_library(amdis
     ${SOURCE_DIR}/AdaptBase.cc
     ${SOURCE_DIR}/AdaptInfo.cc
@@ -211,6 +214,8 @@ if (MSVC)
         _SCL_SECURE_NO_WARNINGS
         _CRT_SECURE_NO_WARNINGS)
 endif (MSVC)
+
+target_link_libraries(amdis0 AMDiS::base)
 
 target_link_libraries(amdis AMDiS::base muparser
     $<$<NOT:$<CONFIG:Release>>:amdis_debug>)
