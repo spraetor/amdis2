@@ -14,6 +14,9 @@
 #include <boost/property_tree/json_parser.hpp>
 
 
+// a parser for arithmetic expressions
+#include <muParser.h>
+
 namespace AMDiS
 {
   /// check for file existence
@@ -24,6 +27,20 @@ namespace AMDiS
 #else
     return access(filename.c_str(), F_OK) == 0;
 #endif
+  }
+
+
+  namespace detail
+  {
+    double mu_parser_eval(std::string const& valStr)
+    {
+      mu::Parser parser;
+      parser.DefineConst(_T("M_PI"), m_pi);
+      parser.DefineConst(_T("M_E"), m_e);
+
+      parser.SetExpr(valStr);
+      return parser.Eval();
+    }
   }
 
   Initfile* Initfile::singlett = NULL;
@@ -38,7 +55,7 @@ namespace AMDiS
 
 
   /// Fill an initfile from a file with filename fn
-  void Initfile::read(std::string fn, bool force)
+  void Initfile::read(std::string fn, bool /*force*/)
   {
     TEST_EXIT( file_exists(fn) )
     ("init-file '%s' cannot be opened for reading", fn.c_str());

@@ -65,7 +65,7 @@ namespace AMDiS
 
 
       template<typename T>
-      const FiniteElemSpace* getFeSpace(DOFVector<T>& container, int i = 0)
+      const FiniteElemSpace* getFeSpace(DOFVector<T>& container, int /*i*/ = 0)
       {
         return container.getFeSpace();
       }
@@ -86,7 +86,7 @@ namespace AMDiS
 
 
       inline
-      const FiniteElemSpace* getFeSpace(Mesh& container, int i = 0)
+      const FiniteElemSpace* getFeSpace(Mesh& /*container*/, int /*i*/ = 0)
       {
         ERROR_EXIT("Can not extract feSpace from Mesh!\n");
         return NULL;
@@ -94,7 +94,7 @@ namespace AMDiS
 
 
       template<typename T>
-      DOFVector<T>* getDOFVector(DOFVector<T>& container, int i = 0)
+      DOFVector<T>* getDOFVector(DOFVector<T>& container, int /*i*/ = 0)
       {
         return &container;
       }
@@ -115,7 +115,7 @@ namespace AMDiS
 
 
       inline
-      DOFVector<double>* getDOFVector(Mesh& container, int i = 0)
+      DOFVector<double>* getDOFVector(Mesh& /*container*/, int /*i*/ = 0)
       {
         ERROR_EXIT("Can not extract DOFVector from Mesh!\n");
         return NULL;

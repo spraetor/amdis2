@@ -9,7 +9,7 @@ namespace AMDiS
 {
   // introduce some shortcuts for integral constants
   // ---------------------------------------------------------------------------
-  
+
   template <int I>
   using int_ = std::integral_constant<int, I>;
 
@@ -22,29 +22,29 @@ namespace AMDiS
   using bool_  = std::integral_constant<bool, B>;
   using true_  = bool_<true>;
   using false_ = bool_<false>;
-  
+
   static constexpr bool_<true>  _true  {};
   static constexpr bool_<false> _false {};
-  
+
   template <int I, int J>
   struct range_
   {
     using type = range_;
-    
+
     static constexpr int  begin()  { return I; }
     static constexpr int  end()    { return J; }
     static constexpr bool empty()  { return I >= J; }
-    
-    constexpr operator bool() { return I < J; }
+
+    constexpr operator bool() const { return I < J; }
   };
-  
+
   template <int I>
   using empty_range_ = range_<I,I>;
-  
+
 
   // some boolean operations
   // ---------------------------------------------------------------------------
-  
+
   namespace detail
   {
     template <class T0, class... Ts>

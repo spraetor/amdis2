@@ -1016,9 +1016,9 @@ namespace AMDiS
   }
 
 
-  void Lagrange::l2ScpFctBas(Quadrature* q,
-                             std::function<WorldVector<double>(WorldVector<double>)> f,
-                             DOFVector<WorldVector<double>>* fh)
+  void Lagrange::l2ScpFctBas(Quadrature* /*q*/,
+                             std::function<WorldVector<double>(WorldVector<double>)> /*f*/,
+                             DOFVector<WorldVector<double>>* /*fh*/)
   {
     ERROR_EXIT("not yet\n");
   }
@@ -1082,7 +1082,7 @@ namespace AMDiS
   void  Lagrange::refineInter0(DOFIndexed<double>* drv,
                                RCNeighbourList* list,
                                int n,
-                               BasisFunction* basFct)
+                               BasisFunction* /*basFct*/)
   {
     if (n < 1)
       return;
@@ -1104,7 +1104,7 @@ namespace AMDiS
   void Lagrange::refineInter1(DOFIndexed<double>* drv,
                               RCNeighbourList* list,
                               int n,
-                              BasisFunction* basFct)
+                              BasisFunction* /*basFct*/)
   {
     if (n < 1)
       return;
@@ -4364,7 +4364,7 @@ namespace AMDiS
 
 
   void Lagrange::coarseInter0(DOFIndexed<double>* drv, RCNeighbourList* list,
-                              int n, BasisFunction* basFct)
+                              int n, BasisFunction* /*basFct*/)
   {
     FUNCNAME_DBG("Lagrange::coarseInter0()");
 
@@ -4389,7 +4389,7 @@ namespace AMDiS
 
 
   void Lagrange::coarseInter2_1d(DOFIndexed<double>* drv, RCNeighbourList* list,
-                                 int n, BasisFunction* basFct)
+                                 int n, BasisFunction* /*basFct*/)
   {
     FUNCNAME_DBG("Lagrange::coarseInter2_1d()");
 
@@ -4413,7 +4413,7 @@ namespace AMDiS
 
 
   void Lagrange::coarseInter2_2d(DOFIndexed<double>* drv, RCNeighbourList* list,
-                                 int n, BasisFunction* basFct)
+                                 int n, BasisFunction* /*basFct*/)
   {
     FUNCNAME("Lagrange::coarseInter2_2d()");
 
@@ -4436,7 +4436,7 @@ namespace AMDiS
   }
 
   void Lagrange::coarseInter2_3d(DOFIndexed<double>* drv, RCNeighbourList* list,
-                                 int n, BasisFunction* basFct)
+                                 int n, BasisFunction* /*basFct*/)
   {
     FUNCNAME("Lagrange::coarseInter2_3d()");
 
@@ -4457,7 +4457,7 @@ namespace AMDiS
   }
 
   void Lagrange::coarseInter3_1d(DOFIndexed<double>* drv, RCNeighbourList* list,
-                                 int n, BasisFunction* basFct)
+                                 int n, BasisFunction* /*basFct*/)
   {
     FUNCNAME("Lagrange::coarseInter3_1d()");
 
@@ -4532,7 +4532,7 @@ namespace AMDiS
   }
 
   void Lagrange::coarseInter3_2d(DOFIndexed<double>* drv, RCNeighbourList* list,
-                                 int n, BasisFunction* basFct)
+                                 int n, BasisFunction* /*basFct*/)
   {
     FUNCNAME("Lagrange::coarseInter3_2d()");
 

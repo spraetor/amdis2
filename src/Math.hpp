@@ -1,4 +1,4 @@
-/** \file Math.h */
+/** \file Math.hpp */
 
 /** \defgroup Common Common
  */

@@ -245,7 +245,7 @@ namespace AMDiS
     struct MyCross : FunctorBase
     {
       using value_type = decltype( std::declval<T1>() * std::declval<T2>() );
-      constexpr int getDegree(int d, int d0, int d1) const
+      constexpr int getDegree(int /*d*/, int d0, int d1) const
       {
         return d0+d1;
       }
@@ -417,7 +417,7 @@ namespace AMDiS
     };
 
     template <int p, class T>
-    struct root_dispatch<p, T, 
+    struct root_dispatch<p, T,
       Requires_t<meta::is_power_of<p, 3>> >
     {
       static constexpr T eval(const T& v)
@@ -427,7 +427,7 @@ namespace AMDiS
     };
 
     template <int p, class T>
-    struct root_dispatch<p, T, 
+    struct root_dispatch<p, T,
       Requires_t<meta::is_power_of<p, 2>> >
     {
       static constexpr T eval(const T& v)
@@ -466,7 +466,7 @@ namespace AMDiS
     template <class T>
     struct root_dispatch<0, T>
     {
-      static constexpr T eval(const T& v)
+      static constexpr T eval(const T& /*v*/)
       {
         return 1.0;
       }

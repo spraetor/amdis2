@@ -16,15 +16,15 @@ namespace AMDiS
   template <class MatrixType, class VectorType>
   struct RunnerBase : public RunnerInterface
   {
-    virtual void init(SolverMatrix<Matrix<DOFMatrix*>> const& A, 
+    virtual void init(SolverMatrix<Matrix<DOFMatrix*>> const& A,
 		      MatrixType const& fullMatrix) = 0;
 
     virtual void exit() {}
 
     virtual int solve(MatrixType const& A, VectorType& x, VectorType const& b) = 0;
 
-    virtual int adjoint_solve(MatrixType const& A, VectorType& x, 
-			      VectorType const& b)
+    virtual int adjoint_solve(MatrixType const& /*A*/, VectorType& /*x*/,
+			      VectorType const& /*b*/)
     {
       FUNCNAME("RunnerBase::adjoint_solve()");
       ERROR_EXIT("Must be implemented in derived class!\n");
@@ -41,7 +41,7 @@ namespace AMDiS
     using Super  = LinearSolverInterface;
 
     LinearSolverBase(std::string name)
-      : Super(name) 
+      : Super(name)
     {}
 
     MatrixType& getMatrix()
@@ -69,7 +69,7 @@ namespace AMDiS
 
 #ifdef HAVE_PARALLEL_MTL4
   template <class MatrixType>
-  struct LinearSolverBase<MatrixType, ParallelMapper, 
+  struct LinearSolverBase<MatrixType, ParallelMapper,
 			  Requires_t<mtl::traits::is_distributed<MatrixType>>>
     : public ParallelSolver
   {
@@ -77,7 +77,7 @@ namespace AMDiS
     using Super  = ParallelSolver;
 
     LinearSolverBase(std::string name)
-      : Super(name, false) 
+      : Super(name, false)
     {}
 
     MatrixType& getMatrix()
@@ -112,7 +112,7 @@ namespace AMDiS
    * solvers where MTL4 provides an interface, can be assigned
    * by different Runner objects.
    **/
-  template <class MatrixType, class VectorType, class Runner, 
+  template <class MatrixType, class VectorType, class Runner,
 	    class Mapper_ = BlockMapper>
   class LinearSolver : public LinearSolverBase<MatrixType, Mapper_>
   {

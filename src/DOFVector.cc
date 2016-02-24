@@ -658,7 +658,7 @@ namespace AMDiS
   {}
 
 
-  void DOFVectorDOF::freeDOFContent(DegreeOfFreedom dof)
+  void DOFVectorDOF::freeDOFContent(DegreeOfFreedom /*dof*/)
   {}
 
 

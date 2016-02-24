@@ -171,7 +171,7 @@ namespace AMDiS
 
   /// number of columns of VectorBase
   template <class M, class S>
-  size_t num_cols(VectorBase<M,S> const& vec)
+  size_t num_cols(VectorBase<M,S> const& /*vec*/)
   {
     return 1;
   }

@@ -13,7 +13,7 @@
 #endif
 #endif
 
-using namespace std;
+// using namespace std;
 
 namespace AMDiS
 {
@@ -23,7 +23,7 @@ namespace AMDiS
                                        AdaptInfo& adaptInfo,
                                        ProblemTimeInterface& problemInstat,
                                        AdaptInfo& initialInfo,
-                                       time_t initialTimestampSet)
+                                       std::time_t /*initialTimestampSet*/) // TODO: remove parameter
     : AdaptBase(name, &problemStat, adaptInfo, &problemInstat, &initialInfo),
       breakWhenStable(0)
   {

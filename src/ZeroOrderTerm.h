@@ -41,7 +41,7 @@ namespace AMDiS
 
   public:
     /// Constructor.
-    template <class Term_, 
+    template <class Term_,
 	      class = Requires_t<concepts::Compatible<Term, Term_>>>
     GenericZeroOrderTerm(Term_&& term_)
       : Super(std::forward<Term_>(term_))
@@ -49,8 +49,8 @@ namespace AMDiS
 
   private:
     /// Implemetation of \ref ZeroOrderTerm::getC().
-    virtual void getCImpl(ElInfo const* elInfo, 
-			  int nPoints, 
+    virtual void getCImpl(ElInfo const* /*elInfo*/,
+			  int nPoints,
 			  DenseVector<double>& C) const override
     {
       for (int iq = 0; iq < nPoints; iq++)
@@ -60,8 +60,8 @@ namespace AMDiS
     /// Implemetation of \ref OperatorTerm::eval().
     virtual void evalImpl(int nPoints,
                           DenseVector<double> const& uhAtQP,
-                          DenseVector<WorldVector<double>> const& grdUhAtQP,
-                          DenseVector<WorldMatrix<double>> const& D2UhAtQP,
+                          DenseVector<WorldVector<double>> const& /*grdUhAtQP*/,
+                          DenseVector<WorldMatrix<double>> const& /*D2UhAtQP*/,
                           DenseVector<double>& result,
                           double fac) const override
     {
@@ -69,5 +69,5 @@ namespace AMDiS
         result[iq] += fac * this->term[iq] * uhAtQP[iq];
     }
   };
-  
+
 } // end namespace AMDiS

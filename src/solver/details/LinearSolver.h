@@ -57,11 +57,11 @@ namespace AMDiS
   {
     /// init matrix
     template<typename MatrixOut, typename M>
-    void initMatrix(MatrixOut& m, MapperBase<M>& mapper) {}
+    void initMatrix(MatrixOut& /*m*/, MapperBase<M>& /*mapper*/) {}
 
     /// init vector
     template<typename VectorOut, typename MatrixT>
-    void initVector(VectorOut& v, const MatrixT& source) {}
+    void initVector(VectorOut& /*v*/, const MatrixT& /*source*/) {}
 
 
     /// init systemmatrix depending on Mapper parameters.

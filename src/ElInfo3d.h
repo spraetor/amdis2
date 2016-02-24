@@ -62,7 +62,7 @@ namespace AMDiS
     virtual double getNormal(int side, WorldVector<double>& normal) const override;
 
 
-    virtual double getElementNormal(WorldVector<double>& normal) const override
+    virtual double getElementNormal(WorldVector<double>& /*normal*/) const override
     {
       FUNCNAME("ElInfo3d::getElementNormal()");
       ERROR_EXIT("ElementNormal not available in 3d!");

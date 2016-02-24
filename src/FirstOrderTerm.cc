@@ -9,9 +9,9 @@ namespace AMDiS
 {
   /// Implenetation of FirstOrderTerm::evalImpl().
   void FirstOrderTerm::evalImpl(int nPoints,
-                                DenseVector<double> const& uhAtQP,
+                                DenseVector<double> const& /*uhAtQP*/,
                                 DenseVector<WorldVector<double>> const& grdUhAtQP,
-                                DenseVector<WorldMatrix<double>> const& D2UhAtQP,
+                                DenseVector<WorldMatrix<double>> const& /*D2UhAtQP*/,
                                 DenseVector<double>& result,
                                 double factor)  const
   {

@@ -44,10 +44,10 @@ namespace AMDiS
     {
 
       template<typename Container>
-      void readValue(std::string filename,
-                     Mesh* mesh,
-                     Container& vec,
-                     MacroInfo* macroFileInfo)
+      void readValue(std::string /*filename*/,
+                     Mesh* /*mesh*/,
+                     Container& /*vec*/,
+                     MacroInfo* /*macroFileInfo*/)
       {
         ERROR_EXIT("ValueReader not implemented for this container type!\n");
       }
@@ -57,8 +57,8 @@ namespace AMDiS
                      Mesh* mesh,
                      DOFVector<double>* dofVector,
                      MacroInfo* macroFileInfo);
-      inline
-      void readValue(std::string filename,
+
+      inline void readValue(std::string filename,
                      Mesh* mesh,
                      DOFVector<double>& dofVector,
                      MacroInfo* macroFileInfo)

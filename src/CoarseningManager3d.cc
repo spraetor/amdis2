@@ -9,7 +9,7 @@
 #include "DOFIndexed.h"
 #include "Debug.h"
 
-using namespace std;
+// using namespace std;
 
 namespace AMDiS
 {
@@ -84,7 +84,7 @@ namespace AMDiS
 
 
 #if HAVE_PARALLEL_DOMAIN_AMDIS
-    vector<FixRefinementPatch::EdgeInEl> refineEdges;
+    std::vector<FixRefinementPatch::EdgeInEl> refineEdges;
     FixRefinementPatch::getOtherEl(mesh, stack, refineEdges);
 
     // === If the refinement edge must be fixed, add also the other part of this ===

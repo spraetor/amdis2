@@ -176,7 +176,7 @@ namespace itl
   template <typename Matrix, typename Vector, typename LeftPreconditioner,
             typename RightPreconditioner, typename Iteration>
   int fgmres(const Matrix& A, Vector& x, const Vector& b,
-             LeftPreconditioner& L, RightPreconditioner& R,
+             LeftPreconditioner& /*L*/, RightPreconditioner& R,
              Iteration& iter, typename mtl::Collection<Vector>::size_type restart)
   {
     do

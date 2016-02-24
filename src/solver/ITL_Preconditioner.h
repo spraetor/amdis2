@@ -26,7 +26,7 @@ namespace AMDiS
   {
     virtual void init(SolverMatrix<Matrix<DOFMatrix*>> const& A,
                       MatrixType const& fullMatrix) = 0;
-		      
+
     virtual void exit() {}
 
     virtual void solve(VectorType const& x, VectorType& y) const = 0;
@@ -82,7 +82,7 @@ namespace AMDiS
     }
 
     /// Implementation of \ref ITL_PreconditionerBase::init()
-    virtual void init(SolverMatrix<Matrix<DOFMatrix*>> const& A,
+    virtual void init(SolverMatrix<Matrix<DOFMatrix*>> const& /*A*/,
                       MatrixType const& fullMatrix) override
     {
       delete precon;
@@ -123,20 +123,20 @@ namespace AMDiS
    *
    * Diagonal preconditioner \f$ M^{-1} \f$ for the system \f$ Ax=b \f$ is defined as: \f$ M=diag(A) \f$.
    */
-  using DiagonalPreconditioner = 
-    ITL_Preconditioner<itl::pc::diagonal<MTLTypes::MTLMatrix>, 
+  using DiagonalPreconditioner =
+    ITL_Preconditioner<itl::pc::diagonal<MTLTypes::MTLMatrix>,
 		       MTLTypes::MTLMatrix, MTLTypes::MTLVector>;
 
   /**
    * \ingroup Solver
    * \class AMDiS::DiagonalPreconditioner
-   * \brief ITL_Preconditioner implementation of diagonal (jacobi) preconditioner, 
+   * \brief ITL_Preconditioner implementation of diagonal (jacobi) preconditioner,
    * \implements ITL_Preconditioner
    *
    * Diagonal preconditioner \f$ M^{-1} \f$ for the system \f$ Ax=b \f$ is defined as: \f$ M_ii=sum_j(A_ij) \f$.
    */
-  using MassLumpingPreconditioner = 
-    ITL_Preconditioner<itl::pc::masslumping<MTLTypes::MTLMatrix>, 
+  using MassLumpingPreconditioner =
+    ITL_Preconditioner<itl::pc::masslumping<MTLTypes::MTLMatrix>,
 		       MTLTypes::MTLMatrix, MTLTypes::MTLVector>;
 
 
@@ -148,36 +148,36 @@ namespace AMDiS
    *
    * Identity preconditioner. Behaves like no preconditioning.
    */
-  using IdentityPreconditioner = 
-    ITL_Preconditioner<itl::pc::identity<MTLTypes::MTLMatrix>, 
+  using IdentityPreconditioner =
+    ITL_Preconditioner<itl::pc::identity<MTLTypes::MTLMatrix>,
 		       MTLTypes::MTLMatrix, MTLTypes::MTLVector>;
 
 
   /**
    * \ingroup Solver
    * \class AMDiS::ILUPreconditioner
-   * \brief ITL_Preconditioner implementation of ILU (Incomplete LU factorization) 
+   * \brief ITL_Preconditioner implementation of ILU (Incomplete LU factorization)
    * preconditioner. \implements ITL_Preconditioner
    *
    * The preconditioner is used from ITL. It corresponds for instance to
    * "Iterative Methods for Sparce Linear Systems", second edition, Yousef Saad.
    *  The preconditioner is described in chapter 10.3 (algorithm 10.4).
    */
-  using ILUPreconditioner = 
-    ITL_Preconditioner<itl::pc::ilu_0<MTLTypes::MTLMatrix>, 
+  using ILUPreconditioner =
+    ITL_Preconditioner<itl::pc::ilu_0<MTLTypes::MTLMatrix>,
 		       MTLTypes::MTLMatrix, MTLTypes::MTLVector>;
 
 
   /**
    * \ingroup Solver
    * \class AMDiS::ICPreconditioner
-   * \brief ITL_Preconditioner implementation of IC (Incomplete Cholesky factorization) 
+   * \brief ITL_Preconditioner implementation of IC (Incomplete Cholesky factorization)
    * preconditioner. \implements ITL_Preconditioner
    *
    * IC (Incomplete Cholesky factorization) preconditioner.
    */
-  using ICPreconditioner = 
-    ITL_Preconditioner<itl::pc::ic_0<MTLTypes::MTLMatrix>, 
+  using ICPreconditioner =
+    ITL_Preconditioner<itl::pc::ic_0<MTLTypes::MTLMatrix>,
 		       MTLTypes::MTLMatrix, MTLTypes::MTLVector>;
 
 

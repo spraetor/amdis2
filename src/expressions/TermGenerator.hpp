@@ -59,7 +59,7 @@ namespace AMDiS
   } // end namespace detail
 
   template <class T>
-  using ToTerm = detail::ToTerm<T>;
+  using ToTerm = detail::ToTerm<Decay_t<T>>;
 
   template <class T>
   using ToTerm_t = typename ToTerm<T>::type;

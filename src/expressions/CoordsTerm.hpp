@@ -22,7 +22,7 @@ namespace AMDiS
   // Comp == -1: WorldVector, Comp == -2: component given in constructor
   // Comp != {-1, -2}: component given as template parameter
   template <int Comp = -1>
-  struct CoordsTerm 
+  struct CoordsTerm
     : public VectorTerm<CoordsTerm<Comp>>,
       public LazyOperatorTermBase
   {
@@ -36,7 +36,7 @@ namespace AMDiS
     }
 
     template <class List>
-    void insertFeSpaces(List& feSpaces) const {}
+    void insertFeSpaces(List& /*feSpaces*/) const {}
 
     constexpr static int getDegree()
     {

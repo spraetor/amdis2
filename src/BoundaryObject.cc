@@ -56,7 +56,7 @@ namespace AMDiS
       {
         int el0_v0 = obj0.el->getVertexOfEdge(obj0.ithObj, 0);
         int el1_v0 = obj0.el->getVertexOfEdge(obj1.ithObj, 0);
-#if DEBUG != 0
+#ifndef NDEBUG
         int el0_v1 = obj0.el->getVertexOfEdge(obj0.ithObj, 1);
         int el1_v1 = obj0.el->getVertexOfEdge(obj1.ithObj, 1);
 #endif

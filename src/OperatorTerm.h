@@ -36,7 +36,7 @@ namespace AMDiS
     /// Virtual method. It's called by SubAssembler::initElement() for
     /// each OperatorTerm belonging to this SubAssembler. E.g., vectors
     /// and coordinates at quadrature points can be calculated here.
-    void initElement(ElInfo const* elInfo, 
+    void initElement(ElInfo const* elInfo,
 		     SubAssembler* subAssembler,
                      Quadrature* quad = NULL)
     {
@@ -161,7 +161,7 @@ namespace AMDiS
 
     /// constructor
     /// adds all feSpaces provided by the expression term to auxFeSpaces liste
-    template <class Term_, 
+    template <class Term_,
 	      class = Requires_t< concepts::Compatible<Term, Term_> >>
     GenericOperatorTerm(Term_&& term_)
       : Super(term_.getDegree()),
@@ -210,21 +210,21 @@ namespace AMDiS
   class GenericOperatorTerm<Term, -1> : public GenericOperatorTerm<Term, -2>
   {
     using Super = GenericOperatorTerm<Term, -2>;
-    
+
   public:
-    template <class Term_, 
+    template <class Term_,
 	      class = Requires_t< concepts::Compatible<Term, Term_> >>
     GenericOperatorTerm(Term_&& term_)
       : Super(std::forward<Term_>(term_)) {}
 
   private:
     // Implements \ref OperatorTerm::eval().
-    virtual void evalImpl(int nPoints,
-                          DenseVector<double> const& uhAtQP,
-                          DenseVector<WorldVector<double>> const& grdUhAtQP,
-                          DenseVector<WorldMatrix<double>> const& D2UhAtQP,
-                          DenseVector<double>& result,
-                          double factor) const override {};
+    virtual void evalImpl(int /*nPoints*/,
+                          DenseVector<double> const& /*uhAtQP*/,
+                          DenseVector<WorldVector<double>> const& /*grdUhAtQP*/,
+                          DenseVector<WorldMatrix<double>> const& /*D2UhAtQP*/,
+                          DenseVector<double>& /*result*/,
+                          double /*factor*/) const override {};
   };
 
 } // end namespace AMDiS

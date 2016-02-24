@@ -276,13 +276,13 @@ namespace AMDiS
     while (cont)
     {
       bool cont1;
-#if DEBUG != 0
+#ifndef NDEBUG
       bool cont2;
 #endif
       if (structure1->isLeafElement() == structure2->isLeafElement())
       {
         cont1 = structure1->nextElement(result);
-#if DEBUG != 0
+#ifndef NDEBUG
         cont2 = structure2->nextElement();
 #endif
       }
@@ -291,14 +291,14 @@ namespace AMDiS
         if (structure1->isLeafElement())
         {
           cont1 = structure1->nextElement();
-#if DEBUG != 0
+#ifndef NDEBUG
           cont2 = structure2->skipBranch(result);
 #endif
         }
         else
         {
           cont1 = structure1->skipBranch(result);
-#if DEBUG != 0
+#ifndef NDEBUG
           cont2 = structure2->nextElement();
 #endif
         }
@@ -313,7 +313,7 @@ namespace AMDiS
 
   void MeshStructure::fitMeshToStructure(Mesh* mesh,
                                          RefinementManager* manager,
-                                         bool debugMode,
+                                         bool /*debugMode*/,
                                          int macroElIndex,
                                          bool ignoreFinerMesh)
   {

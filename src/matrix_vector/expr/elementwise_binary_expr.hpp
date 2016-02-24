@@ -8,7 +8,7 @@
 #include <traits/traits.hpp>
 
 #include "base_expr.hpp" // for ShapedExpr
-#include <Math.h>
+#include <Math.hpp>
 
 namespace AMDiS
 {
@@ -98,17 +98,17 @@ namespace AMDiS
       using size_type  = MaxSizeType<E1,E2>;
     };
     /// \endcond
-    
+
   } // end namespace traits
 
   // E1 + E2
   template <class E1, class E2>
-  using PlusExpr 
+  using PlusExpr
     = ElementwiseBinaryExpr<E1, E2, functors::plus<Value_t<E1>, Value_t<E2>>>;
 
   // E1 - E2
   template <class E1, class E2>
-  using MinusExpr 
+  using MinusExpr
     = ElementwiseBinaryExpr<E1, E2, functors::minus<Value_t<E1>, Value_t<E2>>>;
 
 

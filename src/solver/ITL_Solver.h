@@ -55,8 +55,8 @@ namespace AMDiS
    */
   template <class SolverType>
   using ITL_Solver = LinearSolver<
-    MTLTypes::MTLMatrix, 
-    MTLTypes::MTLVector, 
+    MTLTypes::MTLMatrix,
+    MTLTypes::MTLVector,
     ITL_Runner<SolverType, MTLTypes::MTLMatrix, MTLTypes::MTLVector>>;
 
   // ===========================================================================
@@ -64,10 +64,10 @@ namespace AMDiS
   /**
    * \ingroup Solver
    * \class AMDiS::CGSolver
-   * \brief ITL_Solver <\ref cg_solver_type> implementation of conjugate gradient 
+   * \brief ITL_Solver <\ref cg_solver_type> implementation of conjugate gradient
    * method \implements ITL_Solver
    *
-   * Solves a linear system \f$ Ax=b \f$ by the conjugate gradient method (CG) 
+   * Solves a linear system \f$ Ax=b \f$ by the conjugate gradient method (CG)
    * and can be used for symmetric positive definite system matrices.
    * Right preconditioner is ignored.
    */
@@ -75,7 +75,7 @@ namespace AMDiS
   class cg_solver_type
   {
   public:
-    cg_solver_type(std::string name) {}
+    cg_solver_type(std::string /*name*/) {}
     template <class LinOp, class X, class B, class L, class R, class I>
     int operator()(LinOp const& A, X& x, B const& b, L const& l, R const& r, I& iter)
     {
@@ -89,17 +89,17 @@ namespace AMDiS
   /**
    * \ingroup Solver
    * \class AMDiS::CGSSolver
-   * \brief ITL_Solver <\ref cgs_solver_type> implementation of squared conjugate 
+   * \brief ITL_Solver <\ref cgs_solver_type> implementation of squared conjugate
    * gradient method \implements ITL_Solver
    *
-   * Solves a linear system \f$ Ax=b \f$ by the squared conjugate gradient method 
+   * Solves a linear system \f$ Ax=b \f$ by the squared conjugate gradient method
    * (CGS). Right preconditioner is ignored.
    */
 
   class cgs_solver_type
   {
   public:
-    cgs_solver_type(std::string name) {}
+    cgs_solver_type(std::string /*name*/) {}
     template <class LinOp, class X, class B, class L, class R, class I>
     int operator()(LinOp const& A, X& x, B const& b, L const& l, R const&, I& iter)
     {
@@ -113,7 +113,7 @@ namespace AMDiS
   /**
    * \ingroup Solver
    * \class AMDiS::BiCGSolver
-   * \brief ITL_Solver <\ref bicg_solver_type> implementation of bi-conjugate 
+   * \brief ITL_Solver <\ref bicg_solver_type> implementation of bi-conjugate
    * gradient method \implements ITL_Solver
    *
    * Solves a linear system \f$ Ax=b \f$ by a BiCG method and can be used for
@@ -123,7 +123,7 @@ namespace AMDiS
   class bicg_solver_type
   {
   public:
-    bicg_solver_type(std::string name) {}
+    bicg_solver_type(std::string /*name*/) {}
     template <class LinOp, class X, class B, class L, class R, class I>
     int operator()(LinOp const& A, X& x, B const& b, L const& l, R const&, I& iter)
     {
@@ -137,17 +137,17 @@ namespace AMDiS
   /**
    * \ingroup Solver
    * \class AMDiS::BiCGStabSolver
-   * \brief ITL_Solver <\ref bicgstab_type> implementation of stabilized 
+   * \brief ITL_Solver <\ref bicgstab_type> implementation of stabilized
    * bi-conjugate gradient method \implements ITL_Solver
    *
-   * Solves a linear system \f$ Ax=b \f$ by a stabilized BiCG method and can be 
+   * Solves a linear system \f$ Ax=b \f$ by a stabilized BiCG method and can be
    * used for system matrices.
    */
 
   class bicgstab_type
   {
   public:
-    bicgstab_type(std::string name) {}
+    bicgstab_type(std::string /*name*/) {}
     template <class LinOp, class X, class B, class L, class R, class I>
     int operator()(LinOp const& A, X& x, B const& b, L const& l, R const&, I& iter)
     {
@@ -161,17 +161,17 @@ namespace AMDiS
   /**
    * \ingroup Solver
    * \class AMDiS::BiCGStab2Solver
-   * \brief ITL_Solver <\ref bicgstab2_type> implementation of BiCGStab(l) method 
+   * \brief ITL_Solver <\ref bicgstab2_type> implementation of BiCGStab(l) method
    * with l=2 \implements ITL_Solver
    *
-   * Solves a linear system \f$ Ax=b \f$ by a stabilized BiCG(2) method and can 
+   * Solves a linear system \f$ Ax=b \f$ by a stabilized BiCG(2) method and can
    * be used for system matrices.
    */
 
   class bicgstab2_type
   {
   public:
-    bicgstab2_type(std::string name) {}
+    bicgstab2_type(std::string /*name*/) {}
     template <class LinOp, class X, class B, class L, class R, class I>
     int operator()(LinOp const& A, X& x, B const& b, L const& l, R const&, I& iter)
     {
@@ -185,7 +185,7 @@ namespace AMDiS
   /**
    * \ingroup Solver
    * \class AMDiS::QMRSolver
-   * \brief ITL_Solver <\ref qmr_solver_type> implementation of Quasi-Minimal 
+   * \brief ITL_Solver <\ref qmr_solver_type> implementation of Quasi-Minimal
    * Residual method \implements ITL_Solver
    *
    * Solves a linear system \f$ Ax=b \f$ by the Quasi-Minimal Residual method (QMR).
@@ -194,7 +194,7 @@ namespace AMDiS
   class qmr_solver_type
   {
   public:
-    qmr_solver_type(std::string name) {}
+    qmr_solver_type(std::string /*name*/) {}
     template <class LinOp, class X, class B, class L, class R, class I>
     int operator()(LinOp const& A, X& x, B const& b, L const& l, R const& r, I& iter)
     {
@@ -208,17 +208,17 @@ namespace AMDiS
   /**
    * \ingroup Solver
    * \class AMDiS::TFQMRSolver
-   * \brief ITL_Solver <\ref tfqmr_solver_type> implementation of Transposed-Free 
+   * \brief ITL_Solver <\ref tfqmr_solver_type> implementation of Transposed-Free
    * Quasi-Minimal Residual method \implements ITL_Solver
    *
-   * Solves a linear system by the Transposed-Free Quasi-Minimal Residual method 
+   * Solves a linear system by the Transposed-Free Quasi-Minimal Residual method
    * (TFQMR). Does not use preconditioning currently.
    */
 
   class tfqmr_solver_type
   {
   public:
-    tfqmr_solver_type(std::string name) {}
+    tfqmr_solver_type(std::string /*name*/) {}
     template <class LinOp, class X, class B, class L, class R, class I>
     int operator()(LinOp const& A, X& x, B const& b, L const& l, R const& r, I& iter)
     {
@@ -232,7 +232,7 @@ namespace AMDiS
   /**
    * \ingroup Solver
    * \class AMDiS::BiCGStabEllSolver
-   * \brief ITL_Solver <\ref bicgstab_ell_type> implementation of stabilized 
+   * \brief ITL_Solver <\ref bicgstab_ell_type> implementation of stabilized
    * BiCG(ell) method \implements ITL_Solver
    *
    * Solves a linear system by a stabilized BiCG(ell) method and can be used for
@@ -260,7 +260,7 @@ namespace AMDiS
   /**
    * \ingroup Solver
    * \class AMDiS::GMResSolver
-   * \brief ITL_Solver <\ref gmres_type> implementation of generalized minimal 
+   * \brief ITL_Solver <\ref gmres_type> implementation of generalized minimal
    * residual method \implements ITL_Solver
    *
    * Solves a linear system by the GMRES method.
@@ -310,13 +310,13 @@ namespace AMDiS
   /**
    * \ingroup Solver
    * \class AMDiS::IDRsSolver
-   * \brief ITL_Solver <\ref idr_s_type> implementation of Induced Dimension 
+   * \brief ITL_Solver <\ref idr_s_type> implementation of Induced Dimension
    * Reduction method \implements ITL_Solver
    *
-   * Solves a linear system by an Induced Dimension Reduction method and can be 
+   * Solves a linear system by an Induced Dimension Reduction method and can be
    * used for system matrices.  The parameter s [30] can be specified.
-   * 
-   * Peter Sonneveld and Martin B. van Gijzen, IDR(s): a family of simple and fast 
+   *
+   * Peter Sonneveld and Martin B. van Gijzen, IDR(s): a family of simple and fast
    * algorithms for solving large nonsymmetric linear systems.
    * SIAM J. Sci. Comput. Vol. 31, No. 2, pp. 1035-1062 (2008). (copyright SIAM)
    */
@@ -342,7 +342,7 @@ namespace AMDiS
   /**
    * \ingroup Solver
    * \class AMDiS::MinResSolver
-   * \brief ITL_Solver <\ref minres_solver_type> implementation of minimal 
+   * \brief ITL_Solver <\ref minres_solver_type> implementation of minimal
    * residual method \implements ITL_Solver
    *
    * Solves a linear system by the Minres method. Can be used for symmetric
@@ -352,7 +352,7 @@ namespace AMDiS
   class minres_solver_type
   {
   public:
-    minres_solver_type(std::string name) {}
+    minres_solver_type(std::string /*name*/) {}
     template <class LinOp, class X, class B, class L, class R, class I>
     int operator()(LinOp const& A, X& x, B const& b, L const& l, R const& r, I& iter)
     {
@@ -366,11 +366,11 @@ namespace AMDiS
   /**
    * \ingroup Solver
    * \class AMDiS::GcrSolver
-   * \brief ITL_Solver <\ref gcr_type> implementation of generalized conjugate 
+   * \brief ITL_Solver <\ref gcr_type> implementation of generalized conjugate
    * residual method \implements ITL_Solver
    *
-   * Solves a linear system by the GCR method - generalized conjugate residual 
-   * method. The parameter restart [30] is the maximal number of orthogonalized 
+   * Solves a linear system by the GCR method - generalized conjugate residual
+   * method. The parameter restart [30] is the maximal number of orthogonalized
    * vectors.
    */
 
@@ -396,12 +396,12 @@ namespace AMDiS
   /**
    * \ingroup Solver
    * \class AMDiS::FGMResSolver
-   * \brief ITL_Solver <\ref fgmres_type> implementation of flexible GMRes method 
+   * \brief ITL_Solver <\ref fgmres_type> implementation of flexible GMRes method
    * \implements ITL_Solver
    *
    * Solves a linear system by the FGMRES method.
    * The parameter restart [30] is the maximal number of orthogonalized vectors.
-   * See reference "A Flexible Inner-Outer Preconditiones GMRES Algorithm", 
+   * See reference "A Flexible Inner-Outer Preconditiones GMRES Algorithm",
    * Youcef Saad, (1993)
    */
 
@@ -440,7 +440,7 @@ namespace AMDiS
   /**
    * \ingroup Solver
    * \class AMDiS::PreOnly
-   * \brief ITL_Solver <\ref preonly_type> implementation of preconditioner as 
+   * \brief ITL_Solver <\ref preonly_type> implementation of preconditioner as
    * \implements ITL_Solver
    *
    * Solves a linear system by applying a preconditioner only.
@@ -448,9 +448,9 @@ namespace AMDiS
   class preonly_type
   {
   public:
-    preonly_type(std::string name) {}
+    preonly_type(std::string /*name*/) {}
     template <class LinOp, class X, class B, class L, class R, class I>
-    int operator()(LinOp const& A, X& x, B const& b, L const& l, R const& r, I& iter)
+    int operator()(LinOp const& A, X& x, B const& b, L const& l, R const& /*r*/, I& iter)
     {
       return itl::preonly(A, x, b, l, iter);
     }

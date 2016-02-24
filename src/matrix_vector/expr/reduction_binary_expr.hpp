@@ -5,7 +5,7 @@
 #include <traits/basic.hpp>
 #include <traits/category.hpp>
 #include "base_expr.hpp" // for base_expr
-#include <Math.h>
+#include <Math.hpp>
 
 namespace AMDiS
 {

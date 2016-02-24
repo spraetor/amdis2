@@ -6,7 +6,7 @@
 
 namespace AMDiS
 {
-  
+
   Marker::Marker(std::string name_, int row_)
     : name(name_),
       row(row_),
@@ -21,7 +21,7 @@ namespace AMDiS
     Parameters::get(name + "->max refinement level", maxRefineLevel);
     Parameters::get(name + "->min refinement level", minRefineLevel);
   }
-  
+
   Marker* Marker::createMarker(std::string name, int row)
   {
     int strategy = 0;
@@ -52,7 +52,7 @@ namespace AMDiS
     return marker;
   }
 
-  
+
   void Marker::setMark(Element* el, char newMark)
   {
     char oldMark = el->getMark();
@@ -83,8 +83,8 @@ namespace AMDiS
     }
   }
 
-  
-  void Marker::initMarking(AdaptInfo& adaptInfo, Mesh* mesh)
+
+  void Marker::initMarking(AdaptInfo& adaptInfo, Mesh* /*mesh*/)
   {
     elMarkRefine = 0;
     elMarkCoarsen = 0;
@@ -93,7 +93,7 @@ namespace AMDiS
   }
 
 
-  void Marker::finishMarking(AdaptInfo& adaptInfo)
+  void Marker::finishMarking(AdaptInfo& /*adaptInfo*/)
   {
     FUNCNAME("Marker::finishMarking()");
 
@@ -157,27 +157,27 @@ namespace AMDiS
 
     return markFlag;
   }
-  
-  
+
+
   // ---------------------------------------------------------------------------
-  
-  
+
+
   GRMarker::GRMarker(std::string name_, int row_)
     : Marker(name_, row_)
   {}
 
-  
+
   void GRMarker::markElement(AdaptInfo& adaptInfo, ElInfo* elInfo)
   {
     Element* el = elInfo->getElement();
     if (adaptInfo.isRefinementAllowed(row == -1 ? 0 : row))
       setMark(el, adaptInfo.getRefineBisections(row == -1 ? 0 : row));
   }
-  
-  
+
+
   // ---------------------------------------------------------------------------
-  
-  
+
+
   MSMarker::MSMarker(std::string name_, int row_)
     : Marker(name_, row_),
       MSGamma(0.5),
@@ -203,11 +203,11 @@ namespace AMDiS
     MSG("start max_est: %.3le mark_limits: %.3le %.3le\n",
         adaptInfo.getEstMax(row == -1 ? 0 : row), markRLimit, markCLimit);
   }
-  
-  
+
+
   // ---------------------------------------------------------------------------
 
-  
+
   ESMarker::ESMarker(std::string name_, int row_)
     : Marker(name_, row_),
       ESTheta(0.9),
@@ -216,7 +216,7 @@ namespace AMDiS
     Parameters::get(name + "->ESTheta", ESTheta);
     Parameters::get(name + "->ESThetaC", ESThetaC);
   }
-  
+
 
   void ESMarker::initMarking(AdaptInfo& adaptInfo, Mesh* mesh)
   {
@@ -239,11 +239,11 @@ namespace AMDiS
     INFO(info, 2)("start mark_limits: %.3le %.3le   nt = %d\n",
                   markRLimit, markCLimit, nLeaves);
   }
-  
-  
+
+
   // ---------------------------------------------------------------------------
 
-  
+
   GERSMarker::GERSMarker(std::string name_, int row_)
     : Marker(name_, row_),
       oldErrSum(0.0),
@@ -255,7 +255,7 @@ namespace AMDiS
     Parameters::get(name + "->GERSNu", GERSNu);
     Parameters::get(name + "->GERSThetaC", GERSThetaC);
   }
-  
+
 
   Flag GERSMarker::markMesh(AdaptInfo& adaptInfo, Mesh* mesh)
   {

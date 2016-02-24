@@ -8,7 +8,7 @@
 #include <operations/reduction_functors.hpp>
 #include <boost/numeric/mtl/operation/sfunctor.hpp>
 
-#include <Math.h>
+#include <Math.hpp>
 
 namespace AMDiS
 {
