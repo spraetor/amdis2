@@ -1,7 +1,8 @@
+#include "AdaptInfo.h"
+
 #include <string>
 #include <iostream>
 
-#include "AdaptInfo.h"
 #include "Initfile.h"
 
 namespace AMDiS

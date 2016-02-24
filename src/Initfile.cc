@@ -2,16 +2,17 @@
 #include "Initfile.h"
 #undef AMDIS_NO_EXTERN_INITFILE
 
-#include "AMDiS_base.h"
-#include "Log.h"
-#include <boost/property_tree/json_parser.hpp>
-
 #include <string>
 #ifdef _MSC_VER
 #include <io.h>			// _access
 #else
 #include <unistd.h>
 #endif
+
+#include "AMDiS_base.h"
+#include "Log.h"
+#include <boost/property_tree/json_parser.hpp>
+
 
 namespace AMDiS
 {
@@ -24,7 +25,7 @@ namespace AMDiS
     return access(filename.c_str(), F_OK) == 0;
 #endif
   }
-  
+
   Initfile* Initfile::singlett = NULL;
 
   /// initialize singleton object an global parameters

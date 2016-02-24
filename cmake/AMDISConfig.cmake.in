@@ -1,438 +1,101 @@
-#This configuration file is shipped with the great FEM-Toolbox AMDiS.
-#It simplifies the configure of different amdis-version and sets some variables.
-#We set the following variables:
-# AMDIS_INCLUDE_DIR 	the amdis-directory only
-# AMDIS_INCLUDE_DIRS	all include directories (mtl, umfpack, parmetis, metis, ...)
-# AMDIS_LIBRARIES	the needed libraries
-# AMDIS_LIBRARY_DIRS	the link directories
-# AMDiS_COMPILEFLAGS	some compile flags for amdis
+# This configuration file is shipped with the great FEM-Toolbox AMDiS.
+# It simplifies the configure of different amdis-versions.
 #
+# In order to compile an amdis-project and link against the amdis
+# (and subsequent) libraries simply add 'AMDiS' to the target_link_libraries
+# of your executable target. All include-paths and additional libraries are
+# automatically added.
 #
 # For a fast start, you use this package in the following way
 # simply look for it, possibly set the AMDiS directory
-# find_package(AMDiS )
-# include(${AMDIS_USE_FILE})
-# add_executable(yourTarget <yourSources>)
-# target_link_libraries(yourTarget ${AMDIS_LIBRARIES})
 #
+#   find_package(AMDiS REQUIRED)
+#   add_executable(yourTarget <yourSources>)
+#   target_link_libraries(yourTarget AMDiS)
 #
-#The AMDIS_USE_FILE adds the include and link-directories for amdis to cmake.
-# 
-#If you use the parallel amdis-version, the AMDIS_USE_FILE also trys to detect
-#the mpi and petsc configuration. If those versions don't fit your needs,
-#you can change the corresponding directories, or simply do this work at your own
-#and omit the AMDIS_USE_FILE. Then you also have to set the flags, include 
-#and library directories.
 
-################## ONLY WORKAROUND AND WARNING ###################
-#if(NOT "$ENV{LIBRARY_PATH}" STREQUAL "")
-#        message(WARNING "the environment variable LIBRARY_PATH is set. this can lead to problems during linking. \n You can unset it in your CMakeLists.txt with the command unset(ENV{LIBRARY_PATH}).\n")
-#endif()
-##################################################################
+if (${CMAKE_VERSION} VERSION_LESS "3.2")
+    message(FATAL_ERROR "The Configuration file was created for CMake version >= 3.2")
+endif ()
+
+list(APPEND CMAKE_MODULE_PATH ${AMDIS_DIR})
+
+set(IS_AMDISCONFIG true)
+
+set(AMDIS_USE_FILE ${AMDIS_DIR}/AMDISUse.cmake)
+#set(AMDIS_NEED_ZOLTAN @ENABLE_ZOLTAN@)
+set(AMDIS_NEED_UMFPACK @ENABLE_UMFPACK@)
+#set(AMDIS_HAS_PARALLEL_DOMAIN @ENABLE_PARALLEL_DOMAIN@)
+#set(AMDIS_NEED_EXTENSIONS @ENABLE_EXTENSIONS@)
+#set(AMDIS_NEED_BASE_PROBLEMS @ENABLE_BASE_PROBLEMS@)
+#set(AMDIS_NEED_REINIT @ENABLE_REINIT@)
+#set(AMDIS_NEED_COMPOSITE_FEM @ENABLE_COMPOSITE_FEM@)
+
+set(BUILD_SHARED_LIBS @BUILD_SHARED_LIBS@)
+set(CMAKE_BUILD_TYPE @CMAKE_BUILD_TYPE@)
+
+add_library(amdis_base INTERFACE)
+add_library(AMDiS ALIAS amdis_base)
+
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+target_compile_definitions(amdis_base INTERFACE HAS_CXX11=1)
+
 
 # try to detect the AMDiS include directory
 # -------------------------------------------
-find_file(_AMDIS_H AMDiS.h PATHS ${AMDIS_INCLUDE_DIR} ${AMDIS_DIR}/../../include/amdis/ /usr/include/amdis/)
-if(_AMDIS_H)
-	get_filename_component(AMDIS_INCLUDE_DIR ${_AMDIS_H} PATH CACHE)
-	set(AMDIS_INCLUDE_DIRS ${AMDIS_INCLUDE_DIR})
-else()
-	message(ERROR "could not detect the AMDiS include directory. Please set the variable AMDIS_INCLUDE_DIR to the directory containing the AMDiS headers.")
-endif()
+find_file(_AMDIS_H AMDiS.h PATHS ${AMDIS_DIR}/../../include/amdis/)
+if (_AMDIS_H)
+    get_filename_component(AMDIS_INCLUDE_DIR ${_AMDIS_H} PATH CACHE)
+    target_include_directories(amdis_base INTERFACE ${AMDIS_INCLUDE_DIR})
+    include(find_mtl4)
+else ()
+    message(ERROR "Could not detect the AMDiS include directory. Please set the variable AMDIS_INCLUDE_DIR to the directory containing the AMDiS headers.")
+endif ()
 unset(_AMDIS_H CACHE)
-# set(MTL_DIR @MTL_INCLUDE_DIR@ CACHE PATH "the mtl directory")
-list(APPEND AMDIS_INCLUDE_DIRS ${AMDIS_INCLUDE_DIR}/mtl4)
+
 
 # AMDiS base libraries
 # --------------------
-find_library(_AMDIS_LIB amdis PATHS ${AMDIS_LIBRARY_DIR} ${AMDIS_DIR}/../../lib/amdis/ /usr/include/amdis)
-if(_AMDIS_LIB)
-  get_filename_component(AMDIS_LIBRARY_DIR ${_AMDIS_LIB} PATH CACHE)
-  set(AMDIS_LIBRARY_DIRS ${AMDIS_LIBRARY_DIR})
-  set(AMDIS_LIBRARIES "${_AMDIS_LIB}" CACHE STRING "amdis libraries")
-else()
-  message(ERROR "could not detect the AMDiS library directory. Please set the variable AMDIS_LIBRARY_DIR to the directory containg the AMDiS library")
-endif()
+find_library(_AMDIS_LIB amdis PATHS ${AMDIS_DIR}/../../lib/amdis/)
+if (_AMDIS_LIB)
+    target_link_libraries(amdis_base INTERFACE ${_AMDIS_LIB})
+else ()
+    message(ERROR "Could not detect the AMDiS library. Please set the variable _AMDIS_LIB to the AMDiS library.")
+endif ()
 unset(_AMDIS_LIB CACHE)
 
 
 # Boost libraries
 # ---------------
-set(AMDIS_HAS_PARALLEL_DOMAIN @ENABLE_PARALLEL_DOMAIN@)
-set(AMDIS_NEED_COMPRESSION @ENABLE_COMPRESSION@)
+if (NOT BOOST_ROOT)
+    set(BOOST_ROOT @BOOST_ROOT@)
+endif (NOT BOOST_ROOT)
+if (NOT BOOST_LIBRARYDIR)
+    set(BOOST_LIBRARYDIR @BOOST_LIBRARYDIR@)
+endif (NOT BOOST_LIBRARYDIR)
+include(find_boost)
 
-set(BOOST_LIBS_REQUIRED system iostreams filesystem program_options date_time)
-if(WIN32 AND AMDIS_NEED_COMPRESSION)
-  list(APPEND BOOST_LIBS_REQUIRED zlib bzip2)
-endif(WIN32 AND AMDIS_NEED_COMPRESSION)
-
-set(BOOST_VERSION "1.42")
-if(AMDIS_HAS_PARALLEL_DOMAIN)
-  set(BOOST_VERSION "1.48")
-endif(AMDIS_HAS_PARALLEL_DOMAIN)
-
-if(WIN32)
-  set(Boost_USE_STATIC_LIBS ON)
-  find_package(Boost ${BOOST_VERSION} REQUIRED ${BOOST_LIBS_REQUIRED})
-else()
-  set(Boost_USE_STATIC_LIBS OFF)
-  find_package(Boost ${BOOST_VERSION} REQUIRED ${BOOST_LIBS_REQUIRED})
-endif()
-if(Boost_FOUND)
-  list(APPEND AMDIS_LIBRARIES ${Boost_LIBRARIES})
-  list(APPEND AMDIS_LIBRARY_DIRS ${Boost_LIBRARY_DIRS})
-  list(APPEND AMDIS_INCLUDE_DIRS ${Boost_INCLUDE_DIR})
-else()
-  message(ERROR "Boost libraries not found")
-endif(Boost_FOUND)
-
-# more libraries and include-directories added by default
-# -------------------------------------------------------
-list(APPEND AMDIS_INCLUDE_DIRS ${AMDIS_INCLUDE_DIR}/reinit)
-list(APPEND AMDIS_INCLUDE_DIRS ${AMDIS_INCLUDE_DIR}/compositeFEM)
-list(APPEND AMDIS_INCLUDE_DIRS ${AMDIS_INCLUDE_DIR}/muparser)
-
-# ------------------------------------------------------------------
-
-set(AMDIS_NEED_ZOLTAN @ENABLE_ZOLTAN@)
-set(AMDIS_OPENMP @ENABLE_OPENMP@)
-set(AMDIS_NEED_UMFPACK @ENABLE_UMFPACK@)
-set(AMDIS_NEED_HYPRE @ENABLE_HYPRE@)
-set(AMDIS_NEED_SEQ_PETSC @ENABLE_SEQ_PETSC@)
-set(AMDIS_NEED_PNG @ENABLE_PNG@)
-set(AMDIS_NEED_BDDCML @ENABLE_BDDCML@)
-set(AMDIS_NEED_MKL @ENABLE_MKL@)
-set(AMDIS_NEED_EXTENSIONS @ENABLE_EXTENSIONS@)
-set(AMDIS_NEED_BASE_PROBLEMS @ENABLE_BASE_PROBLEMS@)
-set(AMDIS_USE_FILE ${AMDIS_DIR}/AMDISUse.cmake)
-set(AMDIS_COMPILEFLAGS "@COMPILEFLAGS@")
-set(AMDIS_VERSION @CurrentRevision@)
-set(AMDIS_MAJOR_VERSION @AMDIS_MAJOR@)
-set(AMDIS_MINOR_VERSION @AMDIS_MINOR@)
-
-if(CMAKE_BUILD_TYPE STREQUAL "")
-	set(CMAKE_BUILD_TYPE "Release")
-endif()
-
-#load mpi-compiler for use with parmetis and parallel_domain
-if(AMDIS_HAS_PARALLEL_DOMAIN)
-	find_package(MPI REQUIRED)
-	if(MPI_FOUND)
-		list(APPEND AMDIS_LIBRARIES ${MPI_LIBRARIES})
-		list(APPEND AMDIS_COMPILEFLAGS ${MPI_COMPILE_FLAGS})
-		list(APPEND AMDIS_INCLUDE_DIRS ${MPI_INCLUDE_PATH})
-	endif(MPI_FOUND)
-	if(AMDIS_HAS_PARALLEL_DOMAIN STREQUAL "PETSC")		
-		set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${AMDIS_DIR})
-		set(PETSC_EXECUTABLE_RUNS ON)
-		find_package(PETSc REQUIRED)
-		if(PETSC_FOUND)
-			list(APPEND AMDIS_LIBRARIES ${PETSC_LIBRARY_SYS} ${PETSC_LIBRARIES})
-			list(APPEND AMDIS_INCLUDE_DIRS ${PETSC_INCLUDES})
-		else()
-			message(FATAL_ERROR "Could not find PETSc!")
-		endif(PETSC_FOUND)
-	elseif(AMDIS_HAS_PARALLEL_DOMAIN STREQUAL "PMTL")
-		find_package(MTL REQUIRED)
-		list(APPEND AMDIS_LIBRARIES ${MTL_LIBRARIES})
-		find_library(PARMETIS_LIB parmetis)
-		if(PARMETIS_LIB)
-			list(APPEND AMDIS_LIBRARIES ${PARMETIS_LIB})
-		else(PARMETIS_LIB)
-			message(FATAL_ERROR "could not find the parmetis libraries needed by amdis")
-		endif(PARMETIS_LIB)
-		find_library(METIS_LIB metis)
-		if(METIS_LIB)
-			list(APPEND AMDIS_LIBRARIES ${METIS_LIB})
-		else(METIS_LIB)
-			message(FATAL_ERROR "could not find the metis libraries needed by amdis")
-		endif(METIS_LIB)
-	endif()
-	
-elseif(AMDIS_NEED_SEQ_PETSC)
-    find_package(MPI REQUIRED)
-    if(MPI_FOUND)
-	    list(APPEND AMDIS_LIBRARIES ${MPI_LIBRARIES})
-	    list(APPEND AMDIS_COMPILEFLAGS ${MPI_COMPILE_FLAGS})
-	    list(APPEND AMDIS_INCLUDE_DIRS ${MPI_INCLUDE_PATH})
-    endif(MPI_FOUND)
-	
-  set(CMAKE_MODULE_PATH ${AMDIS_DIR})
-    set(PETSC_EXECUTABLE_RUNS ON)
-    find_package(PETSc REQUIRED)
-    if(PETSC_FOUND)
-	    list(APPEND AMDIS_LIBRARIES ${PETSC_LIBRARY_SYS} ${PETSC_LIBRARIES})
-	    list(APPEND AMDIS_INCLUDE_DIRS ${PETSC_INCLUDES})
-    else()
-	    message(FATAL_ERROR "Could not find PETSc!")
-    endif(PETSC_FOUND)
-endif()
-
-if(AMDIS_NEED_HYPRE)
-  find_package(HYPRE REQUIRED HINTS ${AMDIS_DIR})
-  if(HAVE_HYPRE)
-    if(NOT MPI_FOUND)
-      find_package(MPI REQUIRED)
-      if(MPI_FOUND)
-	    list(APPEND AMDIS_LIBRARIES ${MPI_LIBRARIES})
-	    list(APPEND AMDIS_COMPILEFLAGS ${MPI_COMPILE_FLAGS})
-	    list(APPEND AMDIS_INCLUDE_DIRS ${MPI_INCLUDE_PATH})
-      endif()
-    endif()
-    list(APPEND AMDIS_INCLUDE_DIRS ${HYPRE_INCLUDE_DIRECTORIES})
-    list(APPEND AMDIS_COMPILEFLAGS "-DMTL_HAS_HYPRE")
-    list(APPEND AMDIS_LIBRARIES ${HYPRE_LIBRARIES} )
-  endif()
-endif(AMDIS_NEED_HYPRE)
-
-if(AMDIS_OPENMP)
-  if(CMAKE_CXX_COMPILER MATCHES ".*icpc")
-        list(APPEND AMDIS_COMPILEFLAGS "-openmp")
-        list(APPEND AMDIS_LIBRARIES "-openmp")
-  else()
-    list(APPEND AMDIS_COMPILEFLAGS "-fopenmp")
-        list(APPEND AMDIS_LIBRARIES "-fopenmp")
-  endif()
-endif(AMDIS_OPENMP)
+# umfpack library
+# --------------------
+if (AMDIS_NEED_UMFPACK)
+    set(AMDIS_SuiteSparse_DIR @SuiteSparse_DIR@)
+    set(AMDIS_UMFPACK_INCLUDE_DIR @UMFPACK_INCLUDE_DIRS@)
+    set(AMDIS_UMFPACK_LIB_DIR ${AMDIS_UMFPACK_INCLUDE_DIR}/../include)
+    include(find_umfpack)
+endif (AMDIS_NEED_UMFPACK)
 
 
-# AMDiS-Extensions library
-# ------------------------
-if(AMDIS_NEED_EXTENSIONS)
-  list(APPEND AMDIS_INCLUDE_DIRS ${AMDIS_INCLUDE_DIR}/extensions)
-  list(APPEND AMDIS_INCLUDE_DIRS ${AMDIS_INCLUDE_DIR}/extensions/time)
-  list(APPEND AMDIS_INCLUDE_DIRS ${AMDIS_INCLUDE_DIR}/extensions/nanoflann)
-  list(APPEND AMDIS_INCLUDE_DIRS ${AMDIS_INCLUDE_DIR}/extensions/pugixml)
-	
-  find_library(_EXTENSIONS_LIB extensions PATHS ${AMDIS_LIBRARY_DIR} ${AMDIS_DIR}/../../lib/amdis/)
-  if(_EXTENSIONS_LIB)
-    list(APPEND AMDIS_LIBRARIES ${_EXTENSIONS_LIB})
-  endif()
-  unset(_EXTENSIONS_LIB CACHE)
-endif(AMDIS_NEED_EXTENSIONS)
-
-# AMDiS BaseProblems libraries
-# ----------------------------
-if(AMDIS_NEED_BASE_PROBLEMS)
-  list(APPEND AMDIS_INCLUDE_DIRS ${AMDIS_INCLUDE_DIR}/base_problems)
-	
-  find_library(_BASE_PROBLEMS_LIB base_problems PATHS ${AMDIS_LIBRARY_DIR} ${AMDIS_DIR}/../../lib/amdis/)
-  if(_BASE_PROBLEMS_LIB)
-    list(APPEND AMDIS_LIBRARIES ${_BASE_PROBLEMS_LIB})
-  endif()
-  unset(_BASE_PROBLEMS_LIB CACHE)
-endif(AMDIS_NEED_BASE_PROBLEMS)
-
-# ----------------------------
-
-find_library(_REINIT_LIB reinit PATHS ${AMDIS_LIBRARY_DIR} ${AMDIS_DIR}/../../lib/amdis/)
-find_library(_COMPOSITE_FEM_LIB compositeFEM PATHS ${AMDIS_LIBRARY_DIR} ${AMDIS_DIR}/../../lib/amdis/)
-find_library(_MUPARSER_LIB muparser PATHS ${AMDIS_LIBRARY_DIR} ${AMDIS_DIR}/../../lib/amdis/)
-
-if(_REINIT_LIB)
-  list(APPEND AMDIS_LIBRARIES ${_REINIT_LIB})
-else()
-  message(ERROR "Reinit library not found")
-endif()
-unset(_REINIT_LIB CACHE)
-if(_COMPOSITE_FEM_LIB)
-  list(APPEND AMDIS_LIBRARIES ${_COMPOSITE_FEM_LIB})
-else()
-  message(ERROR "CompositeFEM library not found")
-endif()
-unset(_COMPOSITE_FEM_LIB CACHE)
-if(_MUPARSER_LIB)
-  list(APPEND AMDIS_LIBRARIES ${_MUPARSER_LIB})
-else()
-  message(ERROR "MuParser library not found")
-endif()
+# muparser library
+# --------------------
+find_library(_MUPARSER_LIB muparser PATHS ${AMDIS_DIR}/../../lib/amdis/)
+if (_MUPARSER_LIB)
+    target_include_directories(amdis_base INTERFACE ${AMDIS_INCLUDE_DIR}/muparser)
+    target_link_libraries(amdis_base INTERFACE ${_MUPARSER_LIB})
+else ()
+    message(ERROR "MuParser library not found")
+endif ()
 unset(_MUPARSER_LIB CACHE)
 
-# ----------------------------
 
-if(AMDIS_NEED_UMFPACK)
-	set(AMDIS_UMFPACK_PATH @UMFPACK_PATH@)
-	list(APPEND AMDIS_INCLUDE_DIRS ${AMDIS_UMFPACK_PATH})
-	find_library(UMFPACK_LIB umfpack
-		HINTS ENV LIBRARY_PATH
-		DOC "The UMFPACK library")
-	if(UMFPACK_LIB)
-		list(APPEND AMDIS_LIBRARIES ${UMFPACK_LIB})
-	else()
-		message(FATAL_ERROR "Could not find the UMFPACK library")
-	endif()
-	if("$ENV{BLA_VENDOR}" STREQUAL "ACML")
-	  find_library(ACML_LIBRARY acml HINTS ENV ACML_LIB)
-	  if(ACML_LIBRARY)
-	    list(APPEND AMDIS_LIBRARIES ${ACML_LIBRARY}) #fortran ffio m rt) #needed for open64
-	  else()
-	    message(FATAL_ERROR "could not find the acml libraries, required by acml blas")
-	  endif(ACML_LIBRARY)
-	else()
-	  find_library(BLAS_LIBRARY NAMES "blas" "goto" "mkl"
-		HINTS ENV MKL_LIB
-		DOC "The BLAS library")
-	  if(BLAS_LIBRARY)
-		list(APPEND AMDIS_LIBRARIES ${BLAS_LIBRARY})
-		list(APPEND AMDIS_LIBRARY_DIRS ${BLAS_LIBRARY_DIR})
-	  else()
-		find_package(BLAS)
-		if(BLAS_FOUND)
-			list(APPEND AMDIS_LIBRARIES ${BLAS_LIBRARIES})
-		else()
-			message(STATUS "Could not find the BLAS library. Please set the variable BLAS_LIBRARY to the blas library with full path")
-		endif()
-	  endif()
-	endif("$ENV{BLA_VENDOR}" STREQUAL "ACML")
-
-	find_library(AMD_LIB amd
-		HINTS ENV LIBRARY_PATH
-		DOC "The AMD library")
-	if(AMD_LIB)
-		list(APPEND AMDIS_LIBRARIES ${AMD_LIB})
-	else()
-		message(FATAL_ERROR "Could not find the AMD library.")
-	endif()
-	#check for if we need cholmod	
-	set(_CHOLMOD_TEST_DIR ${CMAKE_BINARY_DIR}/CMakeFiles/cholmodTest/)
-	file(WRITE ${_CHOLMOD_TEST_DIR}/CMakeLists.txt "project(cholmodTest)
-			cmake_minimum_required(VERSION 2.8)
-			include_directories(${AMDIS_INCLUDE_DIRS})
-			add_executable(cholmodTest cholmodTest.cpp)
-			target_link_libraries(cholmodTest ${AMDIS_LIBRARIES})")
-	file(WRITE ${_CHOLMOD_TEST_DIR}/cholmodTest.cpp "#include <stdio.h>
-
-#include \"umfpack.h\"
-
-int n = 5 ;
-
-int Ap [ ] = {0, 2, 5, 9, 10, 12} ;
-
-int Ai [ ] = { 0, 1, 0, 2, 4, 1, 2, 3, 4, 2, 1, 4} ;
-
-double Ax [ ] = {2., 3., 3., -1., 4., 4., -3., 1., 2., 2., 6., 1.} ;
-
-double b [ ] = {8., 45., -3., 3., 19.} ;
-
-double x [5] ;
-
-int main (void)
-
-{
-
-double *null = (double *) NULL ;
-
-int i ;
-
-void *Symbolic, *Numeric ;
-
-double stats [2];
-umfpack_tic (stats);
-
-(void) umfpack_di_symbolic (n, n, Ap, Ai, Ax, &Symbolic, null, null) ;
-
-(void) umfpack_di_numeric (Ap, Ai, Ax, Symbolic, &Numeric, null, null) ;
-
-umfpack_di_free_symbolic (&Symbolic) ;
-
-(void) umfpack_di_solve (UMFPACK_A, Ap, Ai, Ax, x, b, Numeric, null, null) ;
-
-umfpack_di_free_numeric (&Numeric) ;
-
-umfpack_toc (stats);
-
-
-return (0) ;
-
-}")
-# "#include <umfpack.h> 
-#			int main(int , char* argv[]) { double c[UMFPACK_CONTROL]; umfpack_dl_defaults(c); return 0;}")
-	try_compile(CHOLMOD_TEST ${_CHOLMOD_TEST_DIR}/build ${_CHOLMOD_TEST_DIR} cholmodTest
-			OUTPUT_VARIABLE CHOLMOD_OUT)
-	if(NOT CHOLMOD_TEST)
-	  file(APPEND ${CMAKE_BINARY_DIR}/CMakeFiles/CMakeError.log "cholmodTest-output: \n ${CHOLMOD_OUT}")
-	  find_library(CHOLMOD_LIB cholmod)
-	  find_library(COLAMD_LIB colamd)
-	  
-	  if(CHOLMOD_LIB)
-	    list(APPEND AMDIS_LIBRARIES ${CHOLMOD_LIB})
-	  else()
-	    message(FATAL_ERROR "your umfpack seems to need cholmod, but cmake could not find it")
-	  endif()
-	  if(COLAMD_LIB)
-	    list(APPEND AMDIS_LIBRARIES ${COLAMD_LIB})
-	  else()
-	    message(FATAL_ERROR "your umfpack seems to need colamd, but cmake could not find it")
-	  endif()
-
-	  #test with cholmod and colamd..
-	  file(WRITE ${_CHOLMOD_TEST_DIR}/CMakeLists.txt "project(cholmodTest)
-			cmake_minimum_required(VERSION 2.8)
-			include_directories(${AMDIS_INCLUDE_DIRS})
-			add_executable(cholmodTest cholmodTest.cpp)
-			target_link_libraries(cholmodTest ${AMDIS_LIBRARIES})")
-	  try_compile(CHOLMOD_TEST2 ${_CHOLMOD_TEST_DIR}/build ${_CHOLMOD_TEST_DIR} cholmodTest
-		  OUTPUT_VARIABLE CHOLMOD_OUT)
-	  if(NOT CHOLMOD_TEST2)
-	    file(APPEND ${CMAKE_BINARY_DIR}/CMakeFiles/CMakeError.log "cholmodTest2-output: \n ${CHOLMOD_OUT}")
-	    find_library(SUITESPARSECONFIG_LIB suitesparseconfig)
-	    if(SUITESPARSECONFIG_LIB)
-	      list(APPEND AMDIS_LIBRARIES ${SUITESPARSECONFIG_LIB})
-	    else()
-	      message(STATUS "your umfpack seems to need suitesparseconfig, but cmake could not find it")
-	    endif()
-	  endif()
-	  
-	endif()
-endif(AMDIS_NEED_UMFPACK)
-
-# PNG library
-# -----------
-if(AMDIS_NEED_PNG)
-  set(AMDIS_PNG_PATH @PNG_PATH@)
-  list(APPEND AMDIS_INCLUDE_DIRS ${AMDIS_PNG_PATH})
-
-  find_library(PNG_LIB png
-	  HINTS ENV LIBRARY_PATH
-	  DOC "The PNG library")
-  if(PNG_LIB)
-    list(APPEND AMDIS_LIBRARIES ${PNG_LIB})
-  else()
-    message(FATAL_ERROR "Could not find the PNG library")
-  endif()
-endif(AMDIS_NEED_PNG)
-
-# BDDCML-library
-# --------------
-if(AMDIS_NEED_BDDCML)
-  set(AMDIS_BDDCML_PATH @BDDCML_PATH@)
-  list(APPEND AMDIS_INCLUDE_DIRS ${AMDIS_BDDCML_PATH})
-
-  set(AMDIS_BDDCML_LIB @BDDCML_LIB@)
-  list(APPEND AMDIS_LIBRARIES ${AMDIS_BDDCML_LIB})
-
-  set(AMDIS_BDDCML_LINK_LIST @BDDCML_LINK_LIST@)
-  list(APPEND AMDIS_LIBRARIES ${AMDIS_BDDCML_LINK_LIST})
-endif(AMDIS_NEED_BDDCML)
-
-# Zoltan library
-# --------------
-if(AMDIS_NEED_ZOLTAN)
-  find_library(ZOLTAN_LIB zoltan 
-	  HINTS ENV LIBRARY_PATH
-	  DOC "full path to the zoltan library")		
-
-  if(ZOLTAN_LIB)
-    list(APPEND AMDIS_LIBRARIES ${ZOLTAN_LIB})	
-  else()
-    message(FATAL_ERROR "Could not find zoltan library!")
-  endif()
-endif()
-
-
-if(${AMDIS_FIND_COMPONENTS} MATCHES umfpack )
-	if(NOT AMDIS_NEED_UMFPACK)
-	  set(AMDIS_umfpack_FOUND FALSE)
-	  message(SEND_ERROR "The selected amdis was not compiled with umfpack")
-	endif()
-endif()
+set(AMDIS_LIBRARIES AMDiS)

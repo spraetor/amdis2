@@ -31,8 +31,6 @@ typedef __declspec(align(CACHE_LINE)) size_t aligned_size_t;
 
 // C++11 features
 // --------------
-#if __cplusplus > 199711L
-
 #if MSC_VERSION >= 1800
 #define HAS_VARIADIC_TEMPLATES 1
 #endif
@@ -71,6 +69,4 @@ typedef __declspec(align(CACHE_LINE)) size_t aligned_size_t;
 
 #if MSC_VERSION >= 1600
 #define HAS_RVALUE_REFERENCES 1
-#endif
-
 #endif

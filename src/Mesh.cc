@@ -1,8 +1,10 @@
+#include "Mesh.h"
+
 #include <algorithm>
 #include <set>
 #include <map>
 
-#include "time.h"
+#include <time.h>
 
 #include "io/Reader.h"
 #include "io/MacroReader.h"
@@ -15,7 +17,6 @@
 #include "ElementData.h"
 #include "ElementDofIterator.h"
 #include "MacroElement.h"
-#include "Mesh.h"
 #include "Traverse.h"
 #include "Initfile.h"
 #include "FixVec.h"

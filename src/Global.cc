@@ -1,6 +1,7 @@
+#include "Global.h"
+
 #include <vector>
 
-#include "Global.h"
 #include "Initfile.h"
 #include "Element.h"
 #include "Line.h"

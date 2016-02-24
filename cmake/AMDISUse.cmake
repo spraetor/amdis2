@@ -1,4 +1,1 @@
-#thats bad because it affects each target
-add_definitions(${AMDIS_COMPILEFLAGS})
-include_directories(${AMDIS_INCLUDE_DIRS})
-
+message(STATUS "To compile your program with AMDiS simply add the target 'AMDiS' to the target_link_libraries(...) command")

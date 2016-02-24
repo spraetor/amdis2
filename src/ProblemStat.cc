@@ -1,7 +1,8 @@
+#include "ProblemStat.h"
+
 #include <sstream>
 #include <string>
 
-#include "ProblemStat.h"
 #include "Operator.h"
 #include "SystemVector.h"
 #include "DOFMatrix.h"
@@ -453,7 +454,7 @@ namespace AMDiS
       {
         BasisFunctionCreator* basisFctCreator =
           dynamic_cast<BasisFunctionCreator*>(CreatorMap<BasisFunction>::getCreator(feSpaceName, initFileStr));
-        TEST_EXIT(basisFctCreator)("No valid basisfunction type found in parameter \"%s\"\n", 
+        TEST_EXIT(basisFctCreator)("No valid basisfunction type found in parameter \"%s\"\n",
 				   initFileStr.c_str());
         basisFctCreator->setDim(dim);
 
@@ -547,7 +548,7 @@ namespace AMDiS
     // === create solver ===
     LinearSolverCreator* solverCreator =
       dynamic_cast<LinearSolverCreator*>(CreatorMap<LinearSolverInterface>::getCreator(solverType, initFileStr));
-    TEST_EXIT(solverCreator)("No valid solver type found in parameter \"%s\"\n", 
+    TEST_EXIT(solverCreator)("No valid solver type found in parameter \"%s\"\n",
 			     initFileStr.c_str());
     solverCreator->setName(initFileStr);
     solver = solverCreator->create();
