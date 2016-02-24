@@ -1,12 +1,12 @@
-/** \file foreach.hpp */
-
 #pragma once
 
+// std c++ headers
 #include <tuple>
 #include <utility>
 
-#include <traits/meta_basic.hpp>
-#include <traits/size.hpp>
+// AMDiS includes
+#include "traits/meta_basic.hpp"
+#include "traits/size.hpp"
 
 namespace AMDiS
 {

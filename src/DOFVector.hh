@@ -7,29 +7,29 @@
 #include <boost/numeric/mtl/utility/category.hpp>
 #include <boost/numeric/linear_algebra/identity.hpp>
 
-#include "FixVec.h"
-#include "Boundary.h"
-#include "DOFAdmin.h"
-#include "ElInfo.h"
-// #include "Expressions.h"
-#include "FiniteElemSpace.h"
-#include "Global.h"
-#include "Mesh.h"
-#include "Quadrature.h"
-#include "BoundaryManager.h"
-#include "Assembler.h"
-#include "Operator.h"
-#include "Initfile.h"
-#include "Traverse.h"
-// #include "DualTraverse.h"
-#include "MatrixVectorOperations.h"
+#include "FixVec.hpp"
+#include "Boundary.hpp"
+#include "DOFAdmin.hpp"
+#include "ElInfo.hpp"
+// #include "Expressions.hpp"
+#include "FiniteElemSpace.hpp"
+#include "Global.hpp"
+#include "Mesh.hpp"
+#include "Quadrature.hpp"
+#include "BoundaryManager.hpp"
+#include "Assembler.hpp"
+#include "Operator.hpp"
+#include "Initfile.hpp"
+#include "Traverse.hpp"
+// #include "DualTraverse.hpp"
+#include "MatrixVectorOperations.hpp"
 
 #ifdef HAVE_PARALLEL_DOMAIN_AMDIS
-#include "parallel/MpiHelper.h"
-#include "parallel/MeshDistributor.h"
+#include "parallel/MpiHelper.hpp"
+#include "parallel/MeshDistributor.hpp"
 #endif
 
-#include <expressions/Expressions.h>
+#include <expressions/Expressions.hpp>
 
 // Defining the interface for MTL4
 namespace mtl

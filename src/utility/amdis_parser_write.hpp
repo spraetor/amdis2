@@ -1,25 +1,17 @@
-// ----------------------------------------------------------------------------
-// Copyright (C) 2002-2006 Marcin Kalicinski
-//
-// Distributed under the Boost Software License, Version 1.0. 
-// (See accompanying file LICENSE_1_0.txt or copy at 
-// http://www.boost.org/LICENSE_1_0.txt)
-//
-// For more information, see www.boost.org
-// ----------------------------------------------------------------------------
-#ifndef BOOST_PROPERTY_TREE_DETAIL_AMDIS_PARSER_WRITE_HPP_INCLUDED
-#define BOOST_PROPERTY_TREE_DETAIL_AMDIS_PARSER_WRITE_HPP_INCLUDED
+#pragma once
 
-#include <boost/property_tree/ptree.hpp>
-#include <boost/next_prior.hpp>
-#include <boost/type_traits/make_unsigned.hpp>
-#include <string>
-#include <ostream>
+// std c++ headers
 #include <iomanip>
+#include <ostream>
+#include <string>
+
+// Boost includes
+#include <boost/next_prior.hpp>
+#include <boost/property_tree/ptree.hpp>
+#include <boost/type_traits/make_unsigned.hpp>
 
 namespace boost { namespace property_tree { namespace amdis_parser
 {
-
     // Create necessary escape sequences from illegal characters
     template<class Ch>
     std::basic_string<Ch> create_escapes(const std::basic_string<Ch> &s)

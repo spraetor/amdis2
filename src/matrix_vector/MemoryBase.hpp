@@ -1,12 +1,10 @@
-/** \file MemoryBase.hpp */
-
 #pragma once
 
 // AMDiS headers
-#include <Config.h>
-#include <Log.h>			// TEST_EXIT_DBG
-#include <operations/generic_loops.hpp>	// meta::FOR
-#include <utility/aligned_alloc.hpp>	// ALIGNED_ALLOC, ALIGNED_FREE, ...
+#include "Config.hpp"
+#include "Log.hpp"			// TEST_EXIT_DBG
+#include "operations/generic_loops.hpp"	// meta::FOR
+#include "utility/aligned_alloc.hpp"	// ALIGNED_ALLOC, ALIGNED_FREE, ...
 
 namespace AMDiS
 {

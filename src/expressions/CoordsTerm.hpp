@@ -1,20 +1,17 @@
-/** \file coords_expr.hpp */
-
 #pragma once
 
 // std c++ headers
-#include <string>
 #include <memory>
+#include <string>
 
 // AMDiS headers
-#include <BasisFunction.h>
-#include <ElInfo.h>
-#include <MatrixVector.h>
-#include <Quadrature.h>
-#include <SubAssembler.h>
-#include <expressions/LazyOperatorTerm.h>
-
-#include "BaseTerms.hpp"
+#include "BasisFunction.hpp"
+#include "ElInfo.hpp"
+#include "MatrixVector.hpp"
+#include "Quadrature.hpp"
+#include "SubAssembler.hpp"
+#include "expressions/BaseTerms.hpp"
+#include "expressions/LazyOperatorTerm.hpp"
 
 namespace AMDiS
 {

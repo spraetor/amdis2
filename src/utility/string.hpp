@@ -1,11 +1,10 @@
-/** \file string.hpp */
-
 #pragma once
 
-#include <string>
-#include <cctype>
+// std c++ headers
 #include <algorithm>
+#include <cctype>
 #include <locale>
+#include <string>
 
 namespace AMDiS
 {

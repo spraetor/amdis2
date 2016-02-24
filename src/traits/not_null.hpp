@@ -2,12 +2,14 @@
 
 #pragma once
 
+// std c++ headers
 #include <type_traits>
 #include <memory>
 #include <cassert>
 #include <cstddef>
 
-#include "basic.hpp"
+// AMDiS headers
+#include "traits/basic.hpp"
 
 // TODO: replace assert by TEST_EXIT_DBG
 

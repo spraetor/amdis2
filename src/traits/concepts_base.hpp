@@ -7,8 +7,8 @@
 #include <type_traits>
 
 // AMDiS headers
-#include <traits/basic.hpp>
-#include <traits/meta_basic.hpp>
+#include "traits/basic.hpp"
+#include "traits/meta_basic.hpp"
 
 // macro to generate concept-checks
 #define HAS_MEMBER_GENERATE(name) \

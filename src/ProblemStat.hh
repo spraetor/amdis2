@@ -1,5 +1,5 @@
-#include "DirichletBC.h"
-#include "RobinBC.h"
+#include "DirichletBC.hpp"
+#include "RobinBC.hpp"
 
 namespace AMDiS
 {

@@ -1,10 +1,9 @@
-/** \file BaseTerms.hpp */
-
 #pragma once
 
-#include <traits/basic.hpp>
-#include <traits/meta_basic.hpp>
-#include <traits/traits_fwd.hpp>
+// AMDiS includes
+#include "traits/basic.hpp"
+#include "traits/meta_basic.hpp"
+#include "traits/traits_fwd.hpp"
 
 namespace AMDiS
 {

@@ -4,15 +4,15 @@
 
 // std c++ headers
 #include <algorithm>		// std::copy
-#include <utility>		// std::swap
 #include <initializer_list>	// std::initializer_list
+#include <utility>		    // std::swap
 
 // AMDiS headers
-#include <Log.h>
-#include <traits/traits_fwd.hpp>
-#include <traits/basic.hpp>
-#include <matrix_vector/expr/base_expr.hpp> // VectorExpr
-#include "MatrixVectorBase.hpp"	            // MatrixVectorBase
+#include "Log.hpp"
+#include "traits/traits_fwd.hpp"
+#include "traits/basic.hpp"
+#include "matrix_vector/MatrixVectorBase.hpp"   // MatrixVectorBase
+#include "matrix_vector/expr/base_expr.hpp"     // VectorExpr
 
 namespace AMDiS
 {

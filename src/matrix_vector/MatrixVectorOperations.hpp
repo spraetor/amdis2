@@ -1,14 +1,12 @@
-/** \file MatrixVectorOperations.hpp */
-
 #pragma once
 
-#include <matrix_vector/expr/all_expr.hpp>
+// AMDiS includes
+#include "Math.hpp"
+#include "matrix_vector/expr/all_expr.hpp"
+#include "operations/functors.hpp"
+#include "operations/reduction_functors.hpp"
+#include "boost/numeric/mtl/operation/sfunctor.hpp"
 
-#include <operations/functors.hpp>
-#include <operations/reduction_functors.hpp>
-#include <boost/numeric/mtl/operation/sfunctor.hpp>
-
-#include <Math.hpp>
 
 namespace AMDiS
 {

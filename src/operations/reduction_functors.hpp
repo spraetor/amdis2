@@ -1,19 +1,17 @@
-/** \file reduction_functors.h */
-
 #pragma once
 
 // std c++ headers
 #include <cmath>
 
 // mtl headers
+#include <boost/numeric/linear_algebra/identity.hpp>
 #include <boost/numeric/mtl/vector/dense_vector.hpp>
 #include <boost/numeric/mtl/vector/reduction_functors.hpp>
 #include <boost/numeric/mtl/operation/dot.hpp>
-#include <boost/numeric/linear_algebra/identity.hpp>
 
 // AMDiS headers
-#include <operations/functors.hpp>
-#include <operations/assign.hpp>
+#include "operations/assign.hpp"
+#include "operations/functors.hpp"
 
 namespace AMDiS
 {

@@ -1,15 +1,14 @@
-/** \file MatrixVectorOperations.hpp */
-
 #pragma once
 
-#include "FunctorTerm.hpp"
-#include "ConstantTerms.hpp"
-#include "CoordsTerm.hpp"
-#include "DOFVectorTerms.hpp"
-#include "TermConcepts.hpp"
-#include "TermGenerator.hpp"
+// AMDiS includes
+#include "expressions/FunctorTerm.hpp"
+#include "expressions/ConstantTerms.hpp"
+#include "expressions/CoordsTerm.hpp"
+#include "expressions/DOFVectorTerms.hpp"
+#include "expressions/TermConcepts.hpp"
+#include "expressions/TermGenerator.hpp"
 
-#include "cmath_functors.hpp"
+#include "expressions/cmath_functors.hpp"
 
 namespace AMDiS
 {

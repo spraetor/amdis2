@@ -2,13 +2,14 @@
 
 #pragma once
 
-#include <traits/basic.hpp>
+// AMDiS includes
+#include "expressions/BaseTerms.hpp"
+#include "expressions/ConstantTerms.hpp"
+#include "expressions/CoordsTerm.hpp"
+#include "expressions/FunctorTerm.hpp"
+#include "expressions/TermConcepts.hpp"
 
-#include "BaseTerms.hpp"
-#include "ConstantTerms.hpp"
-#include "CoordsTerm.hpp"
-#include "FunctorTerm.hpp"
-#include "TermConcepts.hpp"
+#include "traits/basic.hpp"
 
 namespace AMDiS
 {

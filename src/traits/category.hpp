@@ -2,8 +2,10 @@
 
 #pragma once
 
+// std c++ headers
 #include <type_traits>
 
+// MTL4 headers
 #include <boost/numeric/mtl/vector/dense_vector.hpp>
 #include <boost/numeric/mtl/matrix/dense2D.hpp>
 #include <boost/numeric/mtl/matrix/compressed2D.hpp>
@@ -11,10 +13,11 @@
 #include <boost/numeric/mtl/matrix/morton_dense.hpp>
 
 // AMDiS headers
-#include <AMDiS_fwd.h>
-#include <AMDiS_base.h>
-#include <traits/traits_fwd.hpp>
-#include "tag.hpp"
+#include "AMDiS_fwd.hpp"
+#include "AMDiS_base.hpp"
+
+#include "traits/traits_fwd.hpp"
+#include "traits/tag.hpp"
 
 namespace AMDiS
 {

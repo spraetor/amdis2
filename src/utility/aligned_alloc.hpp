@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Config.h"
+#include "Config.hpp"
 
 #if 1 // store pointer to startadress in memoryblock
 inline void* aligned_malloc(size_t _size, small_t alignment)

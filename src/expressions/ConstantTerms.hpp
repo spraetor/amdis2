@@ -1,9 +1,7 @@
-/** \file ConstantTerms.hpp */
-
 #pragma once
 
-#include <expressions/LazyOperatorTerm.h>
-#include "BaseTerms.hpp"
+#include "expressions/BaseTerms.hpp"
+#include "expressions/LazyOperatorTerm.hpp"
 
 namespace AMDiS
 {

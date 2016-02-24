@@ -1,19 +1,18 @@
-/** \file MatrixVectorBase.hpp */
-
 #pragma once
 
+// std c++ headers
 #include <algorithm> // std::copy, std::fill
 #include <ostream>   // std::basic_ostream
 
+// MTL4 includes
 #include <boost/numeric/mtl/operation/assign_mode.hpp>
 
-#include <Log.h>			// TEST_EXIT_DBG
-
-#include <traits/basic.hpp>
-#include <traits/traits_fwd.hpp>
-
-#include <operations/meta.hpp>
-#include <operations/assign.hpp>
+// AMDiS includes
+#include "Log.hpp"			// TEST_EXIT_DBG
+#include "operations/assign.hpp"
+#include "operations/meta.hpp"
+#include "traits/basic.hpp"
+#include "traits/traits_fwd.hpp"
 
 #define DEFAULT_SIZE 0
 
