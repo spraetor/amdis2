@@ -4,12 +4,12 @@
 #include "AdaptInstationary.hpp"
 #include "AdaptStationary.hpp"
 #include "DOFIndexed.hpp"
-#include "Mesh.hpp"
-#include "Traverse.hpp"
-#include "MacroElement.hpp"
-#include "RCNeighbourList.hpp"
 #include "FixVec.hpp"
+#include "MacroElement.hpp"
+#include "Mesh.hpp"
 #include "ProblemStatBase.hpp"   // => MESH_COARSENED
+#include "RCNeighbourList.hpp"
+#include "Traverse.hpp"
 
 namespace AMDiS
 {
