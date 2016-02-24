@@ -11,21 +11,21 @@
 // alignement specification
 // ------------------------
 #include <malloc.h>
-#define ALIGNED(type,name,N)  __declspec(align(CACHE_LINE)) type name[N]
+#define AMDIS_ALIGNED(type,name,N)  __declspec(align(CACHE_LINE)) type name[N]
 typedef __declspec(align(CACHE_LINE)) double aligned_double;
 typedef __declspec(align(CACHE_LINE)) float  aligned_float;
 typedef __declspec(align(CACHE_LINE)) int    aligned_int;
 typedef __declspec(align(CACHE_LINE)) size_t aligned_size_t;
-#define ASSUME_ALIGNED(var)   var; __assume_aligned(var, CACHE_LINE)
+#define AMDIS_ASSUME_ALIGNED(var)   var; __assume_aligned(var, CACHE_LINE)
 
-#define ALIGNED_ALLOC(type,size) reinterpret_cast<type*>(_mm_malloc(size*sizeof(type),CACHE_LINE))
-#define ALIGNED_FREE(addr) _mm_free(addr)
+#define AMDIS_ALIGNED_ALLOC(type,size) reinterpret_cast<type*>(_mm_malloc(size*sizeof(type),CACHE_LINE))
+#define AMDIS_ALIGNED_FREE(addr) _mm_free(addr)
 
 // some compiler attributes
 // ------------------------
-#define NOINLINE
-#define ALWAYS_INLINE
-#define OPENMODE       std::ios::openmode
+#define AMDIS_NOINLINE
+#define AMDIS_ALWAYS_INLINE
+#define AMDIS_OPENMODE       std::ios::openmode
 
 // C++11 features
 // --------------

@@ -25,7 +25,7 @@ namespace AMDiS
 
     T& get()
     {
-#if (DEBUG != 0)
+#ifndef NDEBUG
       if (omp_get_thread_num() >= data.size())
       {
         std::cout << "Error in ThreadPrivate::get()!\n";
@@ -37,7 +37,7 @@ namespace AMDiS
 
     void set(T& val)
     {
-#if (DEBUG != 0)
+#ifndef NDEBUG
       if (omp_get_thread_num() >= data.size())
       {
         std::cout << "Error in ThreadPrivate::set()!\n";

@@ -11,9 +11,9 @@
 
 // alignement specification
 // ------------------------
-#ifndef ALIGNED
-#define ALIGNED(type,name,N)  type name[N]
-#define ASSUME_ALIGNED(var)   var
+#ifndef AMDIS_ALIGNED
+#define AMDIS_ALIGNED(type,name,N)  type name[N]
+#define AMDIS_ASSUME_ALIGNED(var)   var
 
 typedef double aligned_double;
 typedef float  aligned_float;
@@ -21,22 +21,22 @@ typedef int    aligned_int;
 typedef size_t aligned_size_t;
 #endif
 
-#ifndef ALIGNED_ALLOC
+#ifndef AMDIS_ALIGNED_ALLOC
 // define aligned_malloc and aligned_free somewhere else, before using the macros
-#define ALIGNED_ALLOC(type,size) (type*)aligned_malloc(size*sizeof(type), CACHE_LINE)
-#define ALIGNED_FREE(ptr) aligned_free(ptr)
+#define AMDIS_ALIGNED_ALLOC(type,size) (type*)aligned_malloc(size*sizeof(type), CACHE_LINE)
+#define AMDIS_ALIGNED_FREE(ptr) aligned_free(ptr)
 #endif
 
 // some compiler attributes
 // ------------------------
 #ifndef NOINLINE
-#define NOINLINE
+#define AMDIS_NOINLINE
 #endif
 #ifndef ALWAYS_INLINE
-#define ALWAYS_INLINE
+#define AMDIS_ALWAYS_INLINE
 #endif
 #ifndef OPENMODE
-#define OPENMODE std::ios::openmode
+#define AMDIS_OPENMODE std::ios::openmode
 #endif
 
 // C++11 features

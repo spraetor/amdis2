@@ -13,21 +13,24 @@
 
 // alignement specification
 // ------------------------
-#define ALIGNED(type,name,N)  __declspec(align(CACHE_LINE)) type name[N]
+#define AMDIS_ALIGNED(type,name,N)  __declspec(align(CACHE_LINE)) type name[N]
 typedef __declspec(align(CACHE_LINE)) double aligned_double;
 typedef __declspec(align(CACHE_LINE)) float  aligned_float;
 typedef __declspec(align(CACHE_LINE)) int    aligned_int;
 typedef __declspec(align(CACHE_LINE)) size_t aligned_size_t;
 
-#include <malloc.h>
-#define ALIGNED_ALLOC(type,size) reinterpret_cast<type*>(_aligned_malloc(size*sizeof(type),CACHE_LINE))
-#define ALIGNED_FREE(ptr) _aligned_free(ptr);
+// #include <malloc.h>
+// #define AMDIS_ALIGNED_ALLOC(type,size) reinterpret_cast<type*>(_aligned_malloc(size*sizeof(type),CACHE_LINE))
+// #define AMDIS_ALIGNED_FREE(ptr) _aligned_free(ptr);
+
+#define AMDIS_ALIGNED_ALLOC(type,size) (type*)aligned_malloc(size*sizeof(type), CACHE_LINE)
+#define AMDIS_ALIGNED_FREE(ptr) aligned_free(ptr)
 
 // some compiler attributes
 // ------------------------
-#define NOINLINE         __declspec(noinline)
-#define ALWAYS_INLINE    __forceinline
-#define OPENMODE         std::ios::open_mode
+#define AMDIS_NOINLINE         __declspec(noinline)
+#define AMDIS_ALWAYS_INLINE    __forceinline
+#define AMDIS_OPENMODE         std::ios::openmode // NOTE: open_mode or openmode?????
 
 // C++11 features
 // --------------

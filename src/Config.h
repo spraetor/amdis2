@@ -7,7 +7,7 @@
 #define AMDIS_VERSION  "AMDiS: Version 2.0.0"
 #endif
 
-#include <boost/config.hpp>
+//#include <boost/config.hpp>
 
 #define CACHE_LINE 16
 
@@ -21,7 +21,7 @@
 #if defined(__clang__)					// Clang/LLVM.
 #include "config/Config_clang.h"
 
-#elif defined(__ICC) || defined(__INTEL_COMPILER)	// Intel ICC/ICPC. 
+#elif defined(__ICC) || defined(__INTEL_COMPILER)	// Intel ICC/ICPC.
 #include "config/Config_intel.h"
 
 #elif defined(__GNUC__) || defined(__GNUG__)		// GNU GCC/G++.
@@ -35,7 +35,7 @@ not supported compiler
 error:
 not supported compiler
 
-#elif defined(_MSC_VER)					// Microsoft Visual Studio. 
+#elif defined(_MSC_VER)					// Microsoft Visual Studio.
 #include "config/Config_msc.h"
 
 #elif defined(__PGI)					// Portland Group PGCC/PGCPP.

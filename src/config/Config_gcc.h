@@ -9,8 +9,8 @@
 
 // alignement specification
 // ------------------------
-#define ALIGNED(type,name,N)  type name[N] __attribute__ ((aligned(CACHE_LINE)))
-#define ASSUME_ALIGNED(var)   __builtin_assume_aligned(var, CACHE_LINE)
+#define AMDIS_ALIGNED(type,name,N)  type name[N] __attribute__ ((aligned(CACHE_LINE)))
+#define AMDIS_ASSUME_ALIGNED(var)   __builtin_assume_aligned(var, CACHE_LINE)
 
 typedef double aligned_double   __attribute__ ((aligned(CACHE_LINE)));
 typedef float  aligned_float    __attribute__ ((aligned(CACHE_LINE)));
@@ -19,9 +19,9 @@ typedef size_t aligned_size_t   __attribute__ ((aligned(CACHE_LINE)));
 
 // some compiler attributes
 // ------------------------
-#define NOINLINE                __attribute__ ((noinline))
-#define ALWAYS_INLINE           __attribute__ ((always_inline))
-#define OPENMODE                std::ios::openmode
+#define AMDIS_NOINLINE                __attribute__ ((noinline))
+#define AMDIS_ALWAYS_INLINE           __attribute__ ((always_inline))
+#define AMDIS_OPENMODE                std::ios::openmode
 
 // C++11 features
 // --------------

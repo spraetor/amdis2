@@ -2,20 +2,29 @@
 
 #pragma once
 
+#include <cstddef>
 #include <string>
 
-#include "AMDiS_fwd.h"
-#include <traits/not_null.hpp>
+// #include "AMDiS_fwd.h"
+// #include <traits/not_null.hpp>
 
 namespace AMDiS
 {
+    // forward declarations
+    class String;
+    class ProblemIterationInterface;
+    class ProblemTimeInterface;
+    class AdaptInfo;
+
+
   /// Interface for adaption loops.
   class AdaptBase
   {
   public:
     /// Constructor
-    AdaptBase(std::string sname,
-              not_null<ProblemIterationInterface*> problemIteration_,
+    AdaptBase(String const& sname,
+            //   not_null<ProblemIterationInterface*> problemIteration_,
+              ProblemIterationInterface* problemIteration_,
               AdaptInfo& adapt,
               ProblemTimeInterface* problemTime_ = NULL,
               AdaptInfo* initialAdaptInfo_ = NULL)
@@ -36,7 +45,7 @@ namespace AMDiS
     virtual int adapt() = 0;
 
     /// Returns \ref name
-    std::string getName() const
+    String const& getName() const
     {
       return name;
     }
@@ -79,7 +88,7 @@ namespace AMDiS
 
   protected:
     /// Name of the adaption loop
-    std::string name;
+    String const& name;
 
     /// Problem iteration interface
     ProblemIterationInterface* problemIteration;
