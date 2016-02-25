@@ -52,6 +52,8 @@ namespace AMDiS
      */
     virtual ProblemStatBase& getProblem(int number = 0) override;
 
+    virtual ProblemStatBase& getProblem(std::string name) override;
+
     virtual ProblemIterationInterface& getIterationInterface(int number = 0)
     {
       return *problems[number];

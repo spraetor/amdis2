@@ -17,22 +17,22 @@ namespace AMDiS
     struct at<T, Requires_t<concepts::Arithmetic<T>> >
     {
       using value_type = T;
-      value_type& operator()(T& v, size_t r)
+      value_type& operator()(T& v, size_t DBG_VAR( r ))
       {
         TEST_EXIT_DBG(r == 0)("Scalars have only 1 component!\n");
         return v;
       }
-      value_type const& operator()(T const& v, size_t r) const
+      value_type const& operator()(T const& v, size_t DBG_VAR( r )) const
       {
         TEST_EXIT_DBG(r == 0)("Scalars have only 1 component!\n");
         return v;
       }
-      value_type& operator()(T& v, size_t r, size_t c)
+      value_type& operator()(T& v, size_t DBG_VAR( r ), size_t DBG_VAR( c ))
       {
         TEST_EXIT_DBG(r == 0 && c == 0)("Scalars have only 1 row/column!\n");
         return v;
       }
-      value_type const& operator()(T const& v, size_t r, size_t c) const
+      value_type const& operator()(T const& v, size_t DBG_VAR( r ), size_t DBG_VAR( c )) const
       {
         TEST_EXIT_DBG(r == 0 && c == 0)("Scalars have only 1 row/column!\n");
         return v;

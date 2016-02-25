@@ -39,7 +39,7 @@ namespace AMDiS
     /// constructs a VectorOfFixVecs without initialisation. dim is passed to
     /// FixVec's constructors. size_ is the number of contained FixVecs. initType
     /// must be NO_INIT.
-    VectorOfFixVecs(int d, int s, InitType initType)
+    VectorOfFixVecs(int d, int s, InitType DBG_VAR( initType ))
       : size(s),
         dim(d)
     {
@@ -53,7 +53,7 @@ namespace AMDiS
     /// constructs a VectorOfFixVecs via an value list.  dim is passed to
     /// FixVec's constructors. size_ is the number of contained FixVecs. initType
     /// must be VALUE_LIST. ini contains the initialisation values.
-    VectorOfFixVecs(int d, int s, InitType initType, FixVecType const* ini)
+    VectorOfFixVecs(int d, int s, InitType DBG_VAR( initType ), FixVecType const* ini)
       : size(s),
         dim(d)
     {
@@ -67,7 +67,7 @@ namespace AMDiS
     /// constructs a VectorOfFixVecs with an default value.  dim is passed to
     /// FixVec's constructors. size_ is the number of contained FixVecs. initType
     /// must be DEFAULT_VALUE. All entries are set to ini.
-    VectorOfFixVecs(int d, int s, InitType initType, const FixVecType& ini)
+    VectorOfFixVecs(int d, int s, InitType DBG_VAR( initType ), const FixVecType& ini)
       : size(s),
         dim(d)
     {
@@ -176,7 +176,7 @@ namespace AMDiS
     /// Constructs the matrix without initialisation. r is the number of rows,
     /// c is the number of columns. The other parameters are analog to the
     /// VectorOfFixVecs constructors.
-    MatrixOfFixVecs(int dim, int r, int c, InitType initType)
+    MatrixOfFixVecs(int dim, int r, int c, InitType DBG_VAR( initType ))
       : rows(r),
         columns(c)
     {

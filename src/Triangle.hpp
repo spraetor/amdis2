@@ -110,7 +110,7 @@ namespace AMDiS
     }
 
     /// Implementation of \ref Element::getSubObjOfChild()
-    virtual int getSubObjOfChild(int childnr, GeoIndex subObj,
+    virtual int getSubObjOfChild(int childnr, GeoIndex DBG_VAR( subObj ),
                                  int ithObj, int elType) const override
     {
       FUNCNAME_DBG("Triangle::getSubObjOfChild()");
@@ -141,7 +141,7 @@ namespace AMDiS
     }
 
     /// Implementation of \ref Element::getEdgeOfFace()
-    virtual int getEdgeOfFace(int face, int edge) const override
+    virtual int getEdgeOfFace(int DBG_VAR( face ), int edge) const override
     {
       FUNCNAME_DBG("Triangle::getEdgeOfFace()");
       TEST_EXIT_DBG(face == 0)("face must be zero at triangle\n");

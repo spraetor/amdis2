@@ -24,7 +24,6 @@ if (Boost_FOUND)
     target_include_directories(boost INTERFACE ${Boost_INCLUDE_DIR})
     target_link_libraries(boost INTERFACE  ${Boost_LIBRARIES})
 #     target_link_libraries(boost INTERFACE Boost::boost Boost::system Boost::iostreams Boost::filesystem Boost::program_options Boost::date_time)
-    message("Boost_LIBRARIES = ${Boost_LIBRARIES}")
     target_link_libraries(amdis_base INTERFACE boost)
 
     if (MSVC_SHARED_LIBS)

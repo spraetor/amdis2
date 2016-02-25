@@ -145,7 +145,7 @@ namespace AMDiS
     }
 
     int dim, dow;
-    int nElements, nVertices;
+    int nElements = 0, nVertices = 0;
     int j, k;
     double dbl;
     char line[256];

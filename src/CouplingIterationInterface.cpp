@@ -2,6 +2,7 @@
 
 // AMDiS includes
 #include "Flag.hpp"
+#include "ProblemStatBase.hpp"
 
 namespace AMDiS
 {
@@ -102,6 +103,24 @@ namespace AMDiS
 
     TEST_EXIT(probIter)("Problem not found. Should not happen, since number is in range.");
     return *probIter;
+  }
+
+
+  ProblemStatBase& CouplingIterationInterface::getProblem(std::string name)
+  {
+    ProblemStatBase* prob = NULL;
+    for (auto* p : problems) {
+      for (int i = 0; i < p->getNumProblems(); ++i) {
+        if (p->getProblem(i).getName() == name) {
+          prob = &p->getProblem(i);
+          break;
+        }
+      }
+      if (prob)
+        break;
+    }
+    TEST_EXIT(prob)("No problem with given name found!\n");
+    return *prob;
   }
 
 

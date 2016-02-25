@@ -241,7 +241,7 @@ namespace AMDiS
           uint8_t* major = const_cast<uint8_t*>(&(AMDiS::io::Arh3Reader::MAJOR));
           uint8_t* minor = const_cast<uint8_t*>(&(AMDiS::io::Arh3Reader::MINOR));
           int cpsflag = static_cast<int>(cps);
-          uint32_t minus1 = -1;
+          uint32_t minus1 = uint32_t(-1);
 
           //fixed header
           file.write(typeId.c_str(), 4);

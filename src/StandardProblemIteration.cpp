@@ -11,14 +11,14 @@ namespace AMDiS
   int StandardProblemIteration::info = 10;
 
 
-  ProblemStatBase& StandardProblemIteration::getProblem(int number)
+  ProblemStatBase& StandardProblemIteration::getProblem(int DBG_VAR( number ))
   {
     FUNCNAME_DBG("StandardProblemIteration::getProblem");
     TEST_EXIT_DBG(number == 0)("Problem number out of range!\n");
     return problem;
   }
 
-  ProblemStatBase& StandardProblemIteration::getProblem(std::string name)
+  ProblemStatBase& StandardProblemIteration::getProblem(std::string DBG_VAR( name ))
   {
     FUNCNAME_DBG("StandardProblemIteration::getProblem");
     TEST_EXIT_DBG(name == problem.getName())("Problem name does not match!\n");

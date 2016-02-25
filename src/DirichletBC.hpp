@@ -34,6 +34,10 @@ namespace AMDiS
                                          const BoundaryType* localBound,
                                          int nBasFcts) override;
 
+      virtual void fillBoundaryCondition(DOFVectorBase<double>*, ElInfo*,
+                                        DegreeOfFreedom const*,
+                                        BoundaryType const*, int) override = 0;
+
       /// Implementation of BoundaryCondition::initVector()
       virtual void initVector(DOFVectorBase<double>* vec) override;
 

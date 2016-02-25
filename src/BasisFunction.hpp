@@ -209,28 +209,14 @@ namespace AMDiS
 
 
     /// Interpolates a DOFIndexed<double> after refinement
-    virtual void refineInter(DOFIndexed<double>*, RCNeighbourList*, int)
-    {}
+    virtual void refineInter(DOFIndexed<double>*, RCNeighbourList*, int) = 0;
 
     /// Interpolates a DOFIndexed<double> after coarsening
-    virtual void coarseInter(DOFIndexed<double>*, RCNeighbourList*, int)
-    {}
+    virtual void coarseInter(DOFIndexed<double>*, RCNeighbourList*, int) = 0;
 
     /// Restricts a DOFIndexed<double> after coarsening
-    virtual void coarseRestr(DOFIndexed<double>*, RCNeighbourList*, int)
-    {}
+    virtual void coarseRestr(DOFIndexed<double>*, RCNeighbourList*, int) = 0;
 
-    /// Interpolates a DOFVector<WorldVector<double> > after refinement
-    virtual void refineInter(DOFVector<WorldVector<double>>*, RCNeighbourList*, int)
-    {}
-
-    /// Interpolates a DOFVector<WorldVector<double> > after coarsening
-    virtual void coarseInter(DOFVector<WorldVector<double>>*, RCNeighbourList*, int)
-    {}
-
-    /// Restricts a DOFVector<WorldVector<double> > after coarsening
-    virtual void coarseRestr(DOFVector<WorldVector<double>>*, RCNeighbourList*, int)
-    {}
 
     /// Returns local dof indices of the element for the given fe space.
     virtual void getLocalIndices(const Element* /* el */,

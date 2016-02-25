@@ -65,7 +65,7 @@ namespace AMDiS
                                        ElInfo* /*elInfo*/,
                                        const DegreeOfFreedom* /*dofIndices*/,
                                        const BoundaryType* /*localBound*/,
-                                       int /*nBasFcts*/) { }
+                                       int /*nBasFcts*/) = 0;
 
     /// Adds the local boundary condition for elInfo to vector.
     /// The dofIndices and localBound as well as nBasFcts are determined by
@@ -74,7 +74,7 @@ namespace AMDiS
                                        ElInfo* /*elInfo*/,
                                        const DegreeOfFreedom* /*dofIndices*/,
                                        const BoundaryType* /*localBound*/,
-                                       int /*nBasFcts*/) { }
+                                       int /*nBasFcts*/) = 0;
 
     /// Returns the boundary residual for the given element. Called by estimator.
     virtual double boundResidual(ElInfo* /*elInfo*/,

@@ -78,6 +78,10 @@ namespace AMDiS
                                        BoundaryType const* localBound,
                                        int nBasFcts) override;
 
+    virtual void fillBoundaryCondition(DOFVectorBase<double>*, ElInfo*,
+                                       DegreeOfFreedom const*,
+                                       BoundaryType const*, int) {};
+
     virtual void exitMatrix(DOFMatrix* matrix) override;
 
     virtual void exitVector(DOFVectorBase<double>* vector) override;

@@ -30,11 +30,6 @@ namespace AMDiS
      */
     virtual BaseClass* create() = 0;
 
-    virtual BaseClass* create(const DOFMatrix::base_matrix_type& /*A*/)
-    {
-      return 0;
-    }
-
     /// Can be implemented by sub classes.
     virtual void free(BaseClass*) {}
 

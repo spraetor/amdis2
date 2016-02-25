@@ -183,9 +183,11 @@ namespace AMDiS
         DofWriter::writeFile(solutionVecs, fn + ".dof");
       }
 
-      // write Arh files
-      Arh3Writer::writeFile(solutionVecs, fn_ + ".arh");
-
+      if (writeArhFormat)
+      {
+        // write Arh files
+        Arh3Writer::writeFile(solutionVecs, fn_ + ".arh");
+      }
 
 #ifdef HAVE_PNG
       if (writePngFormat)
