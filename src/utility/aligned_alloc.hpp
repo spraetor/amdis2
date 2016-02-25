@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Config.h"
+#include "Config.hpp"
 
 #if 1 // store pointer to startadress in memoryblock
 inline void* aligned_malloc(size_t _size, small_t alignment)
@@ -21,7 +21,7 @@ inline void aligned_free(void* p)
   void* p1 = ((void**)p)[-1];
   free(p1);
 }
-#define ALIGNED_SIZE(size, alignment) ((size) + (alignment) - 1 + sizeof(void*))
+#define AMDIS_ALIGNED_SIZE(size, alignment) ((size) + (alignment) - 1 + sizeof(void*))
 
 #else // store offset to startadress in memoryblock
 inline void* aligned_malloc(size_t _size, small_t alignment)
@@ -43,5 +43,5 @@ inline void aligned_free(void* ptr)
   void* addr = reinterpret_cast<void*>((size_t)(ptr) - tmp[-1]);
   free(addr);
 }
-#define ALIGNED_SIZE(size, alignment) ((size) + (alignment) - 1 + sizeof(small_t))
+#define AMDIS_ALIGNED_SIZE(size, alignment) ((size) + (alignment) - 1 + sizeof(small_t))
 #endif

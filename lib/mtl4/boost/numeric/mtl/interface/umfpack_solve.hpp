@@ -1,13 +1,13 @@
 // Software License for MTL
-// 
-// Copyright (c) 2007 The Trustees of Indiana University. 
+//
+// Copyright (c) 2007 The Trustees of Indiana University.
 //               2008 Dresden University of Technology and the Trustees of Indiana University.
-//               2010 SimuNova UG (haftungsbeschränkt), www.simunova.com. 
+//               2010 SimuNova UG (haftungsbeschränkt), www.simunova.com.
 // All rights reserved.
 // Authors: Peter Gottschling and Andrew Lumsdaine
-// 
+//
 // This file is part of the Matrix Template Library
-// 
+//
 // See also license.mtl.txt in the distribution.
 
 #ifndef MTL_MATRIX_UMFPACK_SOLVE_INCLUDE
@@ -59,10 +59,10 @@ namespace mtl { namespace matrix {
 	template<> struct index_aux<true>         { typedef long type; };
 #endif
 
-	template <typename Value> struct index 
+	template <typename Value> struct index
           : index_aux<use_long<Value>::value> {};
 
-	template <typename Matrix, typename Value, typename Orientation> 
+	template <typename Matrix, typename Value, typename Orientation>
 	struct matrix_copy {};
 
 	// If arbitrary compressed matrix -> copy
@@ -89,14 +89,14 @@ namespace mtl { namespace matrix {
 	}
 
 	/// Class for repeated Umfpack solutions
-	/** Keeps symbolic and numeric preprocessing. Numeric part can be updated. 
+	/** Keeps symbolic and numeric preprocessing. Numeric part can be updated.
 	    Only defined for compressed2D<double> and compressed2D<complex<double> >. **/
-	template <typename T> 
+	template <typename T>
 	class solver {
 	  public:
 	    /// Constructor referring to matrix \p A (not changed) and optionally Umfpack's strategy and alloc_init (look for the specializations)
 	    // \ref solver<compressed2D<double, Parameters> > and \ref solver<compressed2D<std::complex<double>, Parameters> >)
-	    explicit solver(const T& A) {}
+	    explicit solver(const T& /*A*/) {}
 
 	    /// Update numeric part, for matrices that kept the sparsity and changed the values
 	    void update_numeric() {}
@@ -107,12 +107,12 @@ namespace mtl { namespace matrix {
 	    /// Solve system A*x == b with matrix passed in constructor
 	    /** Please note that the order of b and x is different than in solve() !!! **/
 	    template <typename VectorX, typename VectorB>
-	    int operator()(VectorX& x, const VectorB& b) const {return 0;}
+	    int operator()(VectorX& /*x*/, const VectorB& /*b*/) const {return 0;}
 
 	    /// Solve system A*x == b with matrix passed in constructor
 	    /** Please note that the order of b and x is different than in operator() !!! **/
 	    template <typename VectorB, typename VectorX>
-	    int operator()(const VectorB& b, VectorX& x) const {return 0;}
+	    int operator()(const VectorB& /*b*/, VectorX& /*x*/) const {return 0;}
 	};
 
 	/// Speciatization of solver for \ref matrix::compressed2D with double values
@@ -135,7 +135,7 @@ namespace mtl { namespace matrix {
 	    void assign_pointers()
 	    {
 		if (copy_indices) {
-		    if (Apc == 0) Apc= new index_type[n + 1]; 
+		    if (Apc == 0) Apc= new index_type[n + 1];
 		    if (my_nnz != A.nnz() && Aic) { delete[] Aic; Aic= 0; }
 		    if (Aic == 0) Aic= new index_type[A.nnz()];
 		    std::copy(A.address_major(), A.address_major() + n + 1, Apc);
@@ -154,7 +154,7 @@ namespace mtl { namespace matrix {
 	      check(umfpack_dl_symbolic(n, n, Ap, Ai, Ax, &Symbolic, Control, Info), "Error in dl_symbolic");
 	      check(umfpack_dl_numeric(Ap, Ai, Ax, Symbolic, &Numeric, Control, Info), "Error in dl_numeric");
 	    }
-	    
+
 	    void init_aux(false_)
 	    {
 		check(umfpack_di_symbolic(n, n, Ap, Ai, Ax, &Symbolic, Control, Info), "Error in di_symbolic");
@@ -181,7 +181,7 @@ namespace mtl { namespace matrix {
 		std::cout << "    UMFPACK_MAX_FRONT_SIZE_ESTIMATE: " << Info[UMFPACK_MAX_FRONT_SIZE_ESTIMATE] << "\n";
 		std::cout << "    UMFPACK_SYMBOLIC_TIME: " << Info[UMFPACK_SYMBOLIC_TIME] << "\n";
 		std::cout << "    UMFPACK_SYMBOLIC_WALLTIME: " << Info[UMFPACK_SYMBOLIC_WALLTIME] << "\n";
-		
+
 		if (Info[UMFPACK_STRATEGY_USED] == UMFPACK_STRATEGY_SYMMETRIC)
 		  std::cout << "    UMFPACK_STRATEGY_USED: SYMMETRIC\n";
 		else {
@@ -194,7 +194,7 @@ namespace mtl { namespace matrix {
 		      std::cout << "    UMFPACK_STRATEGY_USED: UNKOWN STRATEGY " << Info[UMFPACK_STRATEGY_USED] << "\n";
 		  }
 		}
-		  
+
 		std::cout << "    UMFPACK_ORDERING_USED: " << Info[UMFPACK_ORDERING_USED] << "\n";
 		std::cout << "    UMFPACK_QFIXED: " << Info[UMFPACK_QFIXED] << "\n";
 		std::cout << "    UMFPACK_DIAG_PREFERRED: " << Info[UMFPACK_DIAG_PREFERRED] << "\n";
@@ -252,8 +252,8 @@ namespace mtl { namespace matrix {
 
 	  public:
 	    /// Constructor referring to matrix \p A (not changed) and optionally Umfpack's strategy and alloc_init
-	    solver(const matrix_type& A, int strategy = UMFPACK_STRATEGY_AUTO, double alloc_init = 0.7) 
-	      : A(A), Apc(0), Aic(0), my_nnz(0), Symbolic(0), Numeric(0) 
+	    solver(const matrix_type& A, int strategy = UMFPACK_STRATEGY_AUTO, double alloc_init = 0.7)
+	      : A(A), Apc(0), Aic(0), my_nnz(0), Symbolic(0), Numeric(0)
 	    {
 		vampir_trace<5060> trace;
 		// Use default setings.
@@ -264,7 +264,7 @@ namespace mtl { namespace matrix {
 
 		Control[UMFPACK_STRATEGY] = strategy;
 		Control[UMFPACK_ALLOC_INIT] = alloc_init;
-		init(); 
+		init();
 	    }
 
 	    ~solver()
@@ -277,7 +277,7 @@ namespace mtl { namespace matrix {
 		    umfpack_di_free_numeric(&Numeric);
 		    umfpack_di_free_symbolic(&Symbolic);
 		}
-		if (Apc) delete[] Apc; 
+		if (Apc) delete[] Apc;
 		if (Aic) delete[] Aic;
 	    }
 
@@ -286,7 +286,7 @@ namespace mtl { namespace matrix {
 		umfpack_dl_free_numeric(&Numeric);
 		check(umfpack_dl_numeric(Ap, Ai, Ax, Symbolic, &Numeric, Control, Info), "Error in dl_numeric");
 	    }
-	    
+
 	    void update_numeric_aux(false_)
 	    {
 		umfpack_di_free_numeric(&Numeric);
@@ -372,12 +372,12 @@ namespace mtl { namespace matrix {
 	    typedef boost::mpl::bool_<long_indices>           blong;
 	    typedef boost::mpl::true_                         true_;
 	    typedef boost::mpl::false_                        false_;
-	    
+
 
 	    void assign_pointers()
 	    {
 		if (copy_indices) {
-		    if (Apc == 0) Apc= new index_type[n + 1]; 
+		    if (Apc == 0) Apc= new index_type[n + 1];
 		    if (Aic == 0) Aic= new index_type[A.nnz()];
 		    std::copy(A.address_major(), A.address_major() + n + 1, Apc);
 		    std::copy(A.address_minor(), A.address_minor() + A.nnz(), Aic);
@@ -395,7 +395,7 @@ namespace mtl { namespace matrix {
 		check(umfpack_zl_symbolic(n, n, Ap, Ai, &Ax[0], &Az[0], &Symbolic, Control, Info), "Error in zl_symbolic");
 		check(umfpack_zl_numeric(Ap, Ai, &Ax[0], &Az[0], Symbolic, &Numeric, Control, Info), "Error in zl_numeric");
 	    }
-	    
+
 	    void init_aux(false_)
 	    {
 		check(umfpack_zi_symbolic(n, n, Ap, Ai, &Ax[0], &Az[0], &Symbolic, Control, Info), "Error in zi_symbolic");
@@ -411,7 +411,7 @@ namespace mtl { namespace matrix {
 	    }
 	public:
 	    /// Constructor referring to matrix \p A (not changed) and optionally Umfpack's strategy and alloc_init (look for the specializations)
-	    explicit solver(const compressed2D<value_type, Parameters>& A, int strategy = UMFPACK_STRATEGY_AUTO, double alloc_init = 0.7) 
+	    explicit solver(const compressed2D<value_type, Parameters>& A, int strategy = UMFPACK_STRATEGY_AUTO, double alloc_init = 0.7)
 	      : A(A), Apc(0), Aic(0)
 	    {
 		vampir_trace<5060> trace;
@@ -437,7 +437,7 @@ namespace mtl { namespace matrix {
 		    umfpack_zi_free_numeric(&Numeric);
 		    umfpack_zi_free_symbolic(&Symbolic);
 		}
-		if (Apc) delete[] Apc; 
+		if (Apc) delete[] Apc;
 		if (Aic) delete[] Aic;
 	    }
 
@@ -446,7 +446,7 @@ namespace mtl { namespace matrix {
 		umfpack_zl_free_numeric(&Numeric);
 		check(umfpack_zl_numeric(Ap, Ai, &Ax[0], &Az[0], Symbolic, &Numeric, Control, Info), "Error in dl_numeric D");
 	    }
-	    
+
 	    void update_numeric_aux(false_)
 	    {
 		umfpack_zi_free_numeric(&Numeric);
@@ -477,14 +477,14 @@ namespace mtl { namespace matrix {
 	    template <typename VectorX, typename VectorB>
 	    void solve_aux(int sys, VectorX& Xx, VectorX& Xz, const VectorB& Bx, const VectorB& Bz, true_)
 	    {
-		check(umfpack_zl_solve(sys, Ap, Ai, &Ax[0], &Az[0], &Xx[0], &Xz[0], &Bx[0], &Bz[0], Numeric, Control, Info), 
+		check(umfpack_zl_solve(sys, Ap, Ai, &Ax[0], &Az[0], &Xx[0], &Xz[0], &Bx[0], &Bz[0], Numeric, Control, Info),
 		      "Error in zi_solve");
 	    }
 
 	    template <typename VectorX, typename VectorB>
 	    void solve_aux(int sys, VectorX& Xx, VectorX& Xz, const VectorB& Bx, const VectorB& Bz, false_)
 	    {
-		check(umfpack_zi_solve(sys, Ap, Ai, &Ax[0], &Az[0], &Xx[0], &Xz[0], &Bx[0], &Bz[0], Numeric, Control, Info), 
+		check(umfpack_zi_solve(sys, Ap, Ai, &Ax[0], &Az[0], &Xx[0], &Xz[0], &Bx[0], &Bz[0], Numeric, Control, Info),
 		      "Error in zi_solve");
 	    }
 
@@ -511,7 +511,7 @@ namespace mtl { namespace matrix {
 
 	private:
 	    const matrix_type&   A;
-	    int                  n; 
+	    int                  n;
 	    const index_type     *Ap, *Ai;
 	    index_type          *Apc, *Aic;
 	    dense_vector<double> Ax, Az;
@@ -527,7 +527,7 @@ namespace mtl { namespace matrix {
 	    typedef matrix_copy<compressed2D<Value, Parameters>, Value, typename Parameters::orientation> copy_type;
 	    typedef solver<typename matrix_copy<compressed2D<Value, Parameters>, Value, typename Parameters::orientation>::matrix_type > solver_type;
 	public:
-	    explicit solver(const compressed2D<Value, Parameters>& A) 
+	    explicit solver(const compressed2D<Value, Parameters>& A)
 		: copy_type(A), solver_type(copy_type::matrix), A(A)
 	    {}
 

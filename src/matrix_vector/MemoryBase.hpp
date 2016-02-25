@@ -1,12 +1,10 @@
-/** \file MemoryBase.hpp */
-
 #pragma once
 
 // AMDiS headers
-#include <Config.h>
-#include <Log.h>			// TEST_EXIT_DBG
-#include <operations/generic_loops.hpp>	// meta::FOR
-#include <utility/aligned_alloc.hpp>	// ALIGNED_ALLOC, ALIGNED_FREE, ...
+#include "Config.hpp"
+#include "Log.hpp"			// TEST_EXIT_DBG
+#include "operations/generic_loops.hpp"	// meta::FOR
+#include "utility/aligned_alloc.hpp"	// ALIGNED_ALLOC, ALIGNED_FREE, ...
 
 namespace AMDiS
 {
@@ -37,7 +35,7 @@ namespace AMDiS
     static constexpr size_type _size = _SIZE;
     static constexpr size_type _capacity = _SIZE; // TODO: eventuell aufrunden
 
-    ALIGNED(T, _elements, _capacity);   // T _elements[N];
+    AMDIS_ALIGNED(T, _elements, _capacity);   // T _elements[N];
 
   protected:
     /// default constructor
@@ -143,7 +141,7 @@ namespace AMDiS
     explicit MemoryBaseDynamic(size_type s = 0)
       : _size(s),
         _capacity(s),
-        _elements(_size ? (aligned ? ALIGNED_ALLOC(T, s) : new T[s]) : NULL)
+        _elements(_size ? (aligned ? AMDIS_ALIGNED_ALLOC(T, s) : new T[s]) : NULL)
     {}
 
   public:
@@ -154,7 +152,7 @@ namespace AMDiS
       {
         if (aligned)
         {
-          ALIGNED_FREE(_elements);
+          AMDIS_ALIGNED_FREE(_elements);
         }
         else
         {
@@ -180,7 +178,7 @@ namespace AMDiS
     /// return the amount of memory in Bytes allocated by this vector.
     size_type getMemoryUsage() const
     {
-      return (aligned ? ALIGNED_SIZE(_capacity*sizeof(T), CACHE_LINE)
+      return (aligned ? AMDIS_ALIGNED_SIZE(_capacity*sizeof(T), CACHE_LINE)
                       : _capacity*sizeof(T))
              + 2*sizeof(size_type);
     }
@@ -212,14 +210,14 @@ namespace AMDiS
         {
           if (aligned)
           {
-            ALIGNED_FREE(_elements);
+            AMDIS_ALIGNED_FREE(_elements);
           }
           else
           {
             delete [] _elements;
           }
         }
-        _elements = aligned ? ALIGNED_ALLOC(T, s) : new T[s];
+        _elements = aligned ? AMDIS_ALIGNED_ALLOC(T, s) : new T[s];
         _size = s;
       }
     }
@@ -241,7 +239,7 @@ namespace AMDiS
     template <class Target, class Source, class Assigner> // assume aligned
     void assign_aux(Target& /*target*/, Source const& src, Assigner /*assigner*/, true_)
     {
-      value_type* var = (value_type*)ASSUME_ALIGNED(_elements);
+      value_type* var = (value_type*)AMDIS_ASSUME_ALIGNED(_elements);
       for (size_type i = 0; i < _size; ++i)
         Assigner::apply(var[i], src(i));
     }
@@ -284,7 +282,7 @@ namespace AMDiS
     size_type _size;
     static constexpr size_type _capacity = N*M;
 
-    ALIGNED(T, _elements, _capacity);   // T _elements[N];
+    AMDIS_ALIGNED(T, _elements, _capacity);   // T _elements[N];
 
   protected:
     /// default constructor

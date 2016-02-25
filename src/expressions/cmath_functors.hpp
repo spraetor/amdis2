@@ -1,12 +1,12 @@
-/** \file cmath_functors.hpp */
-
 #pragma once
 
+// std c++ headers
 #include <cmath>
 #include <type_traits>
 
-#include <Math.hpp>
-#include <operations/functors.hpp>
+// AMDiS includes
+#include "Math.hpp"
+#include "operations/functors.hpp"
 
 /// Macro that generates a unary functor.
 /**

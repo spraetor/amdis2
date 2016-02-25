@@ -46,12 +46,12 @@
 #include <boost/iostreams/filter/bzip2.hpp>
 #endif
 
-#include "DOFVector.h"
-#include "io/DataCollector.h"
+#include "DOFVector.hpp"
+#include "io/DataCollector.hpp"
 // #include "SurfaceRegion_ED.h"
 // #include "ElementRegion_ED.h"
 
-#include "io/detail/VtkWriter.h"
+#include "io/detail/VtkWriter.hpp"
 
 namespace AMDiS
 {

@@ -7,11 +7,10 @@
 #include <type_traits>
 
 // AMDiS headers
-#include <traits/basic.hpp>
-#include <traits/meta_basic.hpp>
-#include <traits/concepts_base.hpp>
-
-#include <MatrixVector_fwd.h> // WorldVector<T>
+#include "MatrixVector_fwd.hpp" // WorldVector<T>
+#include "traits/basic.hpp"
+#include "traits/concepts_base.hpp"
+#include "traits/meta_basic.hpp"
 
 namespace AMDiS
 {

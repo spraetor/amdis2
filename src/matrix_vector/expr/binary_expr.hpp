@@ -2,13 +2,13 @@
 
 #pragma once
 
-#include <traits/basic.hpp>
-#include <traits/traits_fwd.hpp>
+#include "traits/basic.hpp"
+#include "traits/traits_fwd.hpp"
 
-#include "base_expr.hpp" // for shaped_expr
+#include "matrix_vector/expr/base_expr.hpp" // for shaped_expr
 
-#include <operations/functors.hpp>
-#include <Math.hpp>
+#include "operations/functors.hpp"
+#include "Math.hpp"
 
 namespace AMDiS
 {

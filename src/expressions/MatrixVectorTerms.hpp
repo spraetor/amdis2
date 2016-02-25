@@ -1,10 +1,9 @@
-/** \file MatrixVectorTerms.hpp */
-
 #pragma once
 
-#include <matrix_vector/MatrixVectorOperations.hpp>
-#include "FunctorTerms.hpp"
-#include "TermConcepts.hpp"
+// AMDiS includes
+#include "expressions/FunctorTerms.hpp"
+#include "expressions/TermConcepts.hpp"
+#include "matrix_vector/MatrixVectorOperations.hpp"
 
 
 /// Macro that generates a unary (vector) functor.

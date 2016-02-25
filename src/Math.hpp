@@ -1,17 +1,16 @@
-/** \file Math.hpp */
-
 /** \defgroup Common Common
  */
 
 #pragma once
 
 #include <vector>
+
 #include <boost/numeric/mtl/mtl_fwd.hpp>
 #include <boost/math/special_functions/fpclassify.hpp>
 
-#include "AMDiS_fwd.h"
-#include <traits/basic.hpp>
-#include <traits/scalar_types.hpp>
+#include "AMDiS_fwd.hpp"
+#include "traits/basic.hpp"
+#include "traits/scalar_types.hpp"
 
 namespace AMDiS
 {

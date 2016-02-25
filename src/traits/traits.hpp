@@ -2,8 +2,11 @@
 
 #pragma once
 
+// std c++ headers
 #include <type_traits>
-#include <traits/basic.hpp>
+
+// AMDiS headers
+#include "traits/basic.hpp"
 
 namespace AMDiS
 {  

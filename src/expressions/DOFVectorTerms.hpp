@@ -1,14 +1,12 @@
-/** \file DOFVectorTerms.hpp */
-
 #pragma once
 
-#include <AMDiS_fwd.h>
-#include <SubAssembler.h>
-#include <BasisFunction.h>
-#include <DOFVectorBase.h>
-#include <expressions/LazyOperatorTerm.h>
-
-#include "BaseTerms.hpp"
+// AMDiS includes
+#include "AMDiS_fwd.hpp"
+#include "BasisFunction.hpp"
+#include "DOFVectorBase.hpp"
+#include "SubAssembler.hpp"
+#include "expressions/BaseTerms.hpp"
+#include "expressions/LazyOperatorTerm.hpp"
 
 namespace AMDiS
 {

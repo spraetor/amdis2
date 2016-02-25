@@ -1,19 +1,19 @@
-/** \file MatrixVectorBase.hpp */
-
 #pragma once
 
+// std c++ headers
 #include <algorithm> // std::copy, std::fill
 #include <ostream>   // std::basic_ostream
 
+// MTL4 includes
 #include <boost/numeric/mtl/operation/assign_mode.hpp>
 
-#include <Log.h>			// TEST_EXIT_DBG
-
-#include <traits/basic.hpp>
-#include <traits/traits_fwd.hpp>
-
-#include <operations/meta.hpp>
-#include <operations/assign.hpp>
+// AMDiS includes
+#include "Log.hpp"			// TEST_EXIT_DBG
+#include "matrix_vector/expr/base_expr.hpp"     // BaseExpr
+#include "operations/assign.hpp"
+#include "operations/meta.hpp"
+#include "traits/basic.hpp"
+#include "traits/traits_fwd.hpp"
 
 #define DEFAULT_SIZE 0
 
@@ -207,7 +207,8 @@ namespace AMDiS
   struct DefaultSizePolicy
   {
     /// return argument \param s
-    static constexpr size_t eval(size_t s)
+    template <class size_type>
+    static constexpr size_type eval(size_type s)
     {
       return s;
     }
@@ -219,9 +220,10 @@ namespace AMDiS
     static constexpr size_t value = S;
 
     /// return static size parameter \p S
-    static constexpr size_t eval(size_t)
+    template <class size_type>
+    static constexpr size_type eval(size_type)
     {
-      return S;
+      return size_type(S);
     }
   };
 

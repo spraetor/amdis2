@@ -2,9 +2,9 @@
 
 #pragma once
 
-#include <matrix_vector/Forward.h>
-#include <traits/basic.hpp>
-#include <traits/traits_fwd.hpp>
+#include "matrix_vector/Forward.hpp"
+#include "traits/basic.hpp"
+#include "traits/traits_fwd.hpp"
 
 namespace AMDiS
 {
@@ -35,7 +35,7 @@ namespace AMDiS
     template <class M> struct category<VectorExpr<M>> : category<M> {};
     template <class M> struct category<MatrixExpr<M>> : category<M> {};
     /// \endcond
-    
+
   } // end namespace traits
 
 
@@ -77,7 +77,7 @@ namespace AMDiS
   template <class Sub, class Model, class = void>
   struct ShapedExpr
   {
-    using type 
+    using type
       = if_then_else< traits::is_vector<Sub>::value,
 	  VectorExpr<Model>,
 	  if_then_else< traits::is_matrix<Sub>::value,

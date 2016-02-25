@@ -7,7 +7,7 @@
 #include <traits/traits_fwd.hpp>
 #include <traits/traits.hpp>
 
-#include "base_expr.hpp" // for ShapedExpr
+#include "matrix_vector/expr/base_expr.hpp" // for ShapedExpr
 #include <Math.hpp>
 
 namespace AMDiS

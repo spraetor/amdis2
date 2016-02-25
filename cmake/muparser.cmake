@@ -14,6 +14,9 @@ add_library(muparser
     ${MUPARSER_SOURCE_DIR}/muParserTokenReader.cpp)
 
 target_include_directories(muparser PUBLIC ${MUPARSER_INCLUDE_DIR})
+
+set_property(TARGET muparser PROPERTY CXX_STANDARD 11)
+set_property(TARGET muparser PROPERTY CXX_STANDARD_REQUIRED ON)
 target_compile_definitions(muparser PRIVATE HAS_CXX11=1)
 
 # specify how to install this target:

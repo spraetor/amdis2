@@ -1,50 +1,26 @@
-/******************************************************************************
- *
- * AMDiS - Adaptive multidimensional simulations
- *
- * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
- * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
- *
- * Authors:
- * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
- *
- * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
- * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
- *
- *
- * This file is part of AMDiS
- *
- * See also license.opensource.txt in the distribution.
- *
- ******************************************************************************/
-
-/** \file FileWriter.hh */
-
-#ifndef AMDIS_FILEWRITER_HH
-#define AMDIS_FILEWRITER_HH
-
-#include "FileWriter.h"
-#include "Initfile.h"
-#include "ValueWriter.h"
-#include "MacroWriter.h"
-#include "VtkWriter.h"
-#include "VtkVectorWriter.h"
-#include "PngWriter.h"
-#include "PovrayWriter.h"
-#include "DofWriter.h"
-#include "ArhWriter.h"
-#include "Arh2Writer.h"
-#include "FiniteElemSpace.h"
-#include "AdaptInfo.h"
-#include "Flag.h"
-#include "ElInfo.h"
-#include "Mesh.h"
-#include "SystemVector.h"
-#include "DataCollector.h"
+#pragma once
 
 #if HAVE_PARALLEL_DOMAIN_AMDIS
 #include <mpi.h>
 #endif
+
+#include "io/FileWriter.hpp"
+#include "Initfile.hpp"
+#include "io/ValueWriter.hpp"
+#include "io/MacroWriter.hpp"
+#include "io/VtkWriter.hpp"
+#include "io/VtkVectorWriter.hpp"
+#include "io/PngWriter.hpp"
+#include "io/PovrayWriter.hpp"
+#include "io/DofWriter.hpp"
+#include "io/Arh3Writer.hpp"
+#include "FiniteElemSpace.hpp"
+#include "AdaptInfo.hpp"
+#include "Flag.hpp"
+#include "ElInfo.hpp"
+#include "Mesh.hpp"
+#include "SystemVector.hpp"
+#include "io/DataCollector.hpp"
 
 namespace AMDiS
 {
@@ -97,7 +73,7 @@ namespace AMDiS
     template<typename T>
     FileWriter<T>::FileWriter(std::string name_,
                               Mesh* mesh_,
-                              SystemVector* vecs)
+                              SystemVector* /*vecs*/)
       : name(name_),
         mesh(mesh_)
     {
@@ -136,9 +112,6 @@ namespace AMDiS
       writePovrayFormat = 0;
       writeDofFormat = 0;
       writeArhFormat = 0;
-      writeArh1 = 0;
-      writeArh2 = 0;
-      writeArh3 = 0;
       pngType = 0;
       nTmpSolutions = 0;
       paraviewAnimationFrames.resize(0),
@@ -175,9 +148,6 @@ namespace AMDiS
 
       Parameters::get(name + "->DOF format", writeDofFormat);
       Parameters::get(name + "->ARH format", writeArhFormat);
-      Parameters::get(name + "->ARH1 format", writeArh1);
-      Parameters::get(name + "->ARH2 format", writeArh2);
-      Parameters::get(name + "->ARH3 format", writeArh3);
 
       std::string compressionStr = "";
       Parameters::get(name + "->compression", compressionStr);
@@ -274,6 +244,3 @@ namespace AMDiS
 
   } // end namespace detail
 } // end namespace AMDiS
-
-#endif
-

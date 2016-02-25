@@ -1,13 +1,13 @@
 // Software License for MTL
-// 
-// Copyright (c) 2007 The Trustees of Indiana University. 
+//
+// Copyright (c) 2007 The Trustees of Indiana University.
 //               2008 Dresden University of Technology and the Trustees of Indiana University.
-//               2010 SimuNova UG, www.simunova.com. 
+//               2010 SimuNova UG, www.simunova.com.
 // All rights reserved.
 // Authors: Peter Gottschling and Andrew Lumsdaine
-// 
+//
 // This file is part of the Matrix Template Library
-// 
+//
 // See also tools/license/license.mtl.txt in the distribution.
 
 #ifndef MTL_MATRIX_ELL_MATRIX_INCLUDE
@@ -67,10 +67,10 @@ class ell_matrix
 
     /// Print internal representation
     template <typename OStream>
-    void print_internal(OStream& os) const
+    void print_internal(OStream& MTL_STD_OUTPUT_OPERATOR_ARG(os)) const
     {
 #     ifdef MTL_HAS_STD_OUTPUT_OPERATOR
-	os << "indices = " << indices << '\n'; 
+	os << "indices = " << indices << '\n';
 	os << "values  = " << data << '\n';
 #     endif
     }
@@ -88,7 +88,7 @@ class ell_matrix
           std::vector<size_type>&  ref_minor()       { return indices; } ///< Refer index vector [advanced]
     const std::vector<value_type>& ref_data()  const { return data; } ///< Refer data vector [advanced]
           std::vector<value_type>& ref_data()        { return data; } ///< Refer data vector [advanced]
-    
+
     size_type stride() const { return my_stride; } /// Stride [advanced]
     size_type slots() const { return my_slots; } /// Slots, i.e. maximum number of entries per row/column
 
@@ -112,9 +112,9 @@ class ell_matrix
 	indices.resize(size); data.resize(size);
     }
 
-    template <typename V, typename P, typename Updater> friend struct ell_matrix_inserter; 
+    template <typename V, typename P, typename Updater> friend struct ell_matrix_inserter;
 
-    std::vector<value_type> data; 
+    std::vector<value_type> data;
     std::vector<size_type>  indices;
     size_type               my_stride, my_slots;
     bool                    inserting;
@@ -132,7 +132,7 @@ struct ell_matrix_inserter
     typedef compressed2D<Value, Parameters>   compressed_type;
     typedef wrapped_object<compressed_type>   wrapped_type;
     typedef compressed2D_inserter<Value, Parameters, Updater>   base_inserter;
-    
+
     explicit ell_matrix_inserter(matrix_type& A, size_type slot_size = 5)
       : wrapped_type(num_rows(A), num_cols(A)),
 	base_inserter(wrapped_type::wrapped_object_member, slot_size),
@@ -146,7 +146,7 @@ struct ell_matrix_inserter
 	this->finish();
 	const compressed_type& B= this->wrapped_object_member;
 	// std::cout << "Finished insertion!\nA (compressed2D) is:\n" << B;
-	
+
 	size_type max_slots= 0;
 	for (size_type i= 0; i < B.dim1(); ++i) {
 	    size_type s= this->starts[i+1] - this->starts[i];

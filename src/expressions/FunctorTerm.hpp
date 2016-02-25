@@ -1,5 +1,3 @@
-/** \file functorN_expr.h */
-
 #pragma once
 
 // std c++ headers
@@ -7,13 +5,12 @@
 #include <utility>
 
 // AMDiS headers
-#include <expressions/LazyOperatorTerm.h>
+#include <expressions/LazyOperatorTerm.hpp>
+#include "expressions/TermConcepts.hpp"
 #include <traits/basic.hpp>
 #include <traits/traits_fwd.hpp>
 #include <traits/traits.hpp>
 #include <traits/meta_basic.hpp>
-
-#include "TermConcepts.hpp"
 
 namespace AMDiS
 {

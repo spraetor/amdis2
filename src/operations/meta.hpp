@@ -1,8 +1,7 @@
-/** \file meta.hpp */
-
 #pragma once
 
-#include <traits/meta_basic.hpp>
+// AMDiS includes
+#include "traits/meta_basic.hpp"
 
 namespace AMDiS
 {

@@ -1,5 +1,3 @@
-/** \file is_symmetric.hpp */
-
 #pragma once
 
 namespace AMDiS

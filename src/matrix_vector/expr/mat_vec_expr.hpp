@@ -7,7 +7,7 @@
 #include <traits/basic.hpp>
 #include <traits/traits_fwd.hpp>
 
-#include "base_expr.hpp"
+#include "matrix_vector/expr/base_expr.hpp"
 #include <operations/meta.hpp>
 #include <matrix_vector/Vector.hpp>
 #include <Math.hpp>

@@ -1,5 +1,3 @@
-/** \file calculate_nnz.hpp */
-
 #pragma once
 
 namespace AMDiS

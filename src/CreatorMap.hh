@@ -1,8 +1,5 @@
-#include <map>
-
 namespace AMDiS
 {
-
   template <class BaseClass>
   void CreatorMap<BaseClass>::clear()
   {
@@ -13,4 +10,3 @@ namespace AMDiS
   }
 
 } // end namespace AMDiS
-
