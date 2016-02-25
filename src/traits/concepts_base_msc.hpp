@@ -13,11 +13,23 @@
 // macro to generate concept-checks
 #define HAS_MEMBER_GENERATE(name) \
   template <class, class, class = void> struct has_member_ ## name : false_ {}; \
-  template <class F, class Return, class... Args>                             \
-  struct has_member_ ## name <F, Return(Args...),                             \
-    Requires_t< std::is_convertible<                                          \
-      decltype(std::declval<F>().name (std::declval<Args>()...)),             \
-      Return >> >                                                             \
+  template <class F, class Return, class Arg0>                             \
+  struct has_member_ ## name <F, Return(Arg0),                             \
+    Requires_t< std::is_convertible<                                       \
+      decltype(std::declval<F>().name (std::declval<Arg0>())),             \
+      Return >> >                                                          \
+  : true_ {};                                                              \
+  template <class F, class Return, class Arg0, class Arg1>                 \
+  struct has_member_ ## name <F, Return(Arg0, Arg1),                       \
+    Requires_t< std::is_convertible<                                       \
+      decltype(std::declval<F>().name (std::declval<Arg0>(), std::declval<Arg1>())),  \
+      Return >> >                                                          \
+  : true_ {};                                                              \
+  template <class F, class Return, class Arg0, class Arg1, class Arg2>     \
+  struct has_member_ ## name <F, Return(Arg0, Arg1, Arg2),                 \
+    Requires_t< std::is_convertible<                                       \
+      decltype(std::declval<F>().name (std::declval<Arg0>(), std::declval<Arg1>(), std::declval<Arg2>())), \
+      Return >> >                                                          \
   : true_ {};
 
 #define HAS_MEMBER(name) has_member_ ## name
