@@ -9,7 +9,7 @@
 #include <traits/scalar_types.hpp>
 #include <traits/traits.hpp>
 
-#include "base_expr.hpp" // for shaped_expr
+#include "matrix_vector/expr/base_expr.hpp" // for shaped_expr
 
 namespace AMDiS
 {
@@ -112,28 +112,28 @@ namespace AMDiS
     template <class V, class E, bool l, class F>
     struct category<ScaleExpr<V,E,l,F>> : category<E> {};
     /// \endcond
-    
+
   } // end namespace traits
-  
+
 
   // s * V
   template <class Value, class E>
-  using LeftScaleExpr 
-    = Requires_t<and_<concepts::Multiplicable<Value_t<E>, Value>, 
+  using LeftScaleExpr
+    = Requires_t<and_<concepts::Multiplicable<Value_t<E>, Value>,
                       concepts::Arithmetic<Value>>,
       ScaleExpr<Value, E, true, functors::multiplies<Value_t<E>, Value>> >;
 
   // V * s
   template <class Value, class E>
   using RightScaleExpr
-    = Requires_t<and_<concepts::Multiplicable<Value_t<E>, Value>, 
+    = Requires_t<and_<concepts::Multiplicable<Value_t<E>, Value>,
                       concepts::Arithmetic<Value>>,
       ScaleExpr<Value, E, false, functors::multiplies<Value_t<E>, Value>> >;
 
   // V / s
   template <class Value, class E>
   using RightDivideExpr
-    = Requires_t<and_<concepts::Multiplicable<Value_t<E>, Value>, 
+    = Requires_t<and_<concepts::Multiplicable<Value_t<E>, Value>,
                       concepts::Arithmetic<Value>>,
       ScaleExpr<Value, E, false, functors::divides<Value_t<E>, Value>> >;
 

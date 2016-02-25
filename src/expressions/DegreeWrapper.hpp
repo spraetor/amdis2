@@ -1,9 +1,7 @@
-/** \file DegreeWrapper.hpp */
-
 #pragma once
 
-#include <operations/functors.hpp>
-#include <traits/basic.hpp>
+#include "operations/functors.hpp"
+#include "traits/basic.hpp"
 
 namespace AMDiS
 {

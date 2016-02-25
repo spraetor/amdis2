@@ -1,4 +1,4 @@
-#include "BasisFunction.h"
+#include "BasisFunction.hpp"
 
 namespace AMDiS
 {

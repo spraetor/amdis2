@@ -5,7 +5,7 @@
 #include <traits/basic.hpp>
 #include <traits/traits_fwd.hpp>
 
-#include "base_expr.hpp" // for ShapedExpr
+#include "matrix_vector/expr/base_expr.hpp" // for ShapedExpr
 
 namespace AMDiS
 {
@@ -81,6 +81,6 @@ namespace AMDiS
     template <class M, class F>
     struct category<ElementwiseUnaryExpr<M,F>> : category<M> {};
     /// \endcond
-    
+
   } // end namespace traits
 } // end namespace AMDiS

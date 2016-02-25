@@ -2,13 +2,17 @@
 
 #pragma once
 
+#ifdef COMPILER_IS_MSC
+#include "traits/concepts_base_msc.hpp"
+#else
+
 // std c++ headers
 #include <utility>
 #include <type_traits>
 
 // AMDiS headers
-#include <traits/basic.hpp>
-#include <traits/meta_basic.hpp>
+#include "traits/basic.hpp"
+#include "traits/meta_basic.hpp"
 
 // macro to generate concept-checks
 #define HAS_MEMBER_GENERATE(name) \
@@ -28,21 +32,21 @@ namespace AMDiS
   {
     // Some type traits to test for type-attributes of a class
     // -------------------------------------------------------------------------
-    
+
     namespace detail
     {
       template <class T, class = typename T::value_type >
       true_ HasValueTypeImpl(int);
 
       template <class T> false_ HasValueTypeImpl(...);
-      
-      
+
+
       template <class T, class = typename T::size_type >
       true_ HasSizeTypeImpl(int);
 
       template <class T> false_ HasSizeTypeImpl(...);
-      
-      
+
+
       template <class T, class = typename T::result_type >
       true_ HasResultTypeImpl(int);
 
@@ -50,20 +54,20 @@ namespace AMDiS
 
     } // end namespace detail
 
-    
+
     template <class T>
     using HasValueType = decltype(detail::HasValueTypeImpl<T>(int{}));
-    
+
     template <class T>
     using HasSizeType = decltype(detail::HasSizeTypeImpl<T>(int{}));
-    
+
     template <class T>
     using HasResultType = decltype(detail::HasResultTypeImpl<T>(int{}));
-     
-    
+
+
     // Type traits to test whether a class is a functor, i.e. has a operator()
     // -------------------------------------------------------------------------
-    
+
     // source: http://stackoverflow.com/questions/25603240/checking-callable-template-parameter-types
     template <class, class, class = void>
     struct IsFunctor : false_ {};
@@ -74,6 +78,7 @@ namespace AMDiS
                                   Return >> >
       : true_ {};
 
+
     template <class, class, class = void>
     struct IsFunctorWeak : false_ {};
 
@@ -82,9 +87,10 @@ namespace AMDiS
         Requires_t< std::is_convertible< decltype(std::declval<F>()(std::declval<Args>()...)),
                                          Return >> >
       : true_ {};
+
   } // end namespace traits
 
-  
+
   /// Namespace that implements basic concept checks
   namespace concepts
   {
@@ -110,10 +116,10 @@ namespace AMDiS
                                          Return >> >
       : true_ {};
 #endif
-       
-      
+
+
     namespace detail
-    {      
+    {
       template <class T, class = decltype(&T::operator[])>
       true_ VectorImpl(int);
 
@@ -123,10 +129,10 @@ namespace AMDiS
 
     template <class T>
     using Vector = decltype(detail::VectorImpl<T>(int{}));
-    
+
     template <class T>
     using Matrix = traits::IsFunctorWeak<T, Value_t<T>(size_t, size_t)>;
-       
+
   } // end namespace concepts
 
 
@@ -135,3 +141,5 @@ namespace AMDiS
   namespace requires {}
 
 } // end namespace AMDiS
+
+#endif

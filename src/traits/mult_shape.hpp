@@ -3,8 +3,8 @@
 #pragma once
 
 // AMDiS headers
-#include <traits/basic.hpp>
-#include <traits/shape.hpp>
+#include "traits/basic.hpp"
+#include "traits/shape.hpp"
 
 
 namespace AMDiS

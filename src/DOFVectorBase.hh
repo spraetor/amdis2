@@ -2,17 +2,17 @@
 
 #include <vector>
 
-#include "BasisFunction.h"
-#include "Boundary.h"
-#include "ElInfo.h"
-#include "FiniteElemSpace.h"
-#include "Global.h"
-#include "Mesh.h"
-#include "Operator.h"
-#include "Quadrature.h"
+#include "BasisFunction.hpp"
+#include "Boundary.hpp"
+#include "ElInfo.hpp"
+#include "FiniteElemSpace.hpp"
+#include "Global.hpp"
+#include "Mesh.hpp"
+#include "Operator.hpp"
+#include "Quadrature.hpp"
 
 #ifdef HAVE_PARALLEL_DOMAIN_AMDIS
-#include "parallel/MpiHelper.h"
+#include "parallel/MpiHelper.hpp"
 #endif
 
 namespace AMDiS

@@ -1,23 +1,18 @@
-// ----------------------------------------------------------------------------
-// Copyright (C) 2002-2006 Marcin Kalicinski
-//
-// Distributed under the Boost Software License, Version 1.0. 
-// (See accompanying file LICENSE_1_0.txt or copy at 
-// http://www.boost.org/LICENSE_1_0.txt)
-//
-// For more information, see www.boost.org
-// ----------------------------------------------------------------------------
-#ifndef BOOST_PROPERTY_TREE_AMDIS_PARSER_HPP_INCLUDED
-#define BOOST_PROPERTY_TREE_AMDIS_PARSER_HPP_INCLUDED
+#pragma once
 
-#include <boost/property_tree/ptree.hpp>
-#include "amdis_parser_read.hpp"
-// #include "amdis_parser_write.hpp"
-#include "amdis_parser_error.hpp"
-
+// std c++ headers
 #include <fstream>
-#include <string>
 #include <locale>
+#include <string>
+
+// Boost includes
+#include <boost/property_tree/ptree.hpp>
+
+// AMDiS includes
+#include "utility/amdis_parser_read.hpp"
+// #include "utility/amdis_parser_write.hpp"
+#include "utility/amdis_parser_error.hpp"
+
 
 namespace boost { namespace property_tree { namespace amdis_parser
 {
@@ -137,5 +132,3 @@ namespace boost { namespace property_tree
 //     using amdis_parser::write_amdis;
     using amdis_parser::amdis_parser_error;
 } }
-
-#endif

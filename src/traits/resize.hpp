@@ -2,9 +2,10 @@
 
 #pragma once
 
-#include <traits/basic.hpp>
-#include <traits/traits_fwd.hpp>
-#include <traits/concepts_base.hpp>
+// AMDiS headers
+#include "traits/basic.hpp"
+#include "traits/traits_fwd.hpp"
+#include "traits/concepts_base.hpp"
 
 namespace AMDiS
 {

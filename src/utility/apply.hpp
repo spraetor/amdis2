@@ -1,13 +1,13 @@
-/** \file int_seq.hpp */
-
 #pragma once
 
+// std c++ headers
 #include <tuple>
 #include <array>
 
-#include <traits/basic.hpp>
-#include <traits/size.hpp>
-#include "int_seq.hpp"
+// AMDiS includes
+#include "traits/basic.hpp"
+#include "traits/size.hpp"
+#include "utility/int_seq.hpp"
 
 namespace AMDiS
 {

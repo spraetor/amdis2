@@ -1,6 +1,6 @@
-#include "Quadrature.h"
-#include "FiniteElemSpace.h"
-#include "ElInfo.h"
+#include "ElInfo.hpp"
+#include "FiniteElemSpace.hpp"
+#include "Quadrature.hpp"
 
 namespace AMDiS
 {

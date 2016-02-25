@@ -2,9 +2,10 @@
 
 #pragma once
 
-#include <AMDiS_fwd.h>
-#include <traits/traits_fwd.hpp>
-#include <traits/scalar_types.hpp>
+// AMDiS headers
+#include "AMDiS_fwd.hpp"
+#include "traits/traits_fwd.hpp"
+#include "traits/scalar_types.hpp"
 
 namespace AMDiS
 {

@@ -5,7 +5,7 @@
 #include <traits/basic.hpp>
 #include <traits/traits_fwd.hpp>
 
-#include "base_expr.hpp" // for BaseExpr
+#include "matrix_vector/expr/base_expr.hpp" // for BaseExpr
 
 namespace AMDiS
 {

@@ -2,11 +2,14 @@
 
 #pragma once
 
-#include <traits/tag.hpp>
-
+// MTL4 headers
 #include <boost/numeric/mtl/operation/num_cols.hpp>
 #include <boost/numeric/mtl/operation/num_rows.hpp>
 #include <boost/numeric/mtl/operation/size.hpp>
+
+// AMDiS headers
+#include "traits/tag.hpp"
+
 
 namespace AMDiS
 {

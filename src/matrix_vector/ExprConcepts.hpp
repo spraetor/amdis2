@@ -1,5 +1,3 @@
-/** \file ExprConcepts.hpp */
-
 #pragma once
 
 // std c++ headers
@@ -7,9 +5,9 @@
 #include <type_traits>
 
 // AMDiS headers
-#include <traits/basic.hpp>
-#include <traits/meta_basic.hpp>
-#include <traits/concepts_base.hpp>
+#include "traits/basic.hpp"
+#include "traits/meta_basic.hpp"
+#include "traits/concepts_base.hpp"
 
 namespace AMDiS
 {

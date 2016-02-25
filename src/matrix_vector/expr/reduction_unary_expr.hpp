@@ -4,7 +4,7 @@
 
 
 #include <traits/basic.hpp>
-#include "base_expr.hpp" // for base_expr
+#include "matrix_vector/expr/base_expr.hpp" // for base_expr
 #include <operations/reduction_functors.hpp>
 
 namespace AMDiS
@@ -113,7 +113,7 @@ namespace AMDiS
       using size_type  = Size_t<ReductionUnaryExpr<E,F>>;
     };
     /// \endcond
-    
+
   } // end namespace traits
 
 

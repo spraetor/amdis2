@@ -1,5 +1,3 @@
-/** \file int_seq.hpp */
-
 #pragma once
 
 // from http://stackoverflow.com/questions/17424477/implementation-c14-make-integer-sequence/17426611#17426611

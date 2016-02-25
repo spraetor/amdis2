@@ -1,9 +1,6 @@
-/** \file Expressions.hh */
-
-#include <Traverse.h>
-#include <DualTraverse.h>
-
-#include <traits/basic.hpp>
+#include "Traverse.hpp"
+//#include "DualTraverse.h"
+#include "traits/basic.hpp"
 
 namespace AMDiS
 {

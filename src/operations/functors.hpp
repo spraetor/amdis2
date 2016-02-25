@@ -3,8 +3,8 @@
 #pragma once
 
 // std c++ headers
-#include <complex>
 #include <cmath>
+#include <complex>
 #include <type_traits>
 
 // boost headers
@@ -12,8 +12,8 @@
 #include <boost/math/special_functions/pow.hpp>
 
 // AMDiS headers
-#include <traits/scalar_types.hpp>
-#include <operations/meta.hpp>
+#include "operations/meta.hpp"
+#include "traits/scalar_types.hpp"
 
 namespace AMDiS
 {
