@@ -29,13 +29,13 @@ typedef size_t aligned_size_t;
 
 // some compiler attributes
 // ------------------------
-#ifndef NOINLINE
+#ifndef AMDIS_NOINLINE
 #define AMDIS_NOINLINE
 #endif
-#ifndef ALWAYS_INLINE
+#ifndef AMDIS_ALWAYS_INLINE
 #define AMDIS_ALWAYS_INLINE
 #endif
-#ifndef OPENMODE
+#ifndef AMDIS_OPENMODE
 #define AMDIS_OPENMODE std::ios::openmode
 #endif
 

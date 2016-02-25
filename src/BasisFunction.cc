@@ -39,8 +39,8 @@ namespace AMDiS
   {
     // TODO: REMOVE STATIC
     static WorldMatrix<double> D2(DEFAULT_SIZE, DEFAULT_SIZE, 0.0);
-    DimMat<double> D2_b(dim, 0.0);
-    DimMat<double> D2_tmp(dim, 0.0);
+    DimMat<double> D2_b(dim, dim, 0.0);
+    DimMat<double> D2_tmp(dim, dim, 0.0);
     WorldMatrix<double>* val = D2_uh ? D2_uh : &D2;
 
     for (int i = 0; i < nBasFcts; i++)
