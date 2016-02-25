@@ -81,7 +81,7 @@ add_library(amdis
     ${SOURCE_DIR}/DOFVector.cc
     ${SOURCE_DIR}/DOFVectorBase.cc
     ${SOURCE_DIR}/DirichletBC.cc
-    ${SOURCE_DIR}/DualTraverse.cc
+    #${SOURCE_DIR}/DualTraverse.cc
     ${SOURCE_DIR}/ElInfo.cc
     ${SOURCE_DIR}/ElInfo1d.cc
     ${SOURCE_DIR}/ElInfo2d.cc
