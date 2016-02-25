@@ -11,9 +11,9 @@ namespace AMDiS
 
   void RobinBC::fillBoundaryCondition(DOFVectorBase<double>* vector,
                                       ElInfo* elInfo,
-                                      DegreeOfFreedom const* dofIndices,
+                                      DegreeOfFreedom const* /*dofIndices*/,
                                       BoundaryType const* localBound,
-                                      int nBasFcts)
+                                      int /*nBasFcts*/)
   {
     FUNCNAME_DBG("RobinBC::fillBoundaryCondition()");
     TEST_EXIT_DBG(vector->getFeSpace() == rowFeSpace)("invalid row fe space\n");
@@ -31,9 +31,9 @@ namespace AMDiS
 
   void RobinBC::fillBoundaryCondition(DOFMatrix* matrix,
                                       ElInfo* elInfo,
-                                      DegreeOfFreedom const* dofIndices,
+                                      DegreeOfFreedom const* /*dofIndices*/,
                                       BoundaryType const* localBound,
-                                      int nBasFcts)
+                                      int /*nBasFcts*/)
   {
     if (robinOperators)
     {
@@ -90,8 +90,8 @@ namespace AMDiS
     {
       elInfo->getNormal(face, normal);
 
-      Quadrature* quadrature = neumannQuad 
-	? (*neumannOperators)[face]->getAssembler()->getZeroOrderAssembler()->getQuadrature() 
+      Quadrature* quadrature = neumannQuad
+	? (*neumannOperators)[face]->getAssembler()->getZeroOrderAssembler()->getQuadrature()
 	: (*robinOperators)[face]->getAssembler()->getZeroOrderAssembler()->getQuadrature();
 
       if (elInfo->getBoundary(face) == boundaryType)

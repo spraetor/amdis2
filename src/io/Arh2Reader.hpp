@@ -1,11 +1,9 @@
-#ifndef AMDIS_ARH_READER2_H
-#define AMDIS_ARH_READER2_H
+#pragma once
 
+ERROR
 
-/** \file Arh2Reader.h */
-
-#include "AMDiS_fwd.h"
-#include "Global.h"
+#include "AMDiS_fwd.hpp"
+#include "Global.hpp"
 
 #ifdef HAVE_PARALLEL_DOMAIN_AMDIS
 #define WRITE_PARALLEL true
@@ -208,6 +206,3 @@ namespace AMDiS
     } // end namespace Arh2Reader
   }
 } // end namespace io, AMDiS
-
-
-#endif

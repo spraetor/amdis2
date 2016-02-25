@@ -1,13 +1,4 @@
-#include "Arh3Reader.h"
-#include "Mesh.h"
-#include "MeshStructure.h"
-#include "Traverse.h"
-#include "DOFVector.h"
-#include "SystemVector.h"
-#include "Debug.h"
-#include "../Arh3Reader.h"
-#include "Arh3Writer.h"
-#include "MacroElement.h"
+#include "io/detail/Arh3Reader.hpp"
 
 #include <boost/filesystem.hpp>
 #include <boost/iostreams/filtering_streambuf.hpp>
@@ -16,6 +7,16 @@
 #include <boost/iostreams/filter/zlib.hpp>
 #include <boost/iostreams/filter/bzip2.hpp>
 #endif
+
+#include "Mesh.hpp"
+#include "MeshStructure.hpp"
+#include "Traverse.hpp"
+#include "DOFVector.hpp"
+#include "SystemVector.hpp"
+#include "Debug.hpp"
+#include "io/Arh3Reader.hpp"
+#include "io/detail/Arh3Writer.hpp"
+#include "MacroElement.hpp"
 
 namespace AMDiS
 {

@@ -1,13 +1,11 @@
-/** \file MacroInfo.h */
-
 #pragma once
 
 #include <deque>
 
-#include <AMDiS_fwd.h>
-#include <AMDiS_base.h>
-#include <MatrixVector_fwd.h>
-#include <Global.h>
+#include "AMDiS_fwd.hpp"
+#include "AMDiS_base.hpp"
+#include "MatrixVector_fwd.hpp"
+#include "Global.hpp"
 
 namespace AMDiS
 {

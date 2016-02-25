@@ -35,14 +35,16 @@
 #ifdef HAVE_COMPRESSION
 #include <boost/iostreams/filter/zlib.hpp>
 #endif
-#include "DOFVector.h"
-#include "Mesh.h"
+
 #include "boost/filesystem.hpp"
 #include "pugixml.hpp"
 // extensions {
 #include "kdtree_nanoflann.h"
 #include "VectorOperations.h"
 // }
+
+#include "DOFVector.hpp"
+#include "Mesh.hpp"
 
 #define BLOCKSIZE 32768
 

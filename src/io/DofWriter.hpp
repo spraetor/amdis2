@@ -1,36 +1,12 @@
-/******************************************************************************
- *
- * AMDiS - Adaptive multidimensional simulations
- *
- * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
- * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
- *
- * Authors:
- * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
- *
- * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
- * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
- *
- *
- * This file is part of AMDiS
- *
- * See also license.opensource.txt in the distribution.
- *
- ******************************************************************************/
-
-
-
-/** \file DofWriter.h */
-
-#ifndef AMDIS_DOF_WRITER_H
-#define AMDIS_DOF_WRITER_H
+#pragma once
 
 #include <fstream>
 #include <vector>
-#include "AMDiS_fwd.h"
-#include "FiniteElemSpace.h"
-#include "Mesh.h"
-#include "SystemVector.h"
+
+#include "AMDiS_fwd.hpp"
+#include "FiniteElemSpace.hpp"
+#include "Mesh.hpp"
+#include "SystemVector.hpp"
 
 namespace AMDiS
 {
@@ -48,7 +24,7 @@ namespace AMDiS
 
       /// Interface for general containers not implemented. Specializations below.
       template<typename Container>
-      void writeFile(Container& vec, std::string filename)
+      void writeFile(Container& /*vec*/, std::string /*filename*/)
       {
         ERROR_EXIT("DofWriter not implemented for this container type!\n");
       }
@@ -101,5 +77,3 @@ namespace AMDiS
     } // end namespace DofWriter
   } // end namespace io
 } // end AMDiS
-
-#endif

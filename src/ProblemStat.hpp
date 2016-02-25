@@ -75,12 +75,12 @@ namespace AMDiS
 
     /// Used in \ref initialize().
     /**
-     * Parameters read in createFeSpace() for problem with name 'PROB', 
+     * Parameters read in createFeSpace() for problem with name 'PROB',
      * for i=0...(nComponents+nAddComponents).
      *   PROB->feSpace[i]:               Name of the i-th feSpace
      *   PROB->finite element space[i]:  Name of the i-th feSpace
      *   PROB->polynomial degree[i]:     Same as feSpace[i] = "Lagrange" + DEGREE
-     * 
+     *
      * FeSpaces are stored in \ref feSpaces and \ref componentSpaces.
      **/
     virtual void createFeSpace(DOFAdmin* admin);
@@ -100,7 +100,7 @@ namespace AMDiS
     /**
      * Parameters read in createEstimator() for problem with name 'PROB'
      *   PROB->estimator[i]->name:  Name of the i-th estimator
-     * 
+     *
      * Estimators are stored in \ref estimator.
      **/
     virtual void createEstimator();
@@ -109,7 +109,7 @@ namespace AMDiS
     /**
      * Creates a marker corresponding to parameter
      *   PROB->marker[i]
-     * 
+     *
      * Markers are stored in \ref marker.
      **/
     virtual void createMarker();
@@ -126,7 +126,7 @@ namespace AMDiS
      *   PROB->output->vectors[j]->components:   The Components corresponding to Vector-Filewriter j
      *   PROB->output->vectors[j]->filename:     The filename of Vector-Filewriter j
      *   PROB->output->vectors[j]->name:         The corresponding component-name
-     * 
+     *
      * Filewriters are stored in \ref fileWriters.
      **/
     virtual void createFileWriter();
@@ -155,11 +155,11 @@ namespace AMDiS
 
     /// Implementation of ProblemStatBase::buildBeforeRefine().
     /// Does nothing here.
-    virtual void buildBeforeRefine(AdaptInfo& adaptInfo, Flag) override {}
+    virtual void buildBeforeRefine(AdaptInfo& /*adaptInfo*/, Flag) override {}
 
     /// Implementation of ProblemStatBase::buildBeforeCoarsen().
     /// Does nothing here.
-    virtual void buildBeforeCoarsen(AdaptInfo& adaptInfo, Flag) override {}
+    virtual void buildBeforeCoarsen(AdaptInfo& /*adaptInfo*/, Flag) override {}
 
     /// Implementation of ProblemStatBase::buildAfterCoarsen().
     /// Assembles \ref A and \ref rhs. With the last two parameters, assembling
@@ -184,7 +184,7 @@ namespace AMDiS
     {
       return nAddComponents;
     }
-    
+
     /// Writes output files.
     void writeFiles(AdaptInfo& adaptInfo, bool force);
 
@@ -331,13 +331,13 @@ namespace AMDiS
     }
 
     /// Returns \ref refinementManager.
-    RefinementManager* getRefinementManager(int comp = 0)
+    RefinementManager* getRefinementManager(int /*comp*/ = 0)
     {
       return refinementManager;
     }
 
     /// Returns \ref refinementManager.
-    CoarseningManager* getCoarseningManager(int comp = 0)
+    CoarseningManager* getCoarseningManager(int /*comp*/ = 0)
     {
       return coarseningManager;
     }

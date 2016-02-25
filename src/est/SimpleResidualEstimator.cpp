@@ -351,7 +351,7 @@ namespace AMDiS
                                   const DenseVector<WorldMatrix<double>>& D2UhIq,
                                   DOFMatrix* A,
                                   DOFVector<double>* fh,
-                                  Quadrature* quad,
+                                  Quadrature* /*quad*/,
                                   DenseVector<double>& result)
   {
     std::vector<Operator*>::iterator it;

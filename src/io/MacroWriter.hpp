@@ -1,41 +1,17 @@
-/******************************************************************************
- *
- * AMDiS - Adaptive multidimensional simulations
- *
- * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
- * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
- *
- * Authors:
- * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
- *
- * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
- * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
- *
- *
- * This file is part of AMDiS
- *
- * See also license.opensource.txt in the distribution.
- *
- ******************************************************************************/
-
-
-
-/** \file MacroWriter.h */
-
-#ifndef AMDIS_MACROWRITER_H
-#define AMDIS_MACROWRITER_H
+#pragma once
 
 #include <list>
 #include <vector>
-#include "AMDiS_fwd.h"
-#include "VertexInfo.h"
-#include "ElementInfo.h"
-#include "DataCollector.h"
-#include "FixVec.h"
-#include "Boundary.h"
-#include "Projection.h"
-#include "Flag.h"
-#include "Mesh.h"
+
+#include "AMDiS_fwd.hpp"
+#include "Boundary.hpp"
+#include "DataCollector.hpp"
+#include "ElementInfo.hpp"
+#include "FixVec.hpp"
+#include "Flag.hpp"
+#include "Mesh.hpp"
+#include "Projection.hpp"
+#include "VertexInfo.hpp"
 
 namespace AMDiS
 {
@@ -65,5 +41,3 @@ namespace AMDiS
 
   }
 } // end namespace io, AMDiS
-
-#endif

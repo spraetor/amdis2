@@ -1,48 +1,26 @@
-/******************************************************************************
- *
- * AMDiS - Adaptive multidimensional simulations
- *
- * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
- * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
- *
- * Authors:
- * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
- *
- * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
- * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
- *
- *
- * This file is part of AMDiS
- *
- * See also license.opensource.txt in the distribution.
- *
- ******************************************************************************/
-
-
-#include <boost/filesystem.hpp>
-
-#include "FileWriter.h"
-#include "Initfile.h"
-#include "ValueWriter.h"
-#include "MacroWriter.h"
-#include "VtkWriter.h"
-#include "VtkVectorWriter.h"
-#include "PngWriter.h"
-#include "PovrayWriter.h"
-#include "DofWriter.h"
-#include "ArhWriter.h"
-#include "Arh2Writer.h"
-#include "Arh3Writer.h"
-#include "FiniteElemSpace.h"
-#include "AdaptInfo.h"
-#include "Flag.h"
-#include "ElInfo.h"
-#include "Mesh.h"
-#include "DataCollector.h"
+#include "io/FileWriter.hpp"
 
 #if HAVE_PARALLEL_DOMAIN_AMDIS
 #include <mpi.h>
 #endif
+
+#include <boost/filesystem.hpp>
+
+#include "Initfile.hpp"
+#include "io/ValueWriter.hpp"
+#include "io/MacroWriter.hpp"
+#include "io/VtkWriter.hpp"
+#include "io/VtkVectorWriter.hpp"
+#include "io/PngWriter.hpp"
+#include "io/PovrayWriter.hpp"
+#include "io/DofWriter.hpp"
+#include "io/Arh3Writer.hpp"
+#include "FiniteElemSpace.hpp"
+#include "AdaptInfo.hpp"
+#include "Flag.hpp"
+#include "ElInfo.hpp"
+#include "Mesh.hpp"
+#include "io/DataCollector.hpp"
 
 using namespace std;
 
@@ -91,7 +69,7 @@ namespace AMDiS
       //-----------------by Siqi---------------------//
       if (writeAMDiSFormat || writePeriodicFormat || writeParaViewFormat
           || writeParaViewVectorFormat || writeParaViewAnimation
-          || writeDofFormat || writeArh1 || writePovrayFormat)
+          || writeDofFormat || writeArhFormat || writePovrayFormat)
       {
         for (int i = 0; i < static_cast<int>(solutionVecs.size()); i++)
           TEST_EXIT(solutionVecs[0]->getFeSpace() == solutionVecs[i]->getFeSpace())
@@ -206,12 +184,7 @@ namespace AMDiS
       }
 
       // write Arh files
-      if (writeArh2)
-        Arh2Writer::writeFile(solutionVecs, fn_ + ".arh");
-      else if (writeArh1)
-        ArhWriter::write(fn_ + ".arh", feSpace->getMesh(), solutionVecs);
-      else if (writeArh3 || writeArhFormat)
-        Arh3Writer::writeFile(solutionVecs, fn_ + ".arh");
+      Arh3Writer::writeFile(solutionVecs, fn_ + ".arh");
 
 
 #ifdef HAVE_PNG

@@ -107,7 +107,7 @@ namespace AMDiS
   }
 
 
-  void  RCNeighbourList::fillNeighbourRelations(int n_neigh, int bound)
+  void  RCNeighbourList::fillNeighbourRelations(int n_neigh, int /*bound*/)
   {
     // for all RC Elements in list
     for (int i = 0; i < n_neigh; i++)

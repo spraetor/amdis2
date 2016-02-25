@@ -1,14 +1,8 @@
+#include "io/detail/Arh3Writer.hpp"
+
 #include <fstream>
 #include <stdint.h>
 #include <iostream>
-
-#include "Arh3Writer.h"
-#include "Mesh.h"
-#include "MeshStructure.h"
-#include "Traverse.h"
-#include "DOFVector.h"
-#include "../Arh3Reader.h"
-#include "MacroElement.h"
 
 #include <boost/iostreams/filtering_streambuf.hpp>
 #include <boost/iostreams/copy.hpp>
@@ -16,6 +10,13 @@
 #include <boost/iostreams/filter/zlib.hpp>
 #include <boost/iostreams/filter/bzip2.hpp>
 #endif
+
+#include "Mesh.hpp"
+#include "MeshStructure.hpp"
+#include "Traverse.hpp"
+#include "DOFVector.hpp"
+#include "io/Arh3Reader.hpp"
+#include "MacroElement.hpp"
 
 namespace AMDiS
 {
@@ -91,7 +92,7 @@ namespace AMDiS
                    bool writeParallel,
                    Cpsformat cps,
                    string dataformat,
-                   string filenameType)
+                   string /*filenameType*/) // NOTE: param filenametype only in parallel-mode
         {
           FUNCNAME("Arh3Writer::detail::write()");
 
@@ -314,7 +315,7 @@ namespace AMDiS
 
         void writeAux(string filename, Mesh* mesh,
                       vector<DOFVector<double>*> vecs,
-                      bool writeParallel,
+                      bool /*writeParallel*/, // NOTE: param writeParallel only in parallel mode
                       Cpsformat cps,
                       string dataformat)
         {
@@ -498,7 +499,7 @@ namespace AMDiS
                                          MeshStructure& code,
                                          vector<vector<double>>& values,
                                          map<const FiniteElemSpace*, vector<int>>& feSpaces,
-                                         Cpsformat cps,
+                                         Cpsformat /*cps*/, // NOTE: param cps only with HAVE_COMPRESSION
                                          string dataformat)
         {
           stringstream dataStream(ios::out | ios::in | ios::binary);

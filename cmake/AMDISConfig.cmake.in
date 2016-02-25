@@ -97,5 +97,4 @@ else ()
 endif ()
 unset(_MUPARSER_LIB CACHE)
 
-
 set(AMDIS_LIBRARIES AMDiS)

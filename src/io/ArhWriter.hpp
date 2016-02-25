@@ -1,35 +1,12 @@
-/******************************************************************************
- *
- * AMDiS - Adaptive multidimensional simulations
- *
- * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
- * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
- *
- * Authors:
- * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
- *
- * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
- * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
- *
- *
- * This file is part of AMDiS
- *
- * See also license.opensource.txt in the distribution.
- *
- ******************************************************************************/
+#pragma once
 
+ERROR
 
-
-/** \file ArhWriter.h */
-
-#ifndef AMDIS_ARH_WRITER_H
-#define AMDIS_ARH_WRITER_H
-
-#include "DOFVector.h"
-#include "SystemVector.h"
-#include "Mesh.h"
-#include "MeshStructure.h"
-#include "detail/ArhWriter.h"
+#include "DOFVector.hpp"
+#include "SystemVector.hpp"
+#include "Mesh.hpp"
+#include "MeshStructure.hpp"
+#include "io/detail/ArhWriter.hpp"
 
 namespace AMDiS
 {
@@ -113,5 +90,3 @@ namespace AMDiS
     }// end namespace ArhWriter
   }
 } // end namespace io, AMDiS
-
-#endif

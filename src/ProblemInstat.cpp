@@ -110,7 +110,7 @@ namespace AMDiS
   }
 
 
-  void ProblemInstat::initTimestep(AdaptInfo& adaptInfo)
+  void ProblemInstat::initTimestep(AdaptInfo& /*adaptInfo*/)
   {
 #ifdef HAVE_PARALLEL_DOMAIN_AMDIS
     lastTimepoint = MPI::Wtime();

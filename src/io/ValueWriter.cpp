@@ -1,23 +1,4 @@
-/******************************************************************************
- *
- * AMDiS - Adaptive multidimensional simulations
- *
- * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
- * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
- *
- * Authors:
- * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
- *
- * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
- * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
- *
- *
- * This file is part of AMDiS
- *
- * See also license.opensource.txt in the distribution.
- *
- ******************************************************************************/
-
+#include "ValueWriter.hpp"
 
 #include <list>
 #include <vector>
@@ -25,12 +6,11 @@
 #include <algorithm>
 #include <cstring>
 
-#include "ValueWriter.h"
-#include "DOFVector.h"
-#include "DOFAdmin.h"
-#include "ElInfo.h"
-#include "BasisFunction.h"
-#include "DataCollector.h"
+#include "DOFVector.hpp"
+#include "DOFAdmin.hpp"
+#include "ElInfo.hpp"
+#include "BasisFunction.hpp"
+#include "io/DataCollector.hpp"
 
 namespace AMDiS
 {
@@ -42,9 +22,9 @@ namespace AMDiS
       using namespace std;
 
       void writeValues(DataCollector<>* dc, std::string filename,
-                       double time, int level,
-                       Flag traverseFlag,
-                       bool (*writeElem)(ElInfo*))
+                       double time, int /*level*/,
+                       Flag /*traverseFlag*/,
+                       bool (*/*writeElem*/)(ElInfo*))
       {
         FUNCNAME("writeValues()");
 

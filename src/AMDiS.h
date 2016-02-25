@@ -10,6 +10,7 @@
 #include <cstdint>
 
 // AMDiS includes
+#include "AMDiS.hpp"
 #include "MTL4Types.hpp"
 #include "AdaptInfo.hpp"
 #include "AdaptInstationary.hpp"
@@ -37,7 +38,7 @@
 #include "DOFVector.hpp"
 #include "DOFVectorOperations.hpp"
 #include "DirichletBC.hpp"
-#include "DualTraverse.hpp"
+// #include "DualTraverse.hpp"
 #include "ElInfo.hpp"
 #include "ElInfo1d.hpp"
 #include "ElInfo2d.hpp"
@@ -91,11 +92,11 @@
 
 #include "est/Estimator.hpp"
 
-#include "io/ArhReader.hpp"
-#include "io/Arh2Reader.hpp"
+// #include "io/ArhReader.hpp"
+// #include "io/Arh2Reader.hpp"
 #include "io/Arh3Reader.hpp"
-#include "io/ArhWriter.hpp"
-#include "io/Arh2Writer.hpp"
+// #include "io/ArhWriter.hpp"
+// #include "io/Arh2Writer.hpp"
 #include "io/Arh3Writer.hpp"
 #include "io/DataCollector.hpp"
 #include "io/FileWriter.hpp"

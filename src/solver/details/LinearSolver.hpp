@@ -1,34 +1,12 @@
-/******************************************************************************
- *
- * AMDiS - Adaptive multidimensional simulations
- *
- * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
- * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
- *
- * Authors:
- * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
- *
- * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
- * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
- *
- *
- * This file is part of AMDiS
- *
- * See also license.opensource.txt in the distribution.
- *
- ******************************************************************************/
+#pragma once
 
-
-/** \file LinearSolver.h */
-
-#ifndef AMDIS_MTL4SOLVER_DETAILS_H
-#define AMDIS_MTL4SOLVER_DETAILS_H
-
-#include "solver/MatrixStreams.h"
-#include "Timer.h"
 #include <iostream>
+
 #include <boost/mpl/bool.hpp>
 #include <boost/numeric/mtl/utility/is_distributed.hpp>
+
+#include "Timer.hpp"
+#include "solver/MatrixStreams.hpp"
 
 #ifdef HAVE_PARALLEL_MTL4
 #include <boost/numeric/mtl/par/distribution.hpp>
@@ -122,5 +100,3 @@ namespace AMDiS
 
   } // end namespace dispatch
 } // end namespace AMDiS
-
-#endif // AMDIS_MTL4SOLVER_DETAILS_H

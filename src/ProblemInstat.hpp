@@ -34,7 +34,7 @@ namespace AMDiS
       invTau = 1.0 / tau;
     }
 
-    void solve(AdaptInfo& adaptInfo) {}
+    void solve(AdaptInfo& /*adaptInfo*/) {}
 
     /// Implementation of \ref ProblemStatBase::solve().
     virtual void solve(AdaptInfo& adaptInfo, bool, bool) override
@@ -43,37 +43,37 @@ namespace AMDiS
     }
 
     /// Implementation of \ref ProblemStatBase::estimate().
-    virtual void estimate(AdaptInfo& adaptInfo) override {}
+    virtual void estimate(AdaptInfo& /*adaptInfo*/) override {}
 
     /// Implementation of \ref ProblemStatBase::buildBeforeRefine().
-    virtual void buildBeforeRefine(AdaptInfo& adaptInfo, Flag) override {}
+    virtual void buildBeforeRefine(AdaptInfo& /*adaptInfo*/, Flag) override {}
 
     /// Implementation of \ref ProblemStatBase::buildBeforeCoarsen().
-    virtual void buildBeforeCoarsen(AdaptInfo& adaptInfo, Flag) override {}
+    virtual void buildBeforeCoarsen(AdaptInfo& /*adaptInfo*/, Flag) override {}
 
     /// Implementation of \ref ProblemStatBase::buildAfterCoarsen().
-    virtual void buildAfterCoarsen(AdaptInfo& adaptInfo, Flag, bool, bool) override {}
+    virtual void buildAfterCoarsen(AdaptInfo& /*adaptInfo*/, Flag, bool, bool) override {}
 
     /// Implementation of \ref ProblemStatBase::markElements().
-    virtual Flag markElements(AdaptInfo& adaptInfo) override
+    virtual Flag markElements(AdaptInfo& /*adaptInfo*/) override
     {
       return {0};
     }
 
     /// Implementation of \ref ProblemStatBase::refineMesh().
-    virtual Flag refineMesh(AdaptInfo& adaptInfo) override
+    virtual Flag refineMesh(AdaptInfo& /*adaptInfo*/) override
     {
       return {0};
     }
 
     /// Implementation of \ref ProblemStatBase::coarsenMesh().
-    virtual Flag coarsenMesh(AdaptInfo& adaptInfo) override
+    virtual Flag coarsenMesh(AdaptInfo& /*adaptInfo*/) override
     {
       return {0};
     }
 
     /// Implementation of \ref ProblemTimeInterface::closeTimestep().
-    virtual void closeTimestep(AdaptInfo& adaptInfo) override {}
+    virtual void closeTimestep(AdaptInfo& /*adaptInfo*/) override {}
 
     /// Implementation of \ref ProblemStatBase::getName().
     std::string getName() const
@@ -127,13 +127,13 @@ namespace AMDiS
   {
   public:
     /// Constructs a ProblemInstatVec with prob as its stationary problem.
-    ProblemInstat(std::string name, 
+    ProblemInstat(std::string name,
 		  ProblemStatSeq& prob)
       : ProblemInstatBase(name, NULL),
 	problemStat(prob)
     {}
-    
-    ProblemInstat(std::string name, 
+
+    ProblemInstat(std::string name,
 		  ProblemStatSeq& prob,
                   ProblemStatBase& initialProb)
       : ProblemInstatBase(name, &initialProb),

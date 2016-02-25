@@ -1,13 +1,14 @@
+#include "io/detail/ArhReader.hpp"
+
 #include <fstream>
 #include <stdint.h>
 #include <boost/filesystem.hpp>
 
-#include "ArhReader.h"
-#include "Mesh.h"
-#include "MeshStructure.h"
-#include "Traverse.h"
-#include "DOFVector.h"
-#include "MacroElement.h"
+#include "Mesh.hpp"
+#include "MeshStructure.hpp"
+#include "Traverse.hpp"
+#include "DOFVector.hpp"
+#include "MacroElement.hpp"
 
 namespace AMDiS
 {

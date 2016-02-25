@@ -1,8 +1,8 @@
 #ifndef AMDIS_ARH_READER_DETAIL_H
 #define AMDIS_ARH_READER_DETAIL_H
 
-#include "Mesh.h"
-#include "DOFVector.h"
+#include "Mesh.hpp"
+#include "DOFVector.hpp"
 
 
 namespace AMDiS

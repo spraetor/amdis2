@@ -25,8 +25,8 @@
 #ifndef AMDIS_VTKWRITER_DETAIL_HH
 #define AMDIS_VTKWRITER_DETAIL_HH
 
-#include "BasisFunction.h"
-#include "io/DataCollector.h"
+#include "BasisFunction.hpp"
+#include "io/DataCollector.hpp"
 
 namespace AMDiS
 {

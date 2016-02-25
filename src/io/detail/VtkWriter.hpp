@@ -31,8 +31,8 @@
 #include <boost/archive/iterators/base64_from_binary.hpp>
 #include <boost/archive/iterators/transform_width.hpp>
 
-#include <AdaptInfo.h>
-#include <io/DataCollector.h>
+#include <AdaptInfo.hpp>
+#include <io/DataCollector.hpp>
 #include <utility/string.hpp>
 
 #define AMDIS_ZLIB_BLOCK_SIZE 32768

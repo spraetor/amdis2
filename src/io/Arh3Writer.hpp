@@ -1,9 +1,8 @@
-#ifndef AMDIS_ARH_WRITER3_H
-#define AMDIS_ARH_WRITER3_H
+#pragma once
 
-#include "DOFVector.h"
-#include "SystemVector.h"
-#include "detail/Arh3Writer.h"
+#include "DOFVector.hpp"
+#include "SystemVector.hpp"
+#include "io/detail/Arh3Writer.hpp"
 
 namespace AMDiS
 {
@@ -118,5 +117,3 @@ namespace AMDiS
     } // end namespace Arh3Writer
   }
 } // end namespace io, AMDiS
-
-#endif

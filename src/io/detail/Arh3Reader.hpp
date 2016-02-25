@@ -1,10 +1,10 @@
 #ifndef AMDIS_ARH_READER3_DETAIL_H
 #define AMDIS_ARH_READER3_DETAIL_H
 
-#include "Mesh.h"
-#include "MeshStructure.h"
-#include "DOFVector.h"
-#include "SystemVector.h"
+#include "Mesh.hpp"
+#include "MeshStructure.hpp"
+#include "DOFVector.hpp"
+#include "SystemVector.hpp"
 
 namespace AMDiS
 {

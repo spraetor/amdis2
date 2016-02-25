@@ -1,35 +1,15 @@
-/******************************************************************************
- *
- * AMDiS - Adaptive multidimensional simulations
- *
- * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
- * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
- *
- * Authors:
- * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
- *
- * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
- * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
- *
- *
- * This file is part of AMDiS
- *
- * See also license.opensource.txt in the distribution.
- *
- ******************************************************************************/
-
+#include "io/ElementFileWriter.hpp"
 
 #include <boost/iostreams/filtering_stream.hpp>
 #include <boost/iostreams/device/file_descriptor.hpp>
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/convenience.hpp>
 
+#include "BasisFunction.hpp"
+#include "Initfile.hpp"
+#include "Traverse.hpp"
+#include "AdaptInfo.hpp"
 #include "io/VtkWriter.hpp"
-#include "ElementFileWriter.h"
-#include "BasisFunction.h"
-#include "Initfile.h"
-#include "Traverse.h"
-#include "AdaptInfo.h"
 
 namespace AMDiS
 {
@@ -113,8 +93,8 @@ namespace AMDiS
 
 
     void ElementFileWriter::writeFiles(AdaptInfo& adaptInfo, bool force,
-                                       int level, Flag traverseFlag,
-                                       bool (*writeElem)(ElInfo*))
+                                       int /*level*/, Flag /*traverseFlag*/,
+                                       bool (*/*writeElem*/)(ElInfo*))
     {
       FUNCNAME("ElementFileWriter::writeFiles()");
 

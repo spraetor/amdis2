@@ -1,12 +1,4 @@
-#include "Arh2Reader.h"
-#include "Mesh.h"
-#include "MeshStructure.h"
-#include "Traverse.h"
-#include "DOFVector.h"
-#include "SystemVector.h"
-#include "Debug.h"
-#include "../Arh2Reader.h"
-#include "MacroElement.h"
+#include "io/detail/Arh2Reader.hpp"
 
 #include <boost/filesystem.hpp>
 #include <boost/iostreams/filtering_streambuf.hpp>
@@ -14,6 +6,15 @@
 #ifdef HAVE_COMPRESSION
 #include <boost/iostreams/filter/zlib.hpp>
 #endif
+
+#include "Mesh.hpp"
+#include "MeshStructure.hpp"
+#include "Traverse.hpp"
+#include "DOFVector.hpp"
+#include "SystemVector.hpp"
+#include "Debug.hpp"
+#include "io/Arh2Reader.hpp"
+#include "MacroElement.hpp"
 
 namespace AMDiS
 {

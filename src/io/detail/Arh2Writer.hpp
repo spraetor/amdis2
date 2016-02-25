@@ -1,11 +1,11 @@
 #ifndef AMDIS_ARH_WRITER2_DETAIL_H
 #define AMDIS_ARH_WRITER2_DETAIL_H
 
-#include "Global.h"
-#include "Mesh.h"
-#include "MeshStructure.h"
-#include "DOFVector.h"
-#include "SystemVector.h"
+#include "Global.hpp"
+#include "Mesh.hpp"
+#include "MeshStructure.hpp"
+#include "DOFVector.hpp"
+#include "SystemVector.hpp"
 
 namespace AMDiS
 {

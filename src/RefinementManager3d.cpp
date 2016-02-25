@@ -437,7 +437,7 @@ namespace AMDiS
       return true;
 
     int oppVertex = (*elInfo)->getOppVertex(localNeighbour);
-#if DEBUG
+#ifndef NDEBUG
     int testIndex = (*elInfo)->getNeighbour(localNeighbour)->getIndex();
 #endif
     ElInfo* neighInfo = stack->traverseNeighbour3d((*elInfo), localNeighbour);
@@ -602,7 +602,7 @@ namespace AMDiS
         {
           oppVertex = neighInfo->getOppVertex(i);
 
-#if DEBUG
+#ifndef NDEBUG
           int testIndex = neighInfo->getNeighbour(i)->getIndex();
 #endif
 
@@ -640,7 +640,7 @@ namespace AMDiS
       ("While looping back domains boundary was reached or i == 0\n");
       oppVertex = refineList.getOppVertex(i--, 0);
 
-#if DEBUG
+#ifndef NDEBUG
       int testIndex = neighInfo->getNeighbour(oppVertex)->getIndex();
 #endif
       neighInfo = stack->traverseNeighbour3d(neighInfo, oppVertex);

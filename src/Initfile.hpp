@@ -1,5 +1,3 @@
-/** \file Initfile.h */
-
 #pragma once
 
 #include <string>
@@ -26,15 +24,15 @@ namespace AMDiS
   {
     double mu_parser_eval(std::string const& valStr);
 
-	template <class T> T numeric_cast(double value)
-	{
-		return boost::numeric_cast< T >(mu_parser_eval(valStr))
-	}
+    template <class T> inline T numeric_cast(double value)
+    {
+      return boost::numeric_cast< T >(value);
+    }
 
-	template <> bool numeric_cast<bool>(double value)
-	{
-		return value != 0.0;
-	}
+    template <> inline bool numeric_cast<bool>(double value)
+    {
+      return value != 0.0;
+    }
 
     /// convert string to intrinsic type
     template <class T, class Enable = void>
@@ -51,7 +49,7 @@ namespace AMDiS
     {
       static void eval(std::string valStr, T& value)
       {
-        
+
 
 	try {
             value = numeric_cast< T >(mu_parser_eval(valStr));

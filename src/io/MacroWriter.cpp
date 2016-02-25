@@ -1,38 +1,18 @@
-/******************************************************************************
- *
- * AMDiS - Adaptive multidimensional simulations
- *
- * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
- * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
- *
- * Authors:
- * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
- *
- * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
- * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
- *
- *
- * This file is part of AMDiS
- *
- * See also license.opensource.txt in the distribution.
- *
- ******************************************************************************/
-
+#include "MacroWriter.hpp"
 
 #include <fstream>
-
-#include "MacroWriter.h"
-#include "DataCollector.h"
-#include "Mesh.h"
-#include "DOFAdmin.h"
-#include "FiniteElemSpace.h"
-#include "DOFVector.h"
-#include "DOFIterator.h"
-#include "ElInfo.h"
-#include "SurfaceRegion_ED.h"
-#include "ElementRegion_ED.h"
 #include <string>
-#include "Traverse.h"
+
+#include "DOFAdmin.hpp"
+#include "DOFIterator.hpp"
+#include "DOFVector.hpp"
+#include "DataCollector.hpp"
+#include "ElInfo.hpp"
+#include "ElementRegion_ED.hpp"
+#include "FiniteElemSpace.hpp"
+#include "Mesh.hpp"
+#include "SurfaceRegion_ED.hpp"
+#include "Traverse.hpp"
 
 namespace AMDiS
 {
@@ -41,10 +21,10 @@ namespace AMDiS
 
     int MacroWriter::writeMacro(DataCollector<>* dc,
                                 std::string name,
-                                double time,
-                                int level,
-                                Flag traverseFlag,
-                                bool (*writeElem)(ElInfo*))
+                                double /*time*/,
+                                int /*level*/,
+                                Flag /*traverseFlag*/,
+                                bool (*/*writeElem*/)(ElInfo*))
     {
       FUNCNAME("MacroWroter::writeFile()");
 

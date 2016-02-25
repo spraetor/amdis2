@@ -1,41 +1,17 @@
-/******************************************************************************
- *
- * AMDiS - Adaptive multidimensional simulations
- *
- * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
- * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
- *
- * Authors:
- * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
- *
- * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
- * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
- *
- *
- * This file is part of AMDiS
- *
- * See also license.opensource.txt in the distribution.
- *
- ******************************************************************************/
-
-
-
-/** \file FileWriter.h */
-
 /** \defgroup Output Output module
  * @{ <img src="output.png"> @}
  */
 
-#ifndef AMDIS_FILEWRITER_H
-#define AMDIS_FILEWRITER_H
+#pragma once
 
 #include <vector>
 #include <string>
-#include "AMDiS_fwd.h"
-#include "FileWriterInterface.h"
-#include "Mesh.h"
-#include "DataCollector.h"
-#include "FileCompression.h"
+
+#include "AMDiS_fwd.hpp"
+#include "io/DataCollector.hpp"
+#include "io/FileCompression.hpp"
+#include "io/FileWriterInterface.hpp"
+#include "Mesh.hpp"
 
 namespace AMDiS
 {
@@ -161,15 +137,6 @@ namespace AMDiS
       /// if write latest ARH files
       int writeArhFormat;
 
-      /// write Arh2, prior to writeArhFormat
-      int writeArh1;
-
-      /// write Arh2 version 2.1,  prior to writeArhFormat
-      int writeArh2;
-
-      /// write Arh2 version 3.0,  prior to writeArhFormat
-      int writeArh3;
-
       /// camera position for povray script files
       std::string povrayCameraLocation;
 
@@ -232,5 +199,3 @@ namespace AMDiS
 }
 
 #include "FileWriter.hh"
-
-#endif // AMDIS_FILEWRITER_H

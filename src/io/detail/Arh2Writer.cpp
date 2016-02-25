@@ -2,19 +2,19 @@
 #include <stdint.h>
 #include <iostream>
 
-#include "Arh2Writer.h"
-#include "Mesh.h"
-#include "MeshStructure.h"
-#include "Traverse.h"
-#include "DOFVector.h"
-#include "../Arh2Writer.h"
-#include "MacroElement.h"
-
 #include <boost/iostreams/filtering_streambuf.hpp>
 #include <boost/iostreams/copy.hpp>
 #ifdef HAVE_COMPRESSION
 #include <boost/iostreams/filter/zlib.hpp>
 #endif
+
+#include "io/detail/Arh2Writer.hpp"
+#include "Mesh.hpp"
+#include "MeshStructure.hpp"
+#include "Traverse.hpp"
+#include "DOFVector.hpp"
+#include "io/Arh2Writer.hpp"
+#include "MacroElement.hpp"
 
 namespace AMDiS
 {

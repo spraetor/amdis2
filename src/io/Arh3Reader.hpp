@@ -1,11 +1,7 @@
-#ifndef AMDIS_ARH_READER3_H
-#define AMDIS_ARH_READER3_H
+#pragma once
 
-
-/** \file Arh3Reader.h */
-
-#include "AMDiS_fwd.h"
-#include "Global.h"
+#include "AMDiS_fwd.hpp"
+#include "Global.hpp"
 
 #ifdef HAVE_PARALLEL_DOMAIN_AMDIS
 #define WRITE_PARALLEL true
@@ -208,6 +204,3 @@ namespace AMDiS
     } // end namespace Arh3Reader
   }
 } // end namespace io, AMDiS
-
-
-#endif

@@ -1,29 +1,9 @@
-/******************************************************************************
- *
- * AMDiS - Adaptive multidimensional simulations
- *
- * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
- * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
- *
- * Authors:
- * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
- *
- * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
- * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
- *
- *
- * This file is part of AMDiS
- *
- * See also license.opensource.txt in the distribution.
- *
- ******************************************************************************/
-
-
 #include <stdio.h>
 #include <string>
 #include <fstream>
 #include <sstream>
 #include <cmath>
+
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/convenience.hpp>
 
@@ -31,11 +11,11 @@
 #include <mpi.h>
 #endif
 
-#include "VtkVectorWriter.h"
-#include "DataCollector.h"
-#include "DOFVector.h"
-// #include "SurfaceRegion_ED.h"
-// #include "ElementRegion_ED.h"
+#include "io/VtkVectorWriter.hpp"
+#include "io/DataCollector.hpp"
+#include "DOFVector.hpp"
+// #include "SurfaceRegion_ED.hpp"
+// #include "ElementRegion_ED.hpp"
 
 namespace AMDiS
 {

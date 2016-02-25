@@ -1,8 +1,7 @@
-/** \file FixVecConvert.h */
-
 #pragma once
 
 #include "Global.hpp"
+#include "Mesh.hpp"
 
 namespace AMDiS
 {

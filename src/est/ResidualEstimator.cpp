@@ -378,22 +378,22 @@ namespace AMDiS
           if (jumpResidualOnly && (*it)->secondOrderTerms() == false)
             continue;
 
-          if (dualElInfo)
-            (*it)->getAssembler()->initElement(dualElInfo->smallElInfo,
-                                               dualElInfo->largeElInfo,
-                                               quad);
-          else
+//           if (dualElInfo)
+//             (*it)->getAssembler()->initElement(dualElInfo->smallElInfo,
+//                                                dualElInfo->largeElInfo,
+//                                                quad);
+//           else
             (*it)->getAssembler()->initElement(elInfo, NULL, quad);
         }
 
       if (C0 > 0.0)
         for (it = dofVec->getOperatorsBegin(); it != dofVec->getOperatorsEnd(); ++it)
         {
-          if (dualElInfo)
-            (*it)->getAssembler()->initElement(dualElInfo->smallElInfo,
-                                               dualElInfo->largeElInfo,
-                                               quad);
-          else
+//           if (dualElInfo)
+//             (*it)->getAssembler()->initElement(dualElInfo->smallElInfo,
+//                                                dualElInfo->largeElInfo,
+//                                                quad);
+//           else
             (*it)->getAssembler()->initElement(elInfo, NULL, quad);
         }
     }
@@ -416,11 +416,11 @@ namespace AMDiS
 
 
   double ResidualEstimator::computeElementResidual(ElInfo* elInfo,
-      DualElInfo* dualElInfo)
+      DualElInfo* /*dualElInfo*/)
   {
     FUNCNAME("ResidualEstimator::computeElementResidual()");
 
-    TEST_EXIT(!dualElInfo)("Not yet implemented!\n");
+//     TEST_EXIT(!dualElInfo)("Not yet implemented!\n");
 
     std::vector<Operator*>::iterator it;
     std::vector<double*>::iterator itfac;
@@ -521,7 +521,7 @@ namespace AMDiS
 
 
   double ResidualEstimator::computeJumpResidual(ElInfo* elInfo,
-      DualElInfo* dualElInfo)
+      DualElInfo* /*dualElInfo*/)
   {
     FUNCNAME_DBG("ResidualEstimator::computeJumpResidual()");
 
@@ -742,7 +742,7 @@ namespace AMDiS
          const DenseVector<WorldMatrix<double>>& D2UhOldIq,
          DOFMatrix* A,
          DOFVector<double>* fh,
-         Quadrature* quad,
+         Quadrature* /*quad*/,
          DenseVector<double>& result)
   {
     std::vector<Operator*>::iterator it;

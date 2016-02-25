@@ -2,7 +2,7 @@
 
 #include "Traverse.hpp"
 #include "Initfile.hpp"
-#include "DualTraverse.hpp"
+// #include "DualTraverse.hpp"
 #include "DOFVector.hpp"
 
 namespace AMDiS
@@ -52,16 +52,17 @@ namespace AMDiS
 
   void Estimator::dualMeshTraverse()
   {
-    DualTraverse dualTraverse;
-    DualElInfo dualElInfo;
-
-    bool cont = dualTraverse.traverseFirst(mesh, auxMesh, -1, -1,
-                                           traverseFlag, traverseFlag,
-                                           dualElInfo);
-    while (cont)
-    {
-      estimateElement(dualElInfo.rowElInfo, &dualElInfo);
-      cont = dualTraverse.traverseNext(dualElInfo);
-    }
+    ERROR_EXIT("Not supportet any more!\n");
+//     DualTraverse dualTraverse;
+//     DualElInfo dualElInfo;
+//
+//     bool cont = dualTraverse.traverseFirst(mesh, auxMesh, -1, -1,
+//                                            traverseFlag, traverseFlag,
+//                                            dualElInfo);
+//     while (cont)
+//     {
+//       estimateElement(dualElInfo.rowElInfo, &dualElInfo);
+//       cont = dualTraverse.traverseNext(dualElInfo);
+//     }
   }
 }

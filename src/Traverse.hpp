@@ -196,7 +196,7 @@ namespace AMDiS
     int save_stack_used;
 
     ///
-    int id;
+//     int id; // NOTE: not used
 
     /// Is used for parallel mesh traverse. The thread with the id
     /// myThreadId is only allowed to access coarse elements, which id

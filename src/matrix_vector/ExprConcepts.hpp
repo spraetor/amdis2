@@ -5,6 +5,7 @@
 #include <type_traits>
 
 // AMDiS headers
+#include "matrix_vector/expr/base_expr.hpp"
 #include "traits/basic.hpp"
 #include "traits/meta_basic.hpp"
 #include "traits/concepts_base.hpp"
@@ -26,7 +27,7 @@ namespace AMDiS
       template <class T1> static Ints<T1::_SIZE, T1::_ROWS, T1::_COLS> test1(int);
       template <class>    static void test1(...);
 
-      static constexpr bool value0 = traits::HasValueType<Type>::value && 
+      static constexpr bool value0 = traits::HasValueType<Type>::value &&
 				     traits::HasSizeType<Type>::value;
       static constexpr bool value1 = not std::is_void<decltype(test1<Type>(0))>::value;
       static constexpr bool value2 = std::is_base_of<BaseExpr<Type>, Type>::value;

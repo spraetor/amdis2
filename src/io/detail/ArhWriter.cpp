@@ -1,11 +1,11 @@
 #include <fstream>
 #include <stdint.h>
 
-#include "ArhWriter.h"
-#include "Mesh.h"
-#include "MeshStructure.h"
-#include "Traverse.h"
-#include "DOFVector.h"
+#include "ArhWriter.hpp"
+#include "Mesh.hpp"
+#include "MeshStructure.hpp"
+#include "Traverse.hpp"
+#include "DOFVector.hpp"
 
 namespace AMDiS
 {

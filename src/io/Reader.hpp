@@ -1,49 +1,26 @@
-/******************************************************************************
- *
- * AMDiS - Adaptive multidimensional simulations
- *
- * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
- * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
- *
- * Authors:
- * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
- *
- * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
- * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
- *
- *
- * This file is part of AMDiS
- *
- * See also license.opensource.txt in the distribution.
- *
- ******************************************************************************/
-
-
-/** \file Reader.h */
-
-#ifndef AMDIS_READER_H
-#define AMDIS_READER_H
+#pragma once
 
 #include <cstring>
-#include "DOFVector.h"
-#include "SystemVector.h"
 
-#include "ArhReader.h"
-#include "Arh2Reader.h"
-#include "Arh3Reader.h"
-#include "MacroReader.h"
-#include "ValueReader.h"
-#include "XYZReader.h"
+#include "DOFVector.hpp"
+#include "SystemVector.hpp"
+
+// #include "io/ArhReader.hpp"
+// #include "io/Arh2Reader.hpp"
+#include "io/Arh3Reader.hpp"
+#include "io/MacroReader.hpp"
+#include "io/ValueReader.hpp"
+#include "io/XYZReader.hpp"
 
 #ifdef HAVE_PNG
-#include "PngReader.h"
+#include "io/PngReader.hpp"
 #endif
 
 #ifdef HAVE_EXTENSIONS
-#include "VtkReader.h"
+#include "io/VtkReader.hpp"
 #endif
 
-#include "detail/ReaderWriter.h"
+#include "io/detail/ReaderWriter.hpp"
 
 
 namespace AMDiS
@@ -75,12 +52,13 @@ namespace AMDiS
       }
       else if (ext == ".arh")
       {
-        if (Arh2Reader::isReadable(filename))
-          Arh2Reader::readFile(filename, container);
-        else if (Arh3Reader::isReadable(filename))
-          Arh3Reader::readFile(filename, container);
-        else
-          ArhReader::readFile(filename, container);
+//         if (Arh2Reader::isReadable(filename))
+//           Arh2Reader::readFile(filename, container);
+//         else if (Arh3Reader::isReadable(filename))
+        TEST_EXIT(Arh3Reader::isReadable(filename))("File is not in ARH3 format. Please convert!\n");
+        Arh3Reader::readFile(filename, container);
+//         else
+//           ArhReader::readFile(filename, container);
       }
       else if (ext == ".dat")
       {
@@ -145,12 +123,12 @@ namespace AMDiS
       }
       else if (ext == ".arh")
       {
-        if (Arh2Reader::isReadable(filename))
-          Arh2Reader::readFile(filename, mesh);
-        else if (Arh3Reader::isReadable(filename))
-          Arh3Reader::readFile(filename, mesh);
-        else
-          ArhReader::readFile(filename, mesh);
+//         if (Arh2Reader::isReadable(filename))
+//           Arh2Reader::readFile(filename, mesh);
+        TEST_EXIT(Arh3Reader::isReadable(filename))("File is not in ARH3 format. Please convert!\n");
+        Arh3Reader::readFile(filename, mesh);
+//         else
+//           ArhReader::readFile(filename, mesh);
       }
       else
       {
@@ -159,5 +137,3 @@ namespace AMDiS
     }
   } // end namespace io
 } // end namespace AMDiS
-
-#endif // AMDIS_READER_H

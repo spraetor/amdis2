@@ -510,8 +510,8 @@ namespace AMDiS
   }
 
 
-  void Tetrahedron::getSubBoundary(BoundaryObject bound,
-                                   vector<BoundaryObject>& subBound) const
+  void Tetrahedron::getSubBoundary(BoundaryObject /*bound*/,
+                                   vector<BoundaryObject>& /*subBound*/) const
   {}
 
 

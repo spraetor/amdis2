@@ -25,8 +25,8 @@
 #define AMDIS_READER_DETAIL_H
 
 #include <cstring>
-#include "DOFVector.h"
-#include "SystemVector.h"
+#include "DOFVector.hpp"
+#include "SystemVector.hpp"
 
 namespace AMDiS
 {

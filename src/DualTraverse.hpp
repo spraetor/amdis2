@@ -1,6 +1,6 @@
-/** \file DualTraverse.h */
-
 #pragma once
+
+ERROR
 
 #include "Traverse.hpp"
 #include "Flag.hpp"

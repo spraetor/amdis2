@@ -87,5 +87,5 @@ if (ENABLE_UMFPACK OR AMDIS_NEED_UMFPACK)
         HAVE_UMFPACK=1
         MTL_HAS_UMFPACK=1)
 
-    install(FILES ${BASE_DIR}/cmake3/find_umfpack.cmake DESTINATION share/amdis/)
+    install(FILES ${BASE_DIR}/cmake/find_umfpack.cmake DESTINATION share/amdis/)
 endif (ENABLE_UMFPACK OR AMDIS_NEED_UMFPACK)

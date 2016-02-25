@@ -1,42 +1,22 @@
-/******************************************************************************
- *
- * AMDiS - Adaptive multidimensional simulations
- *
- * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
- * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
- *
- * Authors:
- * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
- *
- * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
- * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
- *
- *
- * This file is part of AMDiS
- *
- * See also license.opensource.txt in the distribution.
- *
- ******************************************************************************/
+#include "io/MacroReader.hpp"
 
-
-#include <string.h>
-#include <map>
-#include <iostream>
 #include <fstream>
+#include <iostream>
+#include <map>
+#include <string.h>
 
-#include "MacroReader.h"
-#include "MacroWriter.h"
-#include "MacroElement.h"
-#include "MacroInfo.h"
-#include "Boundary.h"
-#include "FiniteElemSpace.h"
-#include "Mesh.h"
-#include "FixVec.h"
-#include "ElInfo.h"
-#include "Initfile.h"
-#include "DOFIterator.h"
-#include "LeafData.h"
-#include "VertexVector.h"
+#include "Boundary.hpp"
+#include "DOFIterator.hpp"
+#include "ElInfo.hpp"
+#include "FiniteElemSpace.hpp"
+#include "FixVec.hpp"
+#include "Initfile.hpp"
+#include "LeafData.hpp"
+#include "MacroElement.hpp"
+#include "io/MacroInfo.hpp"
+#include "io/MacroWriter.hpp"
+#include "Mesh.hpp"
+#include "VertexVector.hpp"
 
 namespace AMDiS
 {

@@ -789,7 +789,7 @@ namespace AMDiS
   }
 
 
-  void ProblemStatSeq::buildAfterCoarsen(AdaptInfo& adaptInfo, Flag flag,
+  void ProblemStatSeq::buildAfterCoarsen(AdaptInfo& /*adaptInfo*/, Flag flag,
                                          bool asmMatrix, bool asmVector)
   {
     FUNCNAME("ProblemStat::buildAfterCoarsen()");
@@ -1159,7 +1159,7 @@ namespace AMDiS
 
 
   void ProblemStatSeq::writeResidualMesh(int comp,
-                                         AdaptInfo& adaptInfo,
+                                         AdaptInfo& /*adaptInfo*/,
                                          string name)
   {
     map<int, double> vec;

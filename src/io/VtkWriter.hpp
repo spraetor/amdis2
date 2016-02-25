@@ -1,35 +1,10 @@
-/******************************************************************************
- *
- * AMDiS - Adaptive multidimensional simulations
- *
- * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
- * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
- *
- * Authors:
- * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
- *
- * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
- * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
- *
- *
- * This file is part of AMDiS
- *
- * See also license.opensource.txt in the distribution.
- *
- ******************************************************************************/
+#pragma once
 
-
-
-/** \file VtkWriter.h */
-
-#ifndef AMDIS_VTKWRITER_H
-#define AMDIS_VTKWRITER_H
-
-#include "DataCollector.h"
-#include "DOFVector.h"
-#include "FixVec.h"
-#include "SystemVector.h"
-#include "detail/VtkWriter.h"
+#include "io/DataCollector.hpp"
+#include "DOFVector.hpp"
+#include "FixVec.hpp"
+#include "SystemVector.hpp"
+#include "io/detail/VtkWriter.hpp"
 
 namespace AMDiS
 {
@@ -147,5 +122,3 @@ namespace AMDiS
     } // end namespace VtkWriter
   }
 } // end namespace io, AMDiS
-
-#endif // AMDIS_VTKWRITER_H

@@ -25,11 +25,11 @@
 #ifndef AMDIS_VTKVECTORWRITER_DETAIL_H
 #define AMDIS_VTKVECTORWRITER_DETAIL_H
 
-#include "io/DataCollector.h"
-#include "SystemVector.h"
+#include "io/DataCollector.hpp"
+#include "SystemVector.hpp"
 
 #ifdef HAVE_COMPRESSION
-#include "io/FileCompression.h"
+#include "io/FileCompression.hpp"
 #endif
 
 namespace AMDiS

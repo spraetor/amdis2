@@ -36,8 +36,8 @@
 #ifdef HAVE_COMPRESSION
 #include <boost/iostreams/filter/zlib.hpp>
 #endif
-#include "AdaptInfo.h"
-#include "VtkWriter.h"
+#include "AdaptInfo.hpp"
+#include "io/VtkWriter.hpp"
 
 namespace AMDiS
 {

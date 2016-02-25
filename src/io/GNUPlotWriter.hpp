@@ -1,34 +1,10 @@
-/******************************************************************************
- *
- * AMDiS - Adaptive multidimensional simulations
- *
- * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
- * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
- *
- * Authors:
- * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
- *
- * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
- * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
- *
- *
- * This file is part of AMDiS
- *
- * See also license.opensource.txt in the distribution.
- *
- ******************************************************************************/
-
-
-
-/** \file GNUPlotWriter.h */
-
-#ifndef AMDIS_GNUPLOTWRITER_H
-#define AMDIS_GNUPLOTWRITER_H
+#pragma once
 
 #include <vector>
 #include <string>
-#include "FileWriter.h"
-#include "AMDiS_fwd.h"
+
+#include "AMDiS_fwd.hpp"
+#include "io/FileWriter.hpp"
 
 namespace AMDiS
 {
@@ -57,8 +33,8 @@ namespace AMDiS
 
       /// Interface for general containers not implemented. Specializations below.
       template<typename Container>
-      static void writeFile(Container& vec, std::string filename,
-                            AdaptInfo& adaptInfo)
+      static void writeFile(Container& /*vec*/, std::string /*filename*/,
+                            AdaptInfo& /*adaptInfo*/)
       {
         ERROR_EXIT("GNUPlotWriter not implemented for this container type!\n");
       }
@@ -123,5 +99,3 @@ namespace AMDiS
 
   } // end namespace io
 } // end namespace AMdiS
-
-#endif // AMDIS_VALUEWRITER_H

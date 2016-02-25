@@ -27,10 +27,10 @@
 
 #if defined HAVE_PNG
 
-#include "ElInfo.h"
-#include "FixVec.h"
-#include "Mesh.h"
-#include "Traverse.h"
+#include "ElInfo.hpp"
+#include "FixVec.hpp"
+#include "Mesh.hpp"
+#include "Traverse.hpp"
 
 namespace AMDiS
 {

@@ -1,6 +1,10 @@
 cmake_minimum_required(VERSION 3.2 FATAL_ERROR)
 project(AMDiS VERSION 2.0 LANGUAGES CXX)
 
+if (POLICY CMP0060)
+    cmake_policy(SET CMP0060 NEW)
+endif ()
+
 set(BASE_DIR ${AMDiS_SOURCE_DIR})
 set(SOURCE_DIR ${BASE_DIR}/src)
 list(APPEND CMAKE_MODULE_PATH ${BASE_DIR}/cmake)
@@ -45,17 +49,14 @@ target_compile_features(amdis_base INTERFACE
 # ------------------------------------------------------------------------------
 
 include(find_mtl4)  # -> target mtl4
-install(FILES ${BASE_DIR}/cmake3/find_mtl4.cmake DESTINATION share/amdis/)
+install(FILES ${BASE_DIR}/cmake/find_mtl4.cmake DESTINATION share/amdis/)
 
 include(find_umfpack)
 
 include(find_boost) # -> target boost
-install(FILES ${BASE_DIR}/cmake3/find_boost.cmake DESTINATION share/amdis/)
+install(FILES ${BASE_DIR}/cmake/find_boost.cmake DESTINATION share/amdis/)
 
 # ------------------------------------------------------------------------------
-
-add_library(amdis0
-    ${SOURCE_DIR}/AdaptBase.cpp)
 
 add_library(amdis
     ${SOURCE_DIR}/AdaptBase.cpp
@@ -81,7 +82,7 @@ add_library(amdis
     ${SOURCE_DIR}/DOFVector.cpp
     ${SOURCE_DIR}/DOFVectorBase.cpp
     ${SOURCE_DIR}/DirichletBC.cpp
-    ${SOURCE_DIR}/DualTraverse.cpp
+#     ${SOURCE_DIR}/DualTraverse.cpp
     ${SOURCE_DIR}/ElInfo.cpp
     ${SOURCE_DIR}/ElInfo1d.cpp
     ${SOURCE_DIR}/ElInfo2d.cpp
@@ -214,8 +215,6 @@ if (MSVC)
         _SCL_SECURE_NO_WARNINGS
         _CRT_SECURE_NO_WARNINGS)
 endif (MSVC)
-
-target_link_libraries(amdis0 AMDiS::base)
 
 target_link_libraries(amdis AMDiS::base muparser
     $<$<NOT:$<CONFIG:Release>>:amdis_debug>)

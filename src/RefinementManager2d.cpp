@@ -169,9 +169,9 @@ namespace AMDiS
   }
 
 
-  DegreeOfFreedom RefinementManager2d::refinePatch(DegreeOfFreedom* edge[2],
+  DegreeOfFreedom RefinementManager2d::refinePatch(DegreeOfFreedom** /*edge*/,
       RCNeighbourList& refineList,
-      int n_neigh, bool bound)
+      int n_neigh, bool /*bound*/)
   {
     DegreeOfFreedom* dof[3] = {NULL, NULL, NULL};
     Triangle* el =
@@ -325,8 +325,8 @@ namespace AMDiS
 
 
   void RefinementManager2d::getRefinePatch(ElInfo** elInfo,
-      DegreeOfFreedom* edge[2],
-      int dir, RCNeighbourList& refineList,
+      DegreeOfFreedom** /*edge*/,
+      int /*dir*/, RCNeighbourList& refineList,
       int* n_neigh)
   {
     FUNCNAME_DBG("RefinementManager2d::getRefinePatch()");

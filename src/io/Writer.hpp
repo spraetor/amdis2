@@ -1,48 +1,25 @@
-/******************************************************************************
- *
- * AMDiS - Adaptive multidimensional simulations
- *
- * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
- * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
- *
- * Authors:
- * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
- *
- * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
- * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
- *
- *
- * This file is part of AMDiS
- *
- * See also license.opensource.txt in the distribution.
- *
- ******************************************************************************/
-
-
-/** \file Writer.h */
-
-#ifndef AMDIS_WRITER_H
-#define AMDIS_WRITER_H
+#pragma once
 
 #include <cstring>
-#include "DOFVector.h"
-#include "SystemVector.h"
 
-#include "Arh3Writer.h"
-#include "DataCollector.h"
-#include "DofWriter.h"
-#include "GNUPlotWriter.h"
-#include "MacroWriter.h"
+#include "DOFVector.hpp"
+#include "SystemVector.hpp"
+
+#include "io/Arh3Writer.hpp"
+#include "io/DataCollector.hpp"
+#include "io/DofWriter.hpp"
+#include "io/GNUPlotWriter.hpp"
+#include "io/MacroWriter.hpp"
 
 #ifdef HAVE_PNG
-#include "PngWriter.h"
+#include "io/PngWriter.hpp"
 #endif
 
-#include "PovrayWriter.h"
-#include "ValueWriter.h"
-#include "VtkWriter.h"
+#include "io/PovrayWriter.hpp"
+#include "io/ValueWriter.hpp"
+#include "io/VtkWriter.hpp"
 
-#include "detail/ReaderWriter.h"
+#include "io/detail/ReaderWriter.hpp"
 
 
 namespace AMDiS
@@ -131,5 +108,3 @@ namespace AMDiS
 
   } // end namespace io
 } // end namespace AMDiS
-
-#endif // AMDIS_WRITER_H

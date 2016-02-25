@@ -8,10 +8,11 @@
 #include "SystemVector.hpp"
 #include "CreatorInterface.hpp"
 #include "ComponentTraverseInfo.hpp"
-#include "DualTraverse.hpp"
 
 namespace AMDiS
 {
+
+  class DualElInfo;
 
   /**
    * \ingroup Estimator
