@@ -17,7 +17,7 @@ endif ()
 
 #some options to control the build process
 #option(ENABLE_PARALLEL_DOMAIN "Use parallel domain decomposition" false)
-option(ENABLE_UMFPACK "Enable support for the UMFPACK solver" ON)
+option(ENABLE_UMFPACK "Enable support for the UMFPACK solver" OFF)
 
 if (MSVC)
     option(BUILD_SHARED_LIBS "Build all libraries as shared or static, default: static" OFF)

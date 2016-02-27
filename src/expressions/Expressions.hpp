@@ -143,11 +143,11 @@ namespace AMDiS
 
 
   /// Print an term to an output stream
-  template <class Term>
-  requires::Term<std::ostream&, Term>
-  inline operator<<(std::ostream& result, const Term& term)
+  template <class M>
+  inline std::ostream&
+  operator<<(std::ostream& result, BaseTerm<M> const& term)
   {
-    result << term.str();
+    result << term.sub().str();
     return result;
   }
 
@@ -157,9 +157,9 @@ namespace AMDiS
 
   template <class T>
   template <class Term>
-  inline void DOFVector<T>::interpol(Term&& term)
+  void DOFVector<T>::interpol(Term const& term)
   {
-    detail::transformDOF(toTerm(std::forward<Term>(term)), this);
+    detail::transformDOF(toTerm(term), this);
   }
 
   template <class T>

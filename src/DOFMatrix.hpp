@@ -212,7 +212,7 @@ namespace AMDiS
     }
 
     /// Returns number of rows (\ref matrix.size())
-    int getSize() const
+    MTLTypes::size_type getSize() const
     {
       return num_rows(matrix);
     }
@@ -296,7 +296,7 @@ namespace AMDiS
     }
 
     ///
-    int memsize() const;
+    size_t memsize() const;
 
   protected:
     /// Pointer to a FiniteElemSpace with information about corresponding row DOFs

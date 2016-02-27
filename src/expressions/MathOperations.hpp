@@ -166,18 +166,17 @@ namespace AMDiS
   // ------------
 
   template <class Term1, class Term2>
-  using MultipliesTerm =
+  using MultipliesTerm = 
     FunctorTerm<functors::multiplies<Value_t<Term1>, Value_t<Term2>>, Term1, Term2>;
 
   /// expression for V .* W
-  template <class T1, class T2, 
-	    class T1_ = Decay_t<T1>, class T2_ = Decay_t<T2>>
-  requires::Term<MultipliesTerm<ToTerm_t<T1_>, ToTerm_t<T2_>>, T1_, T2_>
-  inline operator*(T1&& t1, T2&& t2)
+  template <class T1, class T2>
+    requires::Term<MultipliesTerm<ToTerm_t<T1>, ToTerm_t<T2>>, T1, T2>
+  inline operator*(T1 const& t1, T2 const& t2)
   {
-    return {toTerm(std::forward<T1>(t1)), toTerm(std::forward<T2>(t2))};
+    return {toTerm(t1), toTerm(t2)};
   }
-
+  
   // ------------
 
   template <class Term1, class Term2>

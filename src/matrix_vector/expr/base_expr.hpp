@@ -78,11 +78,9 @@ namespace AMDiS
   struct ShapedExpr
   {
     using type
-      = if_then_else< traits::is_vector<Sub>::value,
-	  VectorExpr<Model>,
-	  if_then_else< traits::is_matrix<Sub>::value,
-	    MatrixExpr<Model>,
-	    BaseExpr<Model> > >;
+      = if_then_else< traits::is_vector<Sub>::value,    VectorExpr<Model>,
+	    if_then_else< traits::is_matrix<Sub>::value,    MatrixExpr<Model>,
+                                                        BaseExpr<Model> > >;
   };
 
   template <class Sub, class Model>

@@ -24,7 +24,7 @@ namespace AMDiS
                                 double /*time*/,
                                 int /*level*/,
                                 Flag /*traverseFlag*/,
-                                bool (*/*writeElem*/)(ElInfo*))
+                                bool (* /*writeElem*/)(ElInfo*))
     {
       FUNCNAME("MacroWroter::writeFile()");
 

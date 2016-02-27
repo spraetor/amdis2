@@ -79,9 +79,9 @@ namespace AMDiS
     }
 
     /// Returns number of elements in list
-    unsigned int getSize() const
+    int getSize() const
     {
-      return rclist.size();
+      return int(rclist.size());
     }
 
     /// Sets \ref rclist[i].el to el and \ref rclist[i].flag to cp.

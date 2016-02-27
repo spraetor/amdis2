@@ -145,7 +145,7 @@ namespace AMDiS
     }
     /// Returns the time estimation as a combination
     /// of maximal and integral time error
-    double getTimeEstCombined(unsigned i) const
+    double getTimeEstCombined(size_t i) const
     {
       return
         scalContents[i]->est_t_max * scalContents[i]->fac_max +

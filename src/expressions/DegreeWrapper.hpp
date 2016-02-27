@@ -22,7 +22,7 @@ namespace AMDiS
     }
 
     template <class... Args>
-    auto operator()(Args&& ... args) const RETURNS
+    auto operator()(Args&&... args) const RETURNS
     (
       fct(std::forward<Args>(args)...)
     )
@@ -38,9 +38,9 @@ namespace AMDiS
   {
     template <class F_, class DegF_,
       class = Requires_t<traits::IsCompatible<Types<F,DegF>, Types<F_,DegF_>>>>
-    DegreeWrapper2(F&& fct_, DegF&& degfct_)
+    DegreeWrapper2(F_&& fct_, DegF_&& degfct_)
       : fct{fct_},
-	degfct{degfct_}
+	    degfct{degfct_}
     {}
 
     template <class... Int>
@@ -50,7 +50,7 @@ namespace AMDiS
     }
 
     template <class... Args>
-    auto operator()(Args&& ... args) const RETURNS
+    auto operator()(Args&&... args) const RETURNS
     (
       fct(std::forward<Args>(args)...)
     )
@@ -63,18 +63,18 @@ namespace AMDiS
 
   // add a constant quadrature degree to the functor
   template <int Degree, class F>
-  inline DegreeWrapper<Degree, F> deg(F&& fct)
+  inline DegreeWrapper<Degree, F> deg(F const& fct)
   {
-    return {std::forward<F>(fct)};
+    return {fct};
   }
 
   // add a quadrature degree to a functor by providing a
   // degree-functor, that takes the degree of the arguments passed
   // to the functor and returns the combined degree.
   template <class F, class DegF>
-  inline DegreeWrapper2<F, DegF> deg(F&& fct, DegF&& degfct)
+  inline DegreeWrapper2<F, DegF> deg(F const& fct, DegF const& degfct)
   {
-    return {std::forward<F>(fct), std::forward<DegF>(degfct)};
+    return {fct, degfct};
   }
   
 } // end namespace AMDiS

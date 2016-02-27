@@ -47,17 +47,21 @@ namespace AMDiS
 
   namespace detail
   {
+    template <class... Ts> struct or_;
+    
     template <class T0, class... Ts>
-    struct or_ : bool_<T0::value || or_<Ts...>::value> {};
+    struct or_<T0, Ts...> : bool_<T0::value || or_<Ts...>::value> {};
 
-    template <class T0>
-    struct or_<T0> : bool_<T0::value> {};
+    template <>
+    struct or_<> : false_ {};
 
+    template <class... Ts> struct and_;
+    
     template <class T0, class... Ts>
-    struct and_ : bool_<T0::value&& and_<Ts...>::value> {};
+    struct and_<T0, Ts...> : bool_<T0::value && and_<Ts...>::value> {};
 
-    template <class T0>
-    struct and_<T0> : bool_<T0::value> {};
+    template <>
+    struct and_<> : true_ {};
 
   } // end namespace detail
 

@@ -821,7 +821,7 @@ namespace AMDiS
 
     traverseInfo.updateStatus();
     // Used to calculate the overall number of non zero entries.
-    int nnz = 0;
+    size_t nnz = 0;
 
     for (int rowComponent = 0; rowComponent < nComponents; rowComponent++)
     {

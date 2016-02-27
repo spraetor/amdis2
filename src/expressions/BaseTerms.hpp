@@ -77,15 +77,13 @@ namespace AMDiS
 
 
   // determine shape of expression
-  template <class Sub, class Model, class = void>
+  template <class Sub, class Model>
   struct ShapedTerm
   {
     using type 
-      = if_then_else< traits::is_vector<Sub>::value,
-	  VectorTerm<Model>,
-          if_then_else< traits::is_matrix<Sub>::value,
-	    MatrixTerm<Model>,
-	    BaseTerm<Model> > >;
+      = if_then_else< traits::is_vector<Sub>::value,    VectorTerm<Model>,
+        if_then_else< traits::is_matrix<Sub>::value,    MatrixTerm<Model>,
+                                                        BaseTerm<Model> > >;
   };
 
   template <class Sub, class Model>

@@ -31,7 +31,7 @@ std::string inline join(std::string directory, std::string file)
 /// Directory name in s that is everything before last slash
 std::string inline directory_name(std::string s)
 {
-    for (int i= s.size() - 1; i >= 0; i--)
+    for (int i= int(s.size()) - 1; i >= 0; i--)
 	if (s[i] == delim)
 	    return s.substr(0, i);
     return std::string();
@@ -40,7 +40,7 @@ std::string inline directory_name(std::string s)
 /// File name in s that is everything after last slash
 std::string inline file_name(std::string s)
 {
-    for (int i= s.size() - 1; i >= 0; i--)
+    for (int i= int(s.size()) - 1; i >= 0; i--)
 	if (s[i] == delim)
 	    return s.substr(i + 1);
     return s;

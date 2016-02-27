@@ -51,20 +51,21 @@ namespace AMDiS
   {
     using Self       = FunctorTerm;
     using Super      = LazyOperatorTerms<Term1, Terms...>;
-    using value_type = typename std::result_of<F(Value_t<Term1>, Value_t<Terms>...)>::type;
+    // using value_type = typename std::result_of<F(Value_t<Term1>, Value_t<Terms>...)>::type;
+    using value_type = typename std::result_of<F(typename Term1::value_type, typename Terms::value_type...)>::type;
 
     template <class... Terms_,
       class = Requires_t<traits::IsCompatible<Types<Term1,Terms...>, Types<Terms_...>>>>
     FunctorTerm(Terms_&&... terms_)
       : Super(std::forward<Terms_>(terms_)...),
-	fct{}
+        fct{}
     {}
 
     template <class F_, class... Terms_,
       class = Requires_t<traits::IsCompatible<Types<F,Term1,Terms...>, Types<F_,Terms_...>>>>
     FunctorTerm(F_&& f, Terms_&&... terms_)
       : Super(std::forward<Terms_>(terms_)...),
-	fct(f)
+        fct(f)
     {}
 
     /// return the required quadrature degree to integrate term
@@ -74,7 +75,7 @@ namespace AMDiS
     }
 
     /// eval at point with index iq
-    value_type operator[](int iq) const
+    value_type evalAtIdx(int iq) const
     {
       return eval(iq, int_<N>());
     }
@@ -113,7 +114,7 @@ namespace AMDiS
     template <class... Terms_>
     value_type eval(int iq, int_<0>, Terms_ const& ... terms) const
     {
-      return fct(terms[iq]...);  // f(term1(iq), term2(iq), term3(iq),...)
+      return fct(terms.evalAtIdx(iq)...);  // f(term1(iq), term2(iq), term3(iq),...)
     }
 
     template <class... Terms_>
@@ -134,7 +135,7 @@ namespace AMDiS
     struct category<FunctorTerm<F, Term1, Terms...>>
     {
       using tag        = typename category<Term1>::tag;
-      using value_type = typename std::result_of<F(Value_t<Term1>, Value_t<Terms>...)>::type;
+      using value_type = typename std::result_of<F(typename Term1::value_type, typename Terms::value_type...)>::type;
       using size_type  = int;
     };
     /// \endcond

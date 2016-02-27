@@ -44,7 +44,7 @@ namespace AMDiS
 
     void updateStatus();
 
-    int getNumAuxFeSpaces() const
+    size_t getNumAuxFeSpaces() const
     {
       return auxFeSpaces.size();
     }

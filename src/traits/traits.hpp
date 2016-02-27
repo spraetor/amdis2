@@ -7,36 +7,13 @@
 
 // AMDiS headers
 #include "traits/basic.hpp"
+#include "traits/concepts_base.hpp"
 
 namespace AMDiS
 {  
   // some traits to test for binary operators on types
   namespace traits
   {
-    namespace detail
-    {
-      template <class...>
-      struct Voider
-      {
-        using type = void;
-      };
-
-      template <class...Ts>
-      using Voider_t = typename Voider<Ts...>::type;
-
-      template <class T, class U, class BinOp, class = void>
-      struct IsBinopAbleImpl : false_ {};
-
-      template <class T, class U, class BinOp>
-      struct IsBinopAbleImpl<T, U, BinOp, Voider_t<
-          decltype( std::declval<BinOp>()(std::declval<T>(), std::declval<U>()) )>> 
-        : true_ {};
-
-    } // end namespace detail
-
-    template <class T, class U, class BinOp>
-    using IsBinopAble = typename detail::IsBinopAbleImpl<T, U, BinOp>::type;
-
     namespace detail
     {
       struct PlusOp
@@ -54,10 +31,10 @@ namespace AMDiS
     } // end namespace detail
 
     template <class T, class U = T>
-    using IsAddable = IsBinopAble<T, U, detail::PlusOp>;
+    using IsAddable = IsCallable<detail::PlusOp(T, U)>;
 
     template <class T, class U = T>
-    using IsMultiplicable = IsBinopAble<T, U, detail::MultipliesOp>;
+    using IsMultiplicable = IsCallable<detail::MultipliesOp(T, U)>;
 
     
     template <class T>

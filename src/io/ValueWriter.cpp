@@ -24,7 +24,7 @@ namespace AMDiS
       void writeValues(DataCollector<>* dc, std::string filename,
                        double time, int /*level*/,
                        Flag /*traverseFlag*/,
-                       bool (*/*writeElem*/)(ElInfo*))
+                       bool (* /*writeElem*/)(ElInfo*))
       {
         FUNCNAME("writeValues()");
 

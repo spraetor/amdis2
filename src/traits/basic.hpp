@@ -18,20 +18,30 @@
 
 namespace AMDiS
 {
-  template <class T>
-  using Value_t = typename T::value_type;
+    namespace detail
+    {
+        // workaround for MSVC (problems with alias templates in pack expansion)
+        template <class, class T>
+        struct InvokeType { using type = T; };
+        
+        template <class, class, class T>
+        struct InvokeType2 { using type = T; };
+    }
 
   template <class T>
-  using Size_t = typename T::size_type;
+  using Value_t = typename detail::InvokeType<T, typename T::value_type>::type;
 
   template <class T>
-  using Result_t = typename T::result_type;
+  using Size_t = typename detail::InvokeType<T, typename T::size_type>::type;
 
   template <class T>
-  using Decay_t = typename std::decay<T>::type;
+  using Result_t = typename detail::InvokeType<T, typename T::result_type>::type;
+
+  template <class T>
+  using Decay_t = typename detail::InvokeType<T, typename std::decay<T>::type>::type;
 
   template <class T1, class T2>
-  using Common_t = typename std::common_type<T1,T2>::type;
+  using Common_t = typename detail::InvokeType2<T1, T2, typename std::common_type<T1,T2>::type>::type;
 
   namespace detail
   {

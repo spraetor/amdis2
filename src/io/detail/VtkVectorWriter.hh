@@ -230,7 +230,7 @@ namespace AMDiS
         for (int i = 0; i < static_cast<int>(dataCollector->size()); i++)
         {
           S temp = (*((*dataCollector)[i]->getValues()))[0];
-          int numComponent = num_rows(temp);
+          size_t numComponent = num_rows(temp);
           std::string name = (*dataCollector)[i]->getValues()->getName();
           if (name.find_first_not_of(" \n\r\t") == std::string::npos)
             name = "value" + std::to_string(i);

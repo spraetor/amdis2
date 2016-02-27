@@ -84,7 +84,7 @@ namespace AMDiS
       int grdNumPointsValid_ = 0;
 
       /// valid flag for D2
-      bool D2NumPointsValid_ = 0;
+      int D2NumPointsValid_ = 0;
     };
 
     /// Quadrature of this QPInfo

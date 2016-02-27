@@ -177,7 +177,7 @@ namespace AMDiS
                                  getElementData(PERIODIC));
 
         if (ldp)
-          nConnection += dynamic_cast<LeafDataPeriodic*>(ldp)->getInfoList().size();
+          nConnection += int( dynamic_cast<LeafDataPeriodic*>(ldp)->getInfoList().size() );
 
         periodicConnections.push_back(DimVec<bool>(dim, false));
       }

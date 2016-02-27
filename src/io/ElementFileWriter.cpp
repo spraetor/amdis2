@@ -94,7 +94,7 @@ namespace AMDiS
 
     void ElementFileWriter::writeFiles(AdaptInfo& adaptInfo, bool force,
                                        int /*level*/, Flag /*traverseFlag*/,
-                                       bool (*/*writeElem*/)(ElInfo*))
+                                       bool (* /*writeElem*/)(ElInfo*))
     {
       FUNCNAME("ElementFileWriter::writeFiles()");
 
@@ -405,7 +405,7 @@ namespace AMDiS
       file << "        </DataArray>\n";
       file << "      </Cells>\n";
 
-      int dataLength = (vecs != NULL ? (*(vecs->begin())).second.size() : 1);
+      int dataLength = int(vecs != NULL ? (*(vecs->begin())).second.size() : 1);
       int nComponents = (!writeAsVector || (vecs == NULL && vec != NULL) ? 1 : dataLength);
       int nDataArrays = (!writeAsVector && (vec == NULL && vecs != NULL) ? dataLength : 1);
       file << "      <CellData>\n";

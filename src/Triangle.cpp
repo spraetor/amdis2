@@ -284,7 +284,7 @@ namespace AMDiS
 
       if (bound.reverseMode)
       {
-        for (int i = addDofs.size() - 1; i >= 0; i--)
+        for (int i = int( addDofs.size() ) - 1; i >= 0; i--)
         {
           dofs.push_back(addDofs[i]);
           if (dofGeoIndex != NULL)
@@ -293,7 +293,7 @@ namespace AMDiS
       }
       else
       {
-        for (unsigned int i = 0; i < addDofs.size(); i++)
+        for (size_t i = 0; i < addDofs.size(); i++)
         {
           dofs.push_back(addDofs[i]);
           if (dofGeoIndex != NULL)

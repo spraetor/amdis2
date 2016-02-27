@@ -488,7 +488,7 @@ namespace AMDiS
 
     ElInfo* elInfo = mesh->createNewElInfo();
     idx = 0;
-    bool inside = false;
+    int inside = 0;
 
     if (oldElInfo && useOldElInfo && oldElInfo->getMacroElement())
     {
@@ -503,7 +503,7 @@ namespace AMDiS
     if (oldElInfo)
       oldElInfo = elInfo;
 
-    if (!inside)
+    if (inside == 0)
     {
       delete elInfo;
       return false;
@@ -532,7 +532,7 @@ namespace AMDiS
       idx = localIndices[minIdx];
 
     if(!oldElInfo) delete elInfo;
-    return inside;
+    return inside != 0;
   }
 
 

@@ -100,7 +100,7 @@ namespace mtl { namespace traits { namespace detail {
 	typedef Matrix                           ref_type;
 	static int const                         level = Level;
 
-	sub_matrix_cursor(int i, Matrix const& c)
+	sub_matrix_cursor(int i, Matrix const& c) // NOTE: Why here explicitly 'int'??
 	    : base(i), ref(c) 
 	{}	
 

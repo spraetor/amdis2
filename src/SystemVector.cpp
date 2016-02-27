@@ -27,7 +27,7 @@ namespace AMDiS
       vectors(rhs.getSize())
   {
     for (size_t i = 0; i < vectors.size(); i++)
-      vectors[i] = new DOFVector<double>(*rhs.getDOFVector(i));
+      vectors[i] = new DOFVector<double>(*rhs.getDOFVector(int( i )));
   }
 
 
@@ -107,7 +107,7 @@ namespace AMDiS
   {
     TEST_EXIT_DBG(rhs.vectors.size() == vectors.size())("Invalied sizes!\n");
     for (size_t i = 0; i < vectors.size(); i++)
-      (*(vectors[i])) = (*(rhs.getDOFVector(i)));
+      (*(vectors[i])) = (*(rhs.getDOFVector(int( i ))));
 
     return *this;
   }
@@ -117,7 +117,7 @@ namespace AMDiS
   {
     TEST_EXIT_DBG(getSize() == rhs.getSize())("Invalid sizes!\n");
     for (size_t i = 0; i < vectors.size(); i++)
-      vectors[i]->copy(*(const_cast<SystemVector&>(rhs).getDOFVector(i)));
+      vectors[i]->copy(*(const_cast<SystemVector&>(rhs).getDOFVector(int( i ))));
   }
 
 
@@ -135,9 +135,9 @@ namespace AMDiS
   }
 
 
-  int SystemVector::calcMemoryUsage() const
+  size_t SystemVector::calcMemoryUsage() const
   {
-    int result = 0;
+    size_t result = 0;
     for (size_t i = 0; i < vectors.size(); i++)
       result += vectors[i]->calcMemoryUsage();
     result += sizeof(SystemVector);

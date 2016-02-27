@@ -36,7 +36,7 @@ namespace AMDiS
 			  DenseVector<double>& Lb,
 			  double factor) const
   {
-    const int dim = size(Lambda);
+    const int dim = int( size(Lambda) );
 
     for (int i = 0; i < dim; i++)
     {
@@ -55,7 +55,7 @@ namespace AMDiS
 			  DenseVector<double>& Lb,
 			  double factor) const
   {
-    const int dim = size(Lambda);
+    const int dim = int( size(Lambda) );
 
     for (int i = 0; i < dim; i++)
       Lb[i] += (Lambda[i] * b) * factor;
@@ -66,7 +66,7 @@ namespace AMDiS
 			      DenseVector<double>& Lb,
 			      double factor) const
   {
-    const int dim = size(Lambda);
+    const int dim = int( size(Lambda) );
 
     for (int i = 0; i < dim; i++)
       Lb[i] += Lambda[i][bOne] * factor;

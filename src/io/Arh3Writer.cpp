@@ -14,6 +14,53 @@ namespace AMDiS
     namespace Arh3Writer
     {
 
+      void writeFile(SystemVector* sysVec,
+                    std::string filename,
+                    bool writeParallel,
+                    Cpsformat cps,
+                    std::string dataformat)
+      {
+        std::vector<DOFVector<double>*> vecs;
+        for (int i = 0; i < sysVec->getSize(); i++)
+          vecs.push_back(sysVec->getDOFVector(i));
+        detail::write(filename, NULL, vecs, writeParallel, cps, dataformat);
+      }
+
+      /// write the meshstructure and the dof values of DOFVectors in vec0
+      /// the behavior is equal to writeFile(SystemVector* sysVec, string filename).
+      void writeFile(DOFVector<double>* vec0,
+                    std::string filename,
+                    bool writeParallel,
+                    Cpsformat cps,
+                    std::string dataformat)
+      {
+        std::vector<DOFVector<double>*> vecs;
+        vecs.push_back(vec0);
+        detail::write(filename, NULL, vecs, writeParallel, cps, dataformat);
+      }
+
+      /// write the meshstructure and the dof values of DOFVectors in vecs
+      /// the behavior is equal to writeFile(SystemVector* sysVec, string filename).
+      void writeFile(std::vector<DOFVector<double>*> vecs,
+                    std::string filename,
+                    bool writeParallel,
+                    Cpsformat cps,
+                    std::string dataformat)
+      {
+        detail::write(filename, NULL, vecs, writeParallel, cps, dataformat);
+      }
+
+      /// write the meshstructure of the mesh to arh file.
+      void writeFile(Mesh* mesh,
+                    std::string filename,
+                    bool writeParallel,
+                    Cpsformat cps,
+                    std::string dataformat)
+      {
+        std::vector<DOFVector<double>*> vecs;
+        detail::write(filename, mesh, vecs, writeParallel, cps, dataformat);
+      }
+
 #ifdef HAVE_PARALLEL_DOMAIN_AMDIS
       void writeMetaData(Mesh* mesh, std::string metaFilename)
       {

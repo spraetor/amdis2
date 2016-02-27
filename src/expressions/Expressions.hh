@@ -36,7 +36,7 @@ namespace AMDiS
       nullify(tmp);
       for (int iq = 0; iq < quad->getNumPoints(); iq++)
       {
-        tmp += quad->getWeight(iq) * term[iq];
+        tmp += quad->getWeight(iq) * term.evalAtIdx(iq);
       }
       value += tmp * elInfo->getDet();
 
@@ -110,7 +110,7 @@ namespace AMDiS
           int nPoints = quadSurfaces[face]->getNumPoints();
           double det = elInfo->calcSurfaceDet(coords[face]);
           for (int iq = 0; iq < nPoints; iq++)
-            tmp += quadSurfaces[face]->getWeight(iq) * term[iq];
+            tmp += quadSurfaces[face]->getWeight(iq) * term.evalAtIdx(iq);
           value += det * tmp;
         }
       }
@@ -161,7 +161,7 @@ namespace AMDiS
         {
           if (!assigned[localIndices[i]])
           {
-            value0 = f(value0, term[i]);
+            value0 = f(value0, term.evalAtIdx(i));
             assigned[localIndices[i]] = true;
           }
         }
@@ -178,8 +178,9 @@ namespace AMDiS
       M term = term_base.sub();
       
       using TOut = Assign_t<Value_t<M>>;
+      
       static_assert( traits::IsConvertible<TOut, T>::value,
-        "ValueType of expression not convertible to ValueType of DOFVector!" );
+         "ValueType of expression not convertible to ValueType of DOFVector!" );
 
       std::set<FiniteElemSpace const*> feSpaces;
       term.insertFeSpaces(feSpaces);
@@ -202,7 +203,7 @@ namespace AMDiS
       ElInfo* elInfo = stack.traverseFirst(mesh, -1, traverseFlag);
       term.initElement(elInfo, NULL, NULL, basisFcts);
 
-      TOut tmp(term[0]);
+      TOut tmp(term.evalAtIdx(0));
       nullify(tmp);
       assigned.set(0);
       temp.set(tmp);
@@ -214,7 +215,7 @@ namespace AMDiS
 
         for (int i = 0; i < nBasisFcts; i++)
         {
-          temp[localIndices[i]] += term[i];
+          temp[localIndices[i]] += term.evalAtIdx(i);
           assigned[localIndices[i]]++;
         }
         elInfo = stack.traverseNext(elInfo);

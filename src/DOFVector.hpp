@@ -153,7 +153,7 @@ namespace AMDiS
     /// Returns size of \ref vec
     int getSize() const
     {
-      return vec.size();
+      return int(vec.size());
     }
 
     /// Returns used size of the vector.
@@ -332,7 +332,7 @@ namespace AMDiS
     /// stores these in the DOFVector
     // implementation in Expressions.h
     template <class Term>
-    inline void interpol(Term&& term);
+    inline void interpol(Term const& term);
 
     // implementation in Expressions.h
     inline void interpol(DOFVector<T>* v, double factor = 1.0);

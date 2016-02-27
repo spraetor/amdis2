@@ -108,7 +108,7 @@ namespace AMDiS
 
     void interpol(SystemVector* v, double factor);
 
-    int calcMemoryUsage() const;
+    size_t calcMemoryUsage() const;
 
   protected:
     /// Name of the system vector

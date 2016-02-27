@@ -23,7 +23,7 @@ namespace AMDiS
   template <class Derived>
   struct MapperBase
   {
-    typedef MTLTypes::size_type size_type;
+    using size_type = MTLTypes::size_type;
 
     template <class BaseInserter>
     struct Inserter
@@ -111,7 +111,7 @@ namespace AMDiS
   struct BlockMapper : public MapperBase<BlockMapper>
   {
     using Super = MapperBase<BlockMapper>;
-    using size_type = unsigned long;
+    using size_type = MTLTypes::size_type;
 
     /// Default constructor.
     BlockMapper()
@@ -221,7 +221,7 @@ namespace AMDiS
   struct RectangularMapper : public MapperBase<RectangularMapper>
   {
     using Super = MapperBase<RectangularMapper>;
-    using size_type = unsigned long;
+    using size_type = MTLTypes::size_type;
 
     /// Constructor for block-matrices
     explicit RectangularMapper(Matrix<DOFMatrix*> const& sm);

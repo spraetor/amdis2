@@ -18,7 +18,7 @@ namespace AMDiS
   }
 
   /// Expressions that extracts the values of a DOFVector at QPs
-  template <class Vector, class Name, class = void>
+  template <class Vector, class Name>
   struct ValueOf;
 
   template <class T, class Name>
@@ -57,7 +57,7 @@ namespace AMDiS
         const BasisFunction* localBasisFct = vecDV->getFeSpace()->getBasisFcts();
 
         // get coefficients of DOFVector
-        DenseVector<T> coeff{(size_t)localBasisFct->getNumber()};
+        DenseVector<T> coeff((size_t)localBasisFct->getNumber());
         vecDV->getLocalVector(elInfo->getElement(), coeff);
 
         // eval basisfunctions of DOFVector at coords of given basisFct
@@ -69,7 +69,7 @@ namespace AMDiS
     }
 
     /// eval at point with index iq, initialized in \ref initElement
-    value_type operator[](int iq) const
+    value_type evalAtIdx(int iq) const
     {
       return values[iq];
     }
@@ -147,7 +147,7 @@ namespace AMDiS
       }
     }
 
-    value_type operator[](int iq) const
+    value_type evalAtIdx(int iq) const
     {
       return values[iq];
     }

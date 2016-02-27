@@ -8,25 +8,19 @@
 
 // AMDiS headers
 #include "MatrixVector_fwd.hpp" // WorldVector<T>
+#include "expressions/LazyOperatorTermBase.hpp"
 #include "traits/basic.hpp"
 #include "traits/concepts_base.hpp"
 #include "traits/meta_basic.hpp"
 
 namespace AMDiS
 {
-  // forward declaration
-  class SubAssembler;
-  class ElInfo;
-  class Quadrature;
-  class BasisFunction;
-
   namespace concepts
   {
-    HAS_MEMBER_GENERATE(insertFeSpaces)
-    HAS_MEMBER_GENERATE(initElement)
     HAS_MEMBER_GENERATE(getDegree)
+    HAS_MEMBER_GENERATE(evalAtIdx)
 
-    // expressions concepts
+    // expressions concepts    
     template <class... Ts>
     struct Term : and_<Term<Ts>...> {};
 
@@ -35,16 +29,18 @@ namespace AMDiS
     {
     private:
       using Type = Decay_t<T>;
-
-      static constexpr bool value0 = HAS_MEMBER(insertFeSpaces)<Type, void(int&)>::value;
-      static constexpr bool value1 = HAS_MEMBER(initElement)<Type, void(ElInfo const*, SubAssembler*, Quadrature*, BasisFunction const*)>::value;
+      
+      static constexpr bool value0 = std::is_base_of<LazyOperatorTermBase, Type>::value;
       static constexpr bool value2 = traits::HasValueType<Type>::value;
 
-      template <bool, class T1> struct check : traits::IsFunctor<T1, Value_t<T1>(WorldVector<double>)> {}; 
-      template <      class T1> struct check<false, T1> : false_ {};
+      template <bool, class T1> struct check1 : traits::IsFunctor<T1, Value_t<T1>(WorldVector<double>)> {}; 
+      template <      class T1> struct check1<false, T1> : false_ {};
+
+      template <bool, class T1> struct check2 : HAS_MEMBER(evalAtIdx)<Type, Value_t<T1>(int)> {};
+      template <      class T1> struct check2<false, T1> : false_ {};
 
     public:
-      static constexpr bool value = value0 && value1 && check<value2, Type>::value;
+      static constexpr bool value = value0 && value2 && check1<value2, Type>::value && check2<value2, Type>::value;
     };
 
 

@@ -295,7 +295,7 @@ namespace AMDiS
         }
       }
       // undo last comma
-      long pos=out.tellp(); //tells pos the actual stream position
+      long pos = out.tellp(); //tells pos the actual stream position
       out.seekp(pos - 1);     //sets stream position -1
       out <<  endl;         //overwrites the las comma with space
       // end of vertex_vectors block
@@ -354,7 +354,7 @@ namespace AMDiS
 
       if (meshDim == 2)
       {
-        int nElements = dataCollector.getElementInfos()->size();
+        size_t nElements = dataCollector.getElementInfos()->size();
         out << "\t\t" << nElements << "," << endl;
         for (std::list<ElementInfo>::iterator iter = elementInfos->begin();
              iter != elementInfos->end(); iter++)
@@ -386,7 +386,7 @@ namespace AMDiS
       }
       else if (meshDim == 3)
       {
-        int nElements = dataCollector.getElementInfos()->size() * 4;
+        size_t nElements = dataCollector.getElementInfos()->size() * 4;
         out << "\t\t" << nElements << "," << endl;
         for (std::list<ElementInfo>::iterator iter = elementInfos->begin();
              iter != elementInfos->end(); iter++)

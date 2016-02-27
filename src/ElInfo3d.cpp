@@ -545,7 +545,7 @@ namespace AMDiS
     {
       el_type_local = (dynamic_cast<const ElInfo3d*>(elInfoOld))->getType();
     }
-    catch (const std::bad_cast& e)
+    catch (const std::bad_cast&)
     {
       ERROR_EXIT("ElInfo is not of type ElInfo3D but %s!\n", typeid(*elInfoOld).name());
     }

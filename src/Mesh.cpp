@@ -259,7 +259,7 @@ namespace AMDiS
   void Mesh::addMacroElement(MacroElement* me)
   {
     macroElements.push_back(me);
-    me->setIndex(macroElements.size());
+    me->setIndex(int( macroElements.size() ));
   }
 
   void Mesh::removeAllMacroElements()
@@ -447,7 +447,7 @@ namespace AMDiS
         elInfo = stack.traverseNext(elInfo);
       }
 
-      nVertices = allVertices.size();
+      nVertices = int( allVertices.size() );
     }
     else
     {
@@ -736,7 +736,7 @@ namespace AMDiS
   }
 
 
-  bool Mesh::findElInfoAtPoint(const WorldVector<double>& xy,
+  int Mesh::findElInfoAtPoint(const WorldVector<double>& xy,
                                ElInfo* el_info,
                                DimVec<double>& bary,
                                const MacroElement* start_mel,
@@ -825,7 +825,7 @@ namespace AMDiS
     }
 
     /* now, descend in tree to find leaf element at point */
-    bool inside = findElementAtPointRecursive(mel_info, lambda, k, el_info);
+    int inside = findElementAtPointRecursive(mel_info, lambda, k, el_info);
     for (int i = 0; i <= dim; i++)
       bary[i] = final_lambda[i];
 
@@ -835,7 +835,7 @@ namespace AMDiS
   }
 
 
-  bool Mesh::findElementAtPoint(const WorldVector<double>&  xy,
+  int Mesh::findElementAtPoint(const WorldVector<double>&  xy,
                                 Element** elp,
                                 DimVec<double>& bary,
                                 const MacroElement* start_mel,
@@ -853,7 +853,7 @@ namespace AMDiS
   }
 
 
-  bool Mesh::findElementAtPointRecursive(ElInfo* el_info,
+  int Mesh::findElementAtPointRecursive(ElInfo* el_info,
                                          const DimVec<double>& lambda,
                                          int outside,
                                          ElInfo* final_el_info)

@@ -3,6 +3,7 @@
 #include "AMDiS_fwd.hpp"
 #include "Traits.hpp"
 
+#include "expressions/LazyOperatorTermBase.hpp"
 #include "expressions/TermConcepts.hpp"
 #include "traits/basic.hpp"
 #include "traits/traits.hpp"
@@ -10,25 +11,6 @@
 
 namespace AMDiS
 {
-  class SubAssembler;
-
-  struct LazyOperatorTermBase
-  {
-    template <class List>
-    void insertFeSpaces(List& /*feSpaces*/) const {}
-
-    constexpr int getDegree() const
-    {
-      return 0;
-    }
-
-    void initElement(ElInfo const* /*elInfo*/,
-                     SubAssembler* /*subAssembler*/,
-                     Quadrature* /*quad*/,
-                     BasisFunction const* /*basisFct*/ = NULL) {}
-  };
-
-
   namespace detail
   {
     /// Functor that initializes the feSpace list
@@ -76,11 +58,9 @@ namespace AMDiS
 
   public:
     template <class... Terms_,
-      class = Requires_t< and_< concepts::Term<Terms_...>,
-				concepts::Compatible<Types<Terms...>,
-						     Types<Terms_...>> > >>
-    constexpr LazyOperatorTerms(Terms_&&... terms_)
-      : terms(std::forward<Terms_>(terms_)...)
+        class = Requires_t< concepts::Term<Terms_...> > >
+    constexpr LazyOperatorTerms(Terms_ const&... terms_)
+      : terms(terms_...)
     {}
 
     template <class List>

@@ -54,8 +54,8 @@ namespace AMDiS
           continue;
 
         Matrix& matrix = dofmatrix->getBaseMatrix();
-        int nnz = matrix.nnz();
-        int testNnz = 0;
+        size_t nnz = matrix.nnz();
+        size_t testNnz = 0;
 
         // Write to file, how many entries the matrix conatins.
         out << nnz << endl;

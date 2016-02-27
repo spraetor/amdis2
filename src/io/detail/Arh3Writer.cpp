@@ -549,7 +549,7 @@ namespace AMDiS
           in.push(dataStream);
           boost::iostreams::copy(in, tmp);
           file << tmp.rdbuf();
-          return make_pair(dataStream.str().length(), tmp.str().length());
+          return make_pair(int(dataStream.str().length()), int(tmp.str().length()));
         }
 
         template<typename T>

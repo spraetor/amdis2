@@ -84,7 +84,7 @@ namespace AMDiS
 
     ElInfo* elInfo = mesh->createNewElInfo();
     double value = 0.0;
-    bool inside = false;
+    int inside = 0;
 
     if (oldElInfo && oldElInfo->getMacroElement())
     {
@@ -97,7 +97,7 @@ namespace AMDiS
     if (oldElInfo)
       oldElInfo = elInfo;
 
-    if (inside)
+    if (inside > 0)
     {
       basFcts->getLocalIndices(elInfo->getElement(), feSpace->getAdmin(), localIndices);
       DenseVector<double> uh(nBasFcts);
@@ -140,7 +140,7 @@ namespace AMDiS
     DimVec<double> lambda(dim);
     ElInfo* elInfo = mesh->createNewElInfo();
     WorldVector<double> value(DEFAULT_SIZE, 0.0);
-    bool inside = false;
+    int inside = 0;
 
     if (oldElInfo && oldElInfo->getMacroElement())
     {
@@ -153,7 +153,7 @@ namespace AMDiS
     if (oldElInfo)
       oldElInfo = elInfo;
 
-    if (inside)
+    if (inside > 0)
     {
       basFcts->getLocalIndices(elInfo->getElement(), feSpace->getAdmin(), localIndices);
       DenseVector<WorldVector<double>> uh(nBasFcts);

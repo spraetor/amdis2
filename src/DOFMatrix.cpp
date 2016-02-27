@@ -329,7 +329,7 @@ namespace AMDiS
   }
 
 
-  int DOFMatrix::memsize() const
+  size_t DOFMatrix::memsize() const
   {
     return (num_rows(matrix) + matrix.nnz()) * sizeof(base_matrix_type::size_type)
            + matrix.nnz() * sizeof(base_matrix_type::value_type);

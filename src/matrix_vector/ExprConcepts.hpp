@@ -28,12 +28,12 @@ namespace AMDiS
       template <class>    static void test1(...);
 
       static constexpr bool value0 = traits::HasValueType<Type>::value &&
-				     traits::HasSizeType<Type>::value;
-      static constexpr bool value1 = not std::is_void<decltype(test1<Type>(0))>::value;
-      static constexpr bool value2 = std::is_base_of<BaseExpr<Type>, Type>::value;
+                                     traits::HasSizeType<Type>::value;
+      static constexpr bool value1 = !std::is_void<decltype(test1<Type>(0))>::value;
+      //static constexpr bool value2 = std::is_base_of<BaseExpr<Type>, Type>::value;
 
     public:
-      static constexpr bool value = value0 && value1 && value2;
+      static constexpr bool value = value0 && value1; // && value2;
     };
 
   } // end namespace concepts

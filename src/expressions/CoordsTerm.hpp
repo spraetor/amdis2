@@ -65,7 +65,7 @@ namespace AMDiS
       }
     }
 
-    value_type operator[](int iq) const
+    value_type evalAtIdx(int iq) const
     {
       return eval(int_<Comp>(), iq);
     }

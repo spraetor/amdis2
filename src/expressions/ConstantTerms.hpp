@@ -18,7 +18,7 @@ namespace AMDiS
       : value{value_}
     {}
 
-    value_type operator[](int /* i */) const
+    value_type evalAtIdx(int /* i */) const
     {
       return value;
     }
@@ -49,7 +49,7 @@ namespace AMDiS
 
     constexpr CTConstant() {}
 
-    value_type operator[](int /* i */) const
+    value_type evalAtIdx(int /* i */) const
     {
       return value;
     }
@@ -81,7 +81,7 @@ namespace AMDiS
     constexpr Reference(value_type const& value_)
       : value{value_} {}
 
-    value_type operator[](int /* i */) const
+    value_type evalAtIdx(int /* i */) const
     {
       return value;
     }

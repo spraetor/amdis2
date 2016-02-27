@@ -66,7 +66,7 @@ namespace AMDiS
       return "CouplingIterationInterface";
     }
 
-    virtual void setSolveProblem(int number, bool flag = true)
+    virtual void setSolveProblem(size_t number, bool flag = true)
     {
       solveProblem[number] = flag;
     }

@@ -19,7 +19,7 @@ namespace AMDiS
 
   ElInfoStack::~ElInfoStack()
   {
-    for (int i = 0; i < static_cast<int>(elInfoStack_.size()); i++)
+    for (int i = 0; i < int( elInfoStack_.size() ); i++)
     {
       delete elInfoStack_[i];
     }
@@ -30,11 +30,11 @@ namespace AMDiS
   {
     // Check if the stack if large enough. If not, the stack is enlarged
     // and new elements are created.
-    if (stackPosition_ + 1 >= static_cast<int>(elInfoStack_.size()))
+    if (stackPosition_ + 1 >= int( elInfoStack_.size() ))
     {
-      int oldSize = elInfoStack_.size();
+      int oldSize = int( elInfoStack_.size() );
       elInfoStack_.resize(oldSize + oldSize / 2);
-      for (int i = oldSize; i < static_cast<int>(elInfoStack_.size()); i++)
+      for (int i = oldSize; i < int( elInfoStack_.size() ); i++)
       {
         elInfoStack_[i] = mesh_->createNewElInfo();
       }

@@ -12,7 +12,7 @@ namespace AMDiS
                              bool symm,
                              double factor) const
   {
-    int dim = num_rows(LALt);
+    const int dim = int( num_rows(LALt) );
 
     if (symm)
     {
@@ -59,7 +59,7 @@ namespace AMDiS
                                 mtl::dense2D<double>& LALt,
                                 double factor) const
   {
-    int dim = num_rows(LALt);
+    const int dim = int( num_rows(LALt) );
 
     for (int i = 0; i < dim; i++)
       for (int j = 0; j < dim; j++)
@@ -71,7 +71,7 @@ namespace AMDiS
                              mtl::dense2D<double>& LALt,
                              double factor) const
   {
-    const int dim = num_rows(LALt);
+    const int dim = int( num_rows(LALt) );
 
     for (int i = 0; i < dim; i++)
     {

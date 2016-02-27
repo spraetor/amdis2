@@ -244,8 +244,10 @@ namespace AMDiS
 
   void waitSec(int seconds)
   {
+#ifndef _WIN32
     clock_t endwait = clock () + seconds * CLOCKS_PER_SEC;
     while (clock() < endwait) {}
+#endif
   }
 
 

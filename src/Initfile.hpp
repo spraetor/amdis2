@@ -6,6 +6,7 @@
 #include <boost/lexical_cast.hpp>
 #include <boost/numeric/conversion/cast.hpp>
 #include <boost/tokenizer.hpp>
+
 #include <boost/property_tree/ptree.hpp>
 // #include <boost/type_traits.hpp>
 
@@ -49,13 +50,11 @@ namespace AMDiS
     {
       static void eval(std::string valStr, T& value)
       {
-
-
-	try {
+        try {
             value = numeric_cast< T >(mu_parser_eval(valStr));
-	} catch(...) {
-	  ERROR("Could not parse '%s' to '%s'\n", valStr.c_str(), typeid(T).name());
-	}
+        } catch(...) {
+            ERROR("Could not parse '%s' to '%s'\n", valStr.c_str(), typeid(T).name());
+        }
       }
     };
 
@@ -64,30 +63,30 @@ namespace AMDiS
     {
       static void eval(std::string valStr, T& value)
       {
-	EnumParser<T>()(valStr, value);
+        EnumParser<T>()(valStr, value);
       }
     };
 
     // convert string to vector
-    template <class T>
-    struct Convert<T, Requires_t<concepts::Vector<T>> >
-    {
-      static void eval(std::string valStr, T& values)
-      {
-        using value_type = Value_t<T>;
-        using Tokenizer = boost::tokenizer<boost::char_separator<char>>;
-
-        boost::char_separator<char> sep(",; ");
-        Tokenizer tokens(valStr, sep);
-        int i = 0;
-        for (auto token : tokens)
-        {
-          value_type v;
-          Convert<value_type>::eval(token, v);
-          values[i] = v;
-        }
-      }
-    };
+//     template <class T>
+//     struct Convert<T, Requires_t<concepts::Vector<T>> >
+//     {
+//       static void eval(std::string valStr, T& values)
+//       {
+//         using value_type = Value_t<T>;
+//         using Tokenizer = boost::tokenizer<boost::char_separator<char>>;
+// 
+//         boost::char_separator<char> sep(",; ");
+//         Tokenizer tokens(valStr, sep);
+//         int i = 0;
+//         for (auto token : tokens)
+//         {
+//           value_type v;
+//           Convert<value_type>::eval(token, v);
+//           values[i] = v;
+//         }
+//       }
+//     };
 
     template <class M, class S>
     struct Convert<VectorBase<M,S>>
@@ -111,8 +110,8 @@ namespace AMDiS
     };
 
     // convert string to vector
-    template <class T>
-    struct Convert<std::vector<T>>
+    template <class T, class Alloc>
+    struct Convert<std::vector<T, Alloc>>
     {
       static void eval(std::string valStr, std::vector<T>& values)
       {

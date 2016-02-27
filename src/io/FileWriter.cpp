@@ -131,7 +131,7 @@ namespace AMDiS
         std::string vtu_file = fn + paraviewFileExt;
         VtkWriter::Aux vtkWriter(&dataCollectors,
                                  solutionNames,
-                                 VtkWriter::Vtuformat(paraViewMode), (paraViewPrecision == 1), writeParaViewVectorFormat);
+                                 VtkWriter::Vtuformat(paraViewMode), (paraViewPrecision == 1), (writeParaViewVectorFormat == 1));
         vtkWriter.writeFile(vtu_file);
 
 #if HAVE_PARALLEL_DOMAIN_AMDIS

@@ -175,14 +175,14 @@ namespace AMDiS
     /// belonging to this mesh
     int getNumberOfDOFAdmin() const
     {
-      return admin.size();
+      return int(admin.size());
     }
 
     /// Returns the size of \ref macroElements which is the number of
     /// of macro elements of this mesh
     int getNumberOfMacros() const
     {
-      return macroElements.size();
+      return int(macroElements.size());
     }
 
     /// Returns a DOFAdmin which at least manages vertex DOFs
@@ -386,7 +386,7 @@ namespace AMDiS
     void freeDofPtrs(DegreeOfFreedom** ptrs);
 
     /// Used by \ref findElementAtPoint.
-    bool findElInfoAtPoint(WorldVector<double> const& xy,
+    int findElInfoAtPoint(WorldVector<double> const& xy,
                            ElInfo* el_info,
                            DimVec<double>& bary,
                            MacroElement const* start_mel,
@@ -428,7 +428,7 @@ namespace AMDiS
      * For non-convex domains, it is possible that in some cases a point inside
      * the domain is considered as external.
      */
-    bool findElementAtPoint(WorldVector<double> const& xy,
+    int findElementAtPoint(WorldVector<double> const& xy,
                             Element** elp,
                             DimVec<double>& bary,
                             MacroElement const* start_mel,
@@ -662,7 +662,7 @@ namespace AMDiS
 
   protected:
     ///
-    bool findElementAtPointRecursive(ElInfo* elinfo,
+    int findElementAtPointRecursive(ElInfo* elinfo,
                                      DimVec<double> const& lambda,
                                      int outside,
                                      ElInfo* final_el_info);

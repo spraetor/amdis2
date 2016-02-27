@@ -95,24 +95,26 @@ namespace AMDiS
 
         std::ostream& print(const WorldVector<double>& l, std::ostream& o)
         {
-          for (size_t i = 0; i < static_cast<size_t>(l.getSize()); i++)
+          using size_type = Size_t< WorldVector<double> >;
+          for (size_type i = 0; i < l.getSize(); i++)
           {
             o << (fabs(l[i]) < 1e-40 ? 0.0 : l[i]) << " ";
           }
-          for (int i = l.getSize(); i < 3; i++)
+          for (size_type i = l.getSize(); i < 3; i++)
             o << 0.0 << " ";
           return o;
         }
 
         std::ostream& print(const std::vector<double>& l, std::ostream& o)
         {
-          for (size_t i = 0; i < l.size(); i++)
+          using size_type = Size_t< WorldVector<double> >;
+          for (size_type i = 0; i < l.size(); i++)
           {
             o << (fabs(l[i]) < 1e-40 ? 0.0 : l[i]) << " ";
           }
           if (writeAs3dVector)
           {
-            for (int i = l.size(); i < 3; i++)
+            for (size_type i = l.size(); i < 3; i++)
               o << 0.0 << " ";
           }
           return o;
