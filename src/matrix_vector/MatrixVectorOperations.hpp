@@ -251,6 +251,12 @@ namespace AMDiS
     return {expr1.sub(), expr2.sub()};
   }
 
+  // TODO: provide simple matrix functions, i.e.
+  //  - outer(vec, vec)  ->  matrix
+  //  - diagonal(vec)    ->  matrix
+  //  - diagonal(mat)    ->  vector
+  //  - trace(mat)       ->  scalar
+  //  - transpose(mat)   ->  matrix
 
   /// comparison of expressions
   template <class E1, class E2>

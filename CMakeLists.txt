@@ -64,6 +64,7 @@ add_library(amdis
     ${SOURCE_DIR}/AdaptInstationary.cpp
     ${SOURCE_DIR}/AdaptStationary.cpp
     ${SOURCE_DIR}/AMDiS.cpp
+    ${SOURCE_DIR}/AMDiS_base.cpp
     ${SOURCE_DIR}/Assembler.cpp
     ${SOURCE_DIR}/BasisFunction.cpp
     ${SOURCE_DIR}/Boundary.cpp

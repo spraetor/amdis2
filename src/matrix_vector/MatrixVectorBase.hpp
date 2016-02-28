@@ -58,8 +58,11 @@ namespace AMDiS
       this->operator=(expr);
     }
 
-    /// destructor
-    ~MatrixVectorBase() {}
+    // use default implementations for copy and move operations
+    MatrixVectorBase(Self const&) = default;
+    MatrixVectorBase(Self&&)      = default;
+    Self& operator=(Self const&)  = default;
+    Self& operator=(Self&&)       = default;
 
     /// fill vector with scalar value
     template <class S>

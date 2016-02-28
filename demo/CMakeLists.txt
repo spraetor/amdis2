@@ -12,3 +12,6 @@ endif(AMDIS_FOUND)
 
 add_executable("ellipt" src/ellipt.cc)
 target_link_libraries("ellipt" ${BASIS_LIBS})
+
+add_executable("test1" src/test1.cc)
+target_link_libraries("test1" ${BASIS_LIBS})

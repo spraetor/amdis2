@@ -675,7 +675,7 @@ namespace AMDiS
     if (el->getMark() <= 0)
       return elInfo;
 
-    int bound = false;
+    bool bound = false;
     DegreeOfFreedom* edge[2];
 
     // === Get memory for a list of all elements at the refinement edge. ===

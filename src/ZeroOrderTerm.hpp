@@ -52,7 +52,7 @@ namespace AMDiS
 			  DenseVector<double>& C) const override
     {
       for (int iq = 0; iq < nPoints; iq++)
-        C[iq] += this->term[iq];
+        C[iq] += this->term.evalAtIdx(iq);
     }
 
     /// Implemetation of \ref OperatorTerm::eval().
@@ -64,7 +64,7 @@ namespace AMDiS
                           double fac) const override
     {
       for (int iq = 0; iq < nPoints; iq++)
-        result[iq] += fac * this->term[iq] * uhAtQP[iq];
+        result[iq] += fac * this->term.evalAtIdx(iq) * uhAtQP[iq];
     }
   };
 

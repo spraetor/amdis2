@@ -11,7 +11,7 @@ namespace AMDiS
     const int nPoints = static_cast<int>(LALt.size());
 
     for (int iq = 0; iq < nPoints; iq++)
-      this->l1lt(grdLambda, LALt[iq], this->term[iq]);
+      this->l1lt(grdLambda, LALt[iq], this->term.evalAtIdx(iq));
   }
 
 
@@ -34,7 +34,7 @@ namespace AMDiS
         for (int i = 0; i < dow; i++)
           resultQP += D2UhAtQP[iq][i][i];
 
-        result[iq] += resultQP * f * this->term[iq];
+        result[iq] += resultQP * f * this->term.evalAtIdx(iq);
       }
     }
   }
@@ -45,9 +45,9 @@ namespace AMDiS
       std::vector<WorldVector<double>> const& grdUhAtQP,
       std::vector<WorldVector<double>>& result) const
   {
-    int nPoints = grdUhAtQP.size();
+    const int nPoints = int( grdUhAtQP.size() );
     for (int iq = 0; iq < nPoints; iq++)
-      result[iq] += this->term[iq] * grdUhAtQP[iq];
+      result[iq] += this->term.evalAtIdx(iq) * grdUhAtQP[iq];
   }
 
 
@@ -57,10 +57,10 @@ namespace AMDiS
       std::vector<mtl::dense2D<double>>& LALt) const
   {
     const DimVec<WorldVector<double>>& grdLambda = elInfo->getGrdLambda();
-    const int nPoints = static_cast<int>(LALt.size());
+    const int nPoints = int( LALt.size() );
 
     for (int iq = 0; iq < nPoints; iq++)
-      this->lalt(grdLambda, this->term[iq], LALt[iq], symmetric, 1.0);
+      this->lalt(grdLambda, this->term.evalAtIdx(iq), LALt[iq], symmetric, 1.0);
   }
 
 
@@ -79,7 +79,7 @@ namespace AMDiS
     {
       double resultQP = 0.0;
 
-      WorldMatrix<double> A = this->term[iq];
+      WorldMatrix<double> A = this->term.evalAtIdx(iq);
 
       if (num_rows(D2UhAtQP) > 0)
         for (int i = 0; i < dow; i++)
@@ -99,10 +99,10 @@ namespace AMDiS
       std::vector<WorldVector<double>> const& grdUhAtQP,
       std::vector<WorldVector<double>>& result) const
   {
-    int nPoints = grdUhAtQP.size();
+    const int nPoints = int( grdUhAtQP.size() );
     WorldMatrix<double> A;
     for (int iq = 0; iq < nPoints; iq++)
-      result[iq] += this->term[iq] * grdUhAtQP[iq];
+      result[iq] += this->term.evalAtIdx(iq) * grdUhAtQP[iq];
   }
 
 
@@ -112,10 +112,10 @@ namespace AMDiS
       std::vector<mtl::dense2D<double>>& LALt) const
   {
     const DimVec<WorldVector<double>>& grdLambda = elInfo->getGrdLambda();
-    const int nPoints = static_cast<int>(LALt.size());
+    const int nPoints = int( LALt.size() );
 
     for (int iq = 0; iq < nPoints; iq++)
-      this->lalt_kl(grdLambda, row, col, LALt[iq], this->term[iq]);
+      this->lalt_kl(grdLambda, row, col, LALt[iq], this->term.evalAtIdx(iq));
   }
 
 
@@ -131,7 +131,7 @@ namespace AMDiS
     if (num_rows(D2UhAtQP) > 0)
     {
       for (int iq = 0; iq < nPoints; iq++)
-        result[iq] += D2UhAtQP[iq][row][col] * this->term[iq] * fac;
+        result[iq] += D2UhAtQP[iq][row][col] * this->term.evalAtIdx(iq) * fac;
     }
   }
 
@@ -141,9 +141,9 @@ namespace AMDiS
       std::vector<WorldVector<double>> const& grdUhAtQP,
       std::vector<WorldVector<double>>& result) const
   {
-    int nPoints = grdUhAtQP.size();
+    int nPoints = int( grdUhAtQP.size() );
     for (int iq = 0; iq < nPoints; iq++)
-      result[iq][row] += grdUhAtQP[iq][col] * this->term[iq];
+      result[iq][row] += grdUhAtQP[iq][col] * this->term.evalAtIdx(iq);
   }
 
 } // end namspace AMDiS

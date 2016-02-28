@@ -64,14 +64,11 @@ namespace AMDiS
       set(value0);
     }
 
-    /// Copy constructor
-    MatrixBase(Self const& other)
-      : Super(other._size),
-        _rows(other._rows),
-        _cols(other._cols)
-    {
-      std::copy(other.begin(), other.end(), _elements);
-    }
+    // use default implementations for copy and move operations
+    MatrixBase(Self const& other) = default;
+    MatrixBase(Self&&)            = default;
+    Self& operator=(Self const&)  = default;
+    Self& operator=(Self&&)       = default;
 
     /// \brief cConstructor based on an expression.
     /// Use the assignment operator for expressions to copy values elementwise
@@ -84,18 +81,6 @@ namespace AMDiS
       this->operator=(expr);
     }
 
-    /// destructor
-    ~MatrixBase() {}
-
-#ifndef _MSC_VER // bug in MSVC <= 2013
-    /// copy assignment operator
-    Self& operator=(Self const& other)
-    {
-      std::copy(other.begin(), other.end(), _elements);
-      return *this;
-    }
-#endif
-
     // import (compound)-assignment operators from Super-class
     using Super::operator= ;
     using Super::operator+= ;
@@ -105,14 +90,14 @@ namespace AMDiS
 
     // need non-templated arguments in order to eliminate a friend declaration
     // warning in gcc
-    friend void swap(MatrixBase& first, MatrixBase& second)
-    {
-      using std::swap; // enable ADL
-      swap(first._size, second._size);
-      swap(first._rows, second._rows);
-      swap(first._cols, second._cols);
-      swap(first._elements, second._elements);
-    }
+    // friend void swap(MatrixBase& first, MatrixBase& second)
+    // {
+    //   using std::swap; // enable ADL
+    //   swap(first._size, second._size);
+    //   swap(first._rows, second._rows);
+    //   swap(first._cols, second._cols);
+    //   swap(first._elements, second._elements);
+    // }
 
     /// resize matrix
     void resize(size_type r, size_type c)

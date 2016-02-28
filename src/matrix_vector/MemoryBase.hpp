@@ -43,10 +43,16 @@ namespace AMDiS
     {
       TEST_EXIT_DBG(s == _SIZE)("Size must be equal to capacity!\n");
     }
+    
+    /// destructor
+    ~MemoryBaseStatic() = default;
 
   public:
-    /// destructor
-    virtual ~MemoryBaseStatic() {}
+    // use default implementations for copy and move operations
+    MemoryBaseStatic(MemoryBaseStatic const&)            = default;
+    MemoryBaseStatic(MemoryBaseStatic&&)                 = default;
+    MemoryBaseStatic& operator=(MemoryBaseStatic const&) = default;
+    MemoryBaseStatic& operator=(MemoryBaseStatic&&)      = default;
 
   public:
     /// return the \ref _size of the vector.
@@ -143,10 +149,9 @@ namespace AMDiS
         _capacity(s),
         _elements(_size ? (aligned ? AMDIS_ALIGNED_ALLOC(T, s) : new T[s]) : NULL)
     {}
-
-  public:
+    
     /// destructor
-    virtual ~MemoryBaseDynamic()
+    ~MemoryBaseDynamic()
     {
       if (_elements)
       {
@@ -160,6 +165,60 @@ namespace AMDiS
         }
         _elements = NULL;
       }
+    }
+
+  public:
+    
+    /// copy constructor
+    MemoryBaseDynamic(MemoryBaseDynamic const& other)
+      : _size(other._size),
+        _capacity(other._capacity),
+        _elements(_size ? (aligned ? AMDIS_ALIGNED_ALLOC(T, _size) : new T[_size]) : NULL)
+    {
+      if (_size)
+        std::copy(other._elements, other._elements + _size, _elements);
+    }
+    
+    /// move constructor
+    MemoryBaseDynamic(MemoryBaseDynamic&& other)
+      : _size(other._size),
+        _capacity(other._capacity),
+        _elements(other._elements)
+    {
+      other._elements = NULL;
+      other._size = 0;
+    }
+    
+    /// copy assignment operator
+    MemoryBaseDynamic& operator=(MemoryBaseDynamic const& other)
+    {
+      resize( other._size );
+      std::copy(other._elements, other._elements + other._size, _elements);
+      return *this;
+    }
+    
+    /// move assignment operator
+    MemoryBaseDynamic& operator=(MemoryBaseDynamic&& other)
+    {
+      if (_elements)
+      {
+        if (aligned)
+        {
+          AMDIS_ALIGNED_FREE(_elements);
+        }
+        else
+        {
+          delete [] _elements;
+        }
+        _elements = NULL;
+      }
+        
+      _size = other._size;
+      _capacity = other._capacity;
+      _elements = other._elements;
+      other._elements = NULL;
+      other._size = 0;
+      return *this;
     }
 
   public:
@@ -291,10 +350,16 @@ namespace AMDiS
     {
       TEST_EXIT_DBG(s <= _capacity)("Size must be <= capacity!\n");
     }
+    
+    /// destructor
+    ~MemoryBaseHybrid() = default;
 
   public:
-    /// destructor
-    virtual ~MemoryBaseHybrid() {}
+    // use default implementations for copy and move operations
+    MemoryBaseHybrid(MemoryBaseHybrid const&)            = default;
+    MemoryBaseHybrid(MemoryBaseHybrid&&)                 = default;
+    MemoryBaseHybrid& operator=(MemoryBaseHybrid const&) = default;
+    MemoryBaseHybrid& operator=(MemoryBaseHybrid&&)      = default;
 
   public:
     /// return the \ref _size of the vector.

@@ -10,7 +10,7 @@ namespace AMDiS
     const int nPoints = static_cast<int>(Lb.size());
 
     for (int iq = 0; iq < nPoints; iq++)
-      this->l1(grdLambda, Lb[iq], this->term[iq]);
+      this->l1(grdLambda, Lb[iq], this->term.evalAtIdx(iq));
   }
 
 
@@ -22,7 +22,7 @@ namespace AMDiS
     const int nPoints = static_cast<int>(Lb.size());
 
     for (int iq = 0; iq < nPoints; iq++)
-      this->lb_one(grdLambda, Lb[iq], this->term[iq]);
+      this->lb_one(grdLambda, Lb[iq], this->term.evalAtIdx(iq));
   }
 
 
@@ -34,7 +34,7 @@ namespace AMDiS
     const int nPoints = static_cast<int>(Lb.size());
 
     for (int iq = 0; iq < nPoints; iq++)
-      this->lb(grdLambda, this->term[iq], Lb[iq], 1.0);
+      this->lb(grdLambda, this->term.evalAtIdx(iq), Lb[iq], 1.0);
   }
 
 } // end namespace AMDiS

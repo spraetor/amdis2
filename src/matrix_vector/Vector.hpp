@@ -61,18 +61,17 @@ namespace AMDiS
       set(value0);
     }
 
-    /// Copy constructor
-    VectorBase(Self const& other)
-      : Super(other._size)
-    {
-      std::copy(other._elements, other._elements + _size, _elements);
-    }
+    // use default implementations for copy and move operations
+    VectorBase(Self const&)      = default;
+    VectorBase(Self&&)           = default;
+    Self& operator=(Self const&) = default;
+    Self& operator=(Self&&)      = default;
 
     /// \brief Constructor based on an expression.
     /// Use the assignment operator for expressions to copy values elementwise
     template <class Expr>
     VectorBase(VectorExpr<Expr> const& expr)
-      : Super(size(expr))
+      : Super(size_type( size(expr) ))
     {
       this->operator=(expr);
     }
@@ -82,22 +81,9 @@ namespace AMDiS
       : Super(l.size())
     {
       TEST_EXIT_DBG( _size == l.size() )
-	("size(Initializer-list) should be size(vector)!");
+	       ("size(Initializer-list) should be size(vector)!");
       std::copy(l.begin(), l.end(), _elements);
     }
-
-    /// destructor
-    ~VectorBase() {}
-
-#ifndef _MSC_VER // bug in MSVC <= 2013
-    /// copy assignment operator
-    Self& operator=(Self const& other)
-    {
-      this->resize( other._size );
-      std::copy(other.begin(), other.end(), _elements);
-      return *this;
-    }
-#endif
 
     using Super::operator= ;
     using Super::operator+= ;
@@ -107,12 +93,12 @@ namespace AMDiS
 
     // need non-templated arguments in order to eliminate a friend declaration
     // warning in gcc
-    friend void swap(VectorBase& first, VectorBase& second)
-    {
-      using std::swap; // enable ADL
-      swap(first._size, second._size);
-      swap(first._elements, second._elements);
-    }
+    // friend void swap(VectorBase& first, VectorBase& second)
+    // {
+    //   using std::swap; // enable ADL
+    //   swap(first._size, second._size);
+    //   swap(first._elements, second._elements);
+    // }
 
     // ----- element access functions  -----------------------------------------
   public:
@@ -135,7 +121,7 @@ namespace AMDiS
     value_type& at(size_type i)
     {
       TEST_EXIT_DBG(i < _size)
-	("Index " << i << " out of range [0, " << _size << ")!\n");
+	       ("Index " << i << " out of range [0, " << _size << ")!\n");
       return _elements[i];
     }
 
@@ -143,7 +129,7 @@ namespace AMDiS
     value_type const& at(size_type i) const
     {
       TEST_EXIT_DBG(i < _size)
-	("Index " << i << " out of range [0, " << _size << ")!\n");
+	       ("Index " << i << " out of range [0, " << _size << ")!\n");
       return _elements[i];
     }
 

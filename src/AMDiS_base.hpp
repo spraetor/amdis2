@@ -14,7 +14,8 @@ namespace AMDiS
   template <class T>
   struct EnumParser
   {
-    EnumParser() {}
+    EnumParser();
+    
     void operator()(std::string const& valStr, T& value)
     {
       auto it = enumMap.find(valStr);

@@ -79,22 +79,22 @@ namespace AMDiS
   * the row corresponding to a Dirichlet dof is replaced by a row containing
   * only a 1.0 in the diagonal.
   */
-  template <class Expr>
+  template <class Term>
   class DirichletBC : public detail::DirichletBC
   {
     using Super = detail::DirichletBC;
-    using TermType = ToTerm_t<Expr>;
+    using TermType = ToTerm_t<Term>;
 
   public:
     /// Constructor.
-    template <class Expr_>
+    template <class Term_>
     DirichletBC(BoundaryType type,
-                Expr_&& fct_,
+                Term_&& term_,
                 const FiniteElemSpace* rowFeSpace,
                 const FiniteElemSpace* colFeSpace = NULL,
                 bool apply = true)
       : Super(type, rowFeSpace, colFeSpace, apply),
-        fct(toTerm(std::forward<Expr_>(fct_)))
+        term(toTerm(std::forward<Term_>(term_)))
     {}
 
 
@@ -107,18 +107,18 @@ namespace AMDiS
     {
       const BasisFunction* basFcts = rowFeSpace->getBasisFcts();
       // initialize expression on ElInfo
-      fct.initElement(elInfo, NULL, NULL, basFcts);
+      term.initElement(elInfo, NULL, NULL, basFcts);
       for (int i = 0; i < nBasFcts; i++)
         if (localBound[i] == boundaryType)
         {
-          Value_t<TermType> value = fct[i];
+          Value_t<TermType> value = term.evalAtIdx(i);
           vector->setDirichletDofValue(dofIndices[i], value);
           (*vector)[dofIndices[i]] = value;
         }
     }
 
   protected:
-    TermType fct;
+    TermType term;
   };
 
 } // end namespace AMDiS

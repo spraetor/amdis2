@@ -73,6 +73,9 @@ namespace AMDiS
   }
 
 
+  // TODO: write begin(expr) and end(expr), i.e. provide general
+  // iterator for expressions
+
   // determine shape of expression
   template <class Sub, class Model, class = void>
   struct ShapedExpr
