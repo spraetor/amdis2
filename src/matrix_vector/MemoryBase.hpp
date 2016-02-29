@@ -41,7 +41,7 @@ namespace AMDiS
     /// default constructor
     explicit MemoryBaseStatic(size_type DBG_VAR( s ) = 0)
     {
-      TEST_EXIT_DBG(s == _SIZE)("Size must be equal to capacity!\n");
+      TEST_EXIT_DBG(s == 0 || s == _SIZE)("Size must be equal to capacity!\n");
     }
     
     /// destructor

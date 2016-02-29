@@ -205,4 +205,23 @@ namespace AMDiS
     return mat.getNumCols();
   }
 
+  // ===========================================================================
+
+  // OUTPUT << Matrix
+  template <class charT, class Traits, class MemoryP, class SizeP>
+  std::basic_ostream<charT, Traits>&
+  operator<<(std::basic_ostream<charT, Traits>& out,
+             MatrixBase<MemoryP, SizeP> const& mat)
+  {
+    using size_type = Size_t<MatrixBase<MemoryP, SizeP>>;
+    out << "\n[";
+    for (size_type r = 0; r < num_rows(mat); ++r) {
+      for (size_type c = 0; c < num_cols(mat); ++c)
+        out << mat(r, c) << (c+1 < num_cols(mat) ? ", " : "");
+      out << (r+1 < num_rows(mat) ? ";\n " : "");
+    }
+    out << "]\n";
+    return out;
+  }
+
 } // end namespace AMDiS

@@ -178,12 +178,15 @@ namespace AMDiS
         initMatrix(Super::matrix, A, *Super::mapper);
         runner.init(A, Super::matrix);
       }
+      std::cout << Super::matrix << "\n";
 
       VectorType mtl_x;
       initVector(mtl_x, x, *Super::mapper);
+      std::cout << mtl_x << "\n";
 
       VectorType mtl_b;
       initVector(mtl_b, b, *Super::mapper);
+      std::cout << mtl_b << "\n";
 
       INFO(Self::getInfo(), 8)("fill MTL4 matrix needed %.5f seconds\n", t.elapsed());
 

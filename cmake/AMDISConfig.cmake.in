@@ -39,8 +39,12 @@ add_library(AMDiS ALIAS amdis_base)
 
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-target_compile_definitions(amdis_base INTERFACE HAS_CXX11=1)
-
+target_compile_definitions(amdis_base INTERFACE HAS_CXX11=1 AMDIS_FIXED_SIZE=1)
+if (MSVC)
+    target_compile_definitions(amdis_base INTERFACE
+        _SCL_SECURE_NO_WARNINGS
+        _CRT_SECURE_NO_WARNINGS)
+endif (MSVC)
 
 # try to detect the AMDiS include directory
 # -------------------------------------------

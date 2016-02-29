@@ -1,5 +1,3 @@
-/** \file meta_basic.hpp */
-
 #pragma once
 
 // std c++ headers

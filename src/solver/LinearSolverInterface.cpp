@@ -54,7 +54,7 @@ namespace AMDiS
 	MSG("Residual norm: ||b-Ax|| = %e\n", residual);
       }
 
-#if DEBUG != 0
+#ifndef NDEBUG
       if (getIterations() > 0)
       {
 	MSG("Nr. of iterations needed = %d\n", getIterations());

@@ -40,13 +40,13 @@ namespace AMDiS
     /// access the elements of an expr.
     value_type operator()(size_type i) const
     {
-      return Functor::apply( i, expr1, expr2 );
+      return Functor::eval( i, expr1, expr2 );
     }
 
     /// access the elements of a matrix-expr.
     value_type operator()(size_type i, size_type j) const
     {
-      return Functor::apply( i, j, expr1, expr2 );
+      return Functor::eval( i, j, expr1, expr2 );
     }
 
     expr1_type const& get_first() const

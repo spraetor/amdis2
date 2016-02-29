@@ -162,7 +162,7 @@ namespace AMDiS
 
     /* ====================== Create new DOFAdmins ================== */
     admin.resize(m.admin.size());
-    for (int i = 0; i < static_cast<int>(admin.size()); i++)
+    for (size_t i = 0; i < admin.size(); ++i)
     {
       admin[i] = new DOFAdmin(this);
       *(admin[i]) = *(m.admin[i]);
@@ -186,32 +186,28 @@ namespace AMDiS
 
     // Go through all MacroElements of mesh m, and create for every a new
     // MacroElement in this mesh.
-    for (deque<MacroElement*>::const_iterator it = m.macroElements.begin();
-         it != m.macroElements.end(); ++it, insertCounter++)
+    for (MacroElement* macroElem : m.macroElements)
     {
-
       // Create new MacroElement.
       MacroElement* el = new MacroElement(dim);
 
       // Use copy operator to copy all the data to the new MacroElement.
-      *el = **it;
+      *el = *macroElem;
 
       // Make a copy of the Element data, together with all DOFs
-      el->setElement((*it)->getElement()->cloneWithDOFs(Mesh::serializedDOFs));
+      el->setElement(macroElem->getElement()->cloneWithDOFs(Mesh::serializedDOFs));
 
       // Insert the new MacroElement in the vector of all MacroElements.
       macroElements.push_back(el);
 
       // Update the index map.
-      mapIndex.insert(pair<int, int>(el->getIndex(), insertCounter));
+      mapIndex.insert(pair<int, int>(el->getIndex(), insertCounter++));
     }
 
     // Now we have to go through all the new MacroElements, and update the neighbour
     // connections.
     insertCounter = 0;
-    for (deque<MacroElement*>::const_iterator it = m.macroElements.begin();
-         it != m.macroElements.end();
-         ++it, insertCounter++)
+    for (MacroElement* macroElem : m.macroElements)
     {
       // Go through all neighbours.
       for (int i = 0; i < dim; i++)
@@ -221,12 +217,13 @@ namespace AMDiS
         //    for the vector index the corresponding element is stored in.
         // 3. Get this element from macroElements, and set it as the i-th
         //    neighbour for the current element.
-        if ((*it)->getNeighbour(i)!=NULL)
+        if (macroElem->getNeighbour(i)!=NULL)
         {
           macroElements[insertCounter]->
-          setNeighbour(i, macroElements[mapIndex[(*it)->getNeighbour(i)->getIndex()]]);
+          setNeighbour(i, macroElements[mapIndex[macroElem->getNeighbour(i)->getIndex()]]);
         }
       }
+      insertCounter++;
     }
 
     // Cleanup
@@ -261,6 +258,7 @@ namespace AMDiS
     macroElements.push_back(me);
     me->setIndex(int( macroElements.size() ));
   }
+  
 
   void Mesh::removeAllMacroElements()
   {
@@ -305,16 +303,17 @@ namespace AMDiS
       admin[i]->reset();
     }
   }
+  
 
   void Mesh::removeMacroElements(std::set<MacroElement*>& delMacros,
                                  vector<const FiniteElemSpace*>& feSpaces)
   {
     FUNCNAME("Mesh::removeMacroElement()");
 
-    typedef map<const DegreeOfFreedom*, std::set<MacroElement*>> DofElMap;
-    typedef map<const DegreeOfFreedom*, GeoIndex> DofPosMap;
+    using DofElMap  = map<const DegreeOfFreedom*, std::set<MacroElement*>>;
+    using DofPosMap = map<const DegreeOfFreedom*, GeoIndex>;
 
-    TEST_EXIT(feSpaces.size() > 0)("Should not happen!\n");
+    TEST_EXIT(!feSpaces.empty())("FeSpace-Vector is empty. This should not happen!\n");
 
     // Search for the FE space with the highest degree of polynomials. Using this
     // FE space ensures that deleting DOFs defined on it, also DOFs of lower
@@ -529,7 +528,7 @@ namespace AMDiS
   {
     FUNCNAME_DBG("Mesh::dofCompress()");
 
-    for (unsigned int iadmin = 0; iadmin < admin.size(); iadmin++)
+    for (size_t iadmin = 0; iadmin < admin.size(); ++iadmin)
     {
       DOFAdmin* compressAdmin = admin[iadmin];
 
@@ -736,7 +735,7 @@ namespace AMDiS
   }
 
 
-  int Mesh::findElInfoAtPoint(const WorldVector<double>& xy,
+  bool Mesh::findElInfoAtPoint(const WorldVector<double>& xy,
                                ElInfo* el_info,
                                DimVec<double>& bary,
                                const MacroElement* start_mel,
@@ -825,7 +824,7 @@ namespace AMDiS
     }
 
     /* now, descend in tree to find leaf element at point */
-    int inside = findElementAtPointRecursive(mel_info, lambda, k, el_info);
+    bool inside = findElementAtPointRecursive(mel_info, lambda, k, el_info);
     for (int i = 0; i <= dim; i++)
       bary[i] = final_lambda[i];
 
@@ -835,7 +834,7 @@ namespace AMDiS
   }
 
 
-  int Mesh::findElementAtPoint(const WorldVector<double>&  xy,
+  bool Mesh::findElementAtPoint(const WorldVector<double>&  xy,
                                 Element** elp,
                                 DimVec<double>& bary,
                                 const MacroElement* start_mel,
@@ -843,17 +842,17 @@ namespace AMDiS
                                 double* sp)
   {
     ElInfo* el_info = createNewElInfo();
-    int val = findElInfoAtPoint(xy, el_info, bary, start_mel, xy0, sp);
+    bool inside = findElInfoAtPoint(xy, el_info, bary, start_mel, xy0, sp);
 
     *elp = el_info->getElement();
 
     delete el_info;
 
-    return val;
+    return inside;
   }
 
 
-  int Mesh::findElementAtPointRecursive(ElInfo* el_info,
+  bool Mesh::findElementAtPointRecursive(ElInfo* el_info,
                                          const DimVec<double>& lambda,
                                          int outside,
                                          ElInfo* final_el_info)
@@ -862,7 +861,7 @@ namespace AMDiS
 
     Element* el = el_info->getElement();
     DimVec<double> c_lambda(dim);
-    int inside;
+    bool inside;
     int ichild, c_outside;
 
     if (el->isLeaf())
@@ -1134,6 +1133,14 @@ namespace AMDiS
   {
     diam[i] = w;
   }
+
+
+  void Mesh::setBoundingBox(WorldVector<double> const& min_corner, 
+                            WorldVector<double> const& max_corner)
+  {
+    boundingBox = std::make_pair(min_corner, max_corner);
+  }
+
 
 
   void Mesh::initialize()

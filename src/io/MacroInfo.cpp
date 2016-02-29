@@ -119,7 +119,7 @@ namespace AMDiS
     return -1;
   }
 
-#include <ctype.h>
+#include <ctype.h> // NOTE: was soll das hier mitten im source ???
 
   static const char* read_key(const char* line)
   {
@@ -160,6 +160,7 @@ namespace AMDiS
     FILE* file = fopen(filename.c_str(), "r");
     TEST_EXIT(file)("cannot open file %s\n", filename.c_str());
 
+    MSG("readAMDiSMacro...\n");
 
     // === Looking for all keys in the macro file. ===
 
@@ -172,10 +173,10 @@ namespace AMDiS
       key = read_key(line);
       int i_key = get_key_no(key);
       TEST_EXIT(i_key >= 0)
-      ("macro file %s must not contain key %s on line %d\n",
+        ("macro file %s must not contain key %s on line %d\n",
        filename.c_str(), key, line_no);
       TEST_EXIT(!key_def[i_key])
-      ("key %s defined second time on line %d in file %s\n");
+        ("key %s defined second time on line %d in file %s\n");
 
       sort_key[n_keys++] = i_key;
       key_def[i_key] = true;
@@ -232,6 +233,7 @@ namespace AMDiS
 
 
     // === And now, reading data. ===
+    MSG("reading data...\n");
 
     file = fopen(filename.c_str(), "r");
     TEST_EXIT(file)("cannot open file %s\n", filename.c_str());
@@ -251,6 +253,8 @@ namespace AMDiS
 
         ind = new DimVec<int>(dim);
         ind_neigh = new FixVec<int, NEIGH>(dim);
+        
+        MSG("DIM = %d\n", dim);
 
         key_def[0] = true;
         break;
@@ -264,6 +268,8 @@ namespace AMDiS
         ("dimension of world = %d != Global::getGeo(WORLD) = %d\n",
          dow, Global::getGeo(WORLD));
 
+        MSG("DOW = %d\n", dow);
+        
         key_def[1] = true;
         break;
 
@@ -275,6 +281,8 @@ namespace AMDiS
         TEST_EXIT(nVertices > 0)
         ("number of vertices = %d must be bigger than 0\n", nVertices);
 
+        MSG("nVertices = %d\n", nVertices);
+        
         key_def[2] = true;
         if (key_def[3])
           fill(mesh, nElements, nVertices);
@@ -288,6 +296,8 @@ namespace AMDiS
         TEST_EXIT(nElements > 0)
         ("number of elements = %d must be bigger than 0\n", nElements);
 
+        MSG("nElements = %d\n", nElements);
+        
         key_def[3] = true;
         if (key_def[2])
           fill(mesh, nElements, nVertices);

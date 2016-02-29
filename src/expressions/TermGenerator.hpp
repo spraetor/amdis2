@@ -52,9 +52,9 @@ namespace AMDiS
       using type = T;
 
       template <class T_>
-      static constexpr T_ const& get(T_ const& t)
+      static constexpr type get(T_ const& t)
       {
-        return t;
+        return {t};
       }
     };
 

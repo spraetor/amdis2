@@ -54,18 +54,16 @@ namespace AMDiS
     // using value_type = typename std::result_of<F(Value_t<Term1>, Value_t<Terms>...)>::type;
     using value_type = typename std::result_of<F(typename Term1::value_type, typename Terms::value_type...)>::type;
 
-    template <class... Terms_,
-      class = Requires_t<traits::IsCompatible<Types<Term1,Terms...>, Types<Terms_...>>>>
-    FunctorTerm(Terms_&&... terms_)
-      : Super(std::forward<Terms_>(terms_)...),
+    FunctorTerm(Term1 const& term1_, Terms const&... terms_)
+      : Super(term1_, terms_...),
         fct{}
     {}
 
-    template <class F_, class... Terms_,
-      class = Requires_t<traits::IsCompatible<Types<F,Term1,Terms...>, Types<F_,Terms_...>>>>
-    FunctorTerm(F_&& f, Terms_&&... terms_)
-      : Super(std::forward<Terms_>(terms_)...),
-        fct(f)
+    template <class F_,
+      class = Requires_t<traits::IsCompatible<F, F_>> >
+    FunctorTerm(F_&& f_, Term1 const& term1_, Terms const&... terms_)
+      : Super(term1_, terms_...),
+        fct(std::forward<F_>(f_))
     {}
 
     /// return the required quadrature degree to integrate term

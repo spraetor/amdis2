@@ -210,5 +210,38 @@ namespace AMDiS
       }
     };
 
+
+
+    // -------------------------------------------------------------------------
+
+    template <class F, int arg, class G>
+    struct compose;
+
+    template <class F, class G>
+    struct compose<F, 1, G>
+    {
+      using result_type = Result_t<F>;
+
+      template <class T>
+      result_type& operator()(T& v, T const& v0) { return f(g(v), v0); }
+      
+    private:
+      F f;
+      G g;
+    };
+
+    template <class F, class G>
+    struct compose<F, 2, G>
+    {
+      using result_type = Result_t<F>;
+
+      template <class T>
+      result_type& operator()(T& v, T const& v0) { return f(v, g(v0)); }
+      
+    private:
+      F f;
+      G g;
+    };
+
   } // end namespace assign
 } // end namespace AMDiS

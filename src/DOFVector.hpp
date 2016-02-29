@@ -139,10 +139,16 @@ namespace AMDiS
                                     std::vector<DegreeOfFreedom>& newDof);
 
     /// Restriction after coarsening. Implemented for DOFVector<double>
-    void coarseRestrict(RCNeighbourList&, int) {}
+    void coarseRestrict(RCNeighbourList& list, int n)
+    {
+      coarseRestrictImpl(Id<T>(), list, n);
+    } 
 
     /// Interpolation after refinement. Implemented for DOFVector<double>
-    void refineInterpol(RCNeighbourList&, int) {}
+    void refineInterpol(RCNeighbourList& list, int n)
+    {
+      refineInterpolImpl(Id<T>(), list, n);
+    }
 
     /// Returns \ref vec
     std::vector<T>& getVector()
@@ -341,11 +347,10 @@ namespace AMDiS
     /// Eval DOFVector at given point p. If oldElInfo != NULL the search for
     /// the element, where p is inside, starts from oldElInfo. implemented for:
     /// double, WorldVector< double >
-    T evalAtPoint(WorldVector<double> const& /*p*/,
-                  ElInfo* /*oldElInfo*/ = NULL) const
+    T evalAtPoint(WorldVector<double> const& p,
+                  ElInfo* oldElInfo = NULL) const
     {
-      FUNCNAME("DOFVector::evalAtPoint())");
-      TEST_EXIT(false)("Please implement your evaluation\n");
+      return evalAtPointImpl(Id<T>(), p, oldElInfo);
     }
 
     T operator()(WorldVector<double> const& p) const
@@ -369,10 +374,42 @@ namespace AMDiS
     DOFVector<Gradient_t<T>>* getRecoveryGradient(DOFVector<Gradient_t<T>>* grad) const;
 
   protected:
+    template <class S>
+    void coarseRestrictImpl(Id<S>, RCNeighbourList&, int)
+    {
+      ERROR_EXIT("Need to be implemented for type T\n");
+    }
+    void coarseRestrictImpl(Id<double>, RCNeighbourList& list, int n);
+
+
+    template <class S>
+    void refineInterpolImpl(Id<S>, RCNeighbourList&, int)
+    {
+      ERROR_EXIT("Need to be implemented for type T\n");
+    }
+    void refineInterpolImpl(Id<double>, RCNeighbourList& list, int n);
+    void refineInterpolImpl(Id<WorldVector<double>>, RCNeighbourList& list, int n);
+    
+    
+    template <class S>
+    S evalAtPointImpl(Id<S>, WorldVector<double> const&,
+                      ElInfo* = NULL) const
+    {
+      ERROR_EXIT("Need to be implemented for type T\n");
+      return {};
+    }
+    double evalAtPointImpl(Id<double>, WorldVector<double> const& p,
+                           ElInfo* oldElInfo = NULL) const;
+    WorldVector<double> evalAtPointImpl(
+                           Id<WorldVector<double>>, WorldVector<double> const& p,
+                           ElInfo* oldElInfo = NULL) const;
+
+  protected:
     /// Data container
     std::vector<T> vec;
   };
 
+  // TODO: find better interface for boundary integrals
   template<>
   double DOFVector<double>::IntOnBoundary(
     BoundaryType boundaryType, Quadrature* q) const;
@@ -380,20 +417,6 @@ namespace AMDiS
   template<>
   double DOFVector<WorldVector<double>>::IntOnBoundaryNormal(
                                        BoundaryType boundaryType, Quadrature* q) const;
-
-  template<>
-  double DOFVector<double>::evalAtPoint(WorldVector<double> const& p,
-                                        ElInfo* oldElInfo) const;
-
-  template<>
-  WorldVector<double> DOFVector<WorldVector<double>>::evalAtPoint(WorldVector<double> const& p,
-      ElInfo* oldElInfo) const;
-
-  template<>
-  void DOFVector<double>::refineInterpol(RCNeighbourList&, int);
-
-  template<>
-  void DOFVector<double>::coarseRestrict(RCNeighbourList&, int);
 
 
 

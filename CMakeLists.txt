@@ -45,6 +45,9 @@ target_compile_features(amdis_base INTERFACE
     cxx_range_for
     cxx_static_assert
     cxx_variadic_templates)
+    
+target_compile_definitions(amdis_base INTERFACE AMDIS_FIXED_SIZE=1)
+#target_compile_definitions(amdis_base INTERFACE DOW=2)
 
 # ------------------------------------------------------------------------------
 

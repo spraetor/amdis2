@@ -219,7 +219,7 @@ namespace AMDiS
     using abs_max_reduction_functor
       = general_unary_reduction_functor<T,
         AMDiS::assign::ct_value<T, int, 0>,
-        compose<AMDiS::assign::max<T>, 2, abs<T>>>;
+        AMDiS::assign::compose<AMDiS::assign::max<T>, 2, abs<T>>>;
 
     // min(v0, v1, v2, v3, ...)
     template <class T>
@@ -232,7 +232,7 @@ namespace AMDiS
     using abs_min_reduction_functor
       = general_unary_reduction_functor<T,
         AMDiS::assign::max_value<T>,
-        compose<AMDiS::assign::min<T>, 2, abs<T>>>;
+        AMDiS::assign::compose<AMDiS::assign::min<T>, 2, abs<T>>>;
 
     // v0+v1+v2+v3+...
     template <class T>

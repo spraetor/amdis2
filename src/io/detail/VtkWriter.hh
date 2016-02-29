@@ -272,6 +272,7 @@ namespace AMDiS
         // For all DOFs of vertices, write the coordinates.
         for (it.reset(); !it.end(); ++it)
         {
+          std::cout << "list<VertexInfo>.size = " << it->size() << "\n";
           // for all vertex infos of this DOF
           for (std::list<VertexInfo>::iterator it2 = it->begin(); it2 != it->end(); ++it2)
           {

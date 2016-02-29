@@ -129,6 +129,12 @@ namespace AMDiS
       return diam;
     }
 
+    /// Returns \ref diam of the mesh
+    std::pair<WorldVector<double>, WorldVector<double>> const& getBoundingBox() const
+    {
+      return boundingBox;
+    }
+
     /// Returns nDof[i] of the mesh
     int getNumberOfDofs(int i) const
     {
@@ -299,6 +305,9 @@ namespace AMDiS
 
     /// Sets (*\ref diam)[i] to d
     void setDiameter(int i, double d);
+    
+    void setBoundingBox(WorldVector<double> const& min_corner, 
+                        WorldVector<double> const& max_corner);
 
     /// Sets \ref preserveCoarseDOFs = true
     void retainCoarseDOFs()
@@ -386,7 +395,7 @@ namespace AMDiS
     void freeDofPtrs(DegreeOfFreedom** ptrs);
 
     /// Used by \ref findElementAtPoint.
-    int findElInfoAtPoint(WorldVector<double> const& xy,
+    bool findElInfoAtPoint(WorldVector<double> const& xy,
                            ElInfo* el_info,
                            DimVec<double>& bary,
                            MacroElement const* start_mel,
@@ -428,7 +437,7 @@ namespace AMDiS
      * For non-convex domains, it is possible that in some cases a point inside
      * the domain is considered as external.
      */
-    int findElementAtPoint(WorldVector<double> const& xy,
+    bool findElementAtPoint(WorldVector<double> const& xy,
                             Element** elp,
                             DimVec<double>& bary,
                             MacroElement const* start_mel,
@@ -662,7 +671,7 @@ namespace AMDiS
 
   protected:
     ///
-    int findElementAtPointRecursive(ElInfo* elinfo,
+    bool findElementAtPointRecursive(ElInfo* elinfo,
                                      DimVec<double> const& lambda,
                                      int outside,
                                      ElInfo* final_el_info);
@@ -723,6 +732,9 @@ namespace AMDiS
 
     /// Diameter of the mesh in the DIM_OF_WORLD directions
     WorldVector<double> diam;
+    
+    /// Corner coordinates of the bounding-box of the mesh
+    std::pair<WorldVector<double>, WorldVector<double>> boundingBox;
 
     /// Is pointer to NULL if mesh contains no parametric elements else pointer
     /// to a Parametric object containing coefficients of the parameterization

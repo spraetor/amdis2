@@ -8,7 +8,10 @@
 #include "expressions/TermConcepts.hpp"
 #include "expressions/TermGenerator.hpp"
 
+#include "expressions/TermOperations.hpp"
+
 #include "expressions/cmath_functors.hpp"
+
 
 namespace AMDiS
 {
@@ -125,72 +128,69 @@ namespace AMDiS
   // ______ generator functions for pointwise basic arithmetic operations __________________
 
 
-  template <class Term1, class Term2>
-  using PlusTerm =
-    FunctorTerm<functors::plus<Value_t<Term1>, Value_t<Term2>>, Term1, Term2>;
-
-  /// expression for V + W
-  template <class T1, class T2, 
-	    class T1_ = Decay_t<T1>, class T2_ = Decay_t<T2>>
-  requires::Term<PlusTerm<ToTerm_t<T1_>, ToTerm_t<T2_>>, T1_, T2_>
-  inline operator+(T1&& t1, T2&& t2)
-  {
-    return {toTerm(std::forward<T1>(t1)), toTerm(std::forward<T2>(t2))};
-  }
+//   template <class Term1, class Term2>
+//   using PlusTerm =
+//     FunctorTerm<functors::plus<Value_t<Term1>, Value_t<Term2>>, Term1, Term2>;
+// 
+//   /// expression for V + W
+//   template <class T1, class T2>
+//   requires::Term<PlusTerm<ToTerm_t<T1>, ToTerm_t<T2>>, T1, T2>
+//   inline operator+(T1 const& t1, T2 const& t2)
+//   {
+//     return {toTerm(t1), toTerm(t2)};
+//   }
 
   // ------------
 
-  template <class Term1, class Term2>
-  using MinusTerm =
-    FunctorTerm<functors::minus<Value_t<Term1>, Value_t<Term2>>, Term1, Term2>;
-
-  /// expression for V - W
-  template <class T1, class T2, 
-	    class T1_ = Decay_t<T1>, class T2_ = Decay_t<T2>>
-  requires::Term<MinusTerm<ToTerm_t<T1_>, ToTerm_t<T2_>>, T1_, T2_>
-  inline operator-(T1&& t1, T2&& t2)
-  {
-    return {toTerm(std::forward<T1>(t1)), toTerm(std::forward<T2>(t2))};
-  }
+//   template <class Term1, class Term2>
+//   using MinusTerm =
+//     FunctorTerm<functors::minus<Value_t<Term1>, Value_t<Term2>>, Term1, Term2>;
+// 
+//   /// expression for V - W
+//   template <class T1, class T2>
+//     requires::Term<MinusTerm<ToTerm_t<T1>, ToTerm_t<T2>>, T1, T2>
+//   inline operator-(T1 const& t1, T2 const& t2)
+//   {
+//     return {toTerm(t1), toTerm(t2)};
+//   }
 
   // ------------
 
   /// expression for -V
-  template <class T>
-  FunctorTerm<functors::negate<Value_t<T>>, T>
-  inline operator-(BaseTerm<T> const& term)
-  {
-    return {term.sub()};
-  }
+  // template <class T>
+  // FunctorTerm<functors::negate<Value_t<T>>, T>
+  // inline operator-(BaseTerm<T> const& term)
+  // {
+  //   return {term.sub()};
+  // }
 
   // ------------
 
-  template <class Term1, class Term2>
-  using MultipliesTerm = 
-    FunctorTerm<functors::multiplies<Value_t<Term1>, Value_t<Term2>>, Term1, Term2>;
-
-  /// expression for V .* W
-  template <class T1, class T2>
-    requires::Term<MultipliesTerm<ToTerm_t<T1>, ToTerm_t<T2>>, T1, T2>
-  inline operator*(T1 const& t1, T2 const& t2)
-  {
-    return {toTerm(t1), toTerm(t2)};
-  }
+//   template <class Term1, class Term2>
+//   using MultipliesTerm = 
+//     FunctorTerm<functors::multiplies<Value_t<Term1>, Value_t<Term2>>, Term1, Term2>;
+// 
+//   /// expression for V .* W
+//   template <class T1, class T2>
+//     requires::Term<MultipliesTerm<ToTerm_t<T1>, ToTerm_t<T2>>, T1, T2>
+//   inline operator*(T1 const& t1, T2 const& t2)
+//   {
+//     return {toTerm(t1), toTerm(t2)};
+//   }
   
   // ------------
 
-  template <class Term1, class Term2>
-  using DividesTerm =
-    FunctorTerm<functors::divides<Value_t<Term1>, Value_t<Term2>>, Term1, Term2>;
-
-  /// expression for V ./ W
-  template <class T1, class T2, 
-	    class T1_ = Decay_t<T1>, class T2_ = Decay_t<T2>>
-  requires::Term<DividesTerm<ToTerm_t<T1_>, ToTerm_t<T2_>>, T1_, T2_>
-  inline operator/(T1&& t1, T2&& t2)
-  {
-    return {toTerm(std::forward<T1>(t1)), toTerm(std::forward<T2>(t2))};
-  }
+//   template <class Term1, class Term2>
+//   using DividesTerm =
+//     FunctorTerm<functors::divides<Value_t<Term1>, Value_t<Term2>>, Term1, Term2>;
+// 
+//   /// expression for V ./ W
+//   template <class T1, class T2>
+//     requires::Term<DividesTerm<ToTerm_t<T1>, ToTerm_t<T2>>, T1, T2>
+//   inline operator/(T1 const& t1, T2 const& t2)
+//   {
+//     return {toTerm(t1), toTerm(t2)};
+//   }
 
   
   // ______ generator functions for pointwise cmath operations __________________
@@ -232,17 +232,71 @@ namespace AMDiS
   // --------------
 
 
+//   template <class Term1, class Term2>
+//   using EqualTerm =
+//     FunctorTerm<functors::equal<Value_t<Term1>, Value_t<Term2>>, Term1, Term2>;
+// 
+//   /// expression for min(V, W)
+//   template <class T1, class T2>
+//     requires::Term<EqualTerm<ToTerm_t<T1>, ToTerm_t<T2>>, T1, T2>
+//   inline operator==(T1 const& t1, T2 const& t2)
+//   {
+//     return {toTerm(t1), toTerm(t2)};
+//   }
+
+
+//   template <class Term1, class Term2>
+//   using UnequalTerm =
+//     FunctorTerm<functors::unequal<Value_t<Term1>, Value_t<Term2>>, Term1, Term2>;
+// 
+//   /// expression for min(V, W)
+//   template <class T1, class T2>
+//     requires::Term<UnequalTerm<ToTerm_t<T1>, ToTerm_t<T2>>, T1, T2>
+//   inline operator!=(T1 const& t1, T2 const& t2)
+//   {
+//     return {toTerm(t1), toTerm(t2)};
+//   }
+
+
+//   template <class Term1, class Term2>
+//   using LessTerm =
+//     FunctorTerm<functors::less<Value_t<Term1>, Value_t<Term2>>, Term1, Term2>;
+// 
+//   /// expression for min(V, W)
+//   template <class T1, class T2>
+//     requires::Term<LessTerm<ToTerm_t<T1>, ToTerm_t<T2>>, T1, T2>
+//   inline operator<(T1 const& t1, T2 const& t2)
+//   {
+//     return {toTerm(t1), toTerm(t2)};
+//   }
+
+
+//   template <class Term1, class Term2>
+//   using GreaterTerm =
+//     FunctorTerm<functors::greater<Value_t<Term1>, Value_t<Term2>>, Term1, Term2>;
+// 
+//   /// expression for min(V, W)
+//   template <class T1, class T2>
+//     requires::Term<GreaterTerm<ToTerm_t<T1>, ToTerm_t<T2>>, T1, T2>
+//   inline operator>(T1 const& t1, T2 const& t2)
+//   {
+//     return {toTerm(t1), toTerm(t2)};
+//   }
+
+
+  // --------------
+
+
   template <class Term1, class Term2>
   using MinTerm =
     FunctorTerm<functors::min<Common_t<Value_t<Term1>, Value_t<Term2>>>, Term1, Term2>;
 
   /// expression for min(V, W)
-  template <class T1, class T2, 
-	    class T1_ = Decay_t<T1>, class T2_ = Decay_t<T2>>
-  requires::Term<MinTerm<ToTerm_t<T1_>, ToTerm_t<T2_>>, T1_, T2_>
-  inline min(T1&& t1, T2&& t2)
+  template <class T1, class T2>
+  requires::Term<MinTerm<ToTerm_t<T1>, ToTerm_t<T2>>, T1, T2>
+  inline min(T1 const& t1, T2 const& t2)
   {
-    return {toTerm(std::forward<T1>(t1)), toTerm(std::forward<T2>(t2))};
+    return {toTerm(t1), toTerm(t2)};
   }
 
   // ------------
@@ -252,12 +306,11 @@ namespace AMDiS
     FunctorTerm<functors::max<Common_t<Value_t<Term1>, Value_t<Term2>>>, Term1, Term2>;
 
   /// expression for max(V, W)
-  template <class T1, class T2, 
-	    class T1_ = Decay_t<T1>, class T2_ = Decay_t<T2>>
-  requires::Term<MaxTerm<ToTerm_t<T1_>, ToTerm_t<T2_>>, T1_, T2_>
-  inline max(T1&& t1, T2&& t2)
+  template <class T1, class T2>
+  requires::Term<MaxTerm<ToTerm_t<T1>, ToTerm_t<T2>>, T1, T2>
+  inline max(T1 const& t1, T2 const& t2)
   {
-    return {toTerm(std::forward<T1>(t1)), toTerm(std::forward<T2>(t2))};
+    return {toTerm(t1), toTerm(t2)};
   }
 
 
@@ -376,12 +429,11 @@ namespace AMDiS
     FunctorTerm<functors::Atan2<Value_t<Term1>, Value_t<Term2>>, Term1, Term2>;
 
   /// expression for atan2(V, W)
-  template <class T1, class T2, 
-	    class T1_ = Decay_t<T1>, class T2_ = Decay_t<T2>>
-  requires::Term<ATan2Term<ToTerm_t<T1_>, ToTerm_t<T2_>>, T1_, T2_>
-      inline atan2(T1&& t1, T2&& t2)
+  template <class T1, class T2>
+  requires::Term<ATan2Term<ToTerm_t<T1>, ToTerm_t<T2>>, T1, T2>
+      inline atan2(T1 const& t1, T2 const& t2)
   {
-    return {toTerm(std::forward<T1>(t1)), toTerm(std::forward<T2>(t2))};
+    return {toTerm(t1), toTerm(t2)};
   }
 
   // ------------

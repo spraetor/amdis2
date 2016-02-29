@@ -790,6 +790,174 @@ namespace AMDiS
 
     return result;
   }
+  
+  
+  
+  template <class T>
+  void DOFVector<T>::coarseRestrictImpl(Id<double>, RCNeighbourList& list, int n)
+  {
+    FUNCNAME("DOFVector<double>::coarseRestrict()");
+
+    switch (this->coarsenOperation)
+    {
+    case NO_OPERATION:
+      return;
+      break;
+    case COARSE_RESTRICT:
+      (const_cast<BasisFunction*>(this->feSpace->getBasisFcts()))->coarseRestr(this, &list, n);
+      break;
+    case COARSE_INTERPOL:
+      TEST_EXIT_DBG(this->feSpace)("Should not happen!\n");
+      TEST_EXIT_DBG(this->feSpace->getBasisFcts())("Shoud not happen!\n");
+
+      (const_cast<BasisFunction*>(this->feSpace->getBasisFcts()))->coarseInter(this, &list, n);
+      break;
+    default:
+      WARNING("Invalid coarsen operation \"%d\" in vector \"%s\"\n",
+              this->coarsenOperation, this->name.c_str());
+    }
+  }
+
+
+  template <class T>
+  void DOFVector<T>::refineInterpolImpl(Id<double>, RCNeighbourList& list, int n)
+  {
+    switch (this->refineOperation)
+    {
+    case NO_OPERATION:
+      return;
+      break;
+    case REFINE_INTERPOL:
+    default:
+      (const_cast<BasisFunction*>(this->feSpace->getBasisFcts()))->refineInter(this, &list, n);
+      break;
+    }
+  }
+
+
+  template <class T>
+  void DOFVector<T>::refineInterpolImpl(Id<WorldVector<double>>, RCNeighbourList& list, int n)
+  {
+    if (this->refineOperation == NO_OPERATION)
+      return;
+
+    if (n < 1)
+      return;
+
+    Element* el = list.getElement(0);
+    int n0 = this->feSpace->getAdmin()->getNumberOfPreDofs(VERTEX);
+    DegreeOfFreedom dof0 = el->getDof(0, n0);
+    DegreeOfFreedom dof1 = el->getDof(1, n0);
+    DegreeOfFreedom dof_new = el->getChild(0)->getDof(this->feSpace->getMesh()->getDim(), n0);
+    vec[dof_new] = vec[dof0];
+    vec[dof_new] += vec[dof1];
+    vec[dof_new] *= 0.5;
+  }
+
+
+  template <class T>
+  double DOFVector<T>::evalAtPointImpl(Id<double>,
+      WorldVector<double> const& p,
+      ElInfo* oldElInfo) const
+  {
+    Mesh* mesh = this->feSpace->getMesh();
+    const BasisFunction* basFcts = this->feSpace->getBasisFcts();
+
+    int dim = mesh->getDim();
+    int nBasFcts = basFcts->getNumber();
+
+    std::vector<DegreeOfFreedom> localIndices(nBasFcts);
+    DimVec<double> lambda(dim);
+
+    ElInfo* elInfo = mesh->createNewElInfo();
+    double value = 0.0;
+    int inside = 0;
+
+    if (oldElInfo && oldElInfo->getMacroElement())
+    {
+      inside = mesh->findElInfoAtPoint(p, elInfo, lambda, oldElInfo->getMacroElement(), NULL, NULL);
+      delete oldElInfo;
+    }
+    else
+      inside = mesh->findElInfoAtPoint(p, elInfo, lambda, NULL, NULL, NULL);
+
+    if (oldElInfo)
+      oldElInfo = elInfo;
+
+    if (inside > 0)
+    {
+      basFcts->getLocalIndices(elInfo->getElement(), this->feSpace->getAdmin(), localIndices);
+      DenseVector<double> uh(nBasFcts);
+      for (int i = 0; i < nBasFcts; i++)
+        uh[i] = operator[](localIndices[i]);
+      value = basFcts->evalUh(lambda, uh);
+    }
+    else
+    {
+#ifdef HAVE_PARALLEL_DOMAIN_AMDIS
+      value = 0.0;
+#else
+      ERROR_EXIT("Can not eval DOFVector at point p, because point is outside geometry.");
+#endif
+    }
+
+
+    if (oldElInfo == NULL)
+      delete elInfo;
+
+#ifdef HAVE_PARALLEL_DOMAIN_AMDIS
+    Parallel::mpi::globalAdd(value);
+#endif
+    return value;
+  }
+
+
+  template <class T>
+  WorldVector<double> DOFVector<T>::evalAtPointImpl(Id<WorldVector<double>>,
+        WorldVector<double> const& p,
+        ElInfo* oldElInfo) const
+  {
+    Mesh* mesh = this->feSpace->getMesh();
+    const BasisFunction* basFcts = this->feSpace->getBasisFcts();
+
+    int dim = mesh->getDim();
+    int nBasFcts = basFcts->getNumber();
+
+    std::vector<DegreeOfFreedom> localIndices(nBasFcts);
+    DimVec<double> lambda(dim);
+    ElInfo* elInfo = mesh->createNewElInfo();
+    WorldVector<double> value(DEFAULT_SIZE, 0.0);
+    int inside = 0;
+
+    if (oldElInfo && oldElInfo->getMacroElement())
+    {
+      inside = mesh->findElInfoAtPoint(p, elInfo, lambda, oldElInfo->getMacroElement(), NULL, NULL);
+      delete oldElInfo;
+    }
+    else
+      inside = mesh->findElInfoAtPoint(p, elInfo, lambda, NULL, NULL, NULL);
+
+    if (oldElInfo)
+      oldElInfo = elInfo;
+
+    if (inside > 0)
+    {
+      basFcts->getLocalIndices(elInfo->getElement(), this->feSpace->getAdmin(), localIndices);
+      DenseVector<WorldVector<double>> uh(nBasFcts);
+      for (int i = 0; i < nBasFcts; i++)
+        uh[i] = operator[](localIndices[i]);
+      value = basFcts->evalUh(lambda, uh);
+    }
+    else
+    {
+      ERROR_EXIT("Can not eval DOFVector at point p, because point is outside geometry.");
+    }
+
+    if (oldElInfo == NULL)
+      delete elInfo;
+
+    return value;
+  }
 
 
   template <class T>

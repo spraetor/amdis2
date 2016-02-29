@@ -35,7 +35,7 @@ namespace AMDiS
   template <class B>
   void Operator::addFOTImpl(tag::vector, B const& b, FirstOrderType type, int /*i*/)
   {
-    GenericOperatorTerm<B, 1>* operatorTerm = new GenericFirstOrderTerm_b<B_>(b);
+    GenericOperatorTerm<B, 1>* operatorTerm = new GenericFirstOrderTerm_b<B>(b);
 
     if (type == GRD_PSI)
       firstOrderGrdPsi.push_back(operatorTerm);

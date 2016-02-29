@@ -15,7 +15,7 @@ namespace AMDiS
     using value_type = Decay_t<T>;
 
     constexpr RTConstant(value_type const& value_)
-      : value{value_}
+      : value(value_)
     {}
 
     value_type evalAtIdx(int /* i */) const
@@ -79,7 +79,7 @@ namespace AMDiS
     using value_type = Decay_t<T>;
 
     constexpr Reference(value_type const& value_)
-      : value{value_} {}
+      : value(value_) {}
 
     value_type evalAtIdx(int /* i */) const
     {

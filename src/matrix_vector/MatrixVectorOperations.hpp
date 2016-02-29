@@ -269,7 +269,7 @@ namespace AMDiS
       if (math::abs(v1(i) - v2(i)) > DBL_TOL)
         return false;
 
-    return false;
+    return true;
   }
 
 
@@ -296,4 +296,13 @@ namespace AMDiS
     }
     return false;
   }
+
+
+  /// test for greater-then (elementwise) up to DBL_TOL
+  template <class E1, class E2>
+  inline bool operator>(VectorExpr<E1> const& expr1, VectorExpr<E2> const& expr2)
+  {
+    return (expr2 < expr1);
+  }
+  
 } // end namespace AMDiS

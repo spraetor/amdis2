@@ -79,7 +79,7 @@ namespace AMDiS
     {
       FUNCNAME("MacroReader::readMacro()");
 
-      TEST_EXIT(filename != "")("no file specified; filename NULL pointer\n");
+      TEST_EXIT(!filename.empty())("No Macro-filename specified\n");
 
       MacroInfo* macroInfo = new MacroInfo();
       macroInfo->readAMDiSMacro(filename, mesh);
@@ -90,7 +90,7 @@ namespace AMDiS
       DegreeOfFreedom** dof = macroInfo->dof;
 
       // === read periodic data =================================
-      if (periodicFile != "")
+      if (!periodicFile.empty())
       {
         FILE* file = fopen(periodicFile.c_str(), "r");
         TEST_EXIT(file)("can't open file %s\n", periodicFile.c_str());
@@ -229,7 +229,7 @@ namespace AMDiS
 
             for (int j = 0; j < dim; j++)
             {
-#ifdef DEBUG
+#ifndef NDEBUG
               {
                 unsigned initData(melVertex[el1][verticesEl1[j]]);
                 unsigned oldData((*associated)[melVertex[el1][verticesEl1[j]]]);
@@ -278,7 +278,7 @@ namespace AMDiS
           }
         }
 
-#if (DEBUG != 0)
+#ifndef NDEBUG
         std::map<BoundaryType, VertexVector*>::iterator assoc;
         std::map<BoundaryType, VertexVector*>::iterator assocEnd =
           mesh->periodicAssociations.end();
@@ -407,14 +407,10 @@ namespace AMDiS
       }
 
       // === Domain size ===
-
+      
       WorldVector<double> x_min, x_max;
-
-      for (int j = 0; j < Global::getGeo(WORLD); j++)
-      {
-        x_min[j] =  1.E30;
-        x_max[j] = -1.E30;
-      }
+      x_min = 1.e30;
+      x_max =-1.e30;
 
       for (int i = 0; i < mesh->getNumberOfVertices(); i++)
       {
@@ -424,9 +420,9 @@ namespace AMDiS
           x_max[j] = std::max(x_max[j], coords[i][j]);
         }
       }
-
-      for (int j = 0; j < Global::getGeo(WORLD); j++)
-        mesh->setDiameter(j, x_max[j] - x_min[j]);
+      
+      mesh->setDiameter(x_max - x_min);
+      mesh->setBoundingBox(x_min, x_max);
 
       if (check)
       {
