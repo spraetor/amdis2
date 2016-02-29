@@ -57,7 +57,7 @@ namespace AMDiS
   AMDIS_BINARY_TERM_OPERATION( operator|| ,  logical_or )
 
   
-  // ______ generator functions for pointwise tertiary logical operations ________
+  // ______ generator functions for pointwise tertiary logical operations _____
   
   template <class Term0, class Term1, class Term2>
   using ConditionalTerm =
@@ -66,7 +66,8 @@ namespace AMDiS
                  
   // if_(t0, t1, t2) = t0 ? t1 : t2
   template <class T0, class T1, class T2>
-    requires::Term<ConditionalTerm<ToTerm_t<T0>, ToTerm_t<T1>, ToTerm_t<T2>>, T0, T1, T2>
+    requires::Term<ConditionalTerm<ToTerm_t<T0>, ToTerm_t<T1>, ToTerm_t<T2>>, 
+                   T0, T1, T2>
   inline if_(T0 const& t0, T1 const& t1, T2 const& t2)
   {
     return {toTerm(t0), toTerm(t1), toTerm(t2)};

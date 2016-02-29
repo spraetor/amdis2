@@ -5,6 +5,8 @@
 #include "traits/meta_basic.hpp"
 #include "traits/traits_fwd.hpp"
 
+#include "matrix_vector/ExprConcepts.hpp"
+
 namespace AMDiS
 {
   template <class Model>
@@ -81,9 +83,9 @@ namespace AMDiS
   struct ShapedTerm
   {
     using type 
-      = if_then_else< traits::is_vector<Sub>::value,    VectorTerm<Model>,
-        if_then_else< traits::is_matrix<Sub>::value,    MatrixTerm<Model>,
-                                                        BaseTerm<Model> > >;
+      = if_then_else< concepts::VectorExpression<Sub>::value, VectorTerm<Model>,
+        if_then_else< concepts::MatrixExpression<Sub>::value, MatrixTerm<Model>,
+                                                              BaseTerm<Model> > >;
   };
 
   template <class Sub, class Model>

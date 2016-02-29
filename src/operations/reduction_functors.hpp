@@ -74,7 +74,7 @@ namespace AMDiS
     template <class A>
     struct two_norm_functor
     {
-      typedef A result_type;
+      using result_type = A;
 
       template <class Value>
       static void init(Value& value)

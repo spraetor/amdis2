@@ -1,7 +1,7 @@
 #pragma once
 
 // AMDiS includes
-#include "expressions/FunctorTerms.hpp"
+#include "expressions/FunctorTerm.hpp"
 #include "expressions/TermConcepts.hpp"
 #include "matrix_vector/MatrixVectorOperations.hpp"
 
@@ -16,7 +16,6 @@
 #define AMDIS_MAKE_VECTOR_FUNCTOR( NAME, DEGREE, FCT )    \
     struct NAME                                           \
     {                                                     \
-      using result_type = T;                              \
       constexpr int getDegree(int d0) const               \
       {                                                   \
         return DEGREE ;                                   \
@@ -24,7 +23,7 @@
       template <class T>                                  \
       auto operator()(T&& t) const RETURNS                \
       (                                                   \
-        FCT(std::forward<T>(t))                           \
+        FCT( std::forward<T>(t) )                         \
       )                                                   \
     };
 

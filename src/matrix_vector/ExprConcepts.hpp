@@ -35,6 +35,23 @@ namespace AMDiS
     public:
       static constexpr bool value = value0 && value1; // && value2;
     };
+    
+    
+    /// Expressions concept for vectors
+    template <class... Ts>
+    struct VectorExpression : and_<VectorExpression<Ts>...> {};
+
+    template <class T>
+    struct VectorExpression<T> : std::is_base_of< VectorExpr<Decay_t<T>>, Decay_t<T> > {};
+    
+    
+    /// Expressions concept for matrices
+    template <class... Ts>
+    struct MatrixExpression : and_<VectorExpression<Ts>...> {};
+
+    template <class T>
+    struct MatrixExpression<T> : std::is_base_of< MatrixExpr<Decay_t<T>>, Decay_t<T> > {};
+
 
   } // end namespace concepts
 

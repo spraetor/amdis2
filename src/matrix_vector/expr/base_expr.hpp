@@ -82,7 +82,7 @@ namespace AMDiS
   {
     using type
       = if_then_else< traits::is_vector<Sub>::value,    VectorExpr<Model>,
-	    if_then_else< traits::is_matrix<Sub>::value,    MatrixExpr<Model>,
+        if_then_else< traits::is_matrix<Sub>::value,    MatrixExpr<Model>,
                                                         BaseExpr<Model> > >;
   };
 
