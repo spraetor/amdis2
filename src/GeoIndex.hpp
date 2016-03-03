@@ -54,7 +54,7 @@ namespace AMDiS
 
 
   /// maximal size to allocate for container types, based on GeoIndex
-  template <GeoIndex> struct MaxSize : int_<-1> {};
+  template <GeoIndex> struct MaxSize;
 
   /// \cond HIDDEN_SYMBOLS
   template <> struct MaxSize<CENTER> : int_<1> {};
@@ -80,6 +80,8 @@ namespace AMDiS
   template <> struct MaxSize<NEIGH>  : int_<4> {};
   template <> struct MaxSize<EDGE>   : int_<6> {};
   template <> struct MaxSize<FACE>   : int_<4> {};
+  template <> struct MaxSize<BOUNDARY>   : int_<14> {};
+  template <> struct MaxSize<PROJECTION> : int_<10> {};
 #endif
   /// \endcond
 } // end namespace AMDiS

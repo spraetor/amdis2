@@ -39,7 +39,7 @@ namespace AMDiS
     };
 
   } // end namespace traits
-  
+
   // forward declaration
   template <class F, class Term1, class... Terms>
   struct FunctorTerm;
@@ -53,10 +53,10 @@ namespace AMDiS
       >::type;
     using type = ShapedTerm_t<value_type, FunctorTerm<F, Term1, Terms...>>;
   };
-  
+
   template <class F, class Term1, class... Terms>
   using FunctorShape_t = typename FunctorShape<F, Term1, Terms...>::type;
-  
+
 
   // the expressions
   // ___________________________________________________________________________
@@ -65,9 +65,9 @@ namespace AMDiS
   template <class F, class Term1, class... Terms>
   struct FunctorTerm
     : public FunctorShape_t<F, Term1, Terms...>,
-      public LazyOperatorTerms<Term1, Terms...>,
-      public ComponentView<Value_t<FunctorShape<F, Term1, Terms...>>, 
-                           FunctorTerm<F, Term1, Terms...>>
+      public LazyOperatorTerms<Term1, Terms...>/*,
+      public ComponentView<Value_t<FunctorShape<F, Term1, Terms...>>,
+                           FunctorTerm<F, Term1, Terms...>>*/
   {
     using Self       = FunctorTerm;
     using Super      = LazyOperatorTerms<Term1, Terms...>;
@@ -110,7 +110,7 @@ namespace AMDiS
     template <int I, class... Terms_>
     int getDegree(int_<I>, Terms_&&... terms) const
     {
-      return getDegree(int_<I-1>(), 
+      return getDegree(int_<I-1>(),
                        Super::getTerm(int_<I-1>()),
                        std::forward<Terms_>(terms)...);
     }
@@ -123,11 +123,11 @@ namespace AMDiS
 
     // call f.operator()(...)
     template <class Arg, int I, class... Terms_>
-    value_type eval(Arg&& arg, int_<I>, 
+    value_type eval(Arg&& arg, int_<I>,
                     Terms_&& ... terms) const
     {
-      return eval(std::forward<Arg>(arg), 
-                  int_<I-1>(), 
+      return eval(std::forward<Arg>(arg),
+                  int_<I-1>(),
                   Super::getTerm(int_<I-1>()),
                   std::forward<Terms_>(terms)...);
     }
@@ -139,8 +139,8 @@ namespace AMDiS
     }
 
     template <class... Terms_>
-    value_type eval(WorldVector<double> const& x, 
-                    int_<0>, 
+    value_type eval(WorldVector<double> const& x,
+                    int_<0>,
                     Terms_ const&... terms) const
     {
       return fct(terms(x)...);  // f(t1(iq), t2(iq), t3(iq),...)
@@ -162,7 +162,7 @@ namespace AMDiS
       using size_type  = int;
     };
     /// \endcond
-    
+
   } // end namespace traits
 
 } // end namespace AMDiS
