@@ -1,0 +1,39 @@
+dimension of world:      3
+
+bunnyMesh->macro file name:       ./macro/bunny_fixed.macro
+bunnyMesh->check:                 0
+bunnyMesh->global refinements:    0
+
+bunny->mesh:                  bunnyMesh
+bunny->dim:                   2
+bunny->components:            1
+bunny->polynomial degree[0]:  1
+
+bunny->solver:                cg
+bunny->solver->max iteration: 100
+bunny->solver->tolerance:     1.e-8
+bunny->solver->info:          5
+bunny->solver->left precon:   diag
+bunny->solver->right precon:  no
+
+bunny->estimator:             residual % residual, recovery
+bunny->estimator->error norm: 1   % 1: H1_NORM, 2: L2_NORM
+bunny->estimator->C1:         0.1 % constant of jump residual
+
+bunny->marker->strategy:      0   % 0: no adaption 1: GR 2: MS 3: ES 4:GERS
+bunny->marker->MSGamma:       0.5
+
+bunny->adapt->tolerance:          1e-8
+bunny->adapt->refine bisections:  1
+bunny->adapt->max iteration:      0
+bunny->adapt->info:               8
+
+bunny->output->filename:         output/bunny
+bunny->output->ParaView format:  1
+bunny->output->append index:     0
+bunny->output->index length:     6
+bunny->output->index decimals:   3
+bunny->output->AMDiS format: 1
+
+WAIT: 1
+

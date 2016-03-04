@@ -1,19 +1,21 @@
 // Software License for MTL
-// 
-// Copyright (c) 2007 The Trustees of Indiana University. 
+//
+// Copyright (c) 2007 The Trustees of Indiana University.
 //               2008 Dresden University of Technology and the Trustees of Indiana University.
-//               2010 SimuNova UG, www.simunova.com. 
+//               2010 SimuNova UG, www.simunova.com.
 // All rights reserved.
 // Authors: Peter Gottschling and Andrew Lumsdaine
-// 
+//
 // This file is part of the Matrix Template Library
-// 
+//
 // See also tools/license/license.mtl.txt in the distribution.
 
 #ifndef MTL_STD_OUTPUT_OPERATOR_INCLUDE
 #define MTL_STD_OUTPUT_OPERATOR_INCLUDE
 
 #ifdef MTL_HAS_STD_OUTPUT_OPERATOR
+
+#define MTL_STD_OUTPUT_OPERATOR_ARG(Arg) Arg
 
 #include <iostream>
 #include <map>
@@ -58,6 +60,10 @@ namespace std {
     }
 
 } // namespace std
+
+#else // MTL_HAS_STD_OUTPUT_OPERATOR
+
+#define MTL_STD_OUTPUT_OPERATOR_ARG(Arg)
 
 #endif // MTL_HAS_STD_OUTPUT_OPERATOR
 

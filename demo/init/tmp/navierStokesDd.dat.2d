@@ -1,0 +1,83 @@
+dimension of world: 2
+
+% ====================== VARIABLES ========================
+output_folder: output
+output_postfix: _phase2
+mesh_name: mesh
+polynomial-degree: 1
+
+% ====================== MESH =============================
+mesh->H: 4.1
+
+obstacle->num vertices: 7
+obstacle->vertex[0]: [1.5, 2]
+obstacle->vertex[1]: [2, 2.5]
+%obstacle->vertex[2]: [2.5, 2]
+%obstacle->vertex[3]: [2, 1.5]
+
+obstacle->vertex[2]: [2.5, 2.05]
+obstacle->vertex[3]: [4.5, 2.05]
+obstacle->vertex[4]: [4.5, 1.95]
+obstacle->vertex[5]: [2.5, 1.95]
+obstacle->vertex[6]: [2, 1.5]
+
+obstacle->P: 0.2
+
+mesh->refinement->initial level: 4
+mesh->refinement->level on interface: 12
+mesh->refinement->level in inner domain: 4
+mesh->refinement->level in outer domain: 0
+mesh->refinement->interface width: 0.05
+mesh->refinement->fade out width: 0.5
+
+% ====================== MESH =============================
+${mesh_name}->macro file name: macro/macro.25.4.2d
+${mesh_name}->global refinements: 0
+${mesh_name}->check: 0
+
+% ====================== INCLUDES =========================
+#include "init/navierStokes_TaylorHood.inc.2d"
+
+% =================== OUTPUT =========================================
+ns->phase->output->filename: ${output_folder}/phase${output_postfix}_
+ns->phase->output->ParaView animation: 1
+ns->phase->output->ParaView format: 1
+ns->phase->output->write every i-th timestep: 1
+ns->phase->output->append index: 1
+ns->phase->output->index length: 9
+ns->phase->output->index decimals: 7
+
+% ====================== USER_PARAMETER - NS ==============
+
+ns->viscosity: 1/100
+ns->theta: 0.5
+%ns->force: [0.0, 9.81]		% gravitational force [m/s^2]
+
+ns->force dirichlet bc: 0
+
+ns->Um: 1.5
+ns->epsilon: 0.05
+ns->beta: 1
+ns->alpha: 2.7
+
+ns->initial velocity: 0
+ns->initial velocity value: 0.0
+ns->laplace operator: 0  	% 0... div(nu*grad(u)), 1... div(0.5*nu*(grad(u)+grad(u)^T)) [sehr langsam]
+ns->non-linear term: 2 		% 0... u^old*grad(u_i^old), 1... u'*grad(u_i^old), 2... u^old*grad(u'_i)
+
+% ====================== TIMESTEPS ========================
+adapt->max iteration: 1
+adapt->max timestep iteration: 1
+adapt->max time iteration: 1
+
+adapt->timestep: 1.e-1
+adapt->max timestep: 1e+10
+adapt->min timestep: 1e-6
+adapt->start time: 0.0
+adapt->end time: 25
+
+% ====================== ESTIMATORS =======================
+adapt->strategy: 0   % 0=explicit, 1=implicit
+
+WAIT: 1
+

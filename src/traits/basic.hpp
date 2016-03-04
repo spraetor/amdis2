@@ -1,130 +1,135 @@
-/******************************************************************************
- *
- * AMDiS - Adaptive multidimensional simulations
- *
- * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
- * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
- *
- * Authors: 
- * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
- *
- * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
- * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
- *
- *
- * This file is part of AMDiS
- *
- * See also license.opensource.txt in the distribution.
- * 
- ******************************************************************************/
-
-
-
 /** \file basic.hpp */
 
-#ifndef AMDIS_BASIC_TRAITS_HPP
-#define AMDIS_BASIC_TRAITS_HPP
+#pragma once
 
-#include <boost/version.hpp> 
-#include <boost/mpl/logical.hpp>
-
-#include "boost/numeric/ublas/detail/returntype_deduction.hpp"
-#if BOOST_VERSION >= 105600
-#include <boost/core/enable_if.hpp>
-#else
-#include <boost/utility/enable_if.hpp>
-#endif
-
+// std c++ headers
 #include <utility>
 #include <type_traits>
 
-namespace AMDiS 
-{
+// a helper macro to reduce typing
+#define RETURNS(...) \
+  -> decltype(__VA_ARGS__) { return (__VA_ARGS__); }
+  
+#define RETURNS_REF(...) \
+  -> decltype(__VA_ARGS__) & { return (__VA_ARGS__); }
 
-  // introduce some shortcuts for boost::mpl
-  // ---------------------------------------
-  using boost::mpl::bool_;
-  using boost::mpl::true_;
-  using boost::mpl::false_;
-  using boost::mpl::and_;
-  using boost::mpl::or_;
-  
-  using boost::enable_if;
-  using boost::enable_if_c;
-  using boost::disable_if;
-  using boost::disable_if_c;
-  
-  template <class... Iters>
-  struct MultiIterator
+#define RETURNS_CONST_REF(...) \
+  -> decltype(__VA_ARGS__) const & { return (__VA_ARGS__); }
+
+namespace AMDiS
+{
+    namespace detail
+    {
+        // workaround for MSVC (problems with alias templates in pack expansion)
+        template <class, class T>
+        struct InvokeType { using type = T; };
+        
+        template <class, class, class T>
+        struct InvokeType2 { using type = T; };
+    }
+
+  template <class T>
+  using Value_t = typename detail::InvokeType<T, typename T::value_type>::type;
+
+  template <class T>
+  using Size_t = typename detail::InvokeType<T, typename T::size_type>::type;
+
+  template <class T>
+  using Result_t = typename detail::InvokeType<T, typename T::result_type>::type;
+
+  template <class T>
+  using Decay_t = typename detail::InvokeType<T, typename std::decay<T>::type>::type;
+
+  template <class T1, class T2>
+  using Common_t = typename detail::InvokeType2<T1, T2, typename std::common_type<T1,T2>::type>::type;
+
+  namespace detail
   {
-    template <class... Iters_>
-    MultiIterator(Iters_&&... iters_) 
-      : iters(std::forward<Iters_>(iters_)...) { }
-    
-    auto begin() {
-      using Indices = std::make_index_sequence<sizeof...(Iters)>;
-      return begin_impl(Indices());
-    }
-    
-    auto end() {
-      using Indices = std::make_index_sequence<sizeof...(Iters)>;
-      return end_impl(Indices());
-    }
-    
-  private:    
-    template <size_t ... I>
-    auto begin_impl(std::index_sequence<I...>) {
-      return std::make_tuple(std::get<I>(iters).begin()...);
-    }
-    template <size_t ... I>
-    auto end_impl(std::index_sequence<I...>) {
-      return std::make_tuple(std::get<I>(iters).end()...);
-    }
-    
-    using TupleType = std::tuple<Iters...>;
-    TupleType iters;
+    template <class T, class = void>
+    struct assign_type
+    {
+      using type = T;
+    };
+
+  } // end namespace detail
+
+  template <class T>
+  using Assign_t = typename detail::assign_type<T>::type;
+
+
+  // ---------------------------------------------------------------------------
+
+
+  template <class... Ts>
+  struct Types {};
+
+  template <class... Ts>
+  using Types_t = Types<Decay_t<Ts>...>;
+
+  template <int... Is>
+  struct Ints {};
+
+
+  // ---------------------------------------------------------------------------
+
+  
+  template <class C, class T = void>
+  using enable_if = std::enable_if<C::value, T>;
+  
+  template <bool C, class T = void>
+  using enable_if_c = std::enable_if<C, T>;
+  
+  template <class C, class T = void>
+  using disable_if = std::enable_if<!C::value, T>;
+  
+  template <bool C, class T = void>
+  using disable_if_c = std::enable_if<!C, T>;
+
+  
+  // alias for enable_if
+  template <class C, class T = void>
+  using Requires_t = typename enable_if<C,T>::type;
+
+  template <bool C, class T = void>
+  using Requires_c = typename enable_if_c<C,T>::type;
+
+  
+  // ---------------------------------------------------------------------------
+  
+  
+  template <class T>
+  struct Id
+  {
+    using type = T;
   };
   
+  template <class T>
+  using Id_t = typename Id<T>::type;
+
   
-  template <class... Iters>
-  auto make_iter(Iters&&... iters)
+  // ---------------------------------------------------------------------------
+  
+  
+  // dummy type
+  class no_valid_type {};
+  
+  namespace detail
   {
-    return MultiIterator<Iters...>(std::forward<Iters>(iters)...);
-  }
-  
-  
-  
-  namespace traits 
-  {
-  
-    // dummy type
-    typedef boost::numeric::ublas::error_cant_deduce_type no_valid_type;
-  
-    template <class A, class B>
-    struct is_multiplicable : boost::mpl::not_< 
-	boost::is_same< typename mtl::Multiplicable<A,B>::result_type, 
-		        no_valid_type > > {};
-  
-    template <class A, class B>
-    struct is_addable : boost::mpl::not_< 
-	boost::is_same< typename mtl::Addable<A,B>::result_type, 
-			no_valid_type > > {};
-      
-#ifdef HAS_CPP11
-    template <typename T>
-    struct is_trivially_copyable : std::is_trivially_copyable<T> {};
-#else
-    template <typename T>
-    struct is_trivially_copyable : boost::is_pod<T> {};
-#endif
+    template <bool Valid, class Type>
+    struct Enabler
+    {
+      using type = typename Type::type;
+    };
+
+    template <class Type>
+    struct Enabler<false, Type>
+    {
+      using type = no_valid_type;
+    };
     
-    template <class T, T A, T B>
-    struct equal : boost::mpl::if_c< A == B, true_, false_ > {};
-  }
-  
-//   template <class T> 
-//   T zero(T result) { result = 0; return result; }
-}
+    template <bool Valid, class Type>
+    using Enabler_t = typename Enabler<Valid, Type>::type;
 
+  } // end namespace detail
 
-#endif // AMDIS_BASIC_TRAITS_HPP
+} // end namespace AMDiS

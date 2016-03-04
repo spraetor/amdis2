@@ -1,0 +1,41 @@
+dimension of world:             2
+
+ballMesh->macro file name:    ./macro/macro.ball.2d
+ballMesh->global refinements: 5
+
+ball->mesh:                   ballMesh
+ball->dim:                    2
+ball->components:             1
+ball->polynomial degree[0]:   1
+
+ball->components:             1
+
+ball->solver:                 cg
+ball->solver->max iteration:  1000
+ball->solver->tolerance:      1.e-8
+ball->solver->info:           2
+ball->solver->left precon:    diag
+ball->solver->right precon:   no
+
+ball->estimator[0]:              residual % residual, recovery
+ball->estimator[0]->error norm:  1   % 1: H1_NORM, 2: L2_NORM
+ball->estimator[0]->C1:          0.1 % constant of jump residual
+
+ball->marker[0]->strategy:       0 % 0: no adaption 1: GR 2: MS 3: ES 4:GERS
+ball->marker[0]->MSGamma:        0.5
+
+ball->adapt[0]->tolerance:       1e-8
+ball->adapt[0]->info:            8
+
+ball->adapt->max iteration:      4
+
+ball->output->filename:          output/ball.2d
+ball->output->ParaView format:   1
+ball->output->append index:      0
+ball->output->index length:      6
+ball->output->index decimals:    3
+ball->output->ARH format:  1
+ball->output->AMDiS format: 1
+
+WAIT:                           1
+

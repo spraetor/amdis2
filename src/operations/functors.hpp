@@ -1,309 +1,350 @@
-/******************************************************************************
- *
- * AMDiS - Adaptive multidimensional simulations
- *
- * Copyright (C) 2013 Dresden University of Technology. All Rights Reserved.
- * Web: https://fusionforge.zih.tu-dresden.de/projects/amdis
- *
- * Authors: 
- * Simon Vey, Thomas Witkowski, Andreas Naumann, Simon Praetorius, et al.
- *
- * This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
- * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
- *
- *
- * This file is part of AMDiS
- *
- * See also license.opensource.txt in the distribution.
- * 
- ******************************************************************************/
-
-
-
 /** \file functors.hpp */
 
-#ifndef AMDIS_OPERATIONS_FUNCTOR_HPP
-#define AMDIS_OPERATIONS_FUNCTOR_HPP
+#pragma once
 
-#include <complex>
+// std c++ headers
 #include <cmath>
+#include <complex>
+#include <type_traits>
 
+// boost headers
 #include <boost/math/special_functions/cbrt.hpp>
-#include <boost/math/special_functions/pow.hpp> 
-#include "traits/types.hpp"
+#include <boost/math/special_functions/pow.hpp>
+
+// AMDiS headers
+#include "operations/functor_generator.hpp"
 #include "operations/meta.hpp"
+#include "traits/basic.hpp"
+#include "traits/scalar_types.hpp"
 
-namespace AMDiS 
+namespace AMDiS
 {
-  struct FunctorBase
-  {
-    int getDegree() const { return 0; }
-    int getDegree(int d0) const { return 0; }
-    int getDegree(int d0, int d1) const { return 0; }
-    int getDegree(int d0, int d1, int d2) const { return 0; }
-    int getDegree(int d0, int d1, int d2, int d3) const { return 0; }
-  };
-
   namespace functors
   {
     /// identity(v) == v
-    template<typename T>
-    struct identity : FunctorBase
-    {
-      typedef T result_type;
-      int degree(int d0) const { return d0; }
-
-      static T eval(const T& v) { return v; }
-      T operator()(const T& v) const { return eval(v); }
-    };
+    AMDIS_MAKE_UNARY_FUNCTOR( identity , d0 , v )
 
     /// constant(v) == val
-    template<typename T>
+    template <class T>
     struct constant : FunctorBase
     {
-      typedef T result_type;
       constant(T val_) : val(val_) {}
 
-      template<typename V>
-      result_type operator()(const V& v) const { return val; }
+      template <class V>
+      T operator()(V&&) const
+      {
+        return val;
+      }
 
     private:
       T val;
     };
-    
-    template<typename T, typename S=T>
-    struct add_constant : FunctorBase
-    {
-      typedef T result_type;
-      S value;
-      add_constant(S value) : value(value) {}
-      
-      result_type& operator()(T& v) { return (v += value); }
-    };
-    
-    template<typename T, typename S=T>
-    struct minus_constant : FunctorBase
-    {
-      typedef T result_type;
-      S value;
-      minus_constant(S value) : value(value) {}
-      
-      result_type& operator()(T& v) { return (v -= value); }
-    };
-    
-    template<typename T, typename S=T>
-    struct mult_constant : FunctorBase
-    {
-      typedef T result_type;
-      S value;
-      mult_constant(S value) : value(value) {}
-      
-      result_type& operator()(T& v) { return (v *= value); }
-    };
-    
-    template<typename T, typename S=T>
-    struct div_constant : FunctorBase
-    {
-      typedef T result_type;
-      S value;
-      div_constant(S value) : value(value) {}
-      
-      result_type& operator()(T& v) { return (v /= value); }
-    };
 
-    /// functor for operator+=
-    template<typename T>
-    struct assign : FunctorBase
+    /// ct_constant(v) == val
+    template <class T, long val_>
+    struct ct_constant : FunctorBase
     {
-      typedef T result_type;
-      
-      static result_type& apply(T& v, T const& v0) { return (v = v0); }
-      result_type& operator()(T& v, T const& v0) { return apply(v,v0); }
-    };
+      static constexpr T val = val_;
 
-    /// functor for operator+=
-    template<typename T>
-    struct add_assign : FunctorBase
-    {
-      typedef T result_type;
-      
-      static result_type& apply(T& v, T const& v0) { return (v += v0); }
-      result_type& operator()(T& v, T const& v0) { return apply(v,v0); }
+      template <class V> static constexpr T eval(V&&)
+      {
+        return val;
+      }
+      template <class V> static constexpr T apply(V&&)
+      {
+        return val;
+      }
+      template <class V> constexpr T operator()(V&&) const
+      {
+        return val;
+      }
     };
-
-    /// functor for operator*=
-    template<typename T>
-    struct mult_assign : FunctorBase
-    {
-      typedef T result_type;
-      
-      static result_type& apply(T& v, T const& v0) { return (v *= v0); }
-      result_type& operator()(T& v, T const& v0) { return apply(v,v0); }
-    };
-    
 
     /// abs(v) == |v|
-    template<typename T>
+    template <class T>
     struct abs : FunctorBase
     {
-      typedef T result_type;
-      int getDegree(int d0) const { return d0; }
-
-      static result_type eval(const T& v) { return std::abs(v); }
-      result_type operator()(const T &v) const { return eval(v); }
+      static constexpr int getDegree(int d0)
+      {
+        return d0;
+      }
+      static constexpr auto eval(const T& v) RETURNS( math::abs(v) )
+      constexpr auto operator()(const T& v) const RETURNS( eval(v) )
     };
 
-    template<typename T>
-    struct abs<std::complex<T> > : FunctorBase
+    // specialization of abs for complex values
+    template <class T>
+    struct abs<std::complex<T>> : FunctorBase
     {
-      typedef T result_type;
-      int getDegree(int d0) const { return d0; }
-
-      static result_type eval(const T& v) { return std::norm(v); }
-      result_type operator()(const T &v) const { return eval(v); }
+      static constexpr int getDegree(int d0)
+      {
+        return d0;
+      }
+      static constexpr auto eval(const T& v) RETURNS( std::norm(v) )
+      constexpr auto operator()(const T& v) const RETURNS( eval(v) )
     };
 
-    /// max(a,b)
-    template<typename T>
-    struct max : FunctorBase
-    {
-      typedef T result_type;
-      int getDegree(int d0) const { return d0; }
+    /// negate(v) == -v
+    AMDIS_MAKE_UNARY_FUNCTOR( negate, d0, -v  )
 
-      static result_type eval(const T& v0, const T& v1) { return std::max(v0, v1); }
-      result_type operator()(const T &v0, const T& v1) const { return eval(v0,v1); }
-    };
+    AMDIS_MAKE_BINARY_FUNCTOR( plus,  math::max(d0, d1), v0 + v1  )
+    AMDIS_MAKE_BINARY_FUNCTOR( minus, math::max(d0, d1), v0 - v1  )
+    AMDIS_MAKE_BINARY_FUNCTOR( multiplies, d0 + d1,      v0 * v1  )
+    AMDIS_MAKE_BINARY_FUNCTOR( divides,    d0 + d1,      v0 / v1  )
 
-    /// min(a,b)
-    template<typename T>
-    struct min : FunctorBase
-    {
-      typedef T result_type;
-      int getDegree(int d0) const { return d0; }
 
-      static result_type eval(const T& v0, const T& v1) { return std::min(v0, v1); }
-      result_type operator()(const T &v0, const T& v1) const { return eval(v0,v1); }
-    };
+    // _____ logical functors _________________________________________________
+    
+    AMDIS_MAKE_BINARY_FUNCTOR( equal,   0, v0 == v1  )
+    AMDIS_MAKE_BINARY_FUNCTOR( unequal, 0, v0 != v1  )
+    AMDIS_MAKE_BINARY_FUNCTOR( less,    0, v0 < v1  )
+    AMDIS_MAKE_BINARY_FUNCTOR( greater, 0, v0 > v1  )
+    
+    AMDIS_MAKE_BINARY_FUNCTOR( logical_and, 0, v0 && v1  )
+    AMDIS_MAKE_BINARY_FUNCTOR( logical_or,  0, v0 || v1  )
+    
+    AMDIS_MAKE_BINARY_FUNCTOR( max, math::max(d0, d1), math::max(v0, v1)  )
+    AMDIS_MAKE_BINARY_FUNCTOR( min, math::max(d0, d1), math::min(v0, v1)  )
+
 
     /// max(|a|,|b|)
-    template<typename T>
-    struct abs_max : FunctorBase
-    {
-      typedef T result_type;
-      int getDegree(int d0) const { return d0; }
-
-      static result_type eval(const T& v0, const T& v1) { return std::max(std::abs(v0), std::abs(v1)); }
-      result_type operator()(const T &v0, const T& v1) const { return eval(v0,v1); }
-    };
+    AMDIS_MAKE_BINARY_FUNCTOR( abs_max, math::max(d0, d1), math::max(math::abs(v0), math::abs(v1))  )
 
     /// min(|a|,|b|)
-    template<typename T>
-    struct abs_min : FunctorBase
-    {
-      typedef T result_type;
-      int getDegree(int d0) const { return d0; }
+    AMDIS_MAKE_BINARY_FUNCTOR( abs_min, math::max(d0, d1), math::min(math::abs(v0), math::abs(v1))  )
 
-      static result_type eval(const T& v0, const T& v1) { return std::min(std::abs(v0), std::abs(v1)); }
-      result_type operator()(const T &v0, const T& v1) const { return eval(v0,v1); }
+
+    /// conditional(a,b,c) = a ? b : c
+    template <class T1, class T2>
+    struct conditional : FunctorBase
+    {
+      constexpr int getDegree(int d0, int d1, int d2) const
+      {
+        return math::max(d1, d2);
+      }
+      static constexpr typename std::common_type<T1, T2>::type 
+      eval(bool cond, T1 const& v1, T2 const& v2)
+      {
+        return cond ? v1 : v2;
+      }
+      constexpr auto operator()(bool cond, T1 const& v1, T2 const& v2) const RETURNS
+      ( 
+        eval(cond, v1, v2) 
+      )
     };
-    
+
+
+    /// cross(v1, v2) = v1 x v2, TODO: find better name
+    template <class T1, class T2>
+    struct MyCross : FunctorBase
+    {
+      using value_type = decltype( std::declval<T1>() * std::declval<T2>() );
+      constexpr int getDegree(int /*d*/, int d0, int d1) const
+      {
+        return d0+d1;
+      }
+
+      template <class Vec1, class Vec2>
+      static value_type eval(size_t i, const Vec1& v1, const Vec2& v2)
+      {
+        using size_type = Size_t<traits::category<Vec1>>;
+        value_type result;
+
+        TEST_EXIT_DBG( size(v1) == 3 && size(v1) == size(v2) )
+          ("cross: inkompatible sizes!\n");
+
+        size_type k = (i+1) % 3, l = (i+2) % 3;
+        result = v1(k) * v2(l) - v1(l) * v2(k);
+        return result;
+      }
+
+      template <class Vec1, class Vec2>
+      auto operator()(size_t i, const Vec1& v1, const Vec2& v2) const RETURNS
+      (
+        eval(i, v1, v2)
+      )
+    };
+
 
     /// apply a functor N times
-    template<typename Functor, int N>
+    template <class Functor, int N>
     struct apply
     {
-      typedef typename Functor::result_type result_type;
+      apply(Functor const& f_) : f(f_), inner(f_) {}
 
-      apply(const Functor& f_) : f(f_), inner(f_) {}
       int getDegree(int d0) const
       {
         return f.getDegree(inner.getDegree(d0));
       }
 
-      template<typename V>
-      static result_type eval(const V& v) { return Functor::eval(apply<Functor, N-1>::eval(v)); }
-      template<typename V>
-      result_type operator()(const V& v) const 
-      {
-	return f(inner(v));
-      }
+      template <class V>
+      static auto eval(const V& v) RETURNS
+      (
+        Functor::eval(apply<Functor, N-1>::eval(v))
+      )
+
+      template <class V>
+      auto operator()(const V& v) const RETURNS( f(inner(v)) )
 
     private:
-      const Functor& f;
-      apply<Functor, N-1> inner; 
+      Functor f;
+      apply<Functor, N-1> inner;
     };
 
-    template<typename Functor>
+    template <class Functor>
     struct apply<Functor, 0>
     {
-      typedef typename Functor::result_type result_type;
+      apply(Functor const& f_) : f(f_) {}
+      int getDegree(int d0) const
+      {
+        return d0;
+      }
 
-      apply(const Functor& f_) : f(f_) {}
-      int getDegree(int d0) const { return d0; }
-
-      template<typename V>
-      static result_type eval(const V& v) { return v; }
-      template<typename V>
-      result_type operator()(const V& v) const { return v; }
+      template <class V>
+      static auto eval(const V& v) RETURNS( v )
+      template <class V>
+      auto operator()(const V& v) const RETURNS( v )
 
     private:
-      const Functor& f;
+      Functor f;
     };
+
+
+
+    // -------------------------------------------------------------------------
+
+    template <class F, int arg, class G>
+    struct compose;
+
+    template <class F, class G>
+    struct compose<F, 1, G>
+    {
+      template <class T>
+      auto operator()(T const& v, T const& v0) RETURNS( f(g(v), v0) )
+      
+    private:
+      F f;
+      G g;
+    };
+
+    template <class F, class G>
+    struct compose<F, 2, G>
+    {
+      template <class T>
+      auto operator()(T const& v, T const& v0) RETURNS( f(v, g(v0)) )
+      
+    private:
+      F f;
+      G g;
+    };
+
 
     /// pow<p>(v) == v^p
-    template<int p, typename T>
+    template <int p, class T>
     struct pow : FunctorBase
     {
-      typedef T result_type;
-      int getDegree(int d0) const { return p*d0; }
+      constexpr int getDegree(int d0) const
+      {
+        return p*d0;
+      }
 
-      static result_type eval(const T& v) { return boost::math::pow<p>(v); }
-      result_type operator()(const T& v) const { return eval(v); }
+      static constexpr T eval(const T& v)
+      {
+        return boost::math::pow<p>(v);
+      }
+      constexpr T operator()(const T& v) const
+      {
+        return eval(v);
+      }
     };
-  
+
     /// root<p>(v) == p-th-root(v)
-    template<int p, typename T, typename Enabled = void>
+    template <int p, class T, class = void>
     struct root_dispatch;
 
-    template<int p, typename T>
+    template <int p, class T>
     struct root : FunctorBase
     {
-      typedef T result_type;
-      int getDegree(int d0) const { return p*d0; } // optimal polynomial approximation degree ?
+      constexpr int getDegree(int d0) const
+      {
+        return p*d0;    // optimal polynomial approximation degree ?
+      }
 
-      static result_type eval(const T& v) { return root_dispatch<p,T>::eval(v); }
-      result_type operator()(const T& v) const { return eval(v); }
+      static constexpr T eval(const T& v)
+      {
+        return root_dispatch<p,T>::eval(v);
+      }
+      constexpr T operator()(const T& v) const
+      {
+        return eval(v);
+      }
     };
 
-    template<int p, typename T, typename Enabled>
-    struct root_dispatch { static T eval(const T& v) { return std::pow(v, 1.0/p); } };
-
-    template<int p, typename T>
-    struct root_dispatch<p, T, typename boost::enable_if<typename meta::is_power_of<p, 3>::type>::type> 
+    template <int p, class T, class>
+    struct root_dispatch
     {
-      static T eval(const T& v) { return apply<root<3, T>, meta::log<p, 3>::value>::eval(v); }
+      static constexpr T eval(const T& v)
+      {
+        return std::pow(v, 1.0/p);
+      }
     };
-  
-    template<int p, typename T>
-    struct root_dispatch<p, T, typename boost::enable_if<typename meta::is_power_of<p, 2>::type>::type> 
-    {
-      static T eval(const T& v) { return apply<root<2, T>, meta::log<p, 2>::value>::eval(v); }
-    };
-  
-    template<typename T>
-    struct root_dispatch<3, T> { static T eval(const T& v) { return boost::math::cbrt(v); } };
 
-    template<typename T>
-    struct root_dispatch<2, T> { static T eval(const T& v) { return std::sqrt(v); } };
-  
-    template<typename T>
-    struct root_dispatch<1, T> { static T eval(const T& v) { return v; } };
-  
-    template<typename T>
-    struct root_dispatch<0, T> { static T eval(const T& v) { return 1.0; } };
+    template <int p, class T>
+    struct root_dispatch<p, T,
+      Requires_t<meta::is_power_of<p, 3>> >
+    {
+      static constexpr T eval(const T& v)
+      {
+        return apply<root<3, T>, meta::log<p, 3>::value>::eval(v);
+      }
+    };
+
+    template <int p, class T>
+    struct root_dispatch<p, T,
+      Requires_t<meta::is_power_of<p, 2>> >
+    {
+      static constexpr T eval(const T& v)
+      {
+        return apply<root<2, T>, meta::log<p, 2>::value>::eval(v);
+      }
+    };
+
+    template <class T>
+    struct root_dispatch<3, T>
+    {
+      static constexpr T eval(const T& v)
+      {
+        return boost::math::cbrt(v);
+      }
+    };
+
+    template <class T>
+    struct root_dispatch<2, T>
+    {
+      static constexpr T eval(const T& v)
+      {
+        return std::sqrt(v);
+      }
+    };
+
+    template <class T>
+    struct root_dispatch<1, T>
+    {
+      static constexpr T eval(const T& v)
+      {
+        return v;
+      }
+    };
+
+    template <class T>
+    struct root_dispatch<0, T>
+    {
+      static constexpr T eval(const T& /*v*/)
+      {
+        return 1.0;
+      }
+    };
 
   } // end namespace functors
 
 } // end namespace AMDiS
-
-#endif // AMDIS_OPERATIONS_FUNCTOR_HPP

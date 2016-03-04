@@ -183,7 +183,7 @@ inline Element identity(const Operation& op, const Element& v)
 template <template <typename> class Operation, typename First, typename Second>
 inline std::pair<First, Second> identity(const Operation<std::pair<First, Second> >&, const std::pair<First, Second>& v)
 {
-    return std::pair<First, Second>(math::identity(Operation<First>(), v.first), math::identity(Operation<Second>(), v.second));
+    return std::pair<First, Second>(::math::identity(Operation<First>(), v.first), ::math::identity(Operation<Second>(), v.second));
 }
 #endif
 
@@ -191,7 +191,7 @@ inline std::pair<First, Second> identity(const Operation<std::pair<First, Second
 template <typename Element>
 inline Element zero(const Element& v)
 {
-    return identity_t<math::add<Element>, Element>() (math::add<Element>(), v);
+    return identity_t<::math::add<Element>, Element>() (::math::add<Element>(), v);
 }
 
 
@@ -199,7 +199,7 @@ inline Element zero(const Element& v)
 template <typename Element>
 inline Element one(const Element& v)
 {
-    return identity_t<math::mult<Element>, Element>() (math::mult<Element>(), v);
+    return identity_t<::math::mult<Element>, Element>() (::math::mult<Element>(), v);
 }
 
 

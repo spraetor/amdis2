@@ -1,0 +1,40 @@
+dimension of world:      3
+
+parametricMesh->macro file name:       ./macro/parametric.macro.3d
+parametricMesh->global refinements:    0
+
+parametric->mesh:                   parametricMesh
+parametric->dim:                    2
+parametric->polynomial degree[0]:   2
+parametric->components:             1
+
+parametric->solver:                cg
+parametric->solver->max iteration: 100
+parametric->solver->tolerance:     1.e-8
+parametric->solver->info:          2
+parametric->solver->left precon:   diag
+parametric->solver->right precon:  no
+
+parametric->estimator[0]:             residual % residual, recovery
+parametric->estimator[0]->error norm: 1   % 1: H1_NORM, 2: L2_NORM
+parametric->estimator[0]->C1:         0.1 % constant of jump residual
+
+parametric->marker[0]->strategy:      2   % 0: no adaption 1: GR 2: MS 3: ES 4:GERS
+parametric->marker[0]->MSGamma:       0.5
+
+parametric->adapt[0]->tolerance:         1e-8
+parametric->adapt[0]->refine bisections: 1
+parametric->adapt[0]->info:              8
+
+parametric->adapt->max iteration:        8
+
+parametric->output->filename:         output/parametric.3d
+parametric->output->ParaView format:  1
+parametric->output->append index:     0
+parametric->output->index length:     6
+parametric->output->index decimals:   3
+parametric->output->ARH format:  1
+parametric->output->AMDiS format: 1
+
+WAIT: 1
+

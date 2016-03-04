@@ -528,7 +528,7 @@ class compressed2D
     /// Value of matrix entry
     const_reference operator() (size_type row, size_type col) const
     {
-	using math::zero;
+	using ::math::zero;
 	check(); MTL_DEBUG_THROW_IF(is_negative(row) || row >= this->num_rows() || is_negative(col) || col >= this->num_cols(), index_out_of_range());
 	utilities::maybe<size_type> pos = indexer(*this, row, col);
 	return pos ? data[pos.value()] : zero(value_type()); 

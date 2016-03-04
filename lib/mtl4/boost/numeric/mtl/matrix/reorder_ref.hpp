@@ -29,11 +29,11 @@ void reorder_ref(const ReorderVector& v, Matrix& A, std::size_t cols= 0)
     using math::one; using mtl::size;
     typedef typename Collection<Matrix>::value_type value_type;
 
-    if (size(v) == 0) {
+    if (mtl::size(v) == 0) {
 	A.change_dim(0, cols); return; }
 
     // Find maximal entry (don't use mtl::max to allow for arrays and others)
-    std::size_t  s= size(v),
+    std::size_t  s= mtl::size(v),
 	         my_max= std::size_t(*std::max_element(&v[0], &v[0] + s)) + 1;
 
     if (cols == 0) 

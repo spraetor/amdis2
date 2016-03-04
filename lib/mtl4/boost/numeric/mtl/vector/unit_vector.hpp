@@ -44,7 +44,7 @@ namespace vector {
     typename traits::unit_vector<Value>::type
     inline unit_vector(std::size_t k, std::size_t n)
     {
-	using math::zero; using math::one;
+	using ::math::zero; using ::math::one;
 	dense_vector<Value> v(n, zero(Value()));
 	v[k]= one(Value());
 	return v;

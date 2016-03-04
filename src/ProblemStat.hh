@@ -1,7 +1,10 @@
+#include "DirichletBC.hpp"
+#include "RobinBC.hpp"
+
 namespace AMDiS
 {
-  template <class Expr>
-  void ProblemStatSeq::addDirichletBC(BoundaryType type, int row, int col, Expr const& expr)
+  template <class Term>
+  void ProblemStatSeq::addDirichletBC(BoundaryType type, int row, int col, Term&& term)
   {
     FUNCNAME("ProblemStat::addDirichletBC()");
 
@@ -10,18 +13,19 @@ namespace AMDiS
 
     boundaryConditionSet = true;
 
-    DirichletBC<Expr> *dirichletApply = 
-      new DirichletBC<Expr>(type, expr, componentSpaces[row], componentSpaces[col], true);
-    DirichletBC<Expr> *dirichletNotApply = 
-      new DirichletBC<Expr>(type, expr, componentSpaces[row], componentSpaces[col], false);
+    DirichletBC<Term>* dirichletApply =
+      new DirichletBC<Term>(type, std::forward<Term>(term), componentSpaces[row], componentSpaces[col], true);
+    DirichletBC<Term>* dirichletNotApply =
+      new DirichletBC<Term>(type, std::forward<Term>(term), componentSpaces[row], componentSpaces[col], false);
 
     for (int i = 0; i < nComponents; i++)
-      if (systemMatrix && (*systemMatrix)[row][i]) {
-	if (i == col)
-	  (*systemMatrix)[row][i]->getBoundaryManager()->addBoundaryCondition(dirichletApply);
-	else
-	  (*systemMatrix)[row][i]->getBoundaryManager()->addBoundaryCondition(dirichletNotApply);
-      }	
+      if (systemMatrix && (*systemMatrix)[row][i])
+      {
+        if (i == col)
+          (*systemMatrix)[row][i]->getBoundaryManager()->addBoundaryCondition(dirichletApply);
+        else
+          (*systemMatrix)[row][i]->getBoundaryManager()->addBoundaryCondition(dirichletNotApply);
+      }
 
     if (rhs)
       rhs->getDOFVector(row)->getBoundaryManager()->addBoundaryCondition(dirichletApply);
@@ -29,28 +33,29 @@ namespace AMDiS
       solution->getDOFVector(col)->getBoundaryManager()->addBoundaryCondition(dirichletApply);
   }
 
-  
-  template <class Expr>  
-  void ProblemStatSeq::addNeumannBC(BoundaryType type, int row, int col, Expr const& expr)
+
+  template <class Term>
+  void ProblemStatSeq::addNeumannBC(BoundaryType type, int row, int col, Term&& term)
   {
     boundaryConditionSet = true;
 
-    NeumannBC *neumann = 
-      new NeumannBC(type, expr, componentSpaces[row], componentSpaces[col]);
+    NeumannBC* neumann =
+      new NeumannBC(type, std::forward<Term>(term), componentSpaces[row], componentSpaces[col]);
 
     if (rhs)
       rhs->getDOFVector(row)->getBoundaryManager()->addBoundaryCondition(neumann);
   }
 
 
-  template <class ExprRhs, class ExprLhs>
-  void ProblemStatSeq::addRobinBC(BoundaryType type, int row, int col, 
-				  ExprRhs const &exprRhs, ExprLhs const& exprLhs)
+  template <class TermRhs, class TermLhs>
+  void ProblemStatSeq::addRobinBC(BoundaryType type, int row, int col,
+                                  TermRhs&& termRhs, TermLhs&& termLhs)
   {
     boundaryConditionSet = true;
 
-    RobinBC *robin = 
-      new RobinBC(type, exprRhs, exprLhs, componentSpaces[row], componentSpaces[col]);
+    RobinBC* robin =
+      new RobinBC(type, std::forward<TermRhs>(termRhs), std::forward<TermLhs>(termLhs), 
+			componentSpaces[row], componentSpaces[col]);
 
     if (systemMatrix && (*systemMatrix)[row][col])
       (*systemMatrix)[row][col]->getBoundaryManager()->addBoundaryCondition(robin);

@@ -1,0 +1,24 @@
+dimension of world:      3
+
+sphereMesh->macro file name:       ./macro/sphere_macro.3d
+sphereMesh->global refinements:    10
+
+sphere->mesh:                    sphereMesh
+sphere->dim:                     2
+sphere->polynomial degree[0]:    1
+sphere->components:              1
+
+sphere->solver:                cg
+sphere->solver->max iteration: 100
+sphere->solver->tolerance:     1.e-8
+sphere->solver->left precon:   diag
+
+sphere->estimator[0]:          0
+sphere->marker[0]->strategy:   0
+
+sphere->output->filename:         output/sphere.3d
+sphere->output->ParaView format:  1
+sphere->output->AMDiS format: 1
+sphere->output->ARH format: 1
+
+

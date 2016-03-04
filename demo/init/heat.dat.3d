@@ -1,0 +1,60 @@
+dimension of world:   3
+
+heatMesh->macro file name:            ./macro/macro.stand.3d
+heatMesh->global refinements:         3
+
+heat->space->components:    1
+heat->space->polynomial degree[0]:    1
+heat->space->dim:                     3
+heat->space->mesh:                    heatMesh
+
+heat->space->solver:                  bicgstab
+heat->space->solver->max iteration:   1000
+heat->space->solver->tolerance:       1.e-10
+heat->space->solver->info:            2
+heat->space->solver->left precon:     diag
+heat->space->solver->right precon:    no
+
+heat->space->estimator[0]:           residual
+heat->space->estimator[0]->C0:       1.0
+heat->space->estimator[0]->C1:       1.0
+heat->space->estimator[0]->C3:       1.0
+
+heat->theta:                         1.0
+
+heat->adapt->timestep:               0.01
+heat->adapt->start time:             0.0
+heat->adapt->end time:               1.0
+
+heat->adapt[0]->tolerance:           0.01
+heat->adapt[0]->time tolerance:      0.01
+
+heat->adapt->strategy:               1   % 0=explicit, 1=implicit
+heat->adapt->max iteration:          2
+
+heat->adapt[0]->coarsen allowed:     1
+heat->adapt[0]->refine bisections:   3
+heat->adapt[0]->coarsen bisections:  3
+
+heat->space->marker[0]->strategy:    3    % 0=none, 1=GR, 2=MS, 3=ES, 4=GERS
+heat->space->marker[0]->ESTheta:     0.9
+heat->space->marker[0]->ESThetaC:    0.05
+
+heat->space->output->filename:                    output/heat.3d
+heat->space->output->ParaView format:             1
+heat->space->output->ParaView animation:          1
+heat->space->output->write every i-th timestep:   10
+heat->space->output->append index:                1
+heat->space->output->index length:                6
+heat->space->output->index decimals:              3
+heat->space->output->ARH format:  1
+heat->space->output->AMDiS format: 1
+
+WAIT:                                0
+
+
+
+
+
+
+

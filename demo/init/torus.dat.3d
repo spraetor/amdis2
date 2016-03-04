@@ -1,0 +1,23 @@
+dimension of world:      3
+
+torusMesh->macro file name:       ./macro/torus_macro.3d
+torusMesh->global refinements:    8
+
+torus->mesh:                   torusMesh
+torus->dim:                    2
+torus->polynomial degree[0]:   1
+torus->components:             1
+
+torus->solver:                cg
+torus->solver->max iteration: 1000
+torus->solver->tolerance:     1.e-8
+torus->solver->left precon:   diag
+
+torus->estimator[0]:          0
+torus->marker[0]->strategy:   0 
+
+torus->output->filename:         output/torus.3d
+torus->output->ParaView format:  1
+torus->output->AMDiS format: 1
+torus->output->ARH format: 1
+

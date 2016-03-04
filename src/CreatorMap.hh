@@ -1,15 +1,12 @@
-#include <map>
-
-namespace AMDiS {
-
+namespace AMDiS
+{
   template <class BaseClass>
-  void CreatorMap<BaseClass>::clear() 
+  void CreatorMap<BaseClass>::clear()
   {
-    typename std::map< std::string, CreatorInterface<BaseClass>* >::iterator it;
+    typename std::map<std::string, CreatorInterface<BaseClass>*>::iterator it;
 
     for (it = creatorMap.begin(); it != creatorMap.end(); ++it)
       delete it->second;
   }
-  
-} // end namespace AMDiS
 
+} // end namespace AMDiS

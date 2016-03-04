@@ -1,0 +1,59 @@
+dimension of world: 2
+
+% =================== MESH ================================
+mesh->macro file name: ./macro/periodic.square.2d
+mesh->periodic file: ./macro/periodic.square.per
+mesh->global refinements: 10
+mesh->check: 0
+
+lattice: 4*M_PI/sqrt(3)
+mesh->scale mesh: 1
+mesh->dimension: [4*${lattice}, 2*sqrt(3)*${lattice}]
+
+% ============== USER-PARAMETER ==========================
+pfc->r: -0.4
+pfc->rho0: 1.0
+pfc->density: -0.3
+pfc->use mobility: 0
+
+pfc->density amplitude: 0.2
+
+% ============= PROBLEM-SPACE ==================================
+pfc->space->mesh: mesh
+pfc->space->components: 3
+pfc->space->polynomial degree[0]: 1
+pfc->space->polynomial degree[1]: 1
+pfc->space->polynomial degree[2]: 1
+pfc->space->dim: 2
+
+
+% ================== SOLVER ======================================
+pfc->space->solver: umfpack
+pfc->space->solver->symmetric strategy: 0
+pfc->space->solver->store symbolic:     0
+pfc->space->solver->info:               5
+
+
+% ==================== TIMESTEPS ===============================
+adapt->timestep:      1.e-1
+adapt->max timestep:  1e+10
+adapt->min timestep:  1e-10
+adapt->start time:    0.0
+adapt->end time:      10000.0
+
+adapt->sequence->calc end time: 0
+adapt->sequence->timesteps:  [1.e-2,2.e-2,5.e-2,1.e-1]
+adapt->sequence->number of timesteps:  [500,1500,1500,1500]
+
+
+% =================== OUTPUT =========================================
+pfc->space->output->filename: ./output/pfc.2d
+pfc->space->output->ParaView animation:        1
+pfc->space->output->ParaView format:           1
+pfc->space->output->write every i-th timestep: 1
+pfc->space->output->append index:              1
+pfc->space->output->index length:              9
+pfc->space->output->index decimals:            7
+
+
+WAIT: 1

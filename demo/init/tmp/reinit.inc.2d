@@ -1,0 +1,5 @@
+reinit->tolerance: 1.e-4
+reinit->maximal number of iteration steps: 100
+reinit->Gauss-Seidel iteration: 1
+reinit->infinity value: 1.e8
+reinit->boundary initialization: 3

@@ -1,0 +1,38 @@
+ch->space->mesh:     ${mesh_name}
+
+% ============== USER-PARAMETER ==========================
+ch->epsilon: 0.1
+ch->gamma: 1
+ch->transport term: 1.0
+ch->initial interface: -1
+ch->double-well type: 0
+
+ch->use conservation form: 0
+
+% =========== OUTPUT ==============================================
+ch->space->output->filename: ${output_folder}/ch${output_postfix}_
+
+% ============= PROBLEM-SPACES ==================================
+ch->space->components: 2
+ch->space->polynomial degree[0]: ${polynomial-degree}
+ch->space->polynomial degree[1]: ${polynomial-degree}
+ch->space->dim: 2
+
+% ================== SOLVER ======================================
+ch->space->solver: umfpack
+ch->space->solver->symmetric strategy: 0
+ch->space->solver->store symbolic: 0
+ch->space->solver->ell:               8
+ch->space->solver->max iteration:     200
+ch->space->solver->tolerance: 1.e-8
+ch->space->solver->info: 1
+%ch->space->solver->left precon:       ilu
+
+% =================== OUTPUT =========================================
+ch->space->output->ParaView animation: 1
+ch->space->output->ParaView format: 1
+ch->space->output->write every i-th timestep: 1
+%ch->space->output->compression:  gzip
+ch->space->output->append index: 1
+ch->space->output->index length: 9
+ch->space->output->index decimals: 7
