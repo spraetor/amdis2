@@ -13,8 +13,9 @@
 
 namespace AMDiS
 {
-  template <class T, class = Requires_t<concepts::Arithmetic<T>>>
-  inline size_t size(T const& /*v*/)
+  template <class T>
+    Requires_t<concepts::Arithmetic<T>, size_t>
+  inline size(T const& /*v*/)
   {
     return 1;
   }

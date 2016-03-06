@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory> // std::addressof
+
 #include "expressions/BaseTerms.hpp"
 #include "expressions/LazyOperatorTerm.hpp"
 
@@ -7,8 +9,8 @@ namespace AMDiS
 {
   /// Expression that encapsulates a runtime value
   template <class T>
-  struct RTConstant 
-    : public BaseTerm<RTConstant<T>>,
+  struct RTConstant
+    : public ShapedTerm_t<Decay_t<T>, RTConstant<T>>,
       public LazyOperatorTermBase
   {
     using Self = RTConstant;
@@ -18,7 +20,10 @@ namespace AMDiS
       : value(value_)
     {}
 
-    value_type evalAtIdx(int /* i */) const
+    constexpr RTConstant(Self const&) = default;
+    constexpr RTConstant(Self&&) = default;
+
+    value_type evalAtIdx(int /* iq */) const
     {
       return value;
     }
@@ -39,13 +44,13 @@ namespace AMDiS
 
 
   /// Expression that encapsulates a compiletime value
-  template <int V>
-  struct CTConstant 
+  template <long V>
+  struct CTConstant
     : public BaseTerm<CTConstant<V>>,
       public LazyOperatorTermBase
   {
     using Self = CTConstant;
-    using value_type = int;
+    using value_type = long;
 
     constexpr CTConstant() {}
 
@@ -65,39 +70,43 @@ namespace AMDiS
     }
 
   private:
-    constexpr static value_type value = V;
+    static constexpr value_type value = V;
   };
 
 
   /// Expression that points to a value given by reference
   template <class T>
-  struct Reference 
-    : public BaseTerm<Reference<T>>,
+  struct Reference
+    : public ShapedTerm_t<Decay_t<T>, Reference<T>>,
       public LazyOperatorTermBase
   {
     using Self = Reference;
     using value_type = Decay_t<T>;
 
-    constexpr Reference(value_type const& value_)
-      : value(value_) {}
+    // construct/copy/destroy
+    Reference(value_type const& ref) noexcept
+      : ptr(std::addressof(ref)) {}
 
-    value_type evalAtIdx(int /* i */) const
+    Reference(value_type&&) = delete;
+    Reference(Self const&) noexcept = default;
+
+    value_type const& evalAtIdx(int /* i */) const
     {
-      return value;
+      return *ptr;
     }
 
-    value_type operator()(WorldVector<double> /* x */) const
+    value_type const& operator()(WorldVector<double> /* x */) const
     {
-      return value;
+      return *ptr;
     }
 
     std::string str() const
     {
-      return std::string("&(") + std::to_string(value) + ")";
+      return std::string("&(") + std::to_string(*ptr) + ")";
     }
 
   private:
-    value_type const& value;
+    value_type const* ptr;
   };
 
 } // end namespace AMDiS

@@ -64,7 +64,9 @@ namespace AMDiS
   template <class T>
   inline size_t size(VectorExpr<T> const& t)
   {
-    return size(t.sub());
+    size_t s = size(t.sub());
+    std::cout << "sizec(VectorExpr) = " << s << "\n";
+    return s;
   }
   template <class T>
   inline size_t size(MatrixExpr<T> const& t)

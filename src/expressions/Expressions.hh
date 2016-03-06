@@ -25,7 +25,7 @@ namespace AMDiS
     TOut value;
     nullify(value);
 
-    Flag traverseFlag = Mesh::CALL_LEAF_EL | Mesh::FILL_COORDS | 
+    Flag traverseFlag = Mesh::CALL_LEAF_EL | Mesh::FILL_COORDS |
                         Mesh::FILL_GRD_LAMBDA | Mesh::FILL_DET;
     TraverseStack stack;
     ElInfo* elInfo = stack.traverseFirst(mesh, -1, traverseFlag);
@@ -49,8 +49,8 @@ namespace AMDiS
 
     return value;
   }
-  
-  
+
+
   template <class M>
   inline Value_t<M> integrate(BaseTerm<M> const& term_base, BoundaryWrapper b)
   {
@@ -92,16 +92,16 @@ namespace AMDiS
 
     TOut value;
     nullify(value);
-    
+
     TraverseStack stack;
-    Flag traverseFlag = Mesh::CALL_LEAF_EL | Mesh::FILL_COORDS | 
+    Flag traverseFlag = Mesh::CALL_LEAF_EL | Mesh::FILL_COORDS |
                         Mesh::FILL_GRD_LAMBDA | Mesh::FILL_BOUND;
     ElInfo* elInfo = stack.traverseFirst(mesh, -1, traverseFlag);
     while (elInfo)
     {
       TOut tmp;
       nullify(tmp);
-      
+
       for (int face = 0; face < dim + 1; face++)
       {
         term.initElement(elInfo, NULL, quadSurfaces[face]);
@@ -124,7 +124,7 @@ namespace AMDiS
 
     return value;
   }
-  
+
 
   namespace detail
   {
@@ -170,15 +170,15 @@ namespace AMDiS
 
       return value0;
     }
-    
-    
+
+
     template <class T, class M>
     inline void transformDOF(BaseTerm<M> const& term_base, DOFVector<T>* result)
     {
       M term = term_base.sub();
-      
+
       using TOut = Assign_t<Value_t<M>>;
-      
+
       static_assert( traits::IsConvertible<TOut, T>::value,
          "ValueType of expression not convertible to ValueType of DOFVector!" );
 
@@ -237,6 +237,6 @@ namespace AMDiS
         *resultIter/= (*assignedIter);
       }
     }
-    
+
   } // end namespace detail
 } // end namespace AMDiS

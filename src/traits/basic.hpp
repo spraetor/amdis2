@@ -9,9 +9,12 @@
 // a helper macro to reduce typing
 #define RETURNS(...) \
   -> decltype(__VA_ARGS__) { return (__VA_ARGS__); }
-  
+
 #define RETURNS_REF(...) \
   -> decltype(__VA_ARGS__) & { return (__VA_ARGS__); }
+
+#define RETURNS_RREF(...) \
+  -> decltype(__VA_ARGS__) && { return std::move(__VA_ARGS__); }
 
 #define RETURNS_CONST_REF(...) \
   -> decltype(__VA_ARGS__) const & { return (__VA_ARGS__); }
@@ -23,7 +26,7 @@ namespace AMDiS
         // workaround for MSVC (problems with alias templates in pack expansion)
         template <class, class T>
         struct InvokeType { using type = T; };
-        
+
         template <class, class, class T>
         struct InvokeType2 { using type = T; };
     }
@@ -72,20 +75,20 @@ namespace AMDiS
 
   // ---------------------------------------------------------------------------
 
-  
+
   template <class C, class T = void>
   using enable_if = std::enable_if<C::value, T>;
-  
+
   template <bool C, class T = void>
   using enable_if_c = std::enable_if<C, T>;
-  
+
   template <class C, class T = void>
   using disable_if = std::enable_if<!C::value, T>;
-  
+
   template <bool C, class T = void>
   using disable_if_c = std::enable_if<!C, T>;
 
-  
+
   // alias for enable_if
   template <class C, class T = void>
   using Requires_t = typename enable_if<C,T>::type;
@@ -93,26 +96,26 @@ namespace AMDiS
   template <bool C, class T = void>
   using Requires_c = typename enable_if_c<C,T>::type;
 
-  
+
   // ---------------------------------------------------------------------------
-  
-  
+
+
   template <class T>
   struct Id
   {
     using type = T;
   };
-  
+
   template <class T>
   using Id_t = typename Id<T>::type;
 
-  
+
   // ---------------------------------------------------------------------------
-  
-  
+
+
   // dummy type
   class no_valid_type {};
-  
+
   namespace detail
   {
     template <bool Valid, class Type>
@@ -126,7 +129,7 @@ namespace AMDiS
     {
       using type = no_valid_type;
     };
-    
+
     template <bool Valid, class Type>
     using Enabler_t = typename Enabler<Valid, Type>::type;
 

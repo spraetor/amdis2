@@ -15,22 +15,30 @@
 
 namespace AMDiS
 {
+  namespace detail
+  {
+    template <int I, class M>
+    using ShapeByIdx = if_then_else< I == -1, VectorTerm<M>, BaseTerm<M> >;
+  }
+
   /// Expression that representy the coordinate vector
   // Comp == -1: WorldVector, Comp == -2: component given in constructor
   // Comp != {-1, -2}: component given as template parameter
   template <int Comp = -1>
   struct CoordsTerm
-    : public VectorTerm<CoordsTerm<Comp>>,
+    : public detail::ShapeByIdx<Comp, CoordsTerm<Comp>>,
       public LazyOperatorTermBase
   {
     using coords_type = WorldVector<double>;
     using value_type  = if_then_else< Comp == -1, coords_type, double >;
 
-    CoordsTerm() : C_{Comp} {}
-    CoordsTerm(int C_) : C_{C_}
+    CoordsTerm() : X(NULL), C_{Comp} {}
+    CoordsTerm(int C_) : X(NULL), C_{C_}
     {
       STATIC_ASSERT( Comp == -2 );
     }
+
+    CoordsTerm(CoordsTerm const&) = default;
 
     template <class List>
     void insertFeSpaces(List& /*feSpaces*/) const {}
@@ -45,34 +53,37 @@ namespace AMDiS
                      Quadrature* quad,
                      BasisFunction const* basisFct = NULL)
     {
+      if (!X)
+        X = new DataType;
+
       if (subAssembler)
-        subAssembler->getCoordsAtQPs(elInfo, quad, X);
+        subAssembler->getCoordsAtQPs(elInfo, quad, *X);
       else if (quad)
       {
         const int nPoints = quad->getNumPoints();
 
-        X.change_dim(nPoints);
+        X->change_dim(nPoints);
         for (int i = 0; i < nPoints; i++)
-          elInfo->coordToWorld(quad->getLambda(i), X[i]);
+          elInfo->coordToWorld(quad->getLambda(i), (*X)[i]);
       }
       else if (basisFct)
       {
         const int nBasisFct = basisFct->getNumber();
 
-        X.change_dim(nBasisFct);
+        X->change_dim(nBasisFct);
         for (int i = 0; i < nBasisFct; i++)
-          elInfo->coordToWorld(*basisFct->getCoords(i), X[i]);
+          elInfo->coordToWorld(*basisFct->getCoords(i), (*X)[i]);
       }
     }
 
     value_type evalAtIdx(int iq) const
     {
-      return eval(int_<Comp>(), iq);
+      return evalImpl(iq, int_<Comp>{});
     }
 
     value_type operator()(WorldVector<double> const& x) const
     {
-      return eval(int_<Comp>(), x);
+      return evalImpl(x, int_<Comp>{});
     }
 
     std::string str() const
@@ -83,31 +94,31 @@ namespace AMDiS
   protected:
     // return component of WorldVector
     template <int C>
-    value_type const& eval(int_<C>, int iq) const
+    value_type const& evalImpl(int iq, int_<C>) const
     {
-      return X[iq][C_];
+      return (*X)[iq][C_];
     }
 
     template <int C>
-    value_type const& eval(int_<C>, WorldVector<double> const& x) const
+    value_type const& evalImpl(WorldVector<double> const& x, int_<C>) const
     {
       return x[C_];
     }
 
     // return WorldVector
-    value_type const& eval(int_<-1>, int iq) const
+    value_type const& evalImpl(int iq, int_<-1>) const
     {
-      return X[iq];
+      return (*X)[iq];
     }
 
-    value_type const& eval(int_<-1>, WorldVector<double> const& x) const
+    value_type const& evalImpl(WorldVector<double> const& x, int_<-1>) const
     {
       return x;
     }
 
   private:
     using DataType = DenseVector<coords_type>;
-    DataType X;
+    DataType* X;
 
     int C_;
   };

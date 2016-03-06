@@ -42,9 +42,9 @@ namespace AMDiS
     template <class T, class Enable = void>
     struct resize {};
 
-    template <class T, class Enable = void>
-    struct size
-      : ::mtl::traits::size<T> {}; // import mtl-operation by default
+//     template <class T, class Enable = void>
+//     struct size
+//       : ::mtl::traits::size<T> {}; // import mtl-operation by default
 
     // operations on tags
     // _________________________________________________________________________
@@ -78,10 +78,10 @@ namespace AMDiS
     return traits::num_rows<T>()(t);
   }
 
-  template <class T>
-  size_t inline size(const T& t)
-  {
-    return traits::size<T>()(t);
-  }
+//   template <class T>
+//   size_t inline size(const T& t)
+//   {
+//     return traits::size<T>()(t);
+//   }
 
 } // end namespace AMDiS

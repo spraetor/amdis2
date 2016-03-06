@@ -37,6 +37,9 @@ namespace AMDiS
       TEST_EXIT_DBG( size(A) == size(B) )("Sizes do not match!\n");
     }
 
+    VectorBinaryExpr(Self const&) = default;
+    VectorBinaryExpr(Self&&)      = delete;
+
     /// access the elements of an expr.
     value_type operator()(size_type i) const
     {

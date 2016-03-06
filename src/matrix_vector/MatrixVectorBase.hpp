@@ -192,7 +192,7 @@ namespace AMDiS
     template <class Expr, class Assigner>
     void assign(Expr const& expr, Assigner assigner)
     {
-      TEST_EXIT_DBG( _size == size(expr) )("Sizes do not match!\n");
+      TEST_EXIT_DBG( _size == size(expr) )("Sizes do not match! _size = %d, size(expr) = %d\n", _size, size(expr));
       Super::assign_aux(static_cast<Model&>(*this), expr, assigner);
     }
 

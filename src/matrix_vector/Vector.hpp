@@ -145,7 +145,9 @@ namespace AMDiS
   template <class M, class S>
   size_t size(VectorBase<M,S> const& vec)
   {
-    return vec.getSize();
+    size_t s = vec.getSize();
+    std::cout << "sizec(VectorBase) = " << s << "\n";
+    return s;
   }
 
   /// number of rows of VectorBase

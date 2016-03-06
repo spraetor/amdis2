@@ -166,7 +166,7 @@ namespace AMDiS
     virtual DofFace getFace(int /*localFaceIndex*/) const override
     {
       ERROR_EXIT("This does not work in 2D!\n");
-      return {};
+      return {0,0,0};
     }
 
     /// Implementation of \ref Element::getNodeDofs()

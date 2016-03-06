@@ -11,7 +11,7 @@ namespace AMDiS
     template <class List>
     void insertFeSpaces(List& /*feSpaces*/) const {}
 
-    constexpr int getDegree() const
+    int getDegree() const
     {
       return 0;
     }
@@ -21,5 +21,5 @@ namespace AMDiS
                      Quadrature*            /*quad*/,
                      BasisFunction const*   /*basisFct*/ = NULL) {}
   };
-  
+
 } // end namespace AMDiS

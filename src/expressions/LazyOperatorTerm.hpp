@@ -20,7 +20,7 @@ namespace AMDiS
       List& feSpaces;
 
       template <class Term>
-      void operator()(Term& term)
+      void operator()(Term const& term)
       {
         term.insertFeSpaces(feSpaces);
       }
@@ -48,13 +48,11 @@ namespace AMDiS
 
   /// Operator term with arbitrary number of sub-term (expressions)
   template <class... Terms>
-  struct LazyOperatorTerms
+  class LazyOperatorTerms
     : public LazyOperatorTermBase
   {
-    using Self = LazyOperatorTerms;
-
-  private:
-    std::tuple<Terms...> terms;
+    using Self      = LazyOperatorTerms;
+    using TermTuple = std::tuple<Terms...>;
 
   public:
     template <class... Terms_,
@@ -64,10 +62,10 @@ namespace AMDiS
     {}
 
     template <class List>
-    void insertFeSpaces(List& feSpaces)
+    void insertFeSpaces(List& feSpaces) const
     {
 #ifdef CXX14
-      for_each([&feSpaces](auto& term)
+      for_each([&feSpaces](auto const& term)
       {
         term.insertFeSpaces(feSpaces);
       }, terms);
@@ -98,18 +96,21 @@ namespace AMDiS
     }
 
     template <int N>
-    typename std::tuple_element<N, decltype(Self::terms)>::type&
+    typename std::tuple_element<N, TermTuple>::type&
     getTerm(int_<N>)
     {
-      return std::get<N>(Self::terms);
+      return std::get<N>(terms);
     }
 
     template <int N>
-    typename std::tuple_element<N, decltype(Self::terms)>::type const&
+    typename std::tuple_element<N, TermTuple>::type const&
     getTerm(int_<N>) const
     {
-      return std::get<N>(Self::terms);
+      return std::get<N>(terms);
     }
+
+  private:
+    TermTuple terms;
   };
 
 } // end namespace AMDiS

@@ -43,7 +43,7 @@ namespace AMDiS
     {
       TEST_EXIT_DBG(s == 0 || s == _SIZE)("Size must be equal to capacity!\n");
     }
-    
+
     /// destructor
     ~MemoryBaseStatic() = default;
 
@@ -127,6 +127,8 @@ namespace AMDiS
   template <class T, bool aligned>
   struct MemoryBaseDynamic
   {
+    using Self = MemoryBaseDynamic;
+
     using value_type    = T;
     using size_type     = small_t;
     using pointer       = value_type*;
@@ -149,7 +151,7 @@ namespace AMDiS
         _capacity(s),
         _elements(_size ? (aligned ? AMDIS_ALIGNED_ALLOC(T, s) : new T[s]) : NULL)
     {}
-    
+
     /// destructor
     ~MemoryBaseDynamic()
     {
@@ -168,19 +170,28 @@ namespace AMDiS
     }
 
   public:
-    
+
     /// copy constructor
-    MemoryBaseDynamic(MemoryBaseDynamic const& other)
+    MemoryBaseDynamic(Self const& other)
       : _size(other._size),
         _capacity(other._capacity),
         _elements(_size ? (aligned ? AMDIS_ALIGNED_ALLOC(T, _size) : new T[_size]) : NULL)
     {
-      if (_size)
-        std::copy(other._elements, other._elements + _size, _elements);
+      std::copy(other._elements, other._elements + _size, _elements);
     }
-    
+
+    /// copy assignment operator
+    MemoryBaseDynamic& operator=(Self const& other)
+    {
+      if (this != &other) {
+        resize(other._size);
+        std::copy(other._elements, other._elements + other._size, _elements);
+      }
+      return *this;
+    }
+
     /// move constructor
-    MemoryBaseDynamic(MemoryBaseDynamic&& other)
+    MemoryBaseDynamic(Self&& other)
       : _size(other._size),
         _capacity(other._capacity),
         _elements(other._elements)
@@ -188,36 +199,32 @@ namespace AMDiS
       other._elements = NULL;
       other._size = 0;
     }
-    
-    /// copy assignment operator
-    MemoryBaseDynamic& operator=(MemoryBaseDynamic const& other)
+
+    // move assignment operator
+    MemoryBaseDynamic& operator=(Self&& other)
     {
-      resize( other._size );
-      std::copy(other._elements, other._elements + other._size, _elements);
-      return *this;
-    }
-    
-    /// move assignment operator
-    MemoryBaseDynamic& operator=(MemoryBaseDynamic&& other)
-    {
-      if (_elements)
+      if (this != &other)
       {
-        if (aligned)
+        if (_elements)
         {
-          AMDIS_ALIGNED_FREE(_elements);
+          if (aligned)
+          {
+            AMDIS_ALIGNED_FREE(_elements);
+          }
+          else
+          {
+            delete [] _elements;
+          }
+          _elements = NULL;
         }
-        else
-        {
-          delete [] _elements;
-        }
-        _elements = NULL;
+
+        _size = other._size;
+        _capacity = other._capacity;
+        _elements = other._elements;
+
+        other._elements = NULL;
+        other._size = 0;
       }
-        
-      _size = other._size;
-      _capacity = other._capacity;
-      _elements = other._elements;
-      other._elements = NULL;
-      other._size = 0;
       return *this;
     }
 
@@ -350,7 +357,7 @@ namespace AMDiS
     {
       TEST_EXIT_DBG(s <= _capacity)("Size must be <= capacity!\n");
     }
-    
+
     /// destructor
     ~MemoryBaseHybrid() = default;
 

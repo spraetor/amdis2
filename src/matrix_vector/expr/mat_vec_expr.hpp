@@ -77,6 +77,9 @@ namespace AMDiS
       TEST_EXIT_DBG( num_cols(mat) == num_rows(vec) )("Sizes do not match!\n");
     }
 
+    MatVecExpr(Self const&) = delete;
+    MatVecExpr(Self&&)      = default;
+
     /// access the elements of an expr.
     value_type operator()(size_type i) const
     {

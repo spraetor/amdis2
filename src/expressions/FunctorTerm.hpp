@@ -7,11 +7,12 @@
 // AMDiS headers
 #include "expressions/LazyOperatorTerm.hpp"
 #include "expressions/TermConcepts.hpp"
-#include "expressions/ComponentView.hpp"
+// #include "expressions/ComponentView.hpp"
 #include "traits/basic.hpp"
 #include "traits/traits_fwd.hpp"
 #include "traits/traits.hpp"
 #include "traits/meta_basic.hpp"
+#include "utility/int_seq.hpp"
 
 namespace AMDiS
 {
@@ -21,6 +22,7 @@ namespace AMDiS
     template <class F, int N, class = void>
     struct functor_degree
     {
+      // if no getDegree method is available, use default value 0
       template <class... Int>
       static constexpr int eval(F, Int...)
       {
@@ -41,109 +43,89 @@ namespace AMDiS
   } // end namespace traits
 
   // forward declaration
-  template <class F, class Term1, class... Terms>
-  struct FunctorTerm;
-
-  // extract the shape of the term from the shape of the functor result-type
-  template <class F, class Term1, class... Terms>
-  struct FunctorShape
+  template <class F, class... T>
+  struct FunctorValue
   {
-    using value_type = typename std::result_of<
-        F(typename Term1::value_type, typename Terms::value_type...)
-      >::type;
-    using type = ShapedTerm_t<value_type, FunctorTerm<F, Term1, Terms...>>;
+    using type = typename std::result_of<F(typename T::value_type const&...)>::type;
   };
 
-  template <class F, class Term1, class... Terms>
-  using FunctorShape_t = typename FunctorShape<F, Term1, Terms...>::type;
-
+  template <class F, class... Terms>
+  using FunctorValue_t = typename FunctorValue<F, Terms...>::type;
 
   // the expressions
   // ___________________________________________________________________________
 
   /// Functor that takes arbitrary number of arguments
-  template <class F, class Term1, class... Terms>
-  struct FunctorTerm
-    : public FunctorShape_t<F, Term1, Terms...>,
-      public LazyOperatorTerms<Term1, Terms...>/*,
-      public ComponentView<Value_t<FunctorShape<F, Term1, Terms...>>,
-                           FunctorTerm<F, Term1, Terms...>>*/
+  template <class F, class... Terms>
+  class FunctorTerm
+    : public ShapedTerm_t<FunctorValue_t<F, Terms...>,
+                          FunctorTerm<F, Terms...>>,
+      public LazyOperatorTerms<Terms...>/*,
+      public ComponentView<Value_t<FunctorShape<F, Terms...>>,
+                           FunctorTerm<F, Terms...>>*/
   {
-    using Self       = FunctorTerm;
-    using Super      = LazyOperatorTerms<Term1, Terms...>;
-    using value_type = Value_t< FunctorShape<F, Term1, Terms...> >;
+    static constexpr int N = sizeof...(Terms);
+    static_assert( N > 0, "Nullary Functor not allowed here!" );
 
-    FunctorTerm(Term1 const& term1_, Terms const&... terms_)
-      : Super(term1_, terms_...),
+    using Self       = FunctorTerm;
+    using Super      = LazyOperatorTerms<Terms...>;
+
+  public:
+    using value_type = FunctorValue_t<F, Terms...>;
+
+    FunctorTerm(Terms const&... terms_)
+      : Super(terms_...),
         fct{}
     {}
 
     template <class F_,
       class = Requires_t<traits::IsCompatible<F, F_>> >
-    FunctorTerm(F_&& f_, Term1 const& term1_, Terms const&... terms_)
-      : Super(term1_, terms_...),
+    FunctorTerm(F_&& f_, Terms const&... terms_)
+      : Super(terms_...),
         fct(std::forward<F_>(f_))
     {}
 
     /// return the required quadrature degree to integrate term
     constexpr int getDegree() const
     {
-      return getDegree(int_<N>());
+      return getDegreeImpl(IndexSeq{});
     }
 
     /// eval at point with index iq
     value_type evalAtIdx(int iq) const
     {
-      return eval(iq, int_<N>());
+      return evalImpl(iq, IndexSeq{});
     }
 
     /// eval at point with coordinate x
     value_type operator()(WorldVector<double> const& x) const
     {
-      return eval(x, int_<N>());
+      return evalImpl(x, IndexSeq{});
     }
 
   private:
-    static constexpr int N = sizeof...(Terms) + 1;
+    using IndexSeq  = MakeSeq_t<N>; // AMDiS::Seq<0,1,2,...,N-1>
+    using FctDegree = traits::functor_degree<F,N>;
 
-    // call f.getDegree() function
-    template <int I, class... Terms_>
-    int getDegree(int_<I>, Terms_&&... terms) const
+    // fct.getDegree(t1.getDegre(), t2.getDegree(), ...)
+    template <int... I>
+    int getDegreeImpl(AMDiS::Seq<I...>) const
     {
-      return getDegree(int_<I-1>(),
-                       Super::getTerm(int_<I-1>()),
-                       std::forward<Terms_>(terms)...);
+      return FctDegree::eval(fct, Super::getDegree(int_<I>())...);
     }
 
-    template <class... Terms_>
-    int getDegree(int_<0>, Terms_ const&... terms) const
+    // fct(t1.evalAtIdx(iq), t2.evalAtIdx(iq), t3.evalAtIdx(iq), ...)
+    template <int... I>
+    value_type evalImpl(int iq, AMDiS::Seq<I...>) const
     {
-      return traits::functor_degree<F,N>::eval(fct, terms.getDegree()...);
+      return fct( Super::getTerm(int_<I>()).evalAtIdx(iq)... );
     }
 
-    // call f.operator()(...)
-    template <class Arg, int I, class... Terms_>
-    value_type eval(Arg&& arg, int_<I>,
-                    Terms_&& ... terms) const
+    // fct(t1(x), t2(x), t3(x),...)
+    template <int... I>
+    value_type evalImpl(WorldVector<double> const& x, AMDiS::Seq<I...>) const
     {
-      return eval(std::forward<Arg>(arg),
-                  int_<I-1>(),
-                  Super::getTerm(int_<I-1>()),
-                  std::forward<Terms_>(terms)...);
-    }
-
-    template <class... Terms_>
-    value_type eval(int iq, int_<0>, Terms_ const&... terms) const
-    {
-      return fct(terms.evalAtIdx(iq)...);  // f(t1(iq), t2(iq), t3(iq),...)
-    }
-
-    template <class... Terms_>
-    value_type eval(WorldVector<double> const& x,
-                    int_<0>,
-                    Terms_ const&... terms) const
-    {
-      return fct(terms(x)...);  // f(t1(iq), t2(iq), t3(iq),...)
+      return fct( Super::getTerm(int_<I>())(x)... );
     }
 
   private:
@@ -154,12 +136,12 @@ namespace AMDiS
   namespace traits
   {
     /// \cond HIDDEN_SYMBOLS
-    template <class F, class Term1, class... Terms>
-    struct category<FunctorTerm<F, Term1, Terms...>>
+    template <class F, class... Terms>
+    struct category<FunctorTerm<F, Terms...>>
     {
-      using tag        = typename category<Term1>::tag;
-      using value_type = Value_t< FunctorShape<F, Term1, Terms...> >;
+      using value_type = FunctorValue_t<F, Terms...>;
       using size_type  = int;
+      using tag        = typename category<value_type>::tag;
     };
     /// \endcond
 

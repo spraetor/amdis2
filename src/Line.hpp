@@ -82,7 +82,7 @@ namespace AMDiS
     {
       FUNCNAME("Line::getEdge()");
       ERROR_EXIT("This does not work in 1D!\n");
-      return {};
+      return {0,0};
     }
 
     /// Implementation of \ref Element::getFace (should not be called)
@@ -90,7 +90,7 @@ namespace AMDiS
     {
       FUNCNAME("Line::getFace()");
       ERROR_EXIT("This does not work in 1D!\n");
-      return {};
+      return {0,0,0};
     }
 
     /// Implementation of \ref Element::sortFaceIndices

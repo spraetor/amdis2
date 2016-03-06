@@ -21,9 +21,9 @@
         return DEGREE ;                                   \
       }                                                   \
       template <class T>                                  \
-      auto operator()(T&& t) const RETURNS                \
+      auto operator()(T const& t) const RETURNS                \
       (                                                   \
-        FCT( std::forward<T>(t) )                         \
+        FCT( t )                         \
       )                                                   \
     };
 
@@ -32,7 +32,7 @@ namespace AMDiS
 {
   namespace functors
   {
-    
+
     AMDIS_MAKE_VECTOR_FUNCTOR( TwoNorm,  2*d0+1, two_norm       )
     AMDIS_MAKE_VECTOR_FUNCTOR( OneNorm,      d0, one_norm       )
     AMDIS_MAKE_VECTOR_FUNCTOR( UnaryDot,   2*d0, unary_dot      )
@@ -45,7 +45,7 @@ namespace AMDiS
     AMDIS_MAKE_VECTOR_FUNCTOR( AbsMin,       d0, AMDiS::abs_min )
 
 
-    /// Convert a vector to a diagonal matrix and extract the diagonal of 
+    /// Convert a vector to a diagonal matrix and extract the diagonal of
     /// a matrix and store it in a vector.
     struct Diagonal
     {
@@ -81,7 +81,7 @@ namespace AMDiS
       template <class T>
       auto operator()(T&& t) const RETURNS
       (
-        Diagonal::eval(std::forward<T>(t), 
+        Diagonal::eval(std::forward<T>(t),
 		       typename traits::category<Decay_t<T>>::tag())
       )
     };
@@ -94,7 +94,7 @@ namespace AMDiS
       {
         return d0+d1;
       }
-      
+
       template <class T1, class T2>
       auto operator()(T1&& t1, T2&& t2) const RETURNS
       (
@@ -160,7 +160,7 @@ namespace AMDiS
       {
 	return d0+d1+1;
       }
-      
+
       template <class T1, class T2>
       auto operator()(T1&& t1, T2&& t2) const RETURNS
       (

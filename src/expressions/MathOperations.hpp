@@ -17,24 +17,24 @@ namespace AMDiS
 {
   // ______ generator functions for constants and references __________________
 
-  /// Returns an expression the evaluates to a constant value given as 
+  /// Returns an expression the evaluates to a constant value given as
   /// argument \param value.
   template <class T>
-  inline RTConstant<T> constant(T&& value)
+  inline RTConstant<T> constant(T const& value)
   {
-    return {std::forward<T>(value)};
+    return {value};
   }
 
-  /// Returns an expression the evaluates to a compile-time constant value, 
+  /// Returns an expression the evaluates to a compile-time constant value,
   /// given as template argument.
   template <int I>
   inline CTConstant<I> constant()
   {
     return {};
   }
-  
 
-  /// Returns an expression the evaluates to a value given as argument 
+
+  /// Returns an expression the evaluates to a value given as argument
   /// \param value. The value is stored as reference.
   template <class T>
   inline Reference<T> ref(T const& value)
@@ -42,7 +42,7 @@ namespace AMDiS
     return {value};
   }
 
-  /// return an expression the evaluates to a value given as argument \param value. 
+  /// return an expression the evaluates to a value given as argument \param value.
   /// The value is stored as reference.
   template <class T>
   inline Reference<T> var(T const& value)
@@ -71,7 +71,7 @@ namespace AMDiS
   {
     return {};
   }
-  
+
 
   /// Returns an expression that evaluates a functor \param f at the evaluated terms \param ts.
   template <class F, class... Terms>
@@ -81,10 +81,10 @@ namespace AMDiS
     return {std::forward<F>(f), toTerm(std::forward<Terms>(ts))...};
   }
 
-  
+
   // ______ generator functions for values and gradients of DOFVectors __________________
 
-  
+
   /// Returns an expression that evaluates a DOFVector at quadrature points.
   template <class Name = name::u, class T>
   ValueOf<DOFVector<T>, Name>
@@ -99,7 +99,7 @@ namespace AMDiS
   {
     return {vector};
   }
-  
+
   /// Returns an expression that evaluates a DOFVector at quadrature points.
   template <class Name = name::u, class T>
   ValueOf<DOFVector<T>, Name>
@@ -124,14 +124,14 @@ namespace AMDiS
     return {vector};
   }
 
-  
+
   // ______ generator functions for pointwise basic arithmetic operations __________________
 
 
 //   template <class Term1, class Term2>
 //   using PlusTerm =
 //     FunctorTerm<functors::plus<Value_t<Term1>, Value_t<Term2>>, Term1, Term2>;
-// 
+//
 //   /// expression for V + W
 //   template <class T1, class T2>
 //   requires::Term<PlusTerm<ToTerm_t<T1>, ToTerm_t<T2>>, T1, T2>
@@ -145,7 +145,7 @@ namespace AMDiS
 //   template <class Term1, class Term2>
 //   using MinusTerm =
 //     FunctorTerm<functors::minus<Value_t<Term1>, Value_t<Term2>>, Term1, Term2>;
-// 
+//
 //   /// expression for V - W
 //   template <class T1, class T2>
 //     requires::Term<MinusTerm<ToTerm_t<T1>, ToTerm_t<T2>>, T1, T2>
@@ -167,9 +167,9 @@ namespace AMDiS
   // ------------
 
 //   template <class Term1, class Term2>
-//   using MultipliesTerm = 
+//   using MultipliesTerm =
 //     FunctorTerm<functors::multiplies<Value_t<Term1>, Value_t<Term2>>, Term1, Term2>;
-// 
+//
 //   /// expression for V .* W
 //   template <class T1, class T2>
 //     requires::Term<MultipliesTerm<ToTerm_t<T1>, ToTerm_t<T2>>, T1, T2>
@@ -177,13 +177,13 @@ namespace AMDiS
 //   {
 //     return {toTerm(t1), toTerm(t2)};
 //   }
-  
+
   // ------------
 
 //   template <class Term1, class Term2>
 //   using DividesTerm =
 //     FunctorTerm<functors::divides<Value_t<Term1>, Value_t<Term2>>, Term1, Term2>;
-// 
+//
 //   /// expression for V ./ W
 //   template <class T1, class T2>
 //     requires::Term<DividesTerm<ToTerm_t<T1>, ToTerm_t<T2>>, T1, T2>
@@ -192,7 +192,7 @@ namespace AMDiS
 //     return {toTerm(t1), toTerm(t2)};
 //   }
 
-  
+
   // ______ generator functions for pointwise cmath operations __________________
 
 
@@ -235,7 +235,7 @@ namespace AMDiS
 //   template <class Term1, class Term2>
 //   using EqualTerm =
 //     FunctorTerm<functors::equal<Value_t<Term1>, Value_t<Term2>>, Term1, Term2>;
-// 
+//
 //   /// expression for min(V, W)
 //   template <class T1, class T2>
 //     requires::Term<EqualTerm<ToTerm_t<T1>, ToTerm_t<T2>>, T1, T2>
@@ -248,7 +248,7 @@ namespace AMDiS
 //   template <class Term1, class Term2>
 //   using UnequalTerm =
 //     FunctorTerm<functors::unequal<Value_t<Term1>, Value_t<Term2>>, Term1, Term2>;
-// 
+//
 //   /// expression for min(V, W)
 //   template <class T1, class T2>
 //     requires::Term<UnequalTerm<ToTerm_t<T1>, ToTerm_t<T2>>, T1, T2>
@@ -261,7 +261,7 @@ namespace AMDiS
 //   template <class Term1, class Term2>
 //   using LessTerm =
 //     FunctorTerm<functors::less<Value_t<Term1>, Value_t<Term2>>, Term1, Term2>;
-// 
+//
 //   /// expression for min(V, W)
 //   template <class T1, class T2>
 //     requires::Term<LessTerm<ToTerm_t<T1>, ToTerm_t<T2>>, T1, T2>
@@ -274,7 +274,7 @@ namespace AMDiS
 //   template <class Term1, class Term2>
 //   using GreaterTerm =
 //     FunctorTerm<functors::greater<Value_t<Term1>, Value_t<Term2>>, Term1, Term2>;
-// 
+//
 //   /// expression for min(V, W)
 //   template <class T1, class T2>
 //     requires::Term<GreaterTerm<ToTerm_t<T1>, ToTerm_t<T2>>, T1, T2>

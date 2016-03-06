@@ -30,6 +30,9 @@ namespace AMDiS
       : expr(A)
     {}
 
+    ElementwiseUnaryExpr(Self const&) = delete;
+    ElementwiseUnaryExpr(Self&&)      = default;
+
     /// access the elements of an expr.
     constexpr value_type operator()(size_type i) const
     {

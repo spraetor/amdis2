@@ -35,6 +35,12 @@ namespace AMDiS
       : value(v), expr(A)
     {}
 
+    ScaleExpr(Self const&) = delete;
+    ScaleExpr(Self&&)      = default;
+
+    Self& operator=(Self const&) = delete;
+    Self& operator=(Self&&)      = default;
+
     /// access the elements of an expr.
     constexpr value_type operator()(size_type i) const
     {
@@ -89,7 +95,9 @@ namespace AMDiS
   template <class V, class E, bool l, class F>
   inline size_t size(ScaleExpr<V, E, l, F> const& expr)
   {
-    return size(expr.get_first());
+    size_t s = size(expr.get_first());
+    std::cout << "size(ScaleExpr) = " << s << "\n";
+    return s;
   }
 
   /// Size of ScaleExpr
